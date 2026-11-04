@@ -1,0 +1,836 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上2-1-點、直線與圓之間的位置關係",
+ "title": "九上 2-1 點、直線與圓之間的位置關係（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "2-1",
+  "name": "點、直線與圓之間的位置關係",
+  "curriculum": [
+   "S-9-5 圓弧長與扇形面積",
+   "S-9-6 圓的幾何性質（切線段等長）",
+   "S-9-7 點、直線與圓的關係"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上2-1.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；含 π 的答案用 sameExpr 精確比對，長度用 radValue；P01、P05 為敘述判斷（manual）；P08 切線段等長依三版學生課本（康軒 p.97–99、南一 p.98–99、翰林 p.100–103），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "CL01",
+   "name": "扇形弓形分不清",
+   "desc": "只認「像扇子」的形狀是扇形，不知道直徑和半圓弧圍成的圖形既是扇形也是弓形",
+   "example": "以為半圓只是弓形、不是扇形",
+   "remedy": "請學生沿邊界說出圍成的線：兩條半徑＋弧是扇形、弦＋弧是弓形；直徑是兩條半徑接成的。",
+   "source": "知識卡迷思：康軒 p.87 隨堂填名詞、南一 p.86 迷思診療、翰林 p.90–91 表格定義扇形與弓形（✓／✓／✓）",
+   "card": "扇形、弓形分不清：像扇子的形狀就當扇形；半圓是不是扇形、弓形",
+   "tiers": [
+    "九上2-1-S1T2"
+   ]
+  },
+  {
+   "code": "CL02",
+   "name": "周長漏加半徑或弦",
+   "desc": "扇形周長只算弧長，忘了加兩條半徑；弓形周長忘了加弦",
+   "example": "半徑 10、圓心角 72° 的扇形周長寫成 4π",
+   "remedy": "用手指沿圖形的邊走一圈，數出經過哪幾段，再相加。",
+   "source": "知識卡迷思：康軒 p.89 例1、p.91 例3，南一 p.89 例2，翰林只在備課用書 p.194 數問速答（✓／✓／備）",
+   "card": "扇形周長漏加兩條半徑（或弓形周長漏加弦）",
+   "tiers": [
+    "九上2-1-S1T2"
+   ]
+  },
+  {
+   "code": "CL03",
+   "name": "弧長公式少乘 2",
+   "desc": "把整個圓的周長 2πr 寫成 πr，再乘 x/360",
+   "example": "半徑 6、圓心角 60° 的弧長寫成 6×60/360×π＝π",
+   "remedy": "先問整個圓的周長是多少（2πr），再說扇形是整個圓的幾分之幾。",
+   "source": "知識卡迷思：康軒 p.107 自我檢核 1（半徑 6、圓心角 60° 的弧長是 π 嗎），南一未見，翰林只在備課用書（同列，備課 p.178 眉批）（✓／–／備）",
+   "card": "弧長、扇形面積公式代錯（x/360 用錯、π 乘開或與圓周長混用）",
+   "tiers": [
+    "九上2-1-S1T1"
+   ]
+  },
+  {
+   "code": "CL04",
+   "name": "弧長面積公式混用",
+   "desc": "求弧長時用 πr²×x/360，或求周長時把扇形面積當弧長",
+   "example": "半徑 6、圓心角 60° 的弧長寫成 36π×60/360＝6π",
+   "remedy": "對照單位：弧長是長度、對應整圓周長 2πr；面積對應整圓面積 πr²。",
+   "source": "依教學經驗（屬迷思表「弧長、扇形面積公式代錯」列，✓／–／備）",
+   "card": "弧長、扇形面積公式代錯（x/360 用錯、π 乘開或與圓周長混用）",
+   "tiers": [
+    "九上2-1-S1T1"
+   ]
+  },
+  {
+   "code": "CL05",
+   "name": "漏乘 x/360 算成整圓",
+   "desc": "忘了扇形只是整個圓的一部分，直接用整個圓的周長或面積",
+   "example": "半徑 6、圓心角 60° 的弧長寫成 12π",
+   "remedy": "先說出圓心角占周角的幾分之幾，再寫算式。",
+   "source": "依教學經驗（屬迷思表「弧長、扇形面積公式代錯」列，✓／–／備）",
+   "card": "弧長、扇形面積公式代錯（x/360 用錯、π 乘開或與圓周長混用）",
+   "tiers": [
+    "九上2-1-S1T1"
+   ]
+  },
+  {
+   "code": "CL06",
+   "name": "弓形面積忘減三角形",
+   "desc": "把弓形面積當成扇形面積，沒有扣掉兩條半徑和弦圍成的三角形",
+   "example": "四分之一圓（半徑 6）的弓形面積寫成 9π",
+   "remedy": "在圖上把扇形分成弓形和三角形兩塊塗色，寫出「弓形＝扇形－三角形」。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "CL07",
+   "name": "直徑當半徑",
+   "desc": "題目給直徑，沒有先換成半徑就和距離比較或代入畢氏定理",
+   "example": "直徑 12 的圓與距離 12 的直線判為相切",
+   "remedy": "先寫出 r＝？再計算或比較。",
+   "source": "知識卡迷思：康軒 p.96 例4（直徑 15 先換成半徑 7.5），南一未見，翰林只在備課用書 p.194 數問速答（✓／–／備）",
+   "card": "直徑當半徑：直徑 10 的圓與距離 10 的直線誤判為相切",
+   "tiers": [
+    "九上2-1-S2T1"
+   ]
+  },
+  {
+   "code": "CL08",
+   "name": "d 與 r 的關係弄反",
+   "desc": "以為圓心到直線的距離 d 比半徑 r 大時，直線會穿過圓",
+   "example": "d＞r 判為交於兩點",
+   "remedy": "畫出圓和直線，讓學生看 d 愈大直線離圓心愈遠，再整理 d＞r、d＝r、d＜r 三種情形。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "CL09",
+   "name": "切線不連半徑找直角",
+   "desc": "切線題只看圖，不連圓心和切點，找不到直角三角形",
+   "example": "把 PO−r 當成切線段 PA 的長",
+   "remedy": "遇到切線先連圓心和切點、標上直角，再找直角三角形。",
+   "source": "知識卡迷思：康軒只在備課用書 p.94 邊註，南一 p.93、p.97 例6，翰林只在備課用書 p.186（課本 p.100 旁）眉批（備／✓／備）",
+   "card": "切線與切線段混淆；切線只靠看圖，不連半徑找垂直",
+   "tiers": [
+    "九上2-1-S2T2"
+   ]
+  },
+  {
+   "code": "CL10",
+   "name": "斜邊認錯",
+   "desc": "用畢氏定理時沒有先找直角，把兩邊平方相加當成股長",
+   "example": "切線段長寫成 √(13²＋5²)",
+   "remedy": "先標出直角，說出直角對面的邊是斜邊，再列式。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "CL11",
+   "name": "以為沒有和半徑等長的弦",
+   "desc": "「半徑不是弦」被當成「沒有和半徑一樣長的弦」",
+   "example": "半徑 3 的圓上沒有長度 3 的弦",
+   "remedy": "在圓上取 A，以 A 為圓心、半徑長畫弧交圓於 B，說出 △OAB 是正三角形。",
+   "source": "知識卡迷思：康軒未見，南一 p.108 錯誤診療，翰林未見（–／✓／–）",
+   "card": "「半徑不是弦」所以以為沒有與半徑等長的弦（手冊 S-9-5 錯誤類型）",
+   "tiers": [
+    "九上2-1-S3T2"
+   ]
+  },
+  {
+   "code": "CL12",
+   "name": "半弦、整弦搞混",
+   "desc": "弦心距題沒有分清楚畢氏定理用的是半弦，算出半弦就當弦長，或把整條弦當直角三角形的股",
+   "example": "半徑 10、弦心距 6，弦長寫成 8",
+   "remedy": "把弦 AB 描粗，標出垂足 M，問畢氏定理算的是 AM 還是 AB。",
+   "source": "知識卡迷思：康軒 p.102 例7、南一 p.101 例8、翰林 p.102 例6（✓／✓／✓）",
+   "card": "弦心距題把半弦當弦長（忘了乘 2），或把弦心距與弦的中點連線分開看",
+   "tiers": [
+    "九上2-1-S3T1"
+   ]
+  },
+  {
+   "code": "CL13",
+   "name": "以為要看圖才能判斷",
+   "desc": "判斷點、直線和圓的位置關係時，以為一定要看圖，不知道只要比較 d 和 r",
+   "example": "沒有圖，就說無法判斷直線和圓的位置",
+   "remedy": "只給數字，讓學生先寫出 d、r，再說出是哪一種情形，最後才畫圖對照。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "CL14",
+   "name": "等腰三角形的角配錯",
+   "desc": "知道 PA＝PB，但把頂角 ∠APB 當成和底角相等，或 180° 減頂角後忘了平分給兩個底角",
+   "example": "∠APB＝70°，寫 ∠PAB＝70° 或 110°",
+   "remedy": "標出 PA＝PB，說出相等的兩個角是哪兩個（等邊對等角），再列式 (180°−頂角)÷2。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-9-5",
+   "stem": "下列關於圓的敘述，哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "像扇子、圓心角小於 180° 的圖形才是扇形",
+     "mis": "CL01",
+     "feedback": "你只看形狀像不像扇子。扇形是兩條半徑和一段弧圍成的圖形，圓心角大於 180° 也可以。"
+    },
+    {
+     "key": "B",
+     "text": "半徑 3 的圓上，沒有長度是 3 的弦",
+     "mis": "CL11",
+     "feedback": "你把「半徑不是弦」想成「沒有和半徑一樣長的弦」。在圓上取 A，以 A 為圓心、3 為半徑畫弧交圓於 B，AB 就是長度 3 的弦。"
+    },
+    {
+     "key": "C",
+     "text": "直徑和半圓弧圍成的圖形，既是扇形也是弓形",
+     "mis": null,
+     "feedback": "正確！直徑是弦，所以它是弓形；直徑也是兩條半徑接成的，所以它也是扇形。"
+    },
+    {
+     "key": "D",
+     "text": "扇形的周長就是它的弧長",
+     "mis": "CL02",
+     "feedback": "你只算了彎的那一段。扇形周長＝弧長＋兩條半徑。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "扇形、弓形各是哪些線圍成的？直徑由什麼接成？",
+   "seg": "九上2-1-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-9-5",
+   "stem": "下列關於圓的敘述，哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "直徑是圓中最長的弦",
+     "mis": null,
+     "feedback": "正確！弦的兩端都在圓上，通過圓心的弦（直徑）最長。"
+    },
+    {
+     "key": "B",
+     "text": "弓形面積一定比半圓小，所以弓形不可能是扇形",
+     "mis": "CL01",
+     "feedback": "你只看形狀。弦和弧圍成的就是弓形，可以比半圓大；直徑和半圓弧圍成的圖形，既是弓形也是扇形。"
+    },
+    {
+     "key": "C",
+     "text": "弓形的周長就是它的弧長",
+     "mis": "CL02",
+     "feedback": "你只算了彎的那一段。弓形周長＝弧長＋弦長。"
+    },
+    {
+     "key": "D",
+     "text": "半徑 5 的圓上，沒有長度是 5 的弦",
+     "mis": "CL11",
+     "feedback": "你把「半徑不是弦」想成「沒有和半徑一樣長的弦」。在圓上取 A，以 A 為圓心、5 為半徑畫弧交圓於 B，AB 就是長度 5 的弦。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "弓形、扇形各是哪些線圍成的？弦最長可以多長？",
+   "seg": "九上2-1-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，扇形的半徑是 6，圓心角是 60°。這個扇形的弧長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "π",
+     "mis": "CL03",
+     "feedback": "你算成 π×6×60/360，把整個圓的周長寫成 πr。整個圓的周長是 2πr＝12π。"
+    },
+    {
+     "key": "B",
+     "text": "12π",
+     "mis": "CL05",
+     "feedback": "12π 是整個圓的周長。圓心角 60° 只占周角的 60/360，要再乘 60/360。"
+    },
+    {
+     "key": "C",
+     "text": "6π",
+     "mis": "CL04",
+     "feedback": "你用了面積公式 π×6²×60/360。弧長是長度，要用整個圓的周長 2πr 去乘。"
+    },
+    {
+     "key": "D",
+     "text": "2π",
+     "mis": null,
+     "feedback": "正確！整個圓的周長 12π，60° 是整個圓的 1/6，弧長＝12π×1/6＝2π。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(60/360)×2×π×6"
+   },
+   "hint": "整個圓的周長是多少？60° 是周角的幾分之幾？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M80,130 L180,130 A100,100 0 0 0 130.0,43.4 Z\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M102,130 A22,22 0 0 0 91.0,110.9\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"114.6\" y=\"115.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">60°</text><text x=\"130.0\" y=\"146.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"72.0\" y=\"135.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，扇形的半徑是 9，圓心角是 120°。這個扇形的弧長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6π",
+     "mis": null,
+     "feedback": "正確！整個圓的周長 18π，120° 是整個圓的 1/3，弧長＝18π×1/3＝6π。"
+    },
+    {
+     "key": "B",
+     "text": "27π",
+     "mis": "CL04",
+     "feedback": "你用了面積公式 π×9²×120/360。弧長是長度，要用整個圓的周長 2πr 去乘。"
+    },
+    {
+     "key": "C",
+     "text": "3π",
+     "mis": "CL03",
+     "feedback": "你算成 π×9×120/360，把整個圓的周長寫成 πr。整個圓的周長是 2πr＝18π。"
+    },
+    {
+     "key": "D",
+     "text": "18π",
+     "mis": "CL05",
+     "feedback": "18π 是整個圓的周長。圓心角 120° 只占周角的 120/360，要再乘 120/360。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(120/360)×2×π×9"
+   },
+   "hint": "整個圓的周長是多少？120° 是周角的幾分之幾？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M80,130 L180,130 A100,100 0 0 0 30.0,43.4 Z\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M102,130 A22,22 0 0 0 69.0,110.9\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"100.0\" y=\"100.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">120°</text><text x=\"130.0\" y=\"146.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">9</text><text x=\"72.0\" y=\"135.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，扇形的半徑是 10，圓心角是 72°。這個扇形的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "20π＋20",
+     "mis": "CL04",
+     "feedback": "你把扇形面積 π×10²×72/360＝20π 當成弧長。弧長要用 2πr×72/360＝4π。"
+    },
+    {
+     "key": "B",
+     "text": "4π＋20",
+     "mis": null,
+     "feedback": "正確！弧長＝2π×10×72/360＝4π，周長＝弧長＋兩條半徑＝4π＋20。"
+    },
+    {
+     "key": "C",
+     "text": "4π",
+     "mis": "CL02",
+     "feedback": "4π 只是弧長。沿著扇形的邊走一圈，還要經過兩條半徑，要再加 20。"
+    },
+    {
+     "key": "D",
+     "text": "2π＋20",
+     "mis": "CL03",
+     "feedback": "你把弧長算成 π×10×72/360＝2π，把整個圓的周長寫成 πr。整個圓的周長是 20π，弧長是 4π。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(72/360)×2×π×10+2×10"
+   },
+   "hint": "沿著扇形的邊走一圈，經過哪幾段？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M80,130 L180,130 A100,100 0 0 0 110.9,34.9 Z\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M102,130 A22,22 0 0 0 86.8,109.1\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"112.4\" y=\"111.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">72°</text><text x=\"130.0\" y=\"146.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">10</text><text x=\"72.0\" y=\"135.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，扇形的半徑是 12，圓心角是 30°。這個扇形的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "2π",
+     "mis": "CL02",
+     "feedback": "2π 只是弧長。沿著扇形的邊走一圈，還要經過兩條半徑，要再加 24。"
+    },
+    {
+     "key": "B",
+     "text": "π＋24",
+     "mis": "CL03",
+     "feedback": "你把弧長算成 π×12×30/360＝π，把整個圓的周長寫成 πr。整個圓的周長是 24π，弧長是 2π。"
+    },
+    {
+     "key": "C",
+     "text": "12π＋24",
+     "mis": "CL04",
+     "feedback": "你把扇形面積 π×12²×30/360＝12π 當成弧長。弧長要用 2πr×30/360＝2π。"
+    },
+    {
+     "key": "D",
+     "text": "2π＋24",
+     "mis": null,
+     "feedback": "正確！弧長＝2π×12×30/360＝2π，周長＝弧長＋兩條半徑＝2π＋24。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(30/360)×2×π×12+2×12"
+   },
+   "hint": "沿著扇形的邊走一圈，經過哪幾段？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M80,130 L180,130 A100,100 0 0 0 166.6,80.0 Z\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M102,130 A22,22 0 0 0 99.1,119.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"118.6\" y=\"124.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">30°</text><text x=\"130.0\" y=\"146.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">12</text><text x=\"72.0\" y=\"135.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-9-5",
+   "stem": "如圖，圓 O 的直徑是 12，半徑 OA⊥OB，弦 AB 和弧 AB 圍成灰色的弓形。灰色弓形的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9π",
+     "mis": "CL06",
+     "feedback": "9π 是整個扇形 OAB 的面積。弓形＝扇形－△OAB，還要扣掉三角形。"
+    },
+    {
+     "key": "B",
+     "text": "36π−72",
+     "mis": "CL07",
+     "feedback": "你把直徑 12 當成半徑來算扇形和三角形。半徑是 6，扇形 9π、△OAB＝18。"
+    },
+    {
+     "key": "C",
+     "text": "36π−18",
+     "mis": "CL05",
+     "feedback": "36π 是整個圓的面積。90° 只占周角的 1/4，扇形面積是 9π。"
+    },
+    {
+     "key": "D",
+     "text": "9π−18",
+     "mis": null,
+     "feedback": "正確！半徑 6，扇形面積＝π×6²×90/360＝9π，△OAB＝6×6÷2＝18，弓形＝9π−18。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(90/360)×π×6^2−6×6/2"
+   },
+   "hint": "半徑是多少？弓形是扇形扣掉哪一塊？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M175,85 A65,65 0 0 0 110,20 Z\" fill=\"#ddd\" stroke=\"none\"/><circle cx=\"110\" cy=\"85\" r=\"65\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"110,20 110,85 175,85\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"175\" y1=\"85\" x2=\"110\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"120,85 120,75 110,75\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"110\" cy=\"85\" r=\"2.5\" fill=\"#333\"/><text x=\"100.0\" y=\"99.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"185.0\" y=\"90.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"110.0\" y=\"15.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-9-5",
+   "stem": "如圖，圓 O 的直徑是 20，半徑 OA⊥OB，弦 AB 和弧 AB 圍成灰色的弓形。灰色弓形的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "100π−50",
+     "mis": "CL05",
+     "feedback": "100π 是整個圓的面積。90° 只占周角的 1/4，扇形面積是 25π。"
+    },
+    {
+     "key": "B",
+     "text": "25π−50",
+     "mis": null,
+     "feedback": "正確！半徑 10，扇形面積＝π×10²×90/360＝25π，△OAB＝10×10÷2＝50，弓形＝25π−50。"
+    },
+    {
+     "key": "C",
+     "text": "25π",
+     "mis": "CL06",
+     "feedback": "25π 是整個扇形 OAB 的面積。弓形＝扇形－△OAB，還要扣掉三角形。"
+    },
+    {
+     "key": "D",
+     "text": "100π−200",
+     "mis": "CL07",
+     "feedback": "你把直徑 20 當成半徑來算扇形和三角形。半徑是 10，扇形 25π、△OAB＝50。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(90/360)×π×10^2−10×10/2"
+   },
+   "hint": "半徑是多少？弓形是扇形扣掉哪一塊？",
+   "seg": "九上2-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M175,85 A65,65 0 0 0 110,20 Z\" fill=\"#ddd\" stroke=\"none\"/><circle cx=\"110\" cy=\"85\" r=\"65\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"110,20 110,85 175,85\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"175\" y1=\"85\" x2=\"110\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"120,85 120,75 110,75\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"110\" cy=\"85\" r=\"2.5\" fill=\"#333\"/><text x=\"100.0\" y=\"99.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"185.0\" y=\"90.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"110.0\" y=\"15.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-9-7",
+   "stem": "圓 O 的直徑是 12 公分，圓心 O 到直線 L 的距離是 12 公分。L 和圓 O 的位置關係是什麼？",
+   "options": [
+    {
+     "key": "A",
+     "text": "相切",
+     "mis": "CL07",
+     "feedback": "你把直徑 12 當成半徑和距離比。半徑是 6，距離 12＞6，L 和圓不相交。"
+    },
+    {
+     "key": "B",
+     "text": "交於兩點",
+     "mis": "CL08",
+     "feedback": "你把 d＞r 想成直線穿過圓。圓心到 L 的距離比半徑大，L 離圓心比圓上的點還遠，所以不相交。"
+    },
+    {
+     "key": "C",
+     "text": "沒有圖，無法判斷",
+     "mis": "CL13",
+     "feedback": "你以為要看圖才能判斷。只要比較圓心到直線的距離 d 和半徑 r，不用看圖也能判斷。"
+    },
+    {
+     "key": "D",
+     "text": "不相交",
+     "mis": null,
+     "feedback": "正確！半徑 r＝6，距離 d＝12，d＞r，所以 L 和圓 O 不相交。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "題目給的是半徑還是直徑？先寫出 r＝？再和 d 比。",
+   "seg": "九上2-1-S2"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-9-7",
+   "stem": "圓 O 的直徑是 18 公分，圓心 O 到直線 L 的距離是 18 公分。L 和圓 O 的位置關係是什麼？",
+   "options": [
+    {
+     "key": "A",
+     "text": "交於兩點",
+     "mis": "CL08",
+     "feedback": "你把 d＞r 想成直線穿過圓。圓心到 L 的距離比半徑大，L 離圓心比圓上的點還遠，所以不相交。"
+    },
+    {
+     "key": "B",
+     "text": "不相交",
+     "mis": null,
+     "feedback": "正確！半徑 r＝9，距離 d＝18，d＞r，所以 L 和圓 O 不相交。"
+    },
+    {
+     "key": "C",
+     "text": "相切",
+     "mis": "CL07",
+     "feedback": "你把直徑 18 當成半徑和距離比。半徑是 9，距離 18＞9，L 和圓不相交。"
+    },
+    {
+     "key": "D",
+     "text": "沒有圖，無法判斷",
+     "mis": "CL13",
+     "feedback": "你以為要看圖才能判斷。只要比較圓心到直線的距離 d 和半徑 r，不用看圖也能判斷。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "題目給的是半徑還是直徑？先寫出 r＝？再和 d 比。",
+   "seg": "九上2-1-S2"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-7",
+   "stem": "如圖，直線 PA 和圓 O 相切於 A，圓 O 的直徑是 10，PO＝13。切線段 PA 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "CL09",
+     "feedback": "你用 PO−r＝13−5 當成 PA。連 OA，OA⊥PA，PA 是直角三角形 OAP 的一股。"
+    },
+    {
+     "key": "B",
+     "text": "√194",
+     "mis": "CL10",
+     "feedback": "你算成 √(13²＋5²)，把 PO 當成股。直角在 A，PO 是斜邊，PA＝√(13²−5²)。"
+    },
+    {
+     "key": "C",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！連 OA，OA⊥PA，OA＝5，PA＝√(13²−5²)＝12。"
+    },
+    {
+     "key": "D",
+     "text": "√69",
+     "mis": "CL07",
+     "feedback": "你把直徑 10 當成半徑，算成 √(13²−10²)。半徑是 5，PA＝√(13²−5²)。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "radValue",
+    "expr": "√(13^2−5^2)"
+   },
+   "hint": "遇到切線，先把哪兩點連起來？直角在哪裡？",
+   "seg": "九上2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"60\" cy=\"95\" r=\"40\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"47.7\" y1=\"46.5\" x2=\"175.1\" y2=\"99.6\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"60\" y1=\"95\" x2=\"164.0\" y2=\"95\" stroke=\"#333\" stroke-width=\"1.5\" stroke-dasharray=\"5,4\"/><circle cx=\"60\" cy=\"95\" r=\"2.5\" fill=\"#333\"/><text x=\"56.0\" y=\"112.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"69.4\" y=\"50.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"170.0\" y=\"111.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-7",
+   "stem": "如圖，直線 PA 和圓 O 相切於 A，圓 O 的直徑是 16，PO＝17。切線段 PA 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "√33",
+     "mis": "CL07",
+     "feedback": "你把直徑 16 當成半徑，算成 √(17²−16²)。半徑是 8，PA＝√(17²−8²)。"
+    },
+    {
+     "key": "B",
+     "text": "9",
+     "mis": "CL09",
+     "feedback": "你用 PO−r＝17−8 當成 PA。連 OA，OA⊥PA，PA 是直角三角形 OAP 的一股。"
+    },
+    {
+     "key": "C",
+     "text": "√353",
+     "mis": "CL10",
+     "feedback": "你算成 √(17²＋8²)，把 PO 當成股。直角在 A，PO 是斜邊，PA＝√(17²−8²)。"
+    },
+    {
+     "key": "D",
+     "text": "15",
+     "mis": null,
+     "feedback": "正確！連 OA，OA⊥PA，OA＝8，PA＝√(17²−8²)＝15。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "radValue",
+    "expr": "√(17^2−8^2)"
+   },
+   "hint": "遇到切線，先把哪兩點連起來？直角在哪裡？",
+   "seg": "九上2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"60\" cy=\"95\" r=\"40\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"52.4\" y1=\"45.6\" x2=\"155.6\" y2=\"100.6\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"60\" y1=\"95\" x2=\"145.0\" y2=\"95\" stroke=\"#333\" stroke-width=\"1.5\" stroke-dasharray=\"5,4\"/><circle cx=\"60\" cy=\"95\" r=\"2.5\" fill=\"#333\"/><text x=\"56.0\" y=\"112.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"72.8\" y=\"51.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"151.0\" y=\"111.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-7",
+   "stem": "如圖，圓 O 的直徑是 20，弦 AB 的弦心距 OM＝6。弦 AB 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "16",
+     "mis": null,
+     "feedback": "正確！連 OA，OA＝10，AM＝√(10²−6²)＝8，弦心距平分弦，AB＝2×8＝16。"
+    },
+    {
+     "key": "B",
+     "text": "8",
+     "mis": "CL12",
+     "feedback": "8 是半弦 AM。弦心距平分弦，AB＝2AM＝16。"
+    },
+    {
+     "key": "C",
+     "text": "4√91",
+     "mis": "CL07",
+     "feedback": "你把直徑 20 當成半徑，算成 2√(20²−6²)。半徑是 10。"
+    },
+    {
+     "key": "D",
+     "text": "4√34",
+     "mis": "CL10",
+     "feedback": "你算成 2√(10²＋6²)，把 OA 當成股。直角在 M，OA 是斜邊，AM＝√(10²−6²)。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "radValue",
+    "expr": "2×√(10^2−6^2)"
+   },
+   "hint": "畢氏定理算出來的是 AM 還是 AB？",
+   "seg": "九上2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"72\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"70.4\" y1=\"109.2\" x2=\"169.6\" y2=\"109.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120\" y1=\"72\" x2=\"120\" y2=\"109.2\" stroke=\"#333\" stroke-width=\"1.5\" stroke-dasharray=\"4,3\"/><polyline points=\"128,109.2 128,101.2 120,101.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"120\" cy=\"72\" r=\"2.5\" fill=\"#333\"/><text x=\"110.0\" y=\"68.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"60.4\" y=\"114.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"179.6\" y=\"114.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"120.0\" y=\"124.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text><text x=\"108.0\" y=\"95.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-7",
+   "stem": "如圖，圓 O 的直徑是 34，弦 AB 的弦心距 OM＝8。弦 AB 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "2√353",
+     "mis": "CL10",
+     "feedback": "你算成 2√(17²＋8²)，把 OA 當成股。直角在 M，OA 是斜邊，AM＝√(17²−8²)。"
+    },
+    {
+     "key": "B",
+     "text": "4√273",
+     "mis": "CL07",
+     "feedback": "你把直徑 34 當成半徑，算成 2√(34²−8²)。半徑是 17。"
+    },
+    {
+     "key": "C",
+     "text": "30",
+     "mis": null,
+     "feedback": "正確！連 OA，OA＝17，AM＝√(17²−8²)＝15，弦心距平分弦，AB＝2×15＝30。"
+    },
+    {
+     "key": "D",
+     "text": "15",
+     "mis": "CL12",
+     "feedback": "15 是半弦 AM。弦心距平分弦，AB＝2AM＝30。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "radValue",
+    "expr": "2×√(17^2−8^2)"
+   },
+   "hint": "畢氏定理算出來的是 AM 還是 AB？",
+   "seg": "九上2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"72\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"65.3\" y1=\"101.2\" x2=\"174.7\" y2=\"101.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120\" y1=\"72\" x2=\"120\" y2=\"101.2\" stroke=\"#333\" stroke-width=\"1.5\" stroke-dasharray=\"4,3\"/><polyline points=\"128,101.2 128,93.2 120,93.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"120\" cy=\"72\" r=\"2.5\" fill=\"#333\"/><text x=\"110.0\" y=\"68.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"55.3\" y=\"106.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"184.7\" y=\"106.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"120.0\" y=\"116.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text><text x=\"108.0\" y=\"91.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text></svg>"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "應用",
+   "lc": "S-9-6",
+   "stem": "如圖，PA、PB 分別和圓 O 相切於 A、B，∠APB＝70°。∠PAB 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "70°",
+     "mis": "CL14",
+     "feedback": "你把頂角 ∠APB 當成和 ∠PAB 相等。PA＝PB，相等的是兩個底角 ∠PAB 和 ∠PBA。"
+    },
+    {
+     "key": "B",
+     "text": "55°",
+     "mis": null,
+     "feedback": "正確！切線段等長，PA＝PB，△PAB 是等腰三角形，∠PAB＝(180°−70°)÷2＝55°。"
+    },
+    {
+     "key": "C",
+     "text": "20°",
+     "mis": "CL09",
+     "feedback": "你把直角放在 △PAB 裡，算成 90°−70°。切線垂直的是半徑 OA，不是弦 AB；△PAB 裡沒有直角。"
+    },
+    {
+     "key": "D",
+     "text": "110°",
+     "mis": "CL14",
+     "feedback": "110° 是兩個底角的和 180°−70°。兩個底角相等，要再除以 2。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(180−70)/2"
+   },
+   "hint": "PA 和 PB 有什麼關係？△PAB 是什麼三角形？",
+   "seg": "九上2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"70\" cy=\"80\" r=\"42\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"94.1,45.6 143.2,80 94.1,114.4\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"94.1\" y1=\"45.6\" x2=\"94.1\" y2=\"114.4\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"70\" cy=\"80\" r=\"2.5\" fill=\"#333\"/><text x=\"60.0\" y=\"85.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"90.1\" y=\"38.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"90.1\" y=\"130.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"153.2\" y=\"85.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"121.2\" y=\"84.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">70°</text></svg>"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "應用",
+   "lc": "S-9-6",
+   "stem": "如圖，PA、PB 分別和圓 O 相切於 A、B，∠APB＝40°。∠PAB 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "140°",
+     "mis": "CL14",
+     "feedback": "140° 是兩個底角的和 180°−40°。兩個底角相等，要再除以 2。"
+    },
+    {
+     "key": "B",
+     "text": "50°",
+     "mis": "CL09",
+     "feedback": "你把直角放在 △PAB 裡，算成 90°−40°。切線垂直的是半徑 OA，不是弦 AB；△PAB 裡沒有直角。"
+    },
+    {
+     "key": "C",
+     "text": "40°",
+     "mis": "CL14",
+     "feedback": "你把頂角 ∠APB 當成和 ∠PAB 相等。PA＝PB，相等的是兩個底角 ∠PAB 和 ∠PBA。"
+    },
+    {
+     "key": "D",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！切線段等長，PA＝PB，△PAB 是等腰三角形，∠PAB＝(180°−40°)÷2＝70°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(180−40)/2"
+   },
+   "hint": "PA 和 PB 有什麼關係？△PAB 是什麼三角形？",
+   "seg": "九上2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"70\" cy=\"80\" r=\"42\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"84.4,40.5 192.8,80 84.4,119.5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"84.4\" y1=\"40.5\" x2=\"84.4\" y2=\"119.5\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"70\" cy=\"80\" r=\"2.5\" fill=\"#333\"/><text x=\"60.0\" y=\"85.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"80.4\" y=\"33.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"80.4\" y=\"135.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"202.8\" y=\"85.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"170.8\" y=\"84.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">40°</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或情境",
+ "updated": "2026-11-05T01:46"
+}

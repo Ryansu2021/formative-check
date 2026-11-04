@@ -1,0 +1,801 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上2-2-圓心角、圓周角與弧的關係",
+ "title": "九上 2-2 圓心角、圓周角與弧的關係（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "2-2",
+  "name": "圓心角、圓周角與弧的關係",
+  "curriculum": [
+   "S-9-5 圓弧長與扇形面積：以 π 表示圓周率；弧長公式；扇形面積公式。",
+   "S-9-6 圓的幾何性質：圓心角、圓周角與所對應弧的度數三者之間的關係；圓內接四邊形對角互補；切線段等長。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上2-2.md（三版教學順序、迷思清單、教學建議）、prep_core 主幹卡與比較頁迷思表頁碼（digest_raw MS）產題；P02、P08 為敘述判斷（manual），其餘用 value／sameExpr 驗算；題目答案經驗算器重算，老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "AN01",
+   "name": "忘了一半",
+   "desc": "以為圓周角等於所對弧的度數，或等於同弧的圓心角",
+   "example": "劣弧 AC＝60°，B 在優弧上，以為 ∠ABC＝60°",
+   "remedy": "請學生連出同弧的圓心角，比比看哪一個大，再說出「圓周角是所對弧的一半」。",
+   "source": "知識卡迷思：康軒 p.123 自我檢核 2、南一 p.114 三種情況推導與 p.115 重點框、翰林 p.117 三框推導（✓／✓／✓）",
+   "card": "忘了一半：把圓周角當成等於所對弧（或等於同弧圓心角）",
+   "tiers": [
+    "九上2-2-S2T1"
+   ]
+  },
+  {
+   "code": "AN02",
+   "name": "找錯所對的弧",
+   "desc": "圓周角是鈍角、所對的弧大於 180° 時，仍用小弧計算，或該用小弧卻用了大弧；也會把角的一邊當成所對的弦",
+   "example": "B 在劣弧 AC 上、∠AOC＝130°，以為 ∠ABC＝65°（應為 115°）；B 在優弧上、劣弧 AC＝80°，以為 ∠ABC＝(360°−80°)÷2＝140°（應為 40°）",
+   "remedy": "請學生先把「夾在兩邊之間、不經過頂點」的那段弧描出來，再判斷它比半圓大還是小。",
+   "source": "知識卡迷思：康軒 p.117 例5(2)、南一 p.110 隨堂與 p.116 例4、翰林 p.119 例4（✓／✓／✓）",
+   "card": "找錯所對的弧：鈍角圓周角、大於 180° 的弧要用 360° 減小弧，卻用了小弧",
+   "tiers": [
+    "九上2-2-S2T2"
+   ]
+  },
+  {
+   "code": "AN03",
+   "name": "度數與弧長混淆",
+   "desc": "以為弧的度數相同弧長就相同，或弧長相等度數就相等，甚至把度數當成長度",
+   "example": "兩圓半徑 3、6，圓心角都是 60°，以為兩段弧一樣長",
+   "remedy": "在同心的大圓、小圓上用同一個圓心角各畫一段弧，讓學生比長度、再說度數。",
+   "source": "知識卡迷思：康軒 p.111 例1、南一 p.111 例1 與隨堂及 p.127 自評1、翰林 p.112 與 p.115 例2（✓／✓／✓）",
+   "card": "弧的度數與弧長混淆：以為度數相同弧長就相同（忽略半徑），或弧長相等度數就相等",
+   "tiers": [
+    "九上2-2-S1T1"
+   ]
+  },
+  {
+   "code": "AN04",
+   "name": "圓心角與對側圓周角互補",
+   "desc": "以為圓心角和同弧（對側）的圓周角合起來是 180°；包含把圓心 O 當成圓上的點，對四邊形 AOCB、ABOD 用圓內接四邊形對角互補",
+   "example": "∠AOC＝130°，B 在劣弧 AC 上，以為 ∠ABC＝50°；A、B、D 在圓 O 上，以為四邊形 ABOD 中 ∠A＋∠BOD＝180°",
+   "remedy": "用對角互補之前，請學生逐一檢查四個頂點是不是都在圓上；再找出圓周角所對的優弧，用 360° 減劣弧再取一半，和 180°−圓心角比比看。",
+   "source": "知識卡迷思：南一 p.129 錯誤診療（–／✓／–）；另一列「把圓心 O 當成圓上的點，誤用圓內接四邊形對角互補」：翰林備課拉頁 p.318 迷思逃脫（–／–／備）",
+   "card": "以為圓心角與同弧（對側）圓周角互補或相等",
+   "tiers": [
+    "九上2-2-S3T1"
+   ]
+  },
+  {
+   "code": "AN05",
+   "name": "忽略同圓或等圓",
+   "desc": "用「等圓心角對等弧、等弧對等弦」時，忘了要在同圓或等圓中",
+   "example": "兩圓的圓心角都是 60°，以為兩條弦一樣長",
+   "remedy": "請學生在大圓、小圓上各畫一段 60° 的弧和弦，比比看，再說出前提要加哪一句話。",
+   "source": "知識卡迷思：康軒 p.111–112、南一 p.112 課文與重點框、翰林 p.112–115（✓／✓／✓）",
+   "card": "等弧對等弦、等弦對等弧時忽略「同圓或等圓」的前提",
+   "tiers": [
+    "九上2-2-S1T2"
+   ]
+  },
+  {
+   "code": "AN06",
+   "name": "直角對直徑不會反用",
+   "desc": "只會用「半圓所對圓周角是直角」，看到 90° 圓周角想不到所對的弦是直徑",
+   "example": "∠ACB＝90°、C 在圓上，以為不能判斷 AB 是不是直徑",
+   "remedy": "請學生由 90°×2＝180° 說出所對的弧是半圓，再用三角板直角找圓心（南一數養時光機）。",
+   "source": "知識卡迷思：南一 p.119 與 p.120 數養時光機、翰林 p.126 例8 思路分析（–／✓／✓）",
+   "card": "半圓直角只會正用：看到直角圓周角，想不到所對的弦是直徑（逆敘述）",
+   "tiers": [
+    "九上2-2-S3T2"
+   ]
+  },
+  {
+   "code": "AN07",
+   "name": "一半與兩倍顛倒",
+   "desc": "記得圓周角和弧（或圓心角）有 2 倍關係，卻乘除方向相反",
+   "example": "∠ABC＝35°，以為同弧圓心角 ∠AOC＝17.5°；劣弧 AC＝80°，以為 ∠ABC＝160°",
+   "remedy": "請學生先在圖上比一比哪一個角比較大，再決定乘 2 還是除以 2。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "AN08",
+   "name": "弧長按半徑平方放大",
+   "desc": "半徑變 k 倍，以為弧長變 k² 倍（和扇形面積的放大混在一起）",
+   "example": "同一個 60° 圓心角，半徑 3 的弧長 π，以為半徑 6 的弧長 4π",
+   "remedy": "請學生寫出 2πr×x/360，指出 r 只出現一次，所以弧長只跟著半徑變 k 倍。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "AN09",
+   "name": "對角找成相鄰角",
+   "desc": "用對角互補時，把相鄰的兩個角當成對角",
+   "example": "圓內接四邊形 ABCD，∠B＝95°，以為 ∠C＝85°",
+   "remedy": "請學生沿著 A→B→C→D 指一遍，說出和 ∠C 不相鄰的那個角才是對角。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "AN10",
+   "name": "以為對角相等",
+   "desc": "把平行四邊形「對角相等」套到圓內接四邊形",
+   "example": "圓內接四邊形 ABCD，∠A＝80°，以為 ∠C＝80°",
+   "remedy": "請學生找出 ∠A、∠C 所對的兩段弧，說出兩段弧合起來是整個圓，所以兩角合起來是 180°。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "AN11",
+   "name": "剩下兩角平分",
+   "desc": "用四邊形內角和 360° 減去已知兩角後，把剩下的平均分給另外兩個角",
+   "example": "圓內接四邊形 ABCD，∠A＝80°、∠B＝95°，以為 ∠C＝(360°−80°−95°)÷2＝92.5°",
+   "remedy": "請學生畫一個 ∠C、∠D 明顯不同的圓內接四邊形，說明為什麼不能平分，再改用對角互補。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，兩圓的圓心都是 O，小圓半徑 3、大圓半徑 6，∠AOB＝60°，O、A、C 在一直線上，O、B、D 在一直線上。小圓上的劣弧 AB 長 π，大圓上的劣弧 CD 長多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "π",
+     "mis": "AN05",
+     "feedback": "你用了「等圓心角對等弧」，以為兩段弧一樣長。這句話只在同圓或等圓才成立；兩圓半徑不同，度數相同、弧長不同。"
+    },
+    {
+     "key": "B",
+     "text": "2π",
+     "mis": null,
+     "feedback": "正確！兩弧度數都是 60°，大圓半徑是小圓的 2 倍，弧長也是 2 倍：π×2＝2π。"
+    },
+    {
+     "key": "C",
+     "text": "4π",
+     "mis": "AN08",
+     "feedback": "你把弧長放大成 2²＝4 倍，這是扇形面積的放大方式。弧長＝2πr×60/360，半徑變 2 倍，弧長只變 2 倍。"
+    },
+    {
+     "key": "D",
+     "text": "60",
+     "mis": "AN03",
+     "feedback": "你把弧的度數 60° 當成弧長。度數只看圓心角，弧長要用 2πr×60/360 算，還要看半徑。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2×π×6×60/360"
+   },
+   "hint": "劣弧 CD 的度數是多少？它在哪一個圓上？弧長要看哪兩個量？",
+   "seg": "九上2-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"88\" r=\"35.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120\" cy=\"88\" r=\"70\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"88.0\" x2=\"85.0\" y2=\"27.4\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"88.0\" x2=\"155.0\" y2=\"27.4\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120.0\" cy=\"88.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"102.5\" cy=\"57.7\" r=\"2.2\" fill=\"#333\"/><text x=\"91.5\" y=\"60.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"137.5\" cy=\"57.7\" r=\"2.2\" fill=\"#333\"/><text x=\"148.5\" y=\"60.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><circle cx=\"85.0\" cy=\"27.4\" r=\"2.2\" fill=\"#333\"/><text x=\"74.0\" y=\"26.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"155.0\" cy=\"27.4\" r=\"2.2\" fill=\"#333\"/><text x=\"166.0\" y=\"26.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120.0\" y=\"109.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"120.0\" y=\"75.5\" font-size=\"11\" text-anchor=\"middle\" fill=\"#333\">60°</text></svg>"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-5",
+   "stem": "如圖，兩圓的圓心都是 O，小圓半徑 2、大圓半徑 6，∠AOB＝90°，O、A、C 在一直線上，O、B、D 在一直線上。小圓上的劣弧 AB 長 π，大圓上的劣弧 CD 長多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "90",
+     "mis": "AN03",
+     "feedback": "你把弧的度數 90° 當成弧長。度數只看圓心角，弧長要用 2πr×90/360 算，還要看半徑。"
+    },
+    {
+     "key": "B",
+     "text": "π",
+     "mis": "AN05",
+     "feedback": "你用了「等圓心角對等弧」，以為兩段弧一樣長。這句話只在同圓或等圓才成立；兩圓半徑不同，度數相同、弧長不同。"
+    },
+    {
+     "key": "C",
+     "text": "9π",
+     "mis": "AN08",
+     "feedback": "你把弧長放大成 3²＝9 倍，這是扇形面積的放大方式。弧長＝2πr×90/360，半徑變 3 倍，弧長只變 3 倍。"
+    },
+    {
+     "key": "D",
+     "text": "3π",
+     "mis": null,
+     "feedback": "正確！兩弧度數都是 90°，大圓半徑是小圓的 3 倍，弧長也是 3 倍：π×3＝3π。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2×π×6×90/360"
+   },
+   "hint": "劣弧 CD 的度數是多少？它在哪一個圓上？弧長要看哪兩個量？",
+   "seg": "九上2-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"88\" r=\"23.333333333333332\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120\" cy=\"88\" r=\"70\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"88.0\" x2=\"70.5\" y2=\"38.5\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"88.0\" x2=\"169.5\" y2=\"38.5\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120.0\" cy=\"88.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"103.5\" cy=\"71.5\" r=\"2.2\" fill=\"#333\"/><text x=\"92.5\" y=\"74.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"136.5\" cy=\"71.5\" r=\"2.2\" fill=\"#333\"/><text x=\"147.5\" y=\"74.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><circle cx=\"70.5\" cy=\"38.5\" r=\"2.2\" fill=\"#333\"/><text x=\"59.5\" y=\"37.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"169.5\" cy=\"38.5\" r=\"2.2\" fill=\"#333\"/><text x=\"180.5\" y=\"37.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120.0\" y=\"109.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"120.0\" y=\"81.3\" font-size=\"11\" text-anchor=\"middle\" fill=\"#333\">90°</text></svg>"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩段弧的度數相等，它們的弧長也一定相等",
+     "mis": "AN03",
+     "feedback": "你把度數和弧長當成同一件事。度數只看圓心角，弧長還要看半徑；大圓、小圓上 60° 的弧就不一樣長。"
+    },
+    {
+     "key": "B",
+     "text": "在同一個圓中，兩條相等的弦所對的劣弧，度數一定相等",
+     "mis": null,
+     "feedback": "正確！同圓中等弦對等弧：兩弦相等時，兩個圓心角所在的三角形全等（SSS），圓心角相等，所對的弧也相等。"
+    },
+    {
+     "key": "C",
+     "text": "兩個圓的圓心角相等時，所對的弦也一定相等",
+     "mis": "AN05",
+     "feedback": "你漏了「同圓或等圓」這個前提。兩圓半徑不同時，同樣 60° 的圓心角，大圓的弦比較長。"
+    },
+    {
+     "key": "D",
+     "text": "圓心角不變，半徑變成 2 倍，所對的弧長會變成 4 倍",
+     "mis": "AN08",
+     "feedback": "你把弧長當成面積來放大。弧長＝2πr×度數/360，r 只乘一次，半徑變 2 倍，弧長只變 2 倍。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句先問：是不是同一個圓或等圓？說的是度數還是長度？半徑變大時弧長怎麼變？",
+   "seg": "九上2-2-S1"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩條相等的弦，所對的劣弧一定相等",
+     "mis": "AN05",
+     "feedback": "你漏了「同圓或等圓」這個前提。大圓、小圓上各畫一條長 5 的弦，所對的弧度數不同。"
+    },
+    {
+     "key": "B",
+     "text": "圓心角不變，半徑變成 3 倍，所對的弧長會變成 9 倍",
+     "mis": "AN08",
+     "feedback": "你把弧長當成面積來放大。弧長＝2πr×度數/360，r 只乘一次，半徑變 3 倍，弧長只變 3 倍。"
+    },
+    {
+     "key": "C",
+     "text": "兩段弧的長度相等，它們的度數也一定相等",
+     "mis": "AN03",
+     "feedback": "你把弧長和度數當成同一件事。半徑不同時，一樣長的弧，在小圓上彎得多（度數大），在大圓上度數小。"
+    },
+    {
+     "key": "D",
+     "text": "在兩個等圓中，所對圓心角相等的兩段弧，弧長一定相等",
+     "mis": null,
+     "feedback": "正確！等圓的半徑相同，圓心角相等，弧長＝2πr×度數/360 也就相等。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句先問：是不是同一個圓或等圓？說的是度數還是長度？半徑變大時弧長怎麼變？",
+   "seg": "九上2-2-S1"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "記憶",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓上，B 在優弧 AC 上，劣弧 AC 的度數是 80°。∠ABC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "40°",
+     "mis": null,
+     "feedback": "正確！圓周角是所對弧的一半：80°÷2＝40°。"
+    },
+    {
+     "key": "B",
+     "text": "80°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於所對的弧。頂點在圓周上，角度只有所對弧的一半，要再除以 2。"
+    },
+    {
+     "key": "C",
+     "text": "140°",
+     "mis": "AN02",
+     "feedback": "你用了大弧 360°−80°＝280° 來算。∠ABC 所對的弧是夾在兩邊之間、不經過 B 的那一段，也就是劣弧 AC。"
+    },
+    {
+     "key": "D",
+     "text": "160°",
+     "mis": "AN07",
+     "feedback": "你記得有「2 倍」關係，卻乘錯方向。圓周角比所對的弧小，是弧的一半，不是 2 倍。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "80/2"
+   },
+   "hint": "∠ABC 的頂點在哪裡？它所對的是哪一段弧？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"109.2\" y1=\"20.9\" x2=\"80.1\" y2=\"129.5\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"109.2\" y1=\"20.9\" x2=\"159.9\" y2=\"129.5\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"80.1\" cy=\"129.5\" r=\"2.2\" fill=\"#333\"/><circle cx=\"109.2\" cy=\"20.9\" r=\"2.2\" fill=\"#333\"/><circle cx=\"159.9\" cy=\"129.5\" r=\"2.2\" fill=\"#333\"/><text x=\"71.8\" y=\"144.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"107.0\" y=\"15.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"168.2\" y=\"144.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "記憶",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓上，B 在優弧 AC 上，劣弧 AC 的度數是 110°。∠ABC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "110°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於所對的弧。頂點在圓周上，角度只有所對弧的一半，要再除以 2。"
+    },
+    {
+     "key": "B",
+     "text": "220°",
+     "mis": "AN07",
+     "feedback": "你記得有「2 倍」關係，卻乘錯方向。圓周角比所對的弧小，是弧的一半，不是 2 倍。"
+    },
+    {
+     "key": "C",
+     "text": "55°",
+     "mis": null,
+     "feedback": "正確！圓周角是所對弧的一半：110°÷2＝55°。"
+    },
+    {
+     "key": "D",
+     "text": "125°",
+     "mis": "AN02",
+     "feedback": "你用了大弧 360°−110°＝250° 來算。∠ABC 所對的弧是夾在兩邊之間、不經過 B 的那一段，也就是劣弧 AC。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "110/2"
+   },
+   "hint": "∠ABC 的頂點在哪裡？它所對的是哪一段弧？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"109.2\" y1=\"20.9\" x2=\"69.2\" y2=\"117.6\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"109.2\" y1=\"20.9\" x2=\"170.8\" y2=\"117.6\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"69.2\" cy=\"117.6\" r=\"2.2\" fill=\"#333\"/><circle cx=\"109.2\" cy=\"20.9\" r=\"2.2\" fill=\"#333\"/><circle cx=\"170.8\" cy=\"117.6\" r=\"2.2\" fill=\"#333\"/><text x=\"58.6\" y=\"130.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"107.0\" y=\"15.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"181.4\" y=\"130.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓 O 上，B 在優弧 AC 上，∠ABC＝35°。∠AOC（劣弧 AC 所對的圓心角）是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "35°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於同弧的圓心角。圓周角只有圓心角的一半，所以 ∠AOC 要乘 2。"
+    },
+    {
+     "key": "B",
+     "text": "17.5°",
+     "mis": "AN07",
+     "feedback": "你把 2 倍關係用反了。圓心角比同弧的圓周角大，是圓周角的 2 倍，不是一半。"
+    },
+    {
+     "key": "C",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！∠ABC 和 ∠AOC 對同一段劣弧 AC，圓心角是圓周角的 2 倍：35°×2＝70°。"
+    },
+    {
+     "key": "D",
+     "text": "145°",
+     "mis": "AN04",
+     "feedback": "你以為圓心角和圓周角互補（合起來 180°）。兩者沒有互補關係，同一段弧的圓心角是圓周角的 2 倍。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "2×35"
+   },
+   "hint": "∠ABC 和 ∠AOC 對的是不是同一段弧？兩個角的大小關係是什麼？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"114.6\" y1=\"20.2\" x2=\"84.4\" y2=\"132.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"114.6\" y1=\"20.2\" x2=\"155.6\" y2=\"132.8\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"84.4\" cy=\"132.8\" r=\"2.2\" fill=\"#333\"/><circle cx=\"114.6\" cy=\"20.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"155.6\" cy=\"132.8\" r=\"2.2\" fill=\"#333\"/><text x=\"77.0\" y=\"148.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"113.5\" y=\"14.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"163.0\" y=\"148.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><line x1=\"120.0\" y1=\"82.0\" x2=\"84.4\" y2=\"132.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"155.6\" y2=\"132.8\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"116.0\" y=\"56.2\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">35°</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓 O 上，B 在優弧 AC 上，∠ABC＝42°。∠AOC（劣弧 AC 所對的圓心角）是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "84°",
+     "mis": null,
+     "feedback": "正確！∠ABC 和 ∠AOC 對同一段劣弧 AC，圓心角是圓周角的 2 倍：42°×2＝84°。"
+    },
+    {
+     "key": "B",
+     "text": "138°",
+     "mis": "AN04",
+     "feedback": "你以為圓心角和圓周角互補（合起來 180°）。兩者沒有互補關係，同一段弧的圓心角是圓周角的 2 倍。"
+    },
+    {
+     "key": "C",
+     "text": "42°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於同弧的圓心角。圓周角只有圓心角的一半，所以 ∠AOC 要乘 2。"
+    },
+    {
+     "key": "D",
+     "text": "21°",
+     "mis": "AN07",
+     "feedback": "你把 2 倍關係用反了。圓心角比同弧的圓周角大，是圓周角的 2 倍，不是一半。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "2×42"
+   },
+   "hint": "∠ABC 和 ∠AOC 對的是不是同一段弧？兩個角的大小關係是什麼？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"114.6\" y1=\"20.2\" x2=\"78.5\" y2=\"128.1\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"114.6\" y1=\"20.2\" x2=\"161.5\" y2=\"128.1\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"78.5\" cy=\"128.1\" r=\"2.2\" fill=\"#333\"/><circle cx=\"114.6\" cy=\"20.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"161.5\" cy=\"128.1\" r=\"2.2\" fill=\"#333\"/><text x=\"69.8\" y=\"142.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"113.5\" y=\"14.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"170.2\" y=\"142.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><line x1=\"120.0\" y1=\"82.0\" x2=\"78.5\" y2=\"128.1\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"161.5\" y2=\"128.1\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"116.0\" y=\"56.2\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">42°</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓 O 上，B 在劣弧 AC 上，∠AOC＝130°（劣弧 AC 所對的圓心角）。∠ABC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "65°",
+     "mis": "AN02",
+     "feedback": "你用了劣弧 AC 的 130° 取一半。B 就在劣弧 AC 上，∠ABC 所對的是不經過 B 的那一段，也就是優弧 AC。"
+    },
+    {
+     "key": "B",
+     "text": "50°",
+     "mis": "AN04",
+     "feedback": "你以為圓心角 ∠AOC 和圓周角 ∠ABC 互補。正確關係是：∠ABC 是優弧 AC 的一半，也就是 180°−½∠AOC，不是 180°−∠AOC。"
+    },
+    {
+     "key": "C",
+     "text": "130°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於圓心角 ∠AOC。圓周角只有所對弧的一半，而且要先找對所對的弧。"
+    },
+    {
+     "key": "D",
+     "text": "115°",
+     "mis": null,
+     "feedback": "正確！B 在劣弧 AC 上，∠ABC 所對的是不經過 B 的優弧 AC＝360°−130°＝230°，取一半得 115°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(360−130)/2"
+   },
+   "hint": "∠ABC 所對的弧，是夾在兩邊之間、不經過 B 的那一段。它比半圓大還是小？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"63.8\" y2=\"55.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"176.2\" y2=\"55.8\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"63.8\" cy=\"55.8\" r=\"2.2\" fill=\"#333\"/><circle cx=\"120.0\" cy=\"20.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"176.2\" cy=\"55.8\" r=\"2.2\" fill=\"#333\"/><text x=\"52.0\" y=\"55.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"188.0\" y=\"55.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><line x1=\"120.0\" y1=\"82.0\" x2=\"63.8\" y2=\"55.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"176.2\" y2=\"55.8\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"120.0\" y=\"66.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">130°</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓 O 上，B 在劣弧 AC 上，∠AOC＝100°（劣弧 AC 所對的圓心角）。∠ABC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "100°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角等於圓心角 ∠AOC。圓周角只有所對弧的一半，而且要先找對所對的弧。"
+    },
+    {
+     "key": "B",
+     "text": "130°",
+     "mis": null,
+     "feedback": "正確！B 在劣弧 AC 上，∠ABC 所對的是不經過 B 的優弧 AC＝360°−100°＝260°，取一半得 130°。"
+    },
+    {
+     "key": "C",
+     "text": "50°",
+     "mis": "AN02",
+     "feedback": "你用了劣弧 AC 的 100° 取一半。B 就在劣弧 AC 上，∠ABC 所對的是不經過 B 的那一段，也就是優弧 AC。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": "AN04",
+     "feedback": "你以為圓心角 ∠AOC 和圓周角 ∠ABC 互補。正確關係是：∠ABC 是優弧 AC 的一半，也就是 180°−½∠AOC，不是 180°−∠AOC。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(360−100)/2"
+   },
+   "hint": "∠ABC 所對的弧，是夾在兩邊之間、不經過 B 的那一段。它比半圓大還是小？",
+   "seg": "九上2-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"72.5\" y2=\"42.1\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"167.5\" y2=\"42.1\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"72.5\" cy=\"42.1\" r=\"2.2\" fill=\"#333\"/><circle cx=\"120.0\" cy=\"20.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"167.5\" cy=\"42.1\" r=\"2.2\" fill=\"#333\"/><text x=\"62.5\" y=\"38.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"177.5\" y=\"38.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><line x1=\"120.0\" y1=\"82.0\" x2=\"72.5\" y2=\"42.1\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"167.5\" y2=\"42.1\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"120.0\" y=\"66.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">100°</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "分析",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、D 在圓 O 上，A 在劣弧 BD 上，四邊形 ABOD 中 ∠BAD＝110°。∠BOD（劣弧 BD 所對的圓心角）是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "70°",
+     "mis": "AN04",
+     "feedback": "你把 ABOD 當成圓內接四邊形，用了對角互補。O 是圓心，不在圓上，ABOD 不是圓內接四邊形。"
+    },
+    {
+     "key": "B",
+     "text": "140°",
+     "mis": null,
+     "feedback": "正確！∠BAD 所對的是不經過 A 的優弧 BD＝110°×2＝220°，劣弧 BD＝360°−220°＝140°，所以 ∠BOD＝140°。"
+    },
+    {
+     "key": "C",
+     "text": "110°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角 ∠BAD 等於圓心角 ∠BOD。圓周角只有所對弧的一半，而且 ∠BAD 和 ∠BOD 對的不是同一段弧。"
+    },
+    {
+     "key": "D",
+     "text": "220°",
+     "mis": "AN02",
+     "feedback": "你算出的 220° 是 ∠BAD 所對的優弧 BD。題目問的 ∠BOD 是劣弧 BD 所對的圓心角，要再用 360° 去減。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "360−2×110"
+   },
+   "hint": "先檢查：四邊形 ABOD 的四個頂點都在圓上嗎？∠BAD 所對的是哪一段弧？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"144.0\" x2=\"61.7\" y2=\"103.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"61.7\" y1=\"103.2\" x2=\"120.0\" y2=\"82.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"178.3\" y2=\"103.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"178.3\" y1=\"103.2\" x2=\"120.0\" y2=\"144.0\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120.0\" cy=\"144.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"61.7\" cy=\"103.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"178.3\" cy=\"103.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"49.5\" y=\"112.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"190.5\" y=\"112.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120.0\" y=\"73.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"120.0\" y=\"122.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">110°</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "分析",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、D 在圓 O 上，A 在劣弧 BD 上，四邊形 ABOD 中 ∠BAD＝116°。∠BOD（劣弧 BD 所對的圓心角）是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "116°",
+     "mis": "AN01",
+     "feedback": "你以為圓周角 ∠BAD 等於圓心角 ∠BOD。圓周角只有所對弧的一半，而且 ∠BAD 和 ∠BOD 對的不是同一段弧。"
+    },
+    {
+     "key": "B",
+     "text": "232°",
+     "mis": "AN02",
+     "feedback": "你算出的 232° 是 ∠BAD 所對的優弧 BD。題目問的 ∠BOD 是劣弧 BD 所對的圓心角，要再用 360° 去減。"
+    },
+    {
+     "key": "C",
+     "text": "64°",
+     "mis": "AN04",
+     "feedback": "你把 ABOD 當成圓內接四邊形，用了對角互補。O 是圓心，不在圓上，ABOD 不是圓內接四邊形。"
+    },
+    {
+     "key": "D",
+     "text": "128°",
+     "mis": null,
+     "feedback": "正確！∠BAD 所對的是不經過 A 的優弧 BD＝116°×2＝232°，劣弧 BD＝360°−232°＝128°，所以 ∠BOD＝128°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "360−2×116"
+   },
+   "hint": "先檢查：四邊形 ABOD 的四個頂點都在圓上嗎？∠BAD 所對的是哪一段弧？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"144.0\" x2=\"64.3\" y2=\"109.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"64.3\" y1=\"109.2\" x2=\"120.0\" y2=\"82.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120.0\" y1=\"82.0\" x2=\"175.7\" y2=\"109.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"175.7\" y1=\"109.2\" x2=\"120.0\" y2=\"144.0\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"120.0\" cy=\"144.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"64.3\" cy=\"109.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"175.7\" cy=\"109.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"120.0\" cy=\"82.0\" r=\"2.2\" fill=\"#333\"/><text x=\"120.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"52.6\" y=\"119.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"187.4\" y=\"119.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120.0\" y=\"73.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"120.0\" y=\"122.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">116°</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-6",
+   "stem": "如圖，四邊形 ABCD 的四個頂點都在圓上，∠A＝80°，∠B＝95°。∠C 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "80°",
+     "mis": "AN10",
+     "feedback": "你以為對角相等，這是平行四邊形的性質。圓內接四邊形是對角互補（合起來 180°）。"
+    },
+    {
+     "key": "B",
+     "text": "85°",
+     "mis": "AN09",
+     "feedback": "你用了 ∠B 和 ∠C 互補，但 ∠B 和 ∠C 是相鄰的角。和 ∠C 互補的是它的對角 ∠A。"
+    },
+    {
+     "key": "C",
+     "text": "100°",
+     "mis": null,
+     "feedback": "正確！圓內接四邊形對角互補，∠C 的對角是 ∠A：180°−80°＝100°。"
+    },
+    {
+     "key": "D",
+     "text": "92.5°",
+     "mis": "AN11",
+     "feedback": "你用四邊形內角和 360° 減去 ∠A、∠B，再把剩下的平分給 ∠C、∠D，但 ∠C、∠D 不一定相等。圓內接四邊形要用對角互補：∠C＝180°−∠A。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "180−80"
+   },
+   "hint": "∠C 的對角是哪一個角？兩個對角所對的弧合起來是多少？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polygon points=\"89.0,28.3 66.3,113.0 141.2,140.3 181.1,71.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><text x=\"82.5\" y=\"22.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"55.0\" y=\"124.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"145.7\" y=\"157.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"193.9\" y=\"74.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"99.1\" y=\"54.1\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">80°</text><text x=\"87.6\" y=\"105.9\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">95°</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-6",
+   "stem": "如圖，四邊形 ABCD 的四個頂點都在圓上，∠A＝70°，∠B＝100°。∠C 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "110°",
+     "mis": null,
+     "feedback": "正確！圓內接四邊形對角互補，∠C 的對角是 ∠A：180°−70°＝110°。"
+    },
+    {
+     "key": "B",
+     "text": "95°",
+     "mis": "AN11",
+     "feedback": "你用四邊形內角和 360° 減去 ∠A、∠B，再把剩下的平分給 ∠C、∠D，但 ∠C、∠D 不一定相等。圓內接四邊形要用對角互補：∠C＝180°−∠A。"
+    },
+    {
+     "key": "C",
+     "text": "70°",
+     "mis": "AN10",
+     "feedback": "你以為對角相等，這是平行四邊形的性質。圓內接四邊形是對角互補（合起來 180°）。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": "AN09",
+     "feedback": "你用了 ∠B 和 ∠C 互補，但 ∠B 和 ∠C 是相鄰的角。和 ∠C 互補的是它的對角 ∠A。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "180−70"
+   },
+   "hint": "∠C 的對角是哪一個角？兩個對角所對的弧合起來是多少？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polygon points=\"80.1,34.5 72.5,121.9 141.2,140.3 182.0,82.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><text x=\"71.8\" y=\"29.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"62.5\" y=\"135.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"145.7\" y=\"157.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"195.0\" y=\"87.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"92.1\" y=\"59.3\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">70°</text><text x=\"92.2\" y=\"112.1\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">100°</text></svg>"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "如圖，A、B、C 在圓上，∠ACB＝90°。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "AB 一定是這個圓的直徑",
+     "mis": null,
+     "feedback": "正確！圓周角 90° 所對的弧是 180°，也就是半圓，半圓兩端點連成的弦 AB 就是直徑。"
+    },
+    {
+     "key": "B",
+     "text": "只知道一個直角，不能判斷 AB 是不是直徑",
+     "mis": "AN06",
+     "feedback": "你只會用「直徑→直角」，沒有反過來想。90° 的圓周角所對的弧是 2×90°＝180°，是半圓，所以 AB 一定是直徑。"
+    },
+    {
+     "key": "C",
+     "text": "AC 一定是這個圓的直徑",
+     "mis": "AN02",
+     "feedback": "你找錯了所對的弦。∠ACB 的兩邊是 CA、CB，它所對的是夾在兩邊之間、不經過 C 的弧 AB 和弦 AB。"
+    },
+    {
+     "key": "D",
+     "text": "不經過 C 的弧 AB 是 90°",
+     "mis": "AN01",
+     "feedback": "你以為所對的弧等於圓周角。圓周角是所對弧的一半，所以弧 AB 是 2×90°＝180°。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "90° 的圓周角，所對的弧是幾度？那段弧的兩個端點連起來是什麼弦？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"98.8\" y1=\"23.7\" x2=\"58.9\" y2=\"92.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"98.8\" y1=\"23.7\" x2=\"181.1\" y2=\"71.2\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"58.9\" cy=\"92.8\" r=\"2.2\" fill=\"#333\"/><circle cx=\"181.1\" cy=\"71.2\" r=\"2.2\" fill=\"#333\"/><circle cx=\"98.8\" cy=\"23.7\" r=\"2.2\" fill=\"#333\"/><text x=\"46.1\" y=\"100.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"193.9\" y=\"74.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"94.3\" y=\"16.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><polyline points=\"94.3,31.5 102.1,36.0 106.6,28.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.4\"/></svg>"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-6",
+   "stem": "把三角板的直角頂點 P 放在圓周上，兩邊分別和圓交於 Q、R（如圖），∠QPR＝90°。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "不經過 P 的弧 QR 是 90°",
+     "mis": "AN01",
+     "feedback": "你以為所對的弧等於圓周角。圓周角是所對弧的一半，所以弧 QR 是 2×90°＝180°。"
+    },
+    {
+     "key": "B",
+     "text": "PQ 一定通過圓心",
+     "mis": "AN02",
+     "feedback": "你找錯了所對的弦。∠QPR 的兩邊是 PQ、PR，它所對的是夾在兩邊之間、不經過 P 的弧 QR 和弦 QR。"
+    },
+    {
+     "key": "C",
+     "text": "QR 一定通過圓心",
+     "mis": null,
+     "feedback": "正確！90° 的圓周角所對的弧是 180°，是半圓，所以 QR 是直徑，一定通過圓心。南一用這個方法找圓心。"
+    },
+    {
+     "key": "D",
+     "text": "還要再知道一個角，才能判斷 QR 是不是直徑",
+     "mis": "AN06",
+     "feedback": "你只會用「直徑→直角」，沒有反過來想。90° 的圓周角所對的弧是 180°，是半圓，QR 一定是直徑。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "90° 的圓周角，所對的弧是幾度？那段弧的兩個端點連起來是什麼弦？",
+   "seg": "九上2-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"120\" cy=\"82\" r=\"62\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"98.8\" y1=\"140.3\" x2=\"66.3\" y2=\"51.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"98.8\" y1=\"140.3\" x2=\"173.7\" y2=\"113.0\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"66.3\" cy=\"51.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"173.7\" cy=\"113.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"98.8\" cy=\"140.3\" r=\"2.2\" fill=\"#333\"/><text x=\"55.0\" y=\"49.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">Q</text><text x=\"185.0\" y=\"124.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">R</text><text x=\"94.3\" y=\"157.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><polyline points=\"95.7,131.8 104.2,128.7 107.3,137.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.4\"/></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或情境",
+ "updated": "2026-11-05T01:46"
+}
