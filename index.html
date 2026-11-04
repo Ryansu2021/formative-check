@@ -120,6 +120,18 @@ body.fit .gpage{height:100%;padding:.9em 0 1.1em}
 .chap .prog{font-size:.85em;font-weight:800;color:var(--ink2);white-space:nowrap;font-variant-numeric:tabular-nums}
 .cbody{flex:1;min-height:0;padding:.8em .8em .9em;display:flex;flex-direction:column;gap:.7em;overflow:hidden}
 .chap.wide{grid-column:span 2}.chap.wide .cbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:start}
+/* 一頁放不下改捲動時：一章一列，小節卡片橫排 */
+body.roll .chaps{grid-template-columns:minmax(0,1fr)}
+body.roll .chap.wide{grid-column:auto}
+body.roll .cbody,body.roll .chap.wide .cbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(15em,1fr));grid-auto-rows:min-content;align-content:start;overflow:visible}
+.fsz + .search{flex:0 1 240px;min-width:160px}
+.fsz{display:inline-flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;background:#fff;flex:none}
+.fsz button{border:0;background:none;font:inherit;font-weight:800;color:var(--ink2);padding:5px 11px;cursor:pointer;line-height:1.2}
+.fsz button+button{border-left:2px solid var(--line)}
+.fsz button:hover{background:#eef5fa}.fsz button.on{background:var(--ink);color:#fff}
+.lks{display:flex;flex-wrap:wrap;gap:.2em .9em;font-size:.86em;font-weight:700}
+.lks a{color:var(--ink2);text-decoration:underline;text-underline-offset:3px}.lks a:hover{color:var(--v)}
+.sec .st{cursor:help}
 .cextra{display:flex;gap:.5em;flex-wrap:wrap}
 
 .sec{flex:none;background:#fff;border:2px solid var(--line);border-radius:1.1em;padding:.75em .9em .8em;display:flex;flex-direction:column;gap:.5em;position:relative;transition:border-color .15s,box-shadow .15s;min-width:0}
@@ -133,11 +145,11 @@ body.fit .gpage{height:100%;padding:.9em 0 1.1em}
 .wait .sn{background:#c5d3de}
 .st{font-size:1.15em;font-weight:800;line-height:1.35;flex:1;min-width:0}
 .wait .st{color:var(--ink2)}
-.badge{flex:none;font-size:.78em;font-weight:800;border-radius:999px;padding:.05em .7em;margin-top:.2em}
+.badge{flex:none;font-size:.84em;font-weight:800;border-radius:999px;padding:.05em .7em;margin-top:.2em}
 .badge.ok{background:#e1f6ec;color:#0c7d5c}
 .badge.no{background:#eef2f6;color:#7b8fa0}
 .names{display:flex;flex-wrap:wrap;gap:.3em .4em}
-.names .vchip{font-weight:700;font-size:.82em}
+.names .vchip{font-weight:700;font-size:.88em}
 .names .same{font-size:.82em;color:var(--ink3);font-weight:600}
 .note{font-size:.9em;color:var(--ink2)}
 .acts{display:flex;flex-wrap:wrap;gap:.5em;margin-top:auto}
@@ -183,7 +195,7 @@ footer b{color:var(--ink2)}
 .badge.mk{background:#fff3df;color:#a8650a}
 .sec.mk{background:#fffdf8;border-style:dashed;border-color:#f3d6a6}
 .mk .sn{background:#e8b65a}
-.fa-info{display:flex;flex-wrap:wrap;gap:.3em .5em;font-size:.86em}
+.fa-info{display:flex;flex-wrap:wrap;gap:.3em .5em;font-size:.92em}
 .fa-info b{background:var(--vbg);color:var(--v);border-radius:999px;padding:0 .7em;font-weight:800}
 .fa-mis{font-size:.86em;color:var(--ink2);line-height:1.5}
 .fa-mis i{font-style:normal;color:#c4473c;font-weight:700}
@@ -201,6 +213,7 @@ footer b{color:var(--ink2)}
   <a class="tomorrow alt" id="toPrep" href="../../115-教科書/index.html" title="回到國中數學備課入口（只在這台電腦上有效）">∑ 備課入口</a>
   <a class="tomorrow alt" id="toGen" href="https://ryansu2021.github.io/formative-check/route-b.html?role=teacher" target="_blank" rel="noopener" title="路線 B：輸入單元，用自己的 Gemini key 生平行題，程式自動驗算">🤖 AI 生題</a>
   <a class="tomorrow" id="toConsole" href="https://ryansu2021.github.io/formative-check/route-a.html?role=teacher" target="_blank" rel="noopener" title="開啟教師控台：選題庫、建立場次、即時看迷思分布">▶ 教師控台</a>
+  <span class="fsz" role="group" aria-label="字級"><button type="button" data-fs="-1" title="字小一點" style="font-size:13px">A−</button><button type="button" data-fs="0" title="預設字級" style="font-size:15px">A</button><button type="button" data-fs="1" title="字大一點" style="font-size:17px">A＋</button></span>
   <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <input id="q" type="search" placeholder="搜尋單元：分數、2-3、七上…" autocomplete="off" aria-label="搜尋單元"></label>
 </div></div>
@@ -414,17 +427,19 @@ function secCard(r, withCrumb){
   const { sec, u } = r; const st = stateOf(u); const b = BANK[u];
   const crumb = withCrumb ? `<div class="rcrumb">${esc(semShort(r.g, r.sm))}　第 ${esc(r.ch.no)} 章 ${esc(r.ch.title)}</div>` : '';
   const badge = st === 'ready' ? '<span class="badge ok">已有題庫</span>' : st === 'mk' ? '<span class="badge mk">製作中</span>' : `<span class="badge no">${CHECKED ? '尚未建立' : '檢查中'}</span>`;
+  // 三版單元名稱、評量的迷思：滑鼠移到節名上看（卡片只留開課需要的）
+  const n = sec.names || {}; const keys = Object.keys(FA.versions).filter(k => n[k]);
+  const tip = (keys.length ? keys.map(k => FA.versions[k] + '：' + n[k]).join('\n') : '') + (b && b.top.length ? '\n評量的迷思：' + b.top.join('、') + (b.mis > b.top.length ? ' 等' : '') : '');
   let body = '', acts = '';
   if (b) {
-    body = `<div class="fa-info"><b>${b.pairs} 組平行題</b><b>${b.mis} 個迷思</b></div>${b.top.length ? `<div class="fa-mis">評量的迷思：${b.top.map(x => `<i>${esc(x)}</i>`).join('、')}${b.mis > b.top.length ? ' 等' : ''}</div>` : ''}`;
+    body = `<div class="fa-info"><b>${b.pairs} 組・${b.mis} 個迷思</b></div>`;
     acts = btn(FA.online + 'route-a.html?role=teacher&unit=' + encodeURIComponent(u), '開啟課堂評量', '#7a6ad8', '開啟教師控台並選好這一節的題庫')
-      + (LOCAL ? btn(`../../115-教科書/${u}_三版本教科書比較.html#9`, '題組與迷思表', '#2f7fd8', '比較頁的「形成性評量」分頁（只在這台電腦上有效）') : '')
-      + btn(FA.online + 'banks/' + encodeURIComponent(u) + '.json', '題庫 JSON', '#12a37f', '下載這一節的題庫');
+      + `<div class="lks">${LOCAL ? `<a href="${esc(`../../115-教科書/${u}_三版本教科書比較.html#9`)}" target="_blank" rel="noopener" title="比較頁的「形成性評量」分頁（只在這台電腦上有效）">題組與迷思表</a>` : ''}<a href="${esc(FA.online + 'banks/' + encodeURIComponent(u) + '.json')}" target="_blank" rel="noopener" title="下載這一節的題庫">題庫 JSON</a></div>`;
   } else acts = `<span class="pb soon">${st === 'mk' ? '題庫製作中' : '題庫尚未建立'}</span>`;
   return `<article class="sec ${st === 'ready' ? 'ready' : st === 'mk' ? 'mk' : 'wait'}" data-no="${esc(sec.no)}">
     ${crumb}
-    <div class="sh"><span class="sn">${esc(sec.no)}</span><h4 class="st">${esc(sec.title)}</h4>${badge}</div>
-    ${namesHtml(sec)}${body}
+    <div class="sh"><span class="sn">${esc(sec.no)}</span><h4 class="st" title="${esc(tip.trim())}">${esc(sec.title)}</h4>${badge}</div>
+    ${body}
     <div class="acts">${acts}</div>
   </article>`;
 }
@@ -495,20 +510,35 @@ function viewSearch(q){
       : `<div class="empty"><h3>找不到符合的單元</h3><p>試試章名、小節編號（如 2-3）、年級學期（如 七上）或關鍵字。</p></div>`}`;
 }
 
-/* ---- 自動縮放（同備課入口） ---- */
+/* ---- 自動縮放（同備課入口）：盡量一個畫面；字不小於下限，放不下就改成往下捲動 ---- */
+const FS_STEPS = [0.9, 1, 1.15, 1.3];
+let FSI = 1; try { const t = localStorage.getItem('portalFS'); const v = Number(t); if (t !== null && t !== '' && v >= 0 && v < FS_STEPS.length) FSI = v; } catch (e) {}
+function setFS(d){
+  FSI = d === 0 ? 1 : Math.max(0, Math.min(FS_STEPS.length - 1, FSI + d));
+  try { localStorage.setItem('portalFS', String(FSI)); } catch (e) {}
+  markFS(); applyFit();
+}
+function markFS(){ document.querySelectorAll('.fsz button').forEach(b => b.classList.toggle('on', Number(b.dataset.fs) === 0 && FSI === 1)); }
+document.querySelectorAll('.fsz button').forEach(b => b.onclick = () => setFS(Number(b.dataset.fs)));
+markFS();
 function applyFit(){
+  const k = FS_STEPS[FSI];
   const home = document.querySelector('.home'), gp = document.querySelector('.gpage');
   const on = !!home || (!!gp && innerWidth >= 720);
   document.body.classList.toggle('fit', on);
+  document.body.classList.remove('roll');
   const top = document.querySelector('.top');
   if (top) document.documentElement.style.setProperty('--topH', top.offsetHeight + 'px');
   const root = home || gp; if (!root) return;
-  if (!on){ root.style.removeProperty('--u'); return; }
-  let u = home ? Math.max(10, Math.min(20, innerWidth / 62, innerHeight / 40)) : Math.max(10, Math.min(20, innerWidth / 58, innerHeight / 36));
-  root.style.setProperty('--u', u + 'px');
+  if (!on){ root.style.setProperty('--u', (16 * k) + 'px'); return; }
+  const want = (home ? Math.max(10, Math.min(20, innerWidth / 62, innerHeight / 40))
+                     : Math.max(11, Math.min(22, innerWidth / 52, innerHeight / 32))) * k;
+  const floor = (home ? 12 : 16.5) * k;
+  let u = want; root.style.setProperty('--u', u + 'px');
   const bad = el => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
   const over = () => bad(root) || [...root.querySelectorAll('.gcard,.cbody,.sec')].some(bad);
-  let n = 0; while (over() && u > 6 && n++ < 80){ u -= .5; root.style.setProperty('--u', u + 'px'); }
+  let n = 0; while (over() && u > floor && n++ < 80){ u = Math.max(floor, u - .5); root.style.setProperty('--u', u + 'px'); }
+  if (over()){ document.body.classList.remove('fit'); document.body.classList.add('roll'); root.style.setProperty('--u', Math.max(floor, Math.min(want, 18 * k)) + 'px'); }
 }
 window.addEventListener('resize', applyFit);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(applyFit);
