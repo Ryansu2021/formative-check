@@ -242,6 +242,7 @@ table.t td.l,table.t th.l{text-align:left}
 .seat.mid{background:var(--huang);border-color:var(--huang);color:#fff}
 .mis-ghost{position:absolute;top:-3px;bottom:-3px;border-right:3px dashed var(--ink);transition:left .4s}
 .live-grid .veil{inset:44px 10px 10px}
+.stale{display:flex;align-items:center;gap:14px;font-weight:700;font-size:16px;padding:10px 16px;border-radius:12px;background:var(--zhu-l);border:2px solid var(--zhu);color:#7d2a1c}
 </style>
 </head>
 <body>
@@ -345,6 +346,7 @@ table.t td.l,table.t th.l{text-align:left}
         <button class="btn sm" id="l-sum">出場摘要</button>
         <button class="btn sm ghost" id="l-back">題庫</button>
       </div>
+      <div class="stale" id="l-stale" hidden></div>
       <div class="live-grid" id="l-main"></div>
       <div class="qr-modal" id="qr-modal" hidden>
         <div class="qr-box"><div id="qr"></div><div class="col" style="gap:14px"><div class="muted" style="font-size:22px">課堂代碼</div><div class="c" id="qr-code"></div>
@@ -356,7 +358,7 @@ table.t td.l,table.t th.l{text-align:left}
     <section class="view" id="v-sum" hidden></section>
     <div class="toast" id="toast" hidden></div>
   </main>
-  <footer class="by">蘇恭弘。數學王子。台南市忠孝國中製作</footer>
+  <footer class="by">蘇恭弘。數學王子。台南市忠孝國中製作　<span id="app-ver"></span></footer>
 </div>
 
 <script>
@@ -627,6 +629,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
+const APP_VERSION = 'v2.2（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -648,6 +651,7 @@ function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hid
 function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
 function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); $('stage').style.transform = `translate(-50%,-50%) scale(${s})`; }
 addEventListener('resize', fit); fit();
+try { document.getElementById('app-ver').textContent = APP_VERSION; } catch (e) { }
 const rid = () => Math.random().toString(36).slice(2, 10);
 function newCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
 const fmtTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -1085,11 +1089,29 @@ function openLive(code, showQR) {
   Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), resp: [], students: [], misOpen: null, detail: null, view: 1 });
   show('v-live');
   $('l-sim').hidden = store.mode !== 'demo';
-  L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } if (s.round && L.view !== s.round && !L.manualView) L.view = s.round; renderLive(); }));
+  L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } if (s.round && L.view !== s.round && !L.manualView) L.view = s.round; checkStale(); renderLive(); }));
   L.unsubs.push(store.watchResponses(code, r => { L.resp = r; renderLive(); }));
   L.unsubs.push(store.watchStudents(code, s => { L.students = s; renderLive(); }));
   L.timer = setInterval(updTimer, 1000);
   if (showQR) setTimeout(openQR, 300);
+}
+// 場次建立時會存一份題目；之後題庫更新了，舊場次還是舊題目 → 提醒並可一鍵更新（第一場開始前）
+function checkStale() {
+  const s = L.session, box = $('l-stale'); box.hidden = true;
+  const cur = Banks.get(s.bankId); if (!cur || !L.bank || !L.bank.sets) return;
+  const byId = {}; cur.items.forEach(it => byId[it.id] = it);
+  const sig = it => JSON.stringify([it.stem, it.answer, it.options.map(o => [o.key, o.text, o.mis || null])]);
+  const changed = [...L.bank.sets.A, ...L.bank.sets.B].filter(it => byId[it.id] && sig(byId[it.id]) !== sig(it));
+  if (!changed.length) return;
+  box.hidden = false;
+  if (!s.round) {
+    box.innerHTML = `⚠ 題庫已更新（${changed.length} 題有改），這個場次還是建立時的舊題目。<button class="btn sm zhu" id="l-refresh">更新成新題目</button>`;
+    $('l-refresh').onclick = async () => {
+      const full = { A: L.bank.sets.A.map(it => byId[it.id] || it), B: L.bank.sets.B.map(it => byId[it.id] || (it.repeat && byId[it.id.replace('#2', '')] ? { ...byId[it.id.replace('#2', '')], id: it.id, set: 'B', repeat: true } : it)) };
+      await upd({ sets: { A: full.A.map(pubItem), B: full.B.map(pubItem) } });
+      L.bank = { ...cur, sets: full }; ls.set('fa-tbank:' + L.code, L.bank); toast('已更新成新題目，學生重新整理就會看到'); checkStale(); renderLive();
+    };
+  } else box.innerHTML = `⚠ 題庫已更新（${changed.length} 題有改），但這個場次已經開始作答，題目不能再換。下次請建立新場次。`;
 }
 function stuURL() { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('role', 'student'); u.searchParams.set('code', L.code); if (store.mode === 'demo') u.searchParams.set('demo', '1'); return u.toString(); }
 function openQR() {
