@@ -514,12 +514,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   const FN = { distinctPrimes, primeFactorCount, divisorCount };
 
   // ---------- 算式解析 ----------
-  // 統一符號：× x X * · ⋅ → *；÷ → /；上標數字 → ^n；全形數字 → 半形；− – － → -；｜ → |
+  // 統一符號：× x X * · ⋅ → *；÷ 保留（整數/整數 是分數，÷ 是除號）；上標數字 → ^n；全形數字 → 半形；− – － → -；｜ → |
   const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
   function norm(s) {
     s = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48));
     s = s.replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUP[c]).join(''));
-    return s.replace(/[×xX*·⋅]/g, '*').replace(/÷/g, '/').replace(/（/g, '(').replace(/）/g, ')')
+    return s.replace(/[×xX*·⋅]/g, '*').replace(/（/g, '(').replace(/）/g, ')')
             .replace(/[－−–]/g, '-').replace(/＋/g, '+').replace(/｜/g, '|').replace(/．/g, '.').replace(/\s+/g, '');
   }
 
@@ -579,6 +579,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
       if (!m) throw new Error('無法解析：' + src);
       i += m[0].length;
       let v = m[2] ? Q(BigInt(m[1] + m[2]), 10n ** BigInt(m[2].length)) : Q(BigInt(m[1]));
+      const f0 = !m[2] && s[i] === '/' ? /^\/(\d+)(?![\d.])/.exec(s.slice(i)) : null;
+      if (f0) {                                        // 分數：整數/整數 是一個數（比 ÷、× 優先），所以 5÷4/5＝5÷(4/5)
+        i += f0[0].length; v = Q(BigInt(m[1]), BigInt(f0[1]));
+        if (s[i] === '^') throw new Error('分數的次方請加括號，例如 (2/3)^2：' + src);
+        return v;
+      }
       if (s[i] === '又') {                             // 帶分數：整數又分子/分母
         const f = /^又(\d+)\/(\d+)/.exec(s.slice(i));
         if (!f || m[2]) throw new Error('帶分數要寫成「1又2/3」：' + src);
@@ -594,7 +600,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     function expo() { if (peek() === '-') { i++; return qNeg(expo()); } if (peek() === '+') { i++; return expo(); } return pow(); }
     function pow() { const b = atom(); if (peek() === '^') { i++; return qPow(b, expo()); } return b; }
     function unary() { if (peek() === '-') { i++; return qNeg(unary()); } if (peek() === '+') { i++; return unary(); } return pow(); }
-    function mul() { let v = unary(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = unary(); v = o === '*' ? qMul(v, r) : qDiv(v, r); } return v; }
+    function mul() { let v = unary(); while (peek() === '*' || peek() === '/' || peek() === '÷') { const o = s[i++]; const r = unary(); v = o === '*' ? qMul(v, r) : qDiv(v, r); } return v; }
     function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? qAdd(v, r) : qSub(v, r); } return v; }
     const v = add();
     if (i !== s.length) throw new Error('無法解析：' + src);
@@ -1096,7 +1102,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.9（2026-11-04）';
+const APP_VERSION = 'v2.9.1（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1903,7 +1909,7 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"powForm","expr":"7^3×7^2","base":7}：選項寫成一個次方 7^5、(−2)^7、(2/3)^4，只有一個值完全相等（精確比對，不是約等於）；給 base 時底數也要相同；選項寫成數字（16807）判為「不是指數形式」
 - {"type":"sci","value":2350000}：選項寫成 a×10^n，只有一個值正確且 1 ≤ a < 10（value 也可以是字串算式，如 "0.00042"）
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
-算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（負底數或分數底數加括號：(−2)^3、(2/3)^2），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
+算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
   const misRule = fixedMis && fixedMis.length
     ? `1. 迷思只能用下面這份清單（老師或教科書知識卡提供），用它的代碼，不可以新增、改名或合併：\n${fixedMis.map(m => `   ${m.code} ${m.name}${m.example ? '（例：' + m.example + '）' : ''}`).join('\n')}\n   回傳的 misconceptions 照抄這份清單即可。清單裡用不到的迷思可以不考。`
