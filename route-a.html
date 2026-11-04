@@ -523,30 +523,87 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
             .replace(/[－−–]/g, '-').replace(/＋/g, '+').replace(/｜/g, '|').replace(/．/g, '.').replace(/\s+/g, '');
   }
 
-  // 一般四則＋次方＋絕對值（安全解析，不用 eval）
-  // 優先順序：括號、絕對值 > 次方（右結合，指數可帶負號）> 一元正負號 > 乘除 > 加減
-  // 所以 -3^2＝−9、(-3)^2＝9、2^-1＝0.5、2×-3＝−6
-  function evalExpr(src) {
+  // ---------- 精確有理數（分子分母用 BigInt，不用浮點數比對） ----------
+  // {n, d}：d>0 且已約分；除以 0 得到 {n:0n, d:0n, u:true}（無法計算），之後的運算都維持無法計算
+  const bgcd = (a, b) => { a = a < 0n ? -a : a; b = b < 0n ? -b : b; while (b) [a, b] = [b, a % b]; return a; };
+  const UNDEF = Object.freeze({ n: 0n, d: 0n, u: true });
+  function Q(n, d = 1n) {
+    n = BigInt(n); d = BigInt(d);
+    if (d === 0n) return UNDEF;
+    if (d < 0n) { n = -n; d = -d; }
+    const g = bgcd(n, d) || 1n; return { n: n / g, d: d / g };
+  }
+  const qAdd = (a, b) => a.u || b.u ? UNDEF : Q(a.n * b.d + b.n * a.d, a.d * b.d);
+  const qSub = (a, b) => a.u || b.u ? UNDEF : Q(a.n * b.d - b.n * a.d, a.d * b.d);
+  const qMul = (a, b) => a.u || b.u ? UNDEF : Q(a.n * b.n, a.d * b.d);
+  const qDiv = (a, b) => a.u || b.u || b.n === 0n ? UNDEF : Q(a.n * b.d, a.d * b.n);
+  const qNeg = a => a.u ? UNDEF : { n: -a.n, d: a.d };
+  const qAbs = a => a.u ? UNDEF : { n: a.n < 0n ? -a.n : a.n, d: a.d };
+  function qPow(b, e) {
+    if (b.u || e.u) return UNDEF;
+    if (e.d !== 1n) throw new Error('指數必須是整數');
+    let k = e.n;
+    if (k === 0n) { if (b.n === 0n) throw new Error('0 的 0 次方沒有定義'); return Q(1n); }
+    if (k < 0n) { if (b.n === 0n) return UNDEF; b = Q(b.d, b.n); k = -k; }
+    if (k > 4000n) throw new Error('指數太大');
+    return Q(b.n ** k, b.d ** k);
+  }
+  const qCmp = (a, b) => { const x = a.n * b.d, y = b.n * a.d; return x < y ? -1 : x > y ? 1 : 0; };
+  const qEq = (a, b) => !a.u && !b.u && a.n === b.n && a.d === b.d;
+  const qNum = a => a.u ? (a.n > 0n ? Infinity : a.n < 0n ? -Infinity : NaN) : Number(a.n) / Number(a.d);
+  function qFrom(v) {                                  // number／字串算式 → 有理數
+    if (typeof v === 'object' && v && 'd' in v) return v;
+    if (typeof v === 'number') {
+      if (Number.isInteger(v)) return Q(BigInt(v));
+      return evalQ(String(v));
+    }
+    return evalQ(v);
+  }
+  // 顯示：−7/3；mixed=true 時寫成帶分數 −2又1/3
+  function fmtQ(a, mixed) {
+    if (a.u) return '無法計算';
+    if (a.d === 1n) return String(a.n).replace('-', '−');
+    const neg = a.n < 0n, n = neg ? -a.n : a.n;
+    if (mixed && n > a.d) return (neg ? '−' : '') + (n / a.d) + '又' + (n % a.d) + '/' + a.d;
+    return (neg ? '−' : '') + n + '/' + a.d;
+  }
+
+  // 四則＋次方＋絕對值＋帶分數（安全解析，不用 eval；全程精確分數）
+  // 優先順序：括號、絕對值、帶分數 > 次方（右結合，指數可帶負號）> 一元正負號 > 乘除 > 加減
+  // 所以 -3^2＝−9、(-3)^2＝9、2^-1＝1/2、2×-3＝−6；帶分數寫「1又2/3」，−1又2/3＝−(1＋2/3)
+  function evalQ(src) {
     const s = norm(src); let i = 0;
     const peek = () => s[i];
     function num() {
-      const m = /^\d+(\.\d+)?/.exec(s.slice(i));
+      const m = /^(\d+)(?:\.(\d+))?/.exec(s.slice(i));
       if (!m) throw new Error('無法解析：' + src);
-      i += m[0].length; return parseFloat(m[0]);
+      i += m[0].length;
+      let v = m[2] ? Q(BigInt(m[1] + m[2]), 10n ** BigInt(m[2].length)) : Q(BigInt(m[1]));
+      if (s[i] === '又') {                             // 帶分數：整數又分子/分母
+        const f = /^又(\d+)\/(\d+)/.exec(s.slice(i));
+        if (!f || m[2]) throw new Error('帶分數要寫成「1又2/3」：' + src);
+        i += f[0].length; v = qAdd(v, Q(BigInt(f[1]), BigInt(f[2])));
+      }
+      return v;
     }
     function atom() {
       if (peek() === '(') { i++; const v = add(); if (s[i] !== ')') throw new Error('括號不成對'); i++; return v; }
-      if (peek() === '|') { i++; const v = add(); if (s[i] !== '|') throw new Error('絕對值符號不成對'); i++; return Math.abs(v); }
+      if (peek() === '|') { i++; const v = add(); if (s[i] !== '|') throw new Error('絕對值符號不成對'); i++; return qAbs(v); }
       return num();
     }
-    function expo() { if (peek() === '-') { i++; return -expo(); } if (peek() === '+') { i++; return expo(); } return pow(); }
-    function pow() { const b = atom(); if (peek() === '^') { i++; return Math.pow(b, expo()); } return b; }
-    function unary() { if (peek() === '-') { i++; return -unary(); } if (peek() === '+') { i++; return unary(); } return pow(); }
-    function mul() { let v = unary(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = unary(); v = o === '*' ? v * r : v / r; } return v; }
-    function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? v + r : v - r; } return v; }
+    function expo() { if (peek() === '-') { i++; return qNeg(expo()); } if (peek() === '+') { i++; return expo(); } return pow(); }
+    function pow() { const b = atom(); if (peek() === '^') { i++; return qPow(b, expo()); } return b; }
+    function unary() { if (peek() === '-') { i++; return qNeg(unary()); } if (peek() === '+') { i++; return unary(); } return pow(); }
+    function mul() { let v = unary(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = unary(); v = o === '*' ? qMul(v, r) : qDiv(v, r); } return v; }
+    function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? qAdd(v, r) : qSub(v, r); } return v; }
     const v = add();
     if (i !== s.length) throw new Error('無法解析：' + src);
     return v;
+  }
+  // 舊介面：回傳一般數字（除以 0 → ±Infinity 或 NaN）
+  function evalExpr(src) {
+    const q = evalQ(src);
+    return q.u ? NaN : qNum(q);
   }
   const fmt = v => Number.isFinite(v) ? String(+v.toPrecision(10)) : String(v);   // 判讀訊息用：0.1111111111→0.1111111111
   const near = (a, b) => Math.abs(a - b) < 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
@@ -576,8 +633,35 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     return s.split(/[,，、或]/).map(p => evalExpr(p));
   }
   const fmtSet = a => a.length ? a.join('、') : '沒有這樣的數';
-  // 選項文字裡的數：去掉「第」「位」「個」「種」「位數」
-  const numText = t => String(t).replace(/^第/, '').replace(/(位數|個|種|位)$/, '');
+  // 分數的寫法（不是算式）：整數、a/b、整數又a/b，可帶負號 → {q, kind, reduced, whole, num, den}
+  const NONE_FRAC_RE = /^(沒有倒數|0沒有倒數|沒有|不存在|無法計算|無)$/;
+  function parseFracLit(src) {
+    if (/[÷:：]/.test(String(src))) return null;        // 11÷12 是算式，不是分數的寫法
+    const t = norm(src); let m;
+    if ((m = /^([+-]?)(\d+)又(\d+)\/(\d+)$/.exec(t))) {
+      const [w, n, d] = [m[2], m[3], m[4]].map(BigInt); if (d === 0n) return null;
+      const q = Q(w * d + n, d);
+      return { q: m[1] === '-' ? qNeg(q) : q, kind: 'mixed', whole: w, num: n, den: d, reduced: n > 0n && n < d && bgcd(n, d) === 1n };
+    }
+    if ((m = /^([+-]?)(\d+)\/(\d+)$/.exec(t))) {
+      const [n, d] = [m[2], m[3]].map(BigInt); if (d === 0n) return null;
+      const q = Q(n, d);
+      return { q: m[1] === '-' ? qNeg(q) : q, kind: 'frac', whole: 0n, num: n, den: d, reduced: d !== 1n && bgcd(n, d) === 1n };
+    }
+    if ((m = /^([+-]?)(\d+)$/.exec(t))) { const q = Q(BigInt(m[2])); return { q: m[1] === '-' ? qNeg(q) : q, kind: 'int', whole: BigInt(m[2]), num: 0n, den: 1n, reduced: true }; }
+    return null;
+  }
+  // 指數形式（一個次方）：2^7、(−2)^5、(2/3)^4、−2^6 → {base, e, neg, q}
+  function parsePowLit(src) {
+    const t = norm(src);
+    const m = /^(-?)(?:\(([^()]+)\)|(\d+(?:\.\d+)?))\^(-?\d+)$/.exec(t);
+    if (!m) return null;
+    const base = evalQ(m[2] !== undefined ? m[2] : m[3]), e = parseInt(m[4], 10);
+    let q = qPow(base, Q(BigInt(e))); if (m[1]) q = qNeg(q);
+    return { base, e, neg: !!m[1], q };
+  }
+  // 選項文字裡的數：去掉前面的「第」與後面的中文單位（個、位、組、分鐘、秒、公尺…）
+  const numText = t => String(t).trim().replace(/^第\s*/, '').replace(/\s*[\u4e00-\u9fff]+$/, '');
   // 科學記號 a×10^n → {a, n}；不是這個形式回傳 null
   function parseSci(src) {
     const m = /^([+-]?\d+(?:\.\d+)?)\*10\^([+-]?\d+)$/.exec(norm(src));
@@ -587,6 +671,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   const firstNonzeroPlace = v => { if (!(Math.abs(v) < 1) || v === 0) throw new Error('firstNonzeroPlace 只用於 0＜|x|＜1'); return -expOf(v); };
   const intDigits = v => { if (!(Math.abs(v) >= 1)) throw new Error('intDigits 只用於 |x|≥1'); return expOf(Math.trunc(v)) + 1; };
   const FNX = { firstNonzeroPlace, intDigits };
+  // 最大公因數、最小公倍數（nums：兩個以上正整數）
+  const posInts = ns => { if (!ns.every(x => Number.isInteger(x) && x > 0)) throw new Error('nums 要是正整數'); return ns; };
+  const gcd2 = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
+  const gcd = ns => posInts(ns).reduce(gcd2);
+  const lcm = ns => posInts(ns).reduce((a, b) => a / gcd2(a, b) * b);
+  const FNN = { gcd, lcm };
 
   // 乘積式 → [[底數, 指數], ...]（保留原本順序與重複）；不是純乘積就回傳 null
   function parseProduct(src) {
@@ -627,6 +717,9 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     isFactor: '是因數', notFactor: '不是因數', prime: '是質數', composite_n: '是合數',
     onEdge: '在端點', outRange: '不在範圍', true: '成立', false: '不成立', undefined: '無法計算', defined: '可以計算',
     opposite: '互為相反數', reciprocal: '互為倒數', sciCoef: 'a 不在 1～10',
+    gcd: '最大公因數', lcm: '最小公倍數', product: '各數乘積', commonFactor: '公因數但不是最大', commonMultiple: '公倍數但不是最小',
+    coprime: '互質', notCoprime: '不互質', notReduced: '沒有約到最簡', notMixed: '沒有寫成帶分數', notImproper: '沒有寫成假分數',
+    notFraction: '不是分數的寫法', noReciprocal: '沒有倒數', notPowForm: '不是指數形式', wrongBase: '底數不對', wrongExp: '指數不對',
     other: '其他'
   };
 
@@ -660,15 +753,28 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           break;
         }
         case 'value': {
-          if (ck.fn && !FN[ck.fn] && !FNX[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
-          const target = ck.fn ? (FNX[ck.fn] ? FNX[ck.fn](evalExpr(ck.x)) : FN[ck.fn](ck.n)) : evalExpr(ck.expr);
-          out.computedAnswer = fmt(target);
+          if (ck.fn && !FN[ck.fn] && !FNX[ck.fn] && !FNN[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
+          let target;
+          if (FNN[ck.fn]) { if (!Array.isArray(ck.nums) || ck.nums.length < 2) throw new Error(ck.fn + ' 要給 nums（兩個以上正整數）'); target = Q(BigInt(FNN[ck.fn](ck.nums))); }
+          else if (FNX[ck.fn]) target = Q(BigInt(FNX[ck.fn](evalExpr(ck.x))));
+          else if (ck.fn) target = Q(BigInt(FN[ck.fn](ck.n)));
+          else target = evalQ(ck.expr);
+          if (target.u) throw new Error('正解算式無法計算（除以 0）');
+          out.computedAnswer = fmtQ(target);
+          const tn = qNum(target);
           opts.forEach(o => {
-            let v; try { v = evalExpr(numText(o.text)); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
-            const ok = near(v, target);
-            let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${fmt(v)}`;
+            let q; try { q = evalQ(numText(o.text)); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            const ok = qEq(q, target), v = qNum(q);
+            let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${fmtQ(q)}`;
             if (!ok && ck.n) for (const [k, f] of Object.entries(FN)) if (f(ck.n) === v) { diag = k; msg = DIAG_LABEL[k]; }
-            if (!ok && !ck.fn) { if (near(v, -target)) msg += '（正負號相反）'; else if (target !== 0 && near(v, 1 / target)) msg += '（是倒數）'; else if (target !== 0 && near(v, -1 / target)) msg += '（是負倒數）'; }
+            if (!ok && FNN[ck.fn]) {
+              const ns = ck.nums, prod = ns.reduce((x, y) => x * y, 1), other = ck.fn === 'gcd' ? 'lcm' : 'gcd';
+              if (v === FNN[other](ns)) { diag = other; msg += `（是${DIAG_LABEL[other]}）`; }
+              else if (v === prod) { diag = 'product'; msg += '（是各數的乘積）'; }
+              else if (ck.fn === 'gcd' && ns.every(x => x % v === 0)) { diag = 'commonFactor'; msg += '（是公因數，但不是最大的）'; }
+              else if (ck.fn === 'lcm' && ns.every(x => v % x === 0)) { diag = 'commonMultiple'; msg += '（是公倍數，但不是最小的）'; }
+            }
+            if (!ok && !ck.fn && !q.u) { if (qEq(q, qNeg(target))) msg += '（正負號相反）'; else if (target.n !== 0n && qEq(q, qDiv(Q(1n), target))) msg += '（是倒數）'; else if (target.n !== 0n && qEq(q, qNeg(qDiv(Q(1n), target)))) msg += '（是負倒數）'; }
             out.perOption[o.key] = { diag, msg };
             if (ok) correctKeys.push(o.key);
           });
@@ -676,13 +782,14 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
         }
         case 'extreme': {                     // 選項是數或算式，唯一最大（want:max）或最小（want:min）
           const want = ck.want === 'min' ? 'min' : 'max';
-          const vals = {}; opts.forEach(o => { vals[o.key] = evalExpr(o.text); });
-          const vs = Object.values(vals); const best = want === 'max' ? Math.max(...vs) : Math.min(...vs);
-          out.computedAnswer = (want === 'max' ? '最大＝' : '最小＝') + fmt(best);
-          const sorted = [...new Set(vs)].sort((x, y) => want === 'max' ? y - x : x - y);
+          const vals = {}; opts.forEach(o => { vals[o.key] = evalQ(o.text); if (vals[o.key].u) throw new Error(`選項 ${o.key} 無法計算`); });
+          const vs = Object.values(vals); const sgn = want === 'max' ? 1 : -1;
+          const best = vs.reduce((m, x) => qCmp(x, m) * sgn > 0 ? x : m);
+          out.computedAnswer = (want === 'max' ? '最大＝' : '最小＝') + fmtQ(best);
+          const sorted = vs.slice().sort((x, y) => -sgn * qCmp(x, y)).filter((x, k, arr) => k === 0 || !qEq(x, arr[k - 1]));
           opts.forEach(o => {
-            const ok = near(vals[o.key], best);
-            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: `＝${fmt(vals[o.key])}，第 ${sorted.findIndex(x => near(x, vals[o.key])) + 1} ${want === 'max' ? '大' : '小'}` };
+            const ok = qEq(vals[o.key], best);
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: `＝${fmtQ(vals[o.key])}，第 ${sorted.findIndex(x => qEq(x, vals[o.key])) + 1} ${want === 'max' ? '大' : '小'}` };
             if (ok) correctKeys.push(o.key);
           });
           break;
@@ -690,14 +797,14 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
         case 'range': {                       // 選項值落在範圍內（gt/gte/lt/lte 可只給一邊）
           const lim = ['gt', 'gte', 'lt', 'lte'].filter(k => ck[k] !== undefined);
           if (!lim.length) throw new Error('range 要給 gt、gte、lt、lte 至少一個');
-          const L = {}; lim.forEach(k => L[k] = typeof ck[k] === 'number' ? ck[k] : evalExpr(ck[k]));
+          const L = {}; lim.forEach(k => L[k] = qFrom(ck[k]));
           const SYM = { gt: '>', gte: '≥', lt: '<', lte: '≤' };
-          out.computedAnswer = lim.map(k => `${SYM[k]} ${fmt(L[k])}`).join(' 且 ');
+          out.computedAnswer = lim.map(k => `${SYM[k]} ${fmtQ(L[k])}`).join(' 且 ');
           opts.forEach(o => {
-            const v = evalExpr(o.text);
-            const bad = lim.filter(k => !(k === 'gt' ? v > L[k] && !near(v, L[k]) : k === 'gte' ? v > L[k] || near(v, L[k]) : k === 'lt' ? v < L[k] && !near(v, L[k]) : v < L[k] || near(v, L[k])));
-            const onEdge = lim.some(k => near(v, L[k]));
-            out.perOption[o.key] = bad.length ? { diag: onEdge ? 'onEdge' : 'outRange', msg: `＝${fmt(v)}，${onEdge ? '剛好在端點' : '不在範圍內'}` } : { diag: 'standard', msg: `＝${fmt(v)}，在範圍內` };
+            const v = evalQ(o.text); if (v.u) throw new Error(`選項 ${o.key} 無法計算`);
+            const bad = lim.filter(k => { const c = qCmp(v, L[k]); return !(k === 'gt' ? c > 0 : k === 'gte' ? c >= 0 : k === 'lt' ? c < 0 : c <= 0); });
+            const onEdge = lim.some(k => qCmp(v, L[k]) === 0);
+            out.perOption[o.key] = bad.length ? { diag: onEdge ? 'onEdge' : 'outRange', msg: `＝${fmtQ(v)}，${onEdge ? '剛好在端點' : '不在範圍內'}` } : { diag: 'standard', msg: `＝${fmtQ(v)}，在範圍內` };
             if (!bad.length) correctKeys.push(o.key);
           });
           break;
@@ -713,11 +820,11 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           break;
         }
         case 'sameValue': {                   // 選項是算式，唯一和 expr 同值
-          const target = evalExpr(ck.expr);
-          out.computedAnswer = `${ck.expr}＝${fmt(target)}`;
+          const target = evalQ(ck.expr); if (target.u) throw new Error('expr 無法計算');
+          out.computedAnswer = `${ck.expr}＝${fmtQ(target)}`;
           opts.forEach(o => {
-            const v = evalExpr(o.text); const ok = near(v, target);
-            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? `＝${fmt(v)}，同值` : `＝${fmt(v)}${near(v, -target) ? '（正負號相反）' : ''}` };
+            const v = evalQ(o.text); const ok = qEq(v, target);
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? `＝${fmtQ(v)}，同值` : `＝${fmtQ(v)}${qEq(v, qNeg(target)) ? '（正負號相反）' : ''}` };
             if (ok) correctKeys.push(o.key);
           });
           break;
@@ -759,18 +866,93 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           });
           break;
         }
-        case 'pairRel': {                     // 選項「a 與 b」，唯一互為相反數（rel:opposite）或倒數（rel:reciprocal）
+        case 'pairRel': {                     // 選項「a 與 b」，唯一互為相反數（opposite）、倒數（reciprocal）或互質（coprime）
           const rel = ck.rel || 'opposite';
-          if (!['opposite', 'reciprocal'].includes(rel)) throw new Error('pairRel 只支援 opposite、reciprocal');
-          out.computedAnswer = rel === 'opposite' ? '互為相反數（和為 0）' : '互為倒數（積為 1）';
+          if (!['opposite', 'reciprocal', 'coprime'].includes(rel)) throw new Error('pairRel 只支援 opposite、reciprocal、coprime');
+          out.computedAnswer = { opposite: '互為相反數（和為 0）', reciprocal: '互為倒數（積為 1）', coprime: '互質（最大公因數是 1）' }[rel];
           opts.forEach(o => {
             const ps = String(o.text).split(/與|和|,|，|、/).map(t => t.trim()).filter(Boolean);
             if (ps.length !== 2) { out.perOption[o.key] = { diag: 'unparsable', msg: '要寫成「a 與 b」' }; return; }
-            const [x, y] = ps.map(evalExpr);
-            const opp = near(x + y, 0), rec = near(x * y, 1);
+            const [x, y] = ps.map(evalQ);
+            if (rel === 'coprime') {
+              if (x.d !== 1n || y.d !== 1n || x.n <= 0n || y.n <= 0n) throw new Error(`選項 ${o.key}：互質只用於正整數`);
+              const g = bgcd(x.n, y.n), ok = g === 1n;
+              out.perOption[o.key] = { diag: ok ? 'coprime' : 'notCoprime', msg: ok ? `互質（最大公因數是 1）${!isPrime(Number(x.n)) || !isPrime(Number(y.n)) ? '；兩數不一定都是質數' : ''}` : `最大公因數是 ${g}，不互質` };
+              if (ok) correctKeys.push(o.key);
+              return;
+            }
+            const opp = qEq(qAdd(x, y), Q(0n)), rec = qEq(qMul(x, y), Q(1n));
             const ok = rel === 'opposite' ? opp : rec;
-            out.perOption[o.key] = { diag: opp ? 'opposite' : rec ? 'reciprocal' : 'other', msg: opp ? '互為相反數' : rec ? '互為倒數，不是相反數' : near(x * y, -1) ? '積為 −1（互為負倒數）' : `和＝${fmt(x + y)}，不互為${rel === 'opposite' ? '相反數' : '倒數'}` };
+            out.perOption[o.key] = { diag: opp ? 'opposite' : rec ? 'reciprocal' : 'other', msg: opp ? (rel === 'opposite' ? '互為相反數' : '互為相反數，不是倒數') : rec ? (rel === 'reciprocal' ? '互為倒數' : '互為倒數，不是相反數') : qEq(qMul(x, y), Q(-1n)) ? '積為 −1（互為負倒數）' : rel === 'opposite' ? `和＝${fmtQ(qAdd(x, y))}，不互為相反數` : `積＝${fmtQ(qMul(x, y))}，不互為倒數` };
             if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'fraction': {                    // 選項是分數的寫法；正解＝值相等且最簡（form:mixed 要帶分數、improper 要假分數）
+          const target = evalQ(ck.expr), form = ck.form || 'simplest';
+          if (!['simplest', 'mixed', 'improper'].includes(form)) throw new Error('fraction 的 form 只能是 simplest、mixed、improper');
+          out.computedAnswer = target.u ? '沒有（除以 0，例如 0 沒有倒數）' : fmtQ(target, form === 'mixed');
+          const ofQ = ck.of !== undefined ? evalQ(String(ck.of)) : null, ofL = ck.of !== undefined ? parseFracLit(String(ck.of)) : null;
+          opts.forEach(o => {
+            const t = String(o.text).replace(/\s+/g, '');
+            if (NONE_FRAC_RE.test(t)) {
+              out.perOption[o.key] = target.u ? { diag: 'standard', msg: '正確：沒有' } : { diag: 'other', msg: `其實有，＝${fmtQ(target, form === 'mixed')}` };
+              if (target.u) correctKeys.push(o.key); return;
+            }
+            const L = parseFracLit(t);
+            if (!L) { let v = null; try { v = evalQ(t); } catch (e) { } out.perOption[o.key] = { diag: 'notFraction', msg: '不是分數的寫法' + (v && !v.u ? `（＝${fmtQ(v)}）` : '') }; return; }
+            if (target.u) { out.perOption[o.key] = { diag: 'other', msg: `＝${o.text}，但這題沒有答案（除以 0）` }; return; }
+            const valOk = qEq(L.q, target);
+            let d;
+            if (valOk && !L.reduced) d = { diag: 'notReduced', msg: `值對，但還可以約分（最簡是 ${fmtQ(target, L.kind === 'mixed')}）` };
+            else if (valOk && form === 'mixed' && L.kind === 'frac' && target.d !== 1n && qCmp(qAbs(target), Q(1n)) > 0) d = { diag: 'notMixed', msg: '值對，但題目要寫成帶分數' };
+            else if (valOk && form === 'improper' && L.kind === 'mixed') d = { diag: 'notImproper', msg: '值對，但題目要寫成假分數' };
+            else if (valOk) d = { diag: 'standard', msg: '正確' };
+            else {
+              let msg = `值不對（＝${fmtQ(L.q)}）`;
+              if (qEq(L.q, qNeg(target))) msg += '，正負號相反';
+              else if (target.n !== 0n && qEq(L.q, qDiv(Q(1n), target))) msg += '，是倒數';
+              if (ofQ && !ofQ.u && qEq(L.q, ofQ)) msg += '，是原數';
+              if (ofL && ofL.kind === 'mixed' && ofL.num !== 0n) { const flip = Q(ofL.whole * ofL.num + ofL.den, ofL.num); if (qEq(qAbs(L.q), flip)) msg += '，只把分數部分的分子分母對調'; }
+              d = { diag: 'wrongValue', msg };
+            }
+            out.perOption[o.key] = d; if (d.diag === 'standard') correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'powForm': {                     // 選項是指數形式 b^e；正解＝值完全相等（精確整數比對）且是一個次方（給 base 時底數也要相同）
+          const target = evalQ(ck.expr); if (target.u) throw new Error('expr 無法計算');
+          const baseQ = ck.base !== undefined ? qFrom(ck.base) : null;
+          const exps = (norm(ck.expr).match(/\^(-?\d+)/g) || []).map(x => parseInt(x.slice(1), 10));
+          const fmtBase = q => q.d !== 1n || q.n < 0n ? `(${fmtQ(q)})` : fmtQ(q);
+          const expFor = (bq, tq) => { for (let e = -64; e <= 512; e++) { try { if (qEq(qPow(bq, Q(BigInt(e))), tq)) return e; } catch (x) { } } return null; };
+          const E0 = baseQ ? expFor(baseQ, target) : null;
+          out.computedAnswer = E0 !== null ? `${fmtBase(baseQ)}^${E0}` : fmtQ(target);
+          opts.forEach(o => {
+            const P = parsePowLit(o.text);
+            if (!P) { let v = null; try { v = evalQ(o.text); } catch (e) { } const same = v && qEq(v, target);
+              out.perOption[o.key] = { diag: 'notPowForm', msg: same ? '值對，但不是指數形式' : '不是指數形式' + (v && !v.u ? `（＝${fmtQ(v)}）` : '') }; return; }
+            const valOk = qEq(P.q, target), baseOk = !baseQ || (qEq(P.base, baseQ) && !P.neg);
+            let d;
+            if (valOk && baseOk) d = { diag: 'standard', msg: '正確' };
+            else if (valOk) d = { diag: 'wrongBase', msg: '值相等，但底數不是題目要的' };
+            else {
+              const sameAbsBase = baseQ ? qEq(qAbs(P.base), qAbs(baseQ)) : true;
+              let msg = '值不對';
+              if (baseQ && !qEq(P.base, baseQ)) msg += sameAbsBase ? '，底數的正負號不對' : `，底數應是 ${fmtBase(baseQ)}`;
+              else if (P.neg) msg += '，負號在次方外面';
+              const Eabs = expFor(qAbs(P.base), qAbs(target));     // 底數絕對值相同時，正確的指數
+              if (sameAbsBase && Eabs !== null && Eabs === P.e) msg += '（指數是對的）';
+              else if (sameAbsBase && exps.length >= 2) {
+                const e = P.e, [e1, e2] = exps, prod = exps.reduce((x, y) => x * y, 1), sum = exps.reduce((x, y) => x + y, 0);
+                if (e === prod && prod !== sum) msg += '（把指數相乘）';
+                else if (e === sum && prod !== sum) msg += '（把指數相加）';
+                else if (e === e1 - e2) msg += '（把指數相減）';
+                else if (e2 !== 0 && e === e1 / e2) msg += '（把指數相除）';
+              }
+              d = { diag: 'wrongExp', msg };
+            }
+            out.perOption[o.key] = d; if (d.diag === 'standard') correctKeys.push(o.key);
           });
           break;
         }
@@ -886,7 +1068,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     return esc.replace(/\^(\{([^}]*)\}|[-−]?[0-9a-zA-Z]+(?:\.[0-9]+)?)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
   }
 
-  G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalRel, parseProduct, parseSet,
+  G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalQ, fmtQ, evalRel, parseProduct, parseSet,
+                 parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
                  diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -913,7 +1096,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.8（2026-11-04）';
+const APP_VERSION = 'v2.9（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1375,8 +1558,15 @@ function renderHowto() {
    <tr><td class="l">primeSet</td><td class="l">選出 n 的所有質因數</td><td class="l">{"type":"primeSet","n":60}</td></tr>
    <tr><td class="l">isFactor</td><td class="l">選出是（或不是）某數的因數</td><td class="l">{"type":"isFactor","of":"2^3×3^2×5","want":true}</td></tr>
    <tr><td class="l">isPrime</td><td class="l">選出質數（或合數）</td><td class="l">{"type":"isPrime","want":true}</td></tr>
+   <tr><td class="l">value＋fn</td><td class="l">gcd／lcm（nums）、firstNonzeroPlace／intDigits（x）</td><td class="l">{"type":"value","fn":"gcd","nums":[12,18]}</td></tr>
+   <tr><td class="l">extreme・range</td><td class="l">唯一最大（最小）／唯一落在範圍內</td><td class="l">{"type":"range","gt":-3,"lt":-2}</td></tr>
+   <tr><td class="l">trueStmt・sameValue</td><td class="l">唯一成立的關係式／唯一和 expr 同值的算式</td><td class="l">{"type":"sameValue","expr":"7−10"}</td></tr>
+   <tr><td class="l">count・solveSet</td><td class="l">滿足條件的整數個數／整數解集合</td><td class="l">{"type":"count","cond":"|x|<3"}</td></tr>
+   <tr><td class="l">undefinedOne・pairRel・sci</td><td class="l">唯一除以 0／唯一互為相反數、倒數或互質／科學記號</td><td class="l">{"type":"pairRel","rel":"coprime"}</td></tr>
+   <tr><td class="l">fraction</td><td class="l">值相等而且是最簡分數（或指定帶分數、假分數）；沒約分判錯</td><td class="l">{"type":"fraction","expr":"3/4+1/6"}</td></tr>
+   <tr><td class="l">powForm</td><td class="l">指數形式 b^e，精確比對；寫成數字判錯</td><td class="l">{"type":"powForm","expr":"7^3×7^2","base":7}</td></tr>
    <tr><td class="l">manual</td><td class="l">概念題、圖形題等無法自動驗算，標「需人工確認」</td><td class="l">{"type":"manual"}</td></tr></table>
-  <p class="muted small">題目欄位：id、set（A／B）、pair（同一組同代號，如 P01）。算式寫法：2^3×3^2。其他單元需要新的驗算題型時，再擴充驗算器。</p></div>`;
+  <p class="muted small">題目欄位：id、set（A／B）、pair（同一組同代號，如 P01）。算式寫法：2^3×3^2、10^-3、(−2)^3、3/4、帶分數 1又2/3、|−4|。驗算器全程用精確分數計算。</p></div>`;
 }
 
 // ============================================================
@@ -1707,10 +1897,13 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"count","cond":"|x|<3","range":[-100,100]}：選項是數，等於滿足條件的整數 x 有幾個（條件只用變數 x）
 - {"type":"solveSet","cond":"|x|=6","range":[-100,100]}：選項寫成「6、−6」或「沒有這樣的數」，只有一個等於所有整數解
 - {"type":"undefinedOne"}：選項是算式，只有一個無法計算（除以 0）
-- {"type":"pairRel","rel":"opposite|reciprocal"}：選項寫成「−6 與 6」，只有一組互為相反數（或互為倒數）
+- {"type":"pairRel","rel":"opposite|reciprocal|coprime"}：選項寫成「−6 與 6」，只有一組互為相反數（或互為倒數、或互質；coprime 只用正整數）
+- {"type":"value","fn":"gcd|lcm","nums":[12,18]}：最大公因數／最小公倍數（nums 兩個以上正整數）；選項可寫數或標準分解式（2^2×3）
+- {"type":"fraction","expr":"3/4+1/6","form":"simplest|mixed|improper"}：選項是分數的寫法（3/4、−3/4、帶分數一律寫「1又2/3」、整數），只有一個「值相等而且是最簡」；沒約分的判錯。form:mixed 要寫成帶分數、improper 要寫成假分數。算倒數用 expr "1÷(1又3/5)"（可加 "of":"1又3/5" 判讀「只把分數部分對調」）；expr 除以 0 時正解選項寫「沒有倒數」
+- {"type":"powForm","expr":"7^3×7^2","base":7}：選項寫成一個次方 7^5、(−2)^7、(2/3)^4，只有一個值完全相等（精確比對，不是約等於）；給 base 時底數也要相同；選項寫成數字（16807）判為「不是指數形式」
 - {"type":"sci","value":2350000}：選項寫成 a×10^n，只有一個值正確且 1 ≤ a < 10（value 也可以是字串算式，如 "0.00042"）
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
-算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。不要用 LaTeX。`;
+算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（負底數或分數底數加括號：(−2)^3、(2/3)^2），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
   const misRule = fixedMis && fixedMis.length
     ? `1. 迷思只能用下面這份清單（老師或教科書知識卡提供），用它的代碼，不可以新增、改名或合併：\n${fixedMis.map(m => `   ${m.code} ${m.name}${m.example ? '（例：' + m.example + '）' : ''}`).join('\n')}\n   回傳的 misconceptions 照抄這份清單即可。清單裡用不到的迷思可以不考。`
