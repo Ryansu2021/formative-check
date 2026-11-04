@@ -194,7 +194,13 @@ table.t td.l,table.t th.l{text-align:left}
 
 /* ---------- 路線 B：AI 生題 / 比較 ---------- */
 .gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
+.gen-form>*{flex-shrink:0}
 .gen-form textarea{height:150px;resize:none;font-size:15.5px;line-height:1.5}
+.tr-opts{display:flex;flex-direction:column;gap:6px;margin:8px 0 0 34px;font-size:15px}
+.tr-o{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.tr-o .ok{color:#245446;font-weight:700}
+.tr-o .trace{flex-basis:100%;margin-left:22px;font-size:13.5px;color:var(--ink2,#444);line-height:1.5}
+.tr-o .tr-ok{margin-left:22px}
 .keynote{font-size:13.5px;color:var(--ink2);line-height:1.6;background:var(--paper2);border-radius:10px;padding:10px 12px}
 .spinner{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--zhu);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -1082,8 +1088,680 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 
 </script>
 <script>
+/* ============================================================
+   形成性評量：錯誤規則引擎與模板出題器（路線 A、B 共用；v3.0 起）
+   - 迷思寫成「學生的錯誤算法」（規則）：輸入題目參數 → { value 或 text, trace, fix }
+   - 模板：抽數字（符合 when）→ 正確算法算正解 → 每條規則算誘答 → 撞值檢查 → fa-bank/1 題目
+   - 不用 AI、不用 eval：模板裡的算式由下方的小型求值器處理，只認得白名單函式
+   - 需要先載入 verify.js（FAVerify）
+   ============================================================ */
+(function (G) {
+  'use strict';
+  const V = G.FAVerify;
+  if (!V) throw new Error('rules.js 要在 verify.js 之後載入');
+
+  // ---------- 數字小工具 ----------
+  const SUPC = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻' };
+  const sup = s => String(s).replace(/\^\(?(-?\d+)\)?/g, (m, e) => e.split('').map(c => SUPC[c]).join(''));   // 2^3 → 2³（回饋、trace 用）
+  const pow = (b, e) => { let r = 1; for (let i = 0; i < e; i++) r *= b; return r; };
+  const pw = (b, e) => e === 1 ? `${b}` : `${b}^${e}`;                       // 次方的寫法：3^1 寫成 3
+  const negP = v => v < 0 ? `(−${-v})` : `${v}`;                              // 負數加括號
+  const sgn = v => { if (typeof v === 'number' && !Number.isInteger(v)) v = +v.toFixed(12); const s = typeof v === 'number' && Math.abs(v) < 1e-6 && v !== 0 ? Math.abs(v).toFixed(15).replace(/0+$/, '') : `${Math.abs(v)}`; return (v < 0 ? '−' : '') + s; };   // 負號用 −，小數不寫成 1e-7
+  const facText = fs => fs.map(([p, e]) => pw(p, e)).join('×');               // [[2,3],[3,2]] → 2^3×3^2
+  const expand = n => V.factorize(n).flatMap(([p, e]) => Array(e).fill(p));   // 72 → [2,2,2,3,3]
+  const compress = list => { const out = []; list.forEach(p => { const l = out[out.length - 1]; if (l && l[0] === p) l[1]++; else out.push([p, 1]); }); return out; };
+  const divisors = n => { const d = []; for (let i = 1; i <= n; i++) if (n % i === 0) d.push(i); return d; };
+  const smallestPrimeNotIn = (ps, after = 1) => { for (let x = 2; ; x++) if (V.isPrime(x) && x > after && !ps.includes(x)) return x; };
+  const digitSum = n => String(Math.abs(n)).split('').reduce((s, c) => s + +c, 0);
+  const smallestFactor = n => { for (let d = 2; d * d <= n; d++) if (n % d === 0) return d; return n; };
+
+  // ---------- 小型求值器（模板的 when、let、answer、{…} 插值用；不用 eval） ----------
+  const FNS = {
+    pow, abs: Math.abs, min: Math.min, max: Math.max, pw, sgn, negP, isPrime: V.isPrime,
+    distinctPrimes: V.distinctPrimes, primeFactorCount: V.primeFactorCount, divisorCount: V.divisorCount,
+    fac: n => facText(V.factorize(n)), primes: n => V.factorize(n).map(([p]) => p).join('、'),
+    gcd: (...a) => V.gcd(a), lcm: (...a) => V.lcm(a), sup,
+    len: n => String(Math.abs(n)).length, dec: k => dec(k), shift: (M, d) => shift(M, d), sciN: (M, d, k) => sciN(M, d, k), pb: (b, e) => pb(b, e)
+  };
+  function tokenize(s) {
+    const t = []; let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (/\s/.test(c)) { i++; continue; }
+      let m = /^\d+(\.\d+)?/.exec(s.slice(i)); if (m) { t.push({ k: 'n', v: parseFloat(m[0]) }); i += m[0].length; continue; }
+      m = /^[A-Za-z_]\w*/.exec(s.slice(i)); if (m) { t.push({ k: 'id', v: m[0] }); i += m[0].length; continue; }
+      m = /^'([^']*)'/.exec(s.slice(i)); if (m) { t.push({ k: 's', v: m[1] }); i += m[0].length; continue; }
+      m = /^(<=|>=|==|!=|&&|\|\||[-+*/%<>!(),?:])/.exec(s.slice(i)); if (m) { t.push({ k: 'op', v: m[0] }); i += m[0].length; continue; }
+      throw new Error(`模板算式有不認得的字元「${c}」：${s}`);
+    }
+    return t;
+  }
+  function evalT(src, env) {
+    const t = tokenize(String(src)); let i = 0;
+    const peek = v => t[i] && t[i].k === 'op' && t[i].v === v;
+    const eat = v => { if (!peek(v)) throw new Error(`模板算式缺少「${v}」：${src}`); i++; };
+    const BIN = [['||'], ['&&'], ['==', '!='], ['<', '<=', '>', '>='], ['+', '-'], ['*', '/', '%']];
+    const ap = (o, a, b) => ({ '||': a || b, '&&': a && b, '==': a === b, '!=': a !== b, '<': a < b, '<=': a <= b, '>': a > b, '>=': a >= b, '+': a + b, '-': a - b, '*': a * b, '/': a / b, '%': a % b }[o]);
+    function tern() { const c = bin(0); if (peek('?')) { i++; const a = tern(); eat(':'); const b = tern(); return c ? a : b; } return c; }
+    function bin(l) {
+      if (l >= BIN.length) return un();
+      let a = bin(l + 1);
+      while (t[i] && t[i].k === 'op' && BIN[l].includes(t[i].v)) { const o = t[i++].v; a = ap(o, a, bin(l + 1)); }
+      return a;
+    }
+    function un() { if (peek('-')) { i++; return -un(); } if (peek('!')) { i++; return !un(); } return prim(); }
+    function prim() {
+      const x = t[i++]; if (!x) throw new Error('模板算式不完整：' + src);
+      if (x.k === 'n' || x.k === 's') return x.v;
+      if (x.k === 'op' && x.v === '(') { const v = tern(); eat(')'); return v; }
+      if (x.k === 'id') {
+        if (peek('(')) {
+          if (!Object.prototype.hasOwnProperty.call(FNS, x.v)) throw new Error(`模板不能用函式 ${x.v}`);
+          i++; const args = []; if (!peek(')')) { args.push(tern()); while (peek(',')) { i++; args.push(tern()); } } eat(')');
+          return FNS[x.v](...args);
+        }
+        if (x.v === 'true') return true; if (x.v === 'false') return false;
+        if (!Object.prototype.hasOwnProperty.call(env, x.v)) throw new Error(`模板算式用到沒有的參數 ${x.v}：${src}`);
+        return env[x.v];
+      }
+      throw new Error('模板算式寫法不對：' + src);
+    }
+    const v = tern(); if (i < t.length) throw new Error('模板算式多出內容：' + src); return v;
+  }
+  const fill = (s, env) => String(s).replace(/\{([^{}]+)\}/g, (m, e) => String(evalT(e, env)));
+  function fillDeep(x, env) {                                              // check 物件：字串插值；整串是數字就轉成數字
+    if (typeof x === 'string') { const v = fill(x, env); return /^-?\d+$/.test(v) && /^\{[^{}]+\}$/.test(x) ? +v : v; }
+    if (Array.isArray(x)) return x.map(y => fillDeep(y, env));
+    if (x && typeof x === 'object') { const o = {}; for (const k in x) o[k] = fillDeep(x[k], env); return o; }
+    return x;
+  }
+
+  // ---------- 通用迷思（代碼前綴 G，儀表板另外統計） ----------
+  const GENERIC = [
+    { code: 'G01', name: '乘法做成加法', desc: '算式中間是乘號，卻把兩部分相加', example: '2³×3²＝8＋9＝17', generic: true,
+      remedy: '圈出運算符號再算：× 是「幾個幾」，＋ 是「合起來」。', source: '依教學經驗（v2.8 實測 AI 出的誘答 17＝8＋9 就是這種錯）' },
+    { code: 'G02', name: '加法做成乘法', desc: '算式中間是加號，卻把兩部分相乘', example: '2³＋3²＝8×9＝72', generic: true,
+      remedy: '圈出運算符號再算：＋ 是合起來，× 才是幾個幾。', source: '依教學經驗' },
+    { code: 'G03', name: '數點的個數，不是數間隔', desc: '數線上求距離時數「點」，多算 1', example: 'A(−3)、B(5) 的距離＝9（從 −3 數到 5 共 9 個點）', generic: true,
+      remedy: '用手指在數線上「跳」：每跳一格算 1，起點不算。', source: '依教學經驗' }
+  ];
+
+  // ---------- 錯誤規則（依題型分組；同一迷思在不同題型的錯誤算法不同） ----------
+  // 每條：{ mis: 迷思代碼, name: 白話說明, fn: P => ({ value?, text?, trace, fix }) 或 null（這組數字不適用） }
+  // value 型題目只要回 value（可附 text 表示學生寫出的樣子，例如 6^5）；text 型題目回 text
+  const R = {};
+
+  // 七上2-1：標準分解式辨認（選項是分解式，check: factorize）
+  R.factorize = {
+    PF01: { mis: 'PF01', name: '分解時寫出 1×', fn: ({ n }) => {
+      const s = facText(V.factorize(n));
+      return { text: `1×${s}`, trace: `分解時先寫了 1×，得到 ${n}＝1×${s}`, fix: '1 不是質數，標準分解式不寫 1' }; } },
+    PF03: { mis: 'PF03', name: '最後的商是合數就停', fn: ({ n }) => {
+      const L = expand(n); if (L.length < 3) return null;
+      const c = L[L.length - 2] * L[L.length - 1], head = compress(L.slice(0, -2));
+      return { text: `${facText(head)}×${c}`, trace: `短除到剩下 ${c} 就停了，${c}＝${L[L.length - 2]}×${L[L.length - 1]} 還是合數`, fix: `${c} 還要繼續分解成 ${L[L.length - 2]}×${L[L.length - 1]}` }; } },
+    PF04: { mis: 'PF04', name: '相同質因數沒有合併成次方', fn: ({ n }) => {
+      const L = expand(n); if (L.length === V.factorize(n).length) return null;
+      return { text: L.join('×'), trace: `寫成連乘 ${L.join('×')}，值是對的，但沒有合併成次方`, fix: `相同的質因數要合併：${sup(facText(V.factorize(n)))}` }; } },
+    PF05: { mis: 'PF05', name: '質因數沒有由小到大排列', fn: ({ n }) => {
+      const f = V.factorize(n); if (f.length < 2) return null;
+      const g = [f[1], f[0], ...f.slice(2)];
+      return { text: facText(g), trace: `質因數都對，但把 ${f[1][0]} 寫在 ${f[0][0]} 前面`, fix: '標準分解式要由小到大排列' }; } },
+    PF07: { mis: 'PF07', name: '次方對調', fn: ({ n }) => {
+      const f = V.factorize(n); if (f.length < 2 || f[0][1] === f[1][1]) return null;
+      const g = [[f[0][0], f[1][1]], [f[1][0], f[0][1]], ...f.slice(2)], v = g.reduce((s, [p, e]) => s * pow(p, e), 1);
+      return { text: facText(g), trace: `${f[0][0]} 和 ${f[1][0]} 的次方寫反了，乘回去是 ${v}，不是 ${n}`, fix: `數一數每個質因數出現幾次，寫完乘回去驗算` }; } }
+  };
+
+  // 七上2-1：標準分解式求值（選項是數，check: value）
+  R.pfValue = {
+    PF06: { mis: 'PF06', name: '把次方當成乘法', fn: ({ p, a, q, b }) => {
+      const v = p * a * q * b, parts = [[p, a], [q, b]], bad = parts.filter(([x, e]) => x * e !== pow(x, e));
+      if (!bad.length) return null;
+      const lucky = parts.filter(([x, e]) => x * e === pow(x, e) && e > 1);   // 例如 2²＝2×2，剛好沒差
+      return { value: v, trace: `把 ${bad.map(([x, e]) => `${sup(x + '^' + e)} 算成 ${x}×${e}＝${x * e}`).join('，')}${lucky.length ? `（${lucky.map(([x, e]) => sup(x + '^' + e)).join('、')} 剛好等於 ${lucky.map(([x, e]) => `${x}×${e}`).join('、')}，沒差）` : ''}，得 ${p * a}×${q * b}＝${v}`,
+        fix: `次方是連乘：${bad.map(([x, e]) => `${sup(x + '^' + e)} 是 ${e} 個 ${x} 相乘＝${pow(x, e)}`).join('，')}` }; } },
+    PF07: { mis: 'PF07', name: '次方對調', fn: ({ p, a, q, b }) => {
+      if (a === b) return null; const v = pow(p, b) * pow(q, a);
+      return { value: v, trace: `把次方對調成 ${sup(pw(p, b))}×${sup(pw(q, a))}＝${pow(p, b)}×${pow(q, a)}＝${v}`, fix: `每個次方跟著自己的底數：${sup(pw(p, a))}×${sup(pw(q, b))}` }; } },
+    PF14: { mis: 'PF14', name: '不同底數也把次方相加', fn: ({ p, a, q, b }) => {
+      const B = p * q, E = a + b;
+      return { value: pow(B, E), text: `${B}^${E}`, trace: `底數相乘 ${p}×${q}＝${B}、次方相加 ${a}＋${b}＝${E}，寫成 ${sup(B + '^' + E)}`, fix: `指數律只能用在同底數；${sup(pw(p, a))}×${sup(pw(q, b))} 要先各自算再相乘` }; } },
+    G01: { mis: 'G01', name: '乘法做成加法', fn: ({ p, a, q, b }) => {
+      const x = pow(p, a), y = pow(q, b);
+      return { value: x + y, trace: `${sup(pw(p, a))}＝${x}、${sup(pw(q, b))}＝${y} 都算對了，最後卻相加：${x}＋${y}＝${x + y}`, fix: `中間是乘號：${x}×${y}＝${x * y}` }; } }
+  };
+
+  // 七上2-1：相異質因數個數（選項是數，check: value fn distinctPrimes）
+  R.pfCount = {
+    PF08: { mis: 'PF08', name: '「相異」質因數重複計數', fn: ({ n }) => {
+      const L = expand(n);
+      return { value: L.length, trace: `把 ${L.join('、')} 全部數進去，得 ${L.length} 個`, fix: `「相異」只數不同的底數：${V.factorize(n).map(([p]) => p).join('、')}` }; } },
+    PF01: { mis: 'PF01', name: '把 1 算成質因數', fn: ({ n }) => {
+      const k = V.distinctPrimes(n);
+      return { value: k + 1, trace: `把 1 也算成質因數：1、${V.factorize(n).map(([p]) => p).join('、')}，共 ${k + 1} 個`, fix: '1 不是質數，不是質因數' }; } },
+    PF02: { mis: 'PF02', name: '數成全部因數的個數', fn: ({ n }) => {
+      const k = V.divisorCount(n);
+      return { value: k, trace: `數的是 ${n} 的所有正因數（共 ${k} 個），不是質因數`, fix: '質因數＝是因數、又是質數；只數質數的那幾個' }; } }
+  };
+
+  // 七上2-1：質因數有哪些（選項是「2、3、5」，check: primeSet）
+  R.pfSet = {
+    PF01: { mis: 'PF01', name: '把 1 列入質因數', fn: ({ n }) => {
+      const ps = V.factorize(n).map(([p]) => p);
+      return { text: ['1', ...ps].join('、'), trace: `把 1 也列進去：1、${ps.join('、')}`, fix: '1 不是質數，所以不是質因數' }; } },
+    PF08: { mis: 'PF08', name: '重複的質因數也列出', fn: ({ n }) => {
+      const L = expand(n); if (L.length === V.distinctPrimes(n)) return null;
+      const t = L.slice(0, Math.min(L.length, 5));
+      return { text: t.join('、'), trace: `照短除的順序把 ${t.join('、')} 都列出來，重複的也列了`, fix: '問「有哪些」質因數，同一個只列一次' }; } },
+    PF02: { mis: 'PF02', name: '把因數當質因數', fn: ({ n }) => {
+      const d = divisors(n).filter(x => x > 1 && x < n).slice(0, 6); if (!d.some(x => !V.isPrime(x))) return null;
+      const comp = d.filter(x => !V.isPrime(x));
+      return { text: d.join('、'), trace: `把 ${n} 的因數由小到大列出 ${d.join('、')}，沒有檢查是不是質數`, fix: `${comp.join('、')} 是因數但不是質數；質因數＝是因數、又是質數` }; } }
+  };
+
+  // 七上2-1：用標準分解式判因數（選項是算式，check: isFactor want:true）
+  R.pfIsFactor = {
+    PF09a: { mis: 'PF09', name: '只看底數、忽略次方（第一個質因數）', fn: ({ p, a, q, b }) => {
+      const t = `${p}^${a + 1}×${q}`;
+      return { text: t, trace: `看到 ${p}、${q} 都在 M 裡就選了，沒比次方：M 只有 ${sup(pw(p, a))}，${sup(p + '^' + (a + 1))} 次方太大`, fix: '每個質因數的次方都不能超過 M 的次方' }; } },
+    PF09b: { mis: 'PF09', name: '只看底數、忽略次方（第二個質因數）', fn: ({ q, b }) => {
+      const t = `${q}^${b + 1}`;
+      return { text: t, trace: `看到 ${q} 在 M 裡就選了：M 只有 ${sup(pw(q, b))}，${sup(q + '^' + (b + 1))} 次方太大`, fix: '每個質因數的次方都不能超過 M 的次方' }; } },
+    PF11: { mis: 'PF11', name: '數值比較小就當成因數', fn: ({ p, q, r }) => {
+      const s = smallestPrimeNotIn([p, q, r], 1);
+      return { text: `${p}×${s}`, trace: `${p}×${s}＝${p * s} 比 M 小，就以為是因數；但 M 沒有質因數 ${s}`, fix: '因數要能整除；看質因數：M 沒有的質因數不能出現' }; } }
+  };
+
+  // 七上2-1：質數辨認（選項是數，check: isPrime want:true）
+  const pseudo = c => ({ text: `${c}`, trace: `${c} 不是偶數、個位不是 5，沒有再試除就當成質數；其實 ${c}＝${smallestFactor(c)}×${c / smallestFactor(c)}`, fix: `試除到 √${c}：${digitSum(c) % 3 === 0 ? `各位數字和 ${digitSum(c)} 是 3 的倍數，` : ''}${c}÷${smallestFactor(c)}＝${c / smallestFactor(c)}` });
+  R.pfIsPrime = {
+    PF12a: { mis: 'PF12', name: '看似質數的合數（一）', fn: ({ c1 }) => pseudo(c1) },
+    PF12b: { mis: 'PF12', name: '看似質數的合數（二）', fn: ({ c2 }) => pseudo(c2) },
+    PF12c: { mis: 'PF12', name: '看似質數的合數（三）', fn: ({ c3 }) => pseudo(c3) },
+    PF01: { mis: 'PF01', name: '把 1 當成質數', fn: () => ({ text: '1', trace: '以為 1 是質數', fix: '質數要有「恰好兩個」正因數；1 只有一個' }) }
+  };
+
+  // ============================================================
+  // 七上1-2：整數的加減（選項是整數或算式）
+  // ============================================================
+  const big = (a, b) => Math.abs(a) >= Math.abs(b);
+  // a＋(−b)
+  R.asAdd = {
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: ({ a, b }) => {
+      const d = Math.abs(a - b), v = b - a;
+      return { value: v, trace: `${a} 和 ${b} 相差 ${d} 算對了，正負號卻跟了絕對值比較小的數，寫成 ${sgn(v)}`, fix: `異號相加：正負號跟絕對值大的數（${b > a ? '−' + b : a}），${a}＋(−${b})＝${sgn(a - b)}` }; } },
+    AS10: { mis: 'AS10', name: '異號相加把數字相加', fn: ({ a, b }) => {
+      const v = (b > a ? -1 : 1) * (a + b);
+      return { value: v, trace: `異號相加卻把 ${a} 和 ${b} 加起來得 ${a + b}，再放上${b > a ? '負' : '正'}號：${sgn(v)}`, fix: `異號相加要相減：${Math.max(a, b)}−${Math.min(a, b)}＝${Math.abs(a - b)}，再決定正負號` }; } },
+    AS01: { mis: 'AS01', name: '以為加上一定變大', fn: ({ a, b }) => ({ value: a + b,
+      trace: `把加上 (−${b}) 當成加上 ${b}，以為加上去一定變大：${a}＋${b}＝${a + b}`, fix: `加上負數會變小：${a}＋(−${b})＝${a}−${b}＝${sgn(a - b)}` }) }
+  };
+  // a−y（y＝s×b；s＝−1 時題目是 a−(−b)）
+  R.asSub = {
+    AS08: { mis: 'AS08', name: '減負數沒改成加相反數', fn: ({ a, s, b }) => {
+      if (s > 0) return null; const v = a - b;
+      return { value: v, trace: `把 −(−${b}) 看成 −${b}：${a}−${b}＝${sgn(v)}`, fix: `減去一個數＝加上它的相反數：${a}−(−${b})＝${a}＋${b}＝${a + b}` }; } },
+    AS04: { mis: 'AS04', name: '以為減法有交換律', fn: ({ a, s, b }) => {
+      const y = s * b, v = y - a;
+      return { value: v, trace: `把減法前後對調，算成 ${negP(y)}−${a}＝${sgn(v)}`, fix: `減法不能交換：${a}−${negP(y)} 要用 ${a} 去減，＝${sgn(a - y)}` }; } },
+    AS03: { mis: 'AS03', name: '小減大漏了負號', fn: ({ a, s, b }) => {
+      if (a >= b) return null;
+      if (s > 0) return { value: b - a, trace: `${a}−${b} 小減大，漏了負號寫成 ${b - a}`, fix: `小減大結果是負的：${a}−${b}＝−${b - a}` };
+      return { value: b - a, trace: `先把 −(−${b}) 看成 −${b}，${a}−${b} 小減大又漏了負號，寫成 ${b - a}`, fix: `${a}−(−${b})＝${a}＋${b}＝${a + b}` }; } }
+  };
+  // a−(b−c)，b＜c
+  R.asParen = {
+    AS05: { mis: 'AS05', name: '去括號只改第一個數', fn: ({ a, b, c }) => { const v = a - b - c;
+      return { value: v, trace: `去括號時只把 ${b} 變號，${c} 前面的減號沒變：${a}−${b}−${c}＝${sgn(v)}`, fix: `括號前是減號，括號裡每一項都要變號：${a}−${b}＋${c}＝${sgn(a - b + c)}` }; } },
+    AS03: { mis: 'AS03', name: '小減大漏了負號', fn: ({ a, b, c }) => { const v = a - (c - b);
+      return { value: v, trace: `${b}−${c} 小減大漏了負號算成 ${c - b}，${a}−${c - b}＝${sgn(v)}`, fix: `${b}−${c}＝−${c - b}，${a}−(−${c - b})＝${sgn(a - b + c)}` }; } },
+    AS04: { mis: 'AS04', name: '以為減法有交換律', fn: ({ a, b, c }) => { const v = (b - c) - a;
+      return { value: v, trace: `把減法前後對調：(${b}−${c})−${a}＝${sgn(b - c)}−${a}＝${sgn(v)}`, fix: `${a}−(${b}−${c}) 要用 ${a} 去減括號的值 ${sgn(b - c)}，＝${sgn(a - b + c)}` }; } }
+  };
+  // a−|−b|，a＜b
+  R.asAbs = {
+    AS06: { mis: 'AS06', name: '把絕對值當成括號', fn: ({ a, b }) => ({ value: a + b,
+      trace: `把 |−${b}| 當成括號 (−${b})：${a}−(−${b})＝${a + b}`, fix: `|−${b}|＝${b}（−${b} 到 0 的距離），${a}−${b}＝${sgn(a - b)}` }) },
+    AS03: { mis: 'AS03', name: '小減大漏了負號', fn: ({ a, b }) => a >= b ? null : ({ value: b - a,
+      trace: `|−${b}|＝${b} 對了，${a}−${b} 小減大卻漏了負號，寫成 ${b - a}`, fix: `小減大是負的：${a}−${b}＝−${b - a}` }) },
+    AS10: { mis: 'AS10', name: '異號相加把數字相加', fn: ({ a, b }) => ({ value: -(a + b),
+      trace: `把 ${a}−${b} 當成異號相加，卻把 ${a}、${b} 加起來再加負號：−${a + b}`, fix: `${a}−${b}：大減小 ${b}−${a}＝${b - a}，再加負號＝${sgn(a - b)}` }) }
+  };
+  // 數線上 A(−a)、B(b) 的距離
+  R.asDist = {
+    AS09: { mis: 'AS09', name: '兩點距離把坐標相加', fn: ({ a, b }) => ({ value: b - a,
+      trace: `把兩點坐標相加：−${a}＋${b}＝${sgn(b - a)}`, fix: `距離＝右邊的坐標減左邊的坐標：${b}−(−${a})＝${a + b}` }) },
+    AS07: { mis: 'AS07', name: '兩點距離寫成負數', fn: ({ a, b }) => ({ value: -a - b,
+      trace: `用左邊減右邊：−${a}−${b}＝−${a + b}，距離寫成負數`, fix: `距離不會是負的，用大減小：${b}−(−${a})＝${a + b}` }) },
+    G03: { mis: 'G03', name: '數點的個數，不是數間隔', fn: ({ a, b }) => ({ value: a + b + 1,
+      trace: `在數線上從 −${a} 數到 ${b}，數的是點：共 ${a + b + 1} 個點`, fix: `距離要數間隔：${a + b + 1} 個點之間只有 ${a + b} 段` }) }
+  };
+  // 哪一個算式的結果比 x 大（x＜0；選項是算式，check: range gt）
+  R.asRange = {
+    AS01: { mis: 'AS01', name: '以為加上一定變大', fn: ({ x, e }) => ({ text: `${sgn(x)}＋(−${e})`,
+      trace: `以為加上一定變大，${sgn(x)}＋(−${e}) 會比 ${sgn(x)} 大；其實＝${sgn(x - e)}`, fix: '加上負數會變小，加上正數才會變大' }) },
+    AS06: { mis: 'AS06', name: '把絕對值當成括號', fn: ({ x, c }) => ({ text: `${sgn(x)}−|−${c}|`,
+      trace: `把 |−${c}| 當成 (−${c})，以為 ${sgn(x)}−(−${c}) 會變大；其實 |−${c}|＝${c}，結果＝${sgn(x - c)}`, fix: `先算絕對值：|−${c}|＝${c}，再減` }) },
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: ({ x, g, h }) => (h <= g || g - h >= x) ? null : ({ text: `${g}＋(−${h})`,
+      trace: `${g}＋(−${h}) 的正負號判斷錯，算成 ${h - g}，以為比 ${sgn(x)} 大；其實＝${sgn(g - h)}`, fix: `異號相加，正負號跟絕對值大的數（−${h}）` }) }
+  };
+
+  // ============================================================
+  // 七上1-4：指數記法、10 的負次方、科學記號
+  // ============================================================
+  // form：out＝−a^n、in＝(−a)^n、pos＝a^n
+  const exShow = (a, n, form) => form === 'out' ? `−${a}^${n}` : form === 'in' ? `(−${a})^${n}` : `${a}^${n}`;
+  const exVal = (a, n, form) => form === 'out' ? -pow(a, n) : form === 'in' ? pow(-a, n) : pow(a, n);
+  R.exPow = {
+    EX01: { mis: 'EX01', name: '負號在次方外或內不分', fn: ({ a, n, form }) => (form !== 'out' || n % 2) ? null : ({ value: pow(a, n),
+      trace: `把 ${sup(exShow(a, n, form))} 當成 (−${a})${sup('^' + n)}，負號也一起乘：${pow(a, n)}`, fix: `${sup(exShow(a, n, form))}：先算 ${sup(a + '^' + n)}＝${pow(a, n)}，再加負號＝−${pow(a, n)}` }) },
+    EX02: { mis: 'EX02', name: '把乘方當成乘法', fn: ({ a, n, form }) => { const v = form === 'pos' ? a * n : -a * n;
+      return { value: v, trace: `把 ${sup(exShow(a, n, form))} 當成 ${form === 'pos' ? a : form === 'in' ? '(−' + a + ')' : '−' + a}×${n}＝${sgn(v)}`, fix: `${sup(a + '^' + n)} 是 ${n} 個 ${a} 相乘＝${pow(a, n)}` }; } },
+    EX02s: { mis: 'EX02', name: '把乘方當成乘法，正負號也錯', fn: ({ a, n, form }) => form === 'pos' ? null : ({ value: a * n,
+      trace: form === 'out' ? `負號也算進次方、次方又當成乘法：(−${a})×(−${n})＝${a * n}` : `次方當成乘法 ${a}×${n}＝${a * n}，又忘了負數的奇數次方是負的`,
+      fix: `${sup(exShow(a, n, form))}＝${sgn(exVal(a, n, form))}：次方是連乘，${form === 'out' ? '負號在次方外面' : '奇數個負數相乘是負的'}` }) },
+    EX04: { mis: 'EX04', name: '負數奇偶次方符號錯', fn: ({ a, n, form }) => form !== 'in' ? null : ({ value: -pow(-a, n),
+      trace: `(−${a})${sup('^' + n)}：${n} 是${n % 2 ? '奇' : '偶'}數，正負號卻寫成${n % 2 ? '正' : '負'}的：${sgn(-pow(-a, n))}`, fix: '負數的奇數次方是負的，偶數次方是正的' }) }
+  };
+  R.ex01 = {
+    EX03a: { mis: 'EX03', name: '以為 1^n＝n、0^n＝n', fn: ({ m, k }) => ({ value: m + k,
+      trace: `以為 ${sup('1^' + m)}＝${m}、${sup('0^' + k)}＝${k}：${m}＋${k}＝${m + k}`, fix: '1 的任何次方都是 1，0 的正整數次方都是 0：1＋0＝1' }) },
+    EX03b: { mis: 'EX03', name: '以為 0^n＝1', fn: ({ k }) => ({ value: 2,
+      trace: `以為 ${sup('0^' + k)}＝1（和 0 次方弄混）：1＋1＝2`, fix: `${sup('0^' + k)} 是 ${k} 個 0 相乘＝0` }) },
+    EX02: { mis: 'EX02', name: '把乘方當成乘法', fn: ({ m, k }) => ({ value: m,
+      trace: `把次方當成乘法：1×${m}＋0×${k}＝${m}`, fix: `${sup('1^' + m)} 是 ${m} 個 1 相乘＝1` }) }
+  };
+  const dec = k => k <= 0 ? '1' + '0'.repeat(-k) : '0.' + '0'.repeat(k - 1) + '1';   // 10^−k 的小數寫法
+  R.exNeg10 = {
+    EX06: { mis: 'EX06', name: '負指數就是負數', fn: ({ n }) => ({ value: -pow(10, n),
+      trace: `以為負指數就是負數：${sup('10^-' + n)}＝−${sup('10^' + n)}＝−${pow(10, n)}`, fix: `${sup('10^-' + n)}＝1/${sup('10^' + n)}＝${dec(n)}` }) },
+    EX07a: { mis: 'EX07', name: '小數點後多一位', fn: ({ n }) => ({ text: dec(n + 1),
+      trace: `寫小數時多補了一個 0：${dec(n + 1)}（1 在小數點後第 ${n + 1} 位）`, fix: `${sup('10^-' + n)}：1 在小數點後第 ${n} 位，${dec(n)}` }) },
+    EX07b: { mis: 'EX07', name: '小數點後少一位', fn: ({ n }) => n < 2 ? null : ({ text: dec(n - 1),
+      trace: `寫小數時少補了一個 0：${dec(n - 1)}（1 在小數點後第 ${n - 1} 位）`, fix: `${sup('10^-' + n)}：1 在小數點後第 ${n} 位，${dec(n)}` }) },
+    EX02: { mis: 'EX02', name: '把乘方當成乘法', fn: ({ n }) => ({ value: -10 * n,
+      trace: `把 ${sup('10^-' + n)} 當成 10×(−${n})＝−${10 * n}`, fix: `${sup('10^-' + n)}＝1/${sup('10^' + n)}＝${dec(n)}` }) }
+  };
+  // 科學記號：a＝M／10^d（1≤a＜10），N＝a×10^k
+  const shift = (M, d) => { const s = String(M); return d ? s.slice(0, s.length - d) + '.' + s.slice(s.length - d) : s; };
+  const sciN = (M, d, k) => String(M) + '0'.repeat(k - d);
+  R.exSci = {
+    EX08a: { mis: 'EX08', name: 'a 寫成整數（不在 1～10）', fn: ({ M, d, k }) => k - d < 1 ? null : ({ text: `${M}×10^${k - d}`,
+      trace: `把 ${sciN(M, d, k)} 寫成 ${M}×${sup('10^' + (k - d))}，值是對的，但 ${M} 不在 1 到 10 之間`, fix: `科學記號 a×10ⁿ 的 a 要 1≤a＜10：${shift(M, d)}×${sup('10^' + k)}` }) },
+    EX10: { mis: 'EX10', name: '整數位數當成指數', fn: ({ M, d, k }) => ({ text: `${shift(M, d)}×10^${k + 1}`,
+      trace: `${sciN(M, d, k)} 是 ${k + 1} 位數，就把指數寫成 ${k + 1}`, fix: `${k + 1} 位數的指數是 ${k}（位數減 1）` }) },
+    EX08b: { mis: 'EX08', name: 'a 小於 1', fn: ({ M, d, k }) => ({ text: `0.${M}×10^${k + 1}`,
+      trace: `寫成 0.${M}×${sup('10^' + (k + 1))}，值是對的，但 a＝0.${M} 小於 1`, fix: `a 要 1≤a＜10：${shift(M, d)}×${sup('10^' + k)}` }) }
+  };
+  // 比大小（哪一個最大）
+  R.exCmp = {
+    EX09a: { mis: 'EX09', name: '比大小只看係數（差一位）', fn: ({ a1, m, c1 }) => ({ text: `${c1}×10^${m - 1}`,
+      trace: `只看係數 ${c1}＞${a1}，就以為 ${c1}×${sup('10^' + (m - 1))} 比較大；指數少 1`, fix: '科學記號比大小：先比指數，指數大的就大' }) },
+    EX09b: { mis: 'EX09', name: '比大小只看係數（差兩位）', fn: ({ a1, m, c2 }) => ({ text: `${c2}×10^${m - 2}`,
+      trace: `只看係數 ${c2}＞${a1}，就以為 ${c2}×${sup('10^' + (m - 2))} 比較大；指數少 2`, fix: '科學記號比大小：先比指數，指數大的就大' }) },
+    EX11: { mis: 'EX11', name: '忽略負指數的方向', fn: ({ a1, c3, e }) => ({ text: `${c3}×10^-${e}`,
+      trace: `只看係數 ${c3}＞${a1}，沒注意 ${sup('10^-' + e)} 是小於 1 的數（小數點後第 ${e} 位）`, fix: '負指數的數都小於 1，比正指數的數小' }) }
+  };
+
+  // ============================================================
+  // 七上2-4：指數律（選項是指數形式，check: powForm；分數用 fraction；0 次方用 value）
+  // ============================================================
+  const pb = (b, e) => b < 0 ? `(−${-b})^${e}` : `${b}^${e}`;
+  const pbS = (b, e) => sup(pb(b, e));
+  R.elMul = {
+    EL01: { mis: 'EL01', name: '同底數相乘指數相乘', fn: ({ b, m, n }) => ({ text: pb(b, m * n),
+      trace: `同底數相乘卻把指數相乘：${m}×${n}＝${m * n}，寫成 ${pbS(b, m * n)}`, fix: `同底數相乘，指數相加：${m}＋${n}＝${m + n}` }) },
+    EL04: { mis: 'EL04', name: '底數也相乘', fn: ({ b, m, n }) => ({ text: pb(b * b, m + n),
+      trace: `底數也相乘 ${negP(b)}×${negP(b)}＝${b * b}，指數相加，寫成 ${pbS(b * b, m + n)}`, fix: `同底數相乘，底數不變：${pbS(b, m + n)}` }) },
+    EL10: { mis: 'EL10', name: '乘除的指數律弄混', fn: ({ b, m, n }) => n <= m ? null : ({ text: pb(b, n - m),
+      trace: `把相乘當成相除，指數相減：${n}−${m}＝${n - m}，寫成 ${pbS(b, n - m)}`, fix: `相乘是指數相加：${m}＋${n}＝${m + n}` }) },
+    EL07: { mis: 'EL07', name: '負號在次方內外不分', fn: ({ b, m, n }) => b >= 0 ? null : ({ text: `−${-b}^${m + n}`,
+      trace: `指數相加對了，但把負號寫到括號外：${sup('−' + (-b) + '^' + (m + n))}`, fix: `底數是 ${negP(b)}，要寫 ${pbS(b, m + n)}；−${sup((-b) + '^' + (m + n))} 是先算次方再加負號` }) }
+  };
+  R.elDiv = {
+    EL02: { mis: 'EL02', name: '同底數相除指數相除', fn: ({ b, m, n }) => m % n ? null : ({ text: pb(b, m / n),
+      trace: `同底數相除卻把指數相除：${m}÷${n}＝${m / n}，寫成 ${pbS(b, m / n)}`, fix: `同底數相除，指數相減：${m}−${n}＝${m - n}` }) },
+    EL10: { mis: 'EL10', name: '乘除的指數律弄混', fn: ({ b, m, n }) => ({ text: pb(b, m + n),
+      trace: `把相除當成相乘，指數相加：${m}＋${n}＝${m + n}，寫成 ${pbS(b, m + n)}`, fix: `相除是指數相減：${m}−${n}＝${m - n}` }) },
+    EL02b: { mis: 'EL02', name: '底數也相除', fn: ({ b, m, n }) => ({ text: `1^${m - n}`,
+      trace: `底數也相除 ${b}÷${b}＝1，寫成 ${sup('1^' + (m - n))}`, fix: `同底數相除，底數不變：${pbS(b, m - n)}` }) }
+  };
+  R.elPowPow = {
+    EL03: { mis: 'EL03', name: '次方的次方指數相加', fn: ({ b, m, n }) => ({ text: pb(b, m + n),
+      trace: `次方的次方卻把指數相加：${m}＋${n}＝${m + n}，寫成 ${pbS(b, m + n)}`, fix: `次方的次方，指數相乘：${m}×${n}＝${m * n}` }) },
+    EL07: { mis: 'EL07', name: '負號在次方內外不分', fn: ({ b, m, n }) => (b >= 0 || (m * n) % 2) ? null : ({ text: `−${-b}^${m * n}`,
+      trace: `指數相乘對了，但把負號寫到括號外：${sup('−' + (-b) + '^' + (m * n))}＝−${pow(-b, m * n)}`, fix: `底數是 ${negP(b)}，偶數次方是正的：${pbS(b, m * n)}` }) },
+    EL11: { mis: 'EL11', name: '把次方當成乘法', fn: ({ b, m, n }) => ({ text: pb(b * m, n),
+      trace: `把 ${pbS(b, m)} 當成 ${negP(b)}×${m}＝${sgn(b * m)}，再 ${n} 次方：${pbS(b * m, n)}`, fix: `${pbS(b, m)} 是 ${m} 個 ${negP(b)} 相乘，(${pbS(b, m)})${sup('^' + n)}＝${pbS(b, m * n)}` }) }
+  };
+  R.elProd = {
+    EL04a: { mis: 'EL04', name: '積的次方把指數相加', fn: ({ a, c, n }) => ({ text: pb(a * c, 2 * n),
+      trace: `底數相乘 ${a}×${c}＝${a * c}，指數也相加 ${n}＋${n}＝${2 * n}`, fix: `積的次方：${sup(a + '^' + n)}×${sup(c + '^' + n)}＝(${a}×${c})${sup('^' + n)}，指數不變` }) },
+    EL04b: { mis: 'EL04', name: '積的次方把底數相加', fn: ({ a, c, n }) => ({ text: pb(a + c, n),
+      trace: `把底數相加 ${a}＋${c}＝${a + c}，寫成 ${pbS(a + c, n)}`, fix: `底數要相乘：(${a}×${c})${sup('^' + n)}＝${pbS(a * c, n)}` }) },
+    EL01: { mis: 'EL01', name: '指數相乘', fn: ({ a, c, n }) => ({ text: pb(a * c, n * n),
+      trace: `底數相乘對了，指數卻相乘 ${n}×${n}＝${n * n}`, fix: `指數相同時只把底數相乘，指數不變：${pbS(a * c, n)}` }) }
+  };
+  R.elFrac = {
+    EL06a: { mis: 'EL06', name: '分數次方只算分子', fn: ({ p, q, n }) => ({ text: `${pow(p, n)}/${q}`,
+      trace: `只把分子 ${n} 次方：${sup(p + '^' + n)}＝${pow(p, n)}，分母 ${q} 沒乘`, fix: `分子分母都要 ${n} 次方：${pow(p, n)}/${pow(q, n)}` }) },
+    EL06b: { mis: 'EL06', name: '分數次方只算分母', fn: ({ p, q, n }) => ({ text: `${p}/${pow(q, n)}`,
+      trace: `只把分母 ${n} 次方：${sup(q + '^' + n)}＝${pow(q, n)}，分子 ${p} 沒乘`, fix: `分子分母都要 ${n} 次方：${pow(p, n)}/${pow(q, n)}` }) },
+    EL11: { mis: 'EL11', name: '把次方當成乘法', fn: ({ p, q, n }) => ({ text: `${p * n}/${q * n}`,
+      trace: `把 ${n} 次方當成乘以 ${n}：分子 ${p}×${n}＝${p * n}、分母 ${q}×${n}＝${q * n}`, fix: `(${p}/${q})${sup('^' + n)} 是 ${n} 個 ${p}/${q} 相乘＝${pow(p, n)}/${pow(q, n)}` }) }
+  };
+  R.elZero = {
+    EL08a: { mis: 'EL08', name: '以為零次方是 0', fn: ({ c, a }) => ({ value: 0,
+      trace: `以為 (−${a})⁰＝0：${c}×0＝0`, fix: `不是 0 的數，0 次方都是 1：${c}×1＝${c}` }) },
+    EL08b: { mis: 'EL08', name: '以為零次方是底數本身', fn: ({ c, a }) => ({ value: -c * a,
+      trace: `以為 (−${a})⁰＝−${a}：${c}×(−${a})＝${sgn(-c * a)}`, fix: `不是 0 的數，0 次方都是 1：${c}×1＝${c}` }) },
+    EL07: { mis: 'EL07', name: '負號在次方內外不分', fn: ({ c, a }) => ({ value: -c,
+      trace: `把 (−${a})⁰ 當成 −(${a}⁰)＝−1：${c}×(−1)＝−${c}`, fix: `括號裡整個 −${a} 是底數，(−${a})⁰＝1，${c}×1＝${c}` }) }
+  };
+
+  // ============================================================
+  // 白話迷思 → 規則（v3.0）：老師的錯誤算法＝從白名單「變形」組合（最多 3 個），不寫任意程式
+  // 算式 → 語法樹 → 依序套變形 → 用精確分數算 → 和老師例子的錯誤答案比對
+  // ============================================================
+  const QB = (n, d = 1n) => { if (d === 0n) throw new Error('除以 0'); if (d < 0n) { n = -n; d = -d; } const g = (function gg(a, b) { a = a < 0n ? -a : a; while (b) [a, b] = [b, a % b]; return a; })(n, d) || 1n; return { n: n / g, d: d / g }; };
+  const QOP = {
+    '+': (a, b) => QB(a.n * b.d + b.n * a.d, a.d * b.d), '-': (a, b) => QB(a.n * b.d - b.n * a.d, a.d * b.d),
+    '*': (a, b) => QB(a.n * b.n, a.d * b.d), '÷': (a, b) => QB(a.n * b.d, a.d * b.n), '/': (a, b) => QB(a.n * b.d, a.d * b.n),
+    '^': (a, b) => { if (b.d !== 1n) throw new Error('指數要是整數'); let e = b.n, neg = e < 0n; if (neg) e = -e; if (e > 64n) throw new Error('指數太大'); if (a.n === 0n && e === 0n) throw new Error('0 的 0 次方'); let r = QB(1n); for (let i = 0n; i < e; i++) r = QOP['*'](r, a); return neg ? QB(r.d, r.n) : r; }
+  };
+  const qStr = q => (q.n < 0n ? '−' : '') + (q.n < 0n ? -q.n : q.n) + (q.d === 1n ? '' : '/' + q.d);
+  function myNorm(s) {
+    s = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48));
+    s = s.replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => ({ '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' }[c])).join(''));
+    return s.replace(/[×xX*·⋅]/g, '*').replace(/（/g, '(').replace(/）/g, ')').replace(/[－−–]/g, '-').replace(/＋/g, '+').replace(/｜/g, '|').replace(/\s+/g, '');
+  }
+  // 語法：+ − 最低；× ÷；單元負號；整數/整數 是一個分數（比 × ÷ 優先）；^ 最高（−3^2＝−(3^2)）
+  function myParse(src) {
+    const s = myNorm(src); let i = 0;
+    const peek = () => s[i], eat = c => { if (s[i] !== c) throw new Error(`算式「${src}」第 ${i + 1} 個字應該是 ${c}`); i++; };
+    function expr() { let a = term(); while (peek() === '+' || peek() === '-') { const op = s[i++]; a = { t: 'bin', op, a, b: term() }; } return a; }
+    function term() { let a = unary(); while (peek() === '*' || peek() === '÷') { const op = s[i++]; a = { t: 'bin', op, a, b: unary() }; } return a; }
+    function unary() { if (peek() === '-') { i++; return { t: 'neg', a: unary() }; } if (peek() === '+') { i++; return unary(); } return frac(); }
+    function frac() { const a = power(); if (peek() === '/') { i++; return { t: 'bin', op: '/', a, b: power() }; } return a; }
+    function power() { const a = atom(); if (peek() === '^') { i++; if (peek() === '-') { i++; return { t: 'bin', op: '^', a, b: { t: 'neg', a: atom() } }; } return { t: 'bin', op: '^', a, b: atom() }; } return a; }
+    function atom() {
+      const m = /^\d+(\.\d+)?/.exec(s.slice(i));
+      if (m) { i += m[0].length; const [w, f = ''] = m[0].split('.'); return { t: 'num', q: QB(BigInt(w + f), 10n ** BigInt(f.length)), s: m[0] }; }
+      if (peek() === '(') { i++; const a = expr(); eat(')'); return { t: 'paren', a }; }
+      if (peek() === '|') { i++; const a = expr(); eat('|'); return { t: 'abs', a }; }
+      throw new Error(`算式「${src}」看不懂（第 ${i + 1} 個字）`);
+    }
+    const tree = expr(); if (i < s.length) throw new Error(`算式「${src}」後面多了「${s.slice(i)}」`); return tree;
+  }
+  function myEval(n) {
+    switch (n.t) {
+      case 'num': return n.q; case 'paren': return myEval(n.a); case 'neg': { const v = myEval(n.a); return QB(-v.n, v.d); }
+      case 'abs': { const v = myEval(n.a); return QB(v.n < 0n ? -v.n : v.n, v.d); }
+      case 'bin': return QOP[n.op](myEval(n.a), myEval(n.b));
+    }
+  }
+  const PREC = { '+': 1, '-': 1, '*': 2, '÷': 2, neg: 2.5, '/': 3, '^': 4 };
+  const SYM = { '+': '＋', '-': '−', '*': '×', '÷': '÷', '/': '/', '^': '^' };
+  function myPrint(n, flat) {                                             // flat：不印括號（「忽略括號」用）
+    const p = n => n.t === 'bin' ? PREC[n.op] : n.t === 'neg' ? PREC.neg : 9;
+    const wrap = (c, need) => !flat && need ? `(${myPrint(c, flat)})` : myPrint(c, flat);
+    switch (n.t) {
+      case 'num': return n.s || qStr(n.q);
+      case 'paren': return flat ? myPrint(n.a, flat) : `(${myPrint(n.a, flat)})`;
+      case 'abs': return `|${myPrint(n.a, flat)}|`;
+      case 'neg': return '−' + wrap(n.a, p(n.a) < PREC['^'] && n.a.t !== 'num' && n.a.t !== 'paren' && n.a.t !== 'abs');
+      case 'bin': { const P = PREC[n.op];
+        const L = wrap(n.a, p(n.a) < P || (n.op === '^' && (n.a.t === 'neg' || p(n.a) <= P)));
+        const R = wrap(n.b, p(n.b) < P || (p(n.b) === P && n.op !== '+' && n.op !== '*') || (n.op !== '^' && n.b.t === 'neg'));
+        return L + SYM[n.op] + R; }
+    }
+  }
+  const unP = n => n.t === 'paren' ? unP(n.a) : n;
+  const isFrac = n => { n = unP(n); return n.t === 'bin' && n.op === '/'; };
+  // 白名單變形：每個都是「把某種結構改寫成學生的寫法」，套用到算式裡所有符合的地方
+  const TRANSFORMS = {
+    powToMul: { name: '次方當成乘法', ex: '2^3 → 2×3', f: n => n.t === 'bin' && n.op === '^' ? { ...n, op: '*' } : n },
+    mulToAdd: { name: '乘法做成加法', ex: '8×9 → 8＋9', f: n => n.t === 'bin' && n.op === '*' ? { ...n, op: '+' } : n },
+    addToMul: { name: '加法做成乘法', ex: '8＋9 → 8×9', f: n => n.t === 'bin' && n.op === '+' ? { ...n, op: '*' } : n },
+    subToAdd: { name: '減法做成加法', ex: '5−8 → 5＋8', f: n => n.t === 'bin' && n.op === '-' ? { ...n, op: '+' } : n },
+    swapSub: { name: '減法前後對調（以為減法可以交換）', ex: '7−10 → 10−7', f: n => n.t === 'bin' && n.op === '-' ? { ...n, a: n.b, b: n.a } : n },
+    swapDiv: { name: '除法前後對調（以為除法可以交換）', ex: '6÷12 → 12÷6', f: n => n.t === 'bin' && n.op === '÷' ? { ...n, a: n.b, b: n.a } : n },
+    negIntoPow: { name: '負號也被次方（−a^n 當成 (−a)^n）', ex: '−3^2 → (−3)^2', f: n => n.t === 'neg' && unP(n.a).t === 'bin' && unP(n.a).op === '^' && n.a.t !== 'paren' ? { t: 'bin', op: '^', a: { t: 'paren', a: { t: 'neg', a: n.a.a } }, b: n.a.b } : n },
+    negOutOfPow: { name: '(−a)^n 當成 −a^n（負號放到次方外）', ex: '(−2)^4 → −2^4', f: n => n.t === 'bin' && n.op === '^' && unP(n.a).t === 'neg' ? { t: 'neg', a: { t: 'bin', op: '^', a: unP(n.a).a, b: n.b } } : n },
+    negFirstOnly: { name: '括號前的減號只作用在第一項', ex: '10−(3−5) → 10−3−5', f: n => {
+      if (n.t === 'bin' && n.op === '-' && n.b.t === 'paren' && unP(n.b).t === 'bin' && ['+', '-'].includes(unP(n.b).op)) { const g = unP(n.b); return { t: 'bin', op: g.op, a: { t: 'bin', op: '-', a: n.a, b: g.a }, b: g.b }; }
+      if (n.t === 'neg' && n.a.t === 'paren' && unP(n.a).t === 'bin' && ['+', '-'].includes(unP(n.a).op)) { const g = unP(n.a); return { t: 'bin', op: g.op, a: { t: 'neg', a: g.a }, b: g.b }; }
+      return n; } },
+    dropParens: { name: '忽略括號，照寫的順序算', ex: '2×(3＋4) → 2×3＋4', whole: true },
+    absAsParen: { name: '把絕對值當成括號', ex: '5−|−8| → 5−(−8)', f: n => n.t === 'abs' ? { t: 'paren', a: n.a } : n },
+    numOnly: { name: '分數的次方只算分子', ex: '(2/3)^4 → 2^4/3', f: n => n.t === 'bin' && n.op === '^' && isFrac(n.a) ? { t: 'bin', op: '/', a: { t: 'bin', op: '^', a: unP(n.a).a, b: n.b }, b: unP(n.a).b } : n },
+    denOnly: { name: '分數的次方只算分母', ex: '(2/3)^4 → 2/3^4', f: n => n.t === 'bin' && n.op === '^' && isFrac(n.a) ? { t: 'bin', op: '/', a: unP(n.a).a, b: { t: 'bin', op: '^', a: unP(n.a).b, b: n.b } } : n },
+    fracAddEach: { name: '分數相加：分子加分子、分母加分母', ex: '1/2＋1/3 → 2/5', f: n => n.t === 'bin' && ['+', '-'].includes(n.op) && isFrac(n.a) && isFrac(n.b) ? { t: 'bin', op: '/', a: { t: 'paren', a: { t: 'bin', op: n.op, a: unP(n.a).a, b: unP(n.b).a } }, b: { t: 'paren', a: { t: 'bin', op: n.op, a: unP(n.a).b, b: unP(n.b).b } } } : n }
+  };
+  function walk(n, f) {                                                   // 由下往上改寫
+    const c = n.t === 'bin' ? { ...n, a: walk(n.a, f), b: walk(n.b, f) } : (n.t === 'neg' || n.t === 'paren' || n.t === 'abs') ? { ...n, a: walk(n.a, f) } : n;
+    return f(c);
+  }
+  function myApply(tree, ids) {
+    let t = tree; const steps = [];
+    for (const id of ids) {
+      const T0 = TRANSFORMS[id]; if (!T0) throw new Error(`沒有「${id}」這種變形`);
+      t = T0.whole ? myParse(myPrint(t, true)) : walk(t, T0.f);
+      steps.push({ id, name: T0.name, expr: myPrint(t) });
+    }
+    return { tree: t, steps };
+  }
+  // 驗證：規則套在例子上，要算出老師寫的錯誤答案，而且和正確答案不同
+  function myCheck(spec) {
+    const ids = spec.transforms || [];
+    if (!Array.isArray(ids) || !ids.length || ids.length > 3) return { ok: false, msg: '變形要 1～3 個' };
+    const bad = ids.filter(x => !TRANSFORMS[x]); if (bad.length) return { ok: false, msg: '不在白名單的變形：' + bad.join('、') };
+    let tree, right, got, steps, want;
+    try { tree = myParse(spec.expr); right = myEval(tree); } catch (e) { return { ok: false, msg: '例子的算式：' + e.message }; }
+    try { want = myEval(myParse(spec.wrong)); } catch (e) { return { ok: false, msg: '例子的錯誤答案：' + e.message }; }
+    try { const r = myApply(tree, ids); steps = r.steps; got = myEval(r.tree); } catch (e) { return { ok: false, msg: '套用變形時：' + e.message }; }
+    const eq = (a, b) => a.n === b.n && a.d === b.d;
+    const trace = `${myPrint(tree)} → ${steps.map(s => s.expr).join(' → ')}＝${qStr(got)}`;
+    if (eq(got, right)) return { ok: false, got: qStr(got), right: qStr(right), trace, msg: `這樣算出來 ${qStr(got)} 剛好等於正確答案，不是迷思` };
+    if (!eq(got, want)) return { ok: false, got: qStr(got), right: qStr(right), trace, msg: `這樣算出來是 ${qStr(got)}，不是你的例子的 ${qStr(want)}` };
+    return { ok: true, got: qStr(got), right: qStr(right), trace, steps };
+  }
+  // 把「我的迷思」用在題目：算式 expr → 學生算出的值（套不上或剛好等於正解回 null）
+  function myRuleOn(spec, expr) {
+    let tree; try { tree = myParse(expr); } catch (e) { return null; }
+    let r; try { r = myApply(tree, spec.transforms); } catch (e) { return null; }
+    if (r.steps.every((s, i) => s.expr === (i ? r.steps[i - 1].expr : myPrint(tree)))) return null;   // 套不上（算式沒變）
+    let v, right; try { v = myEval(r.tree); right = myEval(tree); } catch (e) { return null; }
+    if (v.n === right.n && v.d === right.d) return null;
+    return { text: qStr(v), trace: `${spec.name}：${sup(myPrint(tree))} 算成 ${sup(r.steps[r.steps.length - 1].expr)}＝${qStr(v)}`, fix: spec.fix || `正確算法：${sup(myPrint(tree))}＝${qStr(right)}` };
+  }
+
+  // ---------- 題型：正解、選項比對鍵 ----------
+  // key：撞值檢查用的比對鍵（值相同的選項視為相同）
+  const numKey = t => { try { return V.fmtQ(V.evalQ(String(t))); } catch (e) { return 'T:' + t; } };
+  const KINDS = {
+    factorize: { key: t => 'T:' + String(t).replace(/\s+/g, '') },
+    pfValue: { key: numKey }, pfCount: { key: numKey },
+    pfSet: { key: t => 'S:' + String(t).split('、').map(Number).sort((x, y) => x - y).join(',') },
+    pfIsFactor: { key: numKey }, pfIsPrime: { key: numKey },
+    asAdd: { key: numKey }, asSub: { key: numKey }, asParen: { key: numKey }, asAbs: { key: numKey }, asDist: { key: numKey }, asRange: { key: numKey },
+    exPow: { key: numKey }, ex01: { key: numKey }, exNeg10: { key: numKey }, exCmp: { key: numKey },
+    exSci: { key: t => 'T:' + String(t).replace(/\s+/g, '') },                          // 值相同、寫法不同（235×10^4）也算不同選項
+    elMul: { key: numKey }, elDiv: { key: numKey }, elPowPow: { key: numKey }, elProd: { key: numKey }, elFrac: { key: numKey }, elZero: { key: numKey }
+  };
+  function registerKind(name, def, rules) { KINDS[name] = def; R[name] = rules; }   // 其他單元的規則檔用這個加題型
+
+  // ---------- 亂數（可給種子，測試結果固定） ----------
+  function rng(seed) {
+    let s = (seed >>> 0) || (Math.floor(Math.random() * 2 ** 32) >>> 0);
+    return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  const pickOne = (arr, r) => arr[Math.floor(r() * arr.length)];
+  function shuffle(a, r) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+  // ---------- 單一規則執行 ----------
+  function runRule(kind, id, P) {
+    const rule = R[kind] && R[kind][id]; if (!rule) throw new Error(`題型 ${kind} 沒有規則 ${id}`);
+    const o = rule.fn(P); if (!o) return null;
+    const text = o.text !== undefined ? String(o.text) : (o.value !== undefined ? sgn(o.value) : null);
+    return { rule: id, mis: rule.mis, text, value: o.value, trace: o.trace, fix: o.fix };
+  }
+
+  // 抽一組參數（符合 when），算出 let
+  function sampleParams(tpl, r, fixed) {
+    const P = {};
+    for (const [k, v] of Object.entries(tpl.params || {})) P[k] = fixed && k in fixed ? fixed[k] : Array.isArray(v) ? pickOne(v, r) : v;
+    for (const [k, e] of Object.entries(tpl.let || {})) P[k] = evalT(e, P);
+    if (tpl.when && !evalT(tpl.when, P)) return null;
+    return P;
+  }
+  function sampleValid(tpl, r, fixed) {                                   // 抽到符合 when 為止（when 不算在 50 次重抽裡）
+    for (let i = 0; i < 5000; i++) { const P = sampleParams(tpl, r, fixed); if (P) return P; }
+    return null;
+  }
+
+  // 一組參數 → 正解＋所有可用規則的誘答（還沒挑）
+  const myOk = tpl => tpl.check && tpl.check.type === 'value' && tpl.check.expr;      // 我的迷思只用在「算式→數值」的模板
+  function runAny(tpl, id, P, custom) {
+    if (!id.startsWith('MY:')) return runRule(tpl.kind, id, P);
+    const sp = (custom || []).find(c => 'MY:' + c.code === id); if (!sp || !myOk(tpl)) return null;
+    const o = myRuleOn(sp, fill(tpl.check.expr, P)); return o && { rule: id, mis: sp.code, text: o.text, trace: o.trace, fix: o.fix };
+  }
+  function evaluate(tpl, P, ruleIds, custom) {
+    const kind = KINDS[tpl.kind]; if (!kind) throw new Error('沒有這種題型：' + tpl.kind);
+    const av = evalT(tpl.answer, P), ansText = typeof av === 'number' ? sgn(av) : String(av);
+    const out = { P, ansText, ansKey: kind.key(ansText), cands: [] };
+    ruleIds.forEach(id => { const d = runAny(tpl, id, P, custom); if (d) out.cands.push(d); });
+    return out;
+  }
+
+  // 依序挑 pick 條：不等於正解、彼此不同；規則要在 A、B 兩組數字都能用
+  function choose(evA, evB, tpl, ruleIds, need, kind) {
+    const chosen = [], usedA = new Set([evA.ansKey]), usedB = new Set([evB.ansKey]);
+    for (const id of ruleIds) {
+      if (chosen.length >= need) break;
+      const a = evA.cands.find(d => d.rule === id), b = evB.cands.find(d => d.rule === id);
+      if (!a || !b) continue;
+      const ka = kind.key(a.text), kb = kind.key(b.text);
+      if (usedA.has(ka) || usedB.has(kb)) continue;
+      usedA.add(ka); usedB.add(kb); chosen.push(id);
+    }
+    return chosen.length === need ? chosen : null;
+  }
+
+  function buildItem(tpl, ev, chosen, set, pair, ansPos, r) {
+    const opts = [{ text: ev.ansText, mis: null, feedback: fill(tpl.okfb || '正確！', ev.P) }];
+    chosen.forEach(id => { const d = ev.cands.find(x => x.rule === id); opts.push({ text: d.text, mis: d.mis, rule: id, trace: d.trace, fix: d.fix, feedback: `${d.trace}。${d.fix}。` }); });
+    // 正解放在 ansPos，其他亂排
+    const wrong = shuffle(opts.slice(1), r); const arr = []; let w = 0;
+    for (let i = 0; i < opts.length; i++) arr.push(i === ansPos ? opts[0] : wrong[w++]);
+    const keyed = arr.map((o, i) => Object.assign({ key: 'ABCD'[i] }, o));
+    return {
+      id: pair + set, set, pair, bloom: tpl.bloom || '理解', lc: tpl.lc || '', stem: fill(tpl.stem, ev.P),
+      options: keyed, answer: 'ABCD'[ansPos], check: fillDeep(tpl.check, ev.P), hint: tpl.hint ? fill(tpl.hint, ev.P) : '',
+      tpl: tpl.tpl, params: ev.P, gen: 'template'
+    };
+  }
+
+  // ---------- 出題器：一個模板 → 一組平行題（A、B 卷） ----------
+  // opt：{ pair:'P01', seed, rules:[可用的規則 id]（老師勾的迷思篩過）, misMap（用來驗算迷思代碼）, maxTry:50 }
+  function genPair(tpl, opt = {}) {
+    const r = opt.rand || rng(opt.seed), kind = KINDS[tpl.kind];
+    const need = tpl.pick || 3, maxTry = opt.maxTry || 50, pair = opt.pair || 'P01';
+    const mine = myOk(tpl) ? (opt.custom || []).map(c => 'MY:' + c.code) : [];
+    const allow = mine.concat(opt.rules ? (tpl.distractors || []).filter(id => opt.rules.includes(id)) : (tpl.distractors || []));
+    if (allow.length < need) throw new Error(`模板 ${tpl.tpl}：可用的規則只有 ${allow.length} 條，至少要 ${need} 條`);
+    const misMap = opt.misMap;
+    const why = {}, note = m => why[m] = (why[m] || 0) + 1;
+    for (let t = 0; t < maxTry; t++) {
+      const fx = opt.fixed || [];                                          // 指定數字（重出某一題、測試用）
+      const PA = sampleValid(tpl, r, fx[0]), PB = sampleValid(tpl, r, fx[1]);
+      if (!PA || !PB) throw new Error(`模板 ${tpl.tpl}：抽不到符合 when（${tpl.when}）的數字`);
+      const evA = evaluate(tpl, PA, allow, opt.custom), evB = evaluate(tpl, PB, allow, opt.custom);
+      if (tpl.distinctAB) { const va = new Set(tpl.distinctAB.map(k => PA[k])); if (tpl.distinctAB.some(k => va.has(PB[k]))) { note('A、B 卷用到相同的數'); continue; } }
+      if (JSON.stringify(PA) === JSON.stringify(PB) || (evA.ansKey === evB.ansKey && fill(tpl.stem, PA) === fill(tpl.stem, PB))) { note('A、B 卷數字相同'); continue; }
+      const ruleOrder = opt.keepOrder ? allow : mine.concat(shuffle(allow.filter(x => !mine.includes(x)), r));   // 老師自己的迷思優先
+      const chosen = choose(evA, evB, tpl, ruleOrder, need, kind);
+      if (!chosen) { note('誘答撞值（彼此相同或等於正解）或規則不適用'); continue; }
+      const posA = Math.floor(r() * 4); let posB = Math.floor(r() * 3); if (posB >= posA) posB++;
+      const A = buildItem(tpl, evA, chosen, 'A', pair, posA, r), B = buildItem(tpl, evB, chosen, 'B', pair, posB, r);
+      // 產出的題目一律再驗算一次
+      const bad = [A, B].map(it => ({ it, v: V.verifyItem(it, misMap) })).filter(x => x.v.status !== 'pass');
+      if (bad.length) { note('驗算沒過：' + bad.map(x => x.it.id + ' ' + x.v.msgs.join('；')).join(' / ')); continue; }
+      return [A, B];
+    }
+    throw new Error(`模板 ${tpl.tpl} 試了 ${maxTry} 次都抽不到可用的數字（${Object.entries(why).map(([k, v]) => `${k} ${v} 次`).join('；')}）`);
+  }
+
+  // ---------- 出題器：多個模板 → fa-bank/1 ----------
+  // spec：{ unit:{grade,code,name}, tpls:[模板], mis:[迷思表], count:組數, seed, rules:[老師勾的規則 id 或迷思代碼], title, id }
+  function genBank(spec) {
+    const r = rng(spec.seed), tpls = spec.tpls || [];
+    if (!tpls.length) throw new Error('沒有模板');
+    const custom = spec.custom || [];
+    const misAll = (spec.mis || []).concat(GENERIC.filter(g => !(spec.mis || []).some(m => m.code === g.code)),
+      custom.map(c => ({ code: c.code, name: c.name, desc: c.desc || '', example: `${c.expr}＝${c.wrong}`, remedy: c.fix || '', source: '老師自訂（我的迷思）：' + (c.desc || c.name), transforms: c.transforms })));
+    const misMap = {}; misAll.forEach(m => misMap[m.code] = m);
+    // 老師勾的可以是迷思代碼（PF09）或規則 id（PF09a）
+    const allowRule = (tpl, id) => !spec.rules || spec.rules.includes(id) || spec.rules.includes(R[tpl.kind][id].mis);
+    const usable = tpls.filter(tp => (tp.distractors || []).filter(id => allowRule(tp, id)).length + (myOk(tp) ? custom.length : 0) >= (tp.pick || 3));
+    if (!usable.length) throw new Error('勾選的迷思太少：每種模板至少要 3 條可用的規則');
+    const count = spec.count || usable.length, items = [];
+    for (let i = 0; i < count; i++) {
+      const tp = usable[i % usable.length];
+      const rules = (tp.distractors || []).filter(id => allowRule(tp, id));
+      items.push(...genPair(tp, { pair: 'P' + String(i + 1).padStart(2, '0'), rand: r, rules, misMap, custom }));
+    }
+    const used = new Set(items.flatMap(it => it.options.map(o => o.mis).filter(Boolean)));
+    const u = spec.unit || {};
+    const bank = {
+      schema: 'fa-bank/1', id: spec.id || `T-${u.grade || ''}${u.code || ''}-${Date.now().toString(36)}`,
+      title: spec.title || `${u.grade || ''} ${u.code || ''} ${u.name || ''}（模板出題）`.trim(), route: spec.route || 'B',
+      unit: u, source: spec.source || '模板出題（不用 AI）：正解與誘答都由程式依錯誤規則算出，經自動驗算',
+      createdAt: spec.date || new Date().toISOString().slice(0, 10),
+      misconceptions: misAll.filter(m => used.has(m.code)),
+      items, note: '每組平行題 A 卷第一場、B 卷第二場；同一組用同一組錯誤規則，只換數字'
+    };
+    const vr = V.verifyBank(bank);
+    if (vr.summary.fail !== 0 || vr.summary.pairOk !== vr.summary.pairs) throw new Error('模板題庫驗算沒過：' + JSON.stringify(vr.summary));
+    bank.verify = vr.summary;
+    return bank;
+  }
+
+  // 刪掉某個誘答、由規則補下一個（審題畫面用）：保留同一組數字，換掉這條規則
+  function replaceDistractor(item, pairItem, tpl, ruleId, opt = {}) {
+    const kind = KINDS[tpl.kind], used = item.options.filter(o => o.rule).map(o => o.rule);
+    const pool = (tpl.distractors || []).filter(id => !used.includes(id) && (!opt.rules || opt.rules.includes(id) || opt.rules.includes(R[tpl.kind][id].mis)));
+    for (const id of pool) {
+      const a = runRule(tpl.kind, id, item.params), b = pairItem ? runRule(tpl.kind, id, pairItem.params) : a;
+      if (!a || !b) continue;
+      const clash = (it, d) => it.options.some(o => o.rule !== ruleId && kind.key(o.text) === kind.key(d.text));
+      if (clash(item, a) || (pairItem && clash(pairItem, b))) continue;
+      [[item, a], [pairItem, b]].forEach(([it, d]) => {
+        if (!it) return; const o = it.options.find(x => x.rule === ruleId);
+        Object.assign(o, { text: d.text, mis: d.mis, rule: id, trace: d.trace, fix: d.fix, feedback: `${d.trace}。${d.fix}。` }); delete o.teacherOk;
+      });
+      return id;
+    }
+    return null;
+  }
+
+  // 列出某些模板可用的迷思（只列有規則的）
+  function rulesOf(tpls) {
+    const m = {}; tpls.forEach(tp => (tp.distractors || []).forEach(id => { const rr = R[tp.kind][id]; (m[rr.mis] = m[rr.mis] || []).push({ tpl: tp.tpl, rule: id, name: rr.name }); }));
+    return m;
+  }
+
+  G.FARules = { my: { parse: myParse, eval: myEval, print: myPrint, apply: myApply, check: myCheck, on: myRuleOn, TRANSFORMS, qStr }, R, KINDS, GENERIC, registerKind, runRule, evalT, fill, sampleParams, genPair, genBank, replaceDistractor, rulesOf, rng,
+                util: { sup, pow, pw, pb, dec, shift, sciN, sgn, negP, facText, expand, compress, divisors, smallestFactor, digitSum } };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 window.ROUTE = 'A';
-window.BANK_A = {"schema": "fa-bank/1", "id": "A-7上2-1-質因數分解", "title": "七上 2-1 質因數分解・標準分解式（路線 A）", "route": "A", "unit": {"grade": "七上", "code": "2-1", "name": "質因數分解、標準分解式", "curriculum": ["N-7-1 質數與合數", "N-7-2 質因數分解的標準分解式"]}, "source": "Claude 依 115-教科書/知識卡/七上2-1.md（三版教學順序、迷思清單、教學建議）產題，題目答案經自動驗算器重算，老師審題後使用", "createdAt": "2026-11-04", "misconceptions": [{"code": "PF01", "name": "把 1 當成質數或質因數", "desc": "分解時寫出 1×…，或把 1 列入質因數", "example": "12＝1×2²×3", "diag": "has1", "remedy": "回到定義：質數要有「恰好兩個」正因數。請學生說 1 有幾個因數，再問寫 1× 會不會改變乘積。", "source": "知識卡迷思「1 是質數／最小合數」三版課本皆處理"}, {"code": "PF02", "name": "質因數與因數混淆", "desc": "把所有因數（含合數）都當成質因數", "example": "60 的質因數：2、3、4、5、6、10", "remedy": "先列出 60 的所有因數，再請學生圈出其中的質數：「質因數＝是因數、又是質數」。", "source": "知識卡迷思「質因數與因數混淆」三版課本皆處理"}, {"code": "PF03", "name": "分解未完全：留下合數就停", "desc": "短除法或樹狀圖做到一半，剩下的商還是合數", "example": "546＝2×3×91", "diag": "composite", "remedy": "請學生檢查最後一列（或每片葉子）是不是都是質數；91＝7×13 常被誤認為質數。", "source": "知識卡迷思「短除法只做一步就停」（南一課本）"}, {"code": "PF04", "name": "相同質因數沒有合併成次方", "desc": "結果正確但仍寫成連乘，不是標準分解式", "example": "72＝2×2×2×3×3", "diag": "notCombined", "remedy": "對照國小與國中的記法：國小寫連乘、國中改記成指數。請學生把連乘「數一數」改寫成次方。", "source": "知識卡：國小六上三版都只寫連乘，國中才改記成標準分解式"}, {"code": "PF05", "name": "質因數沒有由小到大排列", "desc": "值正確、也是質數，但沒有依約定排序", "example": "546＝3×2×7×13", "diag": "order", "remedy": "同一個數用 4×9、2×18、6×6 各拆一次，比較結果，再問「為什麼要約定由小到大」。", "source": "知識卡教學建議；三版七上課本都在定義中約定由小到大"}, {"code": "PF06", "name": "把次方當成乘法", "desc": "把 aⁿ 算成 a×n", "example": "2³×3²＝6×6＝36", "remedy": "把 2³ 展開寫成 2×2×2，再和 2×3 並排比較。", "source": "指數律（七上 2-4）前的常見錯誤"}, {"code": "PF07", "name": "次方數錯（底數與次方對應錯）", "desc": "數錯每個質因數出現的次數，或把次方對調", "example": "72＝2²×3³", "diag": "wrongValue", "remedy": "寫完標準分解式後一定要乘回去驗算；用短除法時數一數每個除數出現幾次。", "source": "知識卡迷思「標準分解式漏記次方或排序」三版皆處理"}, {"code": "PF08", "name": "「相異」質因數重複計數", "desc": "把重複出現的質因數也算進相異質因數的個數", "example": "360 的相異質因數有 6 個（2、2、2、3、3、5）", "remedy": "請學生先寫出標準分解式，再數「底數有幾個」。區分「質因數有哪些」和「質因數連乘中有幾項」。", "source": "標準分解式的讀法"}, {"code": "PF09", "name": "判因數只看底數、忽略次方", "desc": "以為底數都出現在原數中就是因數", "example": "2⁴×3 是 2³×3²×5 的因數", "remedy": "不用算出來：比較同一個質因數的次方，「每個次方都不超過」才是因數。可用知識卡建議題：M＝3³×5²×7 能不能被 15、63、2 整除？", "source": "知識卡：用標準分解式判因倍數只有翰林在 2-1 課文正式教"}, {"code": "PF10", "name": "以為因數要含有全部的質因數", "desc": "認為缺少某個質因數就不是因數", "example": "4 不是 2²×3×7 的因數（因為沒有 3、7）", "remedy": "把 2²×3×7 寫成 4×21，讓學生看到 4 直接是乘數之一。", "source": "用標準分解式判因數的常見錯誤"}, {"code": "PF11", "name": "用「數值比較小」判斷是因數", "desc": "只要比原數小就認為是因數", "example": "14 比 360 小，所以是 360 的因數", "remedy": "回到定義：因數要能整除。請學生舉一個比 360 小但不是因數的數。", "source": "因數定義的常見錯誤"}, {"code": "PF12", "name": "看似質數的合數誤判為質數", "desc": "沒有試除 7、13、17 等較大的質數", "example": "51、57、91 是質數", "remedy": "用篩法或試除到 √n：51＝3×17、57＝3×19、91＝7×13。", "source": "知識卡：三版都有篩法；數字大挑戰中 51 常被當成質數"}, {"code": "PF13", "name": "以為一個數不是自己的因數", "desc": "忽略「a 是 a 的因數」", "example": "84 不是 84 的因數", "remedy": "84÷84＝1，整除，所以 84 是自己的因數；1 和自己是每個正整數都有的因數。", "source": "知識卡：因數倍數定義（三版 2-1 開頭）"}, {"code": "PF14", "name": "不同底數也把次方相加", "desc": "把指數律（同底數相乘、指數相加）用在不同底數上，底數相乘、指數相加", "example": "2³×3²＝6⁵", "remedy": "指數律只適用於同底數。把 2³×3² 展開成 2×2×2×3×3，和 6⁵＝6×6×6×6×6 比一比。", "source": "指數律（七上 2-4）誤用；依教學經驗"}], "items": [{"id": "P01A", "bloom": "理解", "lc": "N-7-2", "stem": "72 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2^3×9", "mis": "PF03", "feedback": "9＝3×3 還是合數，要繼續分解。"}, {"key": "B", "text": "2^3×3^2", "mis": null, "feedback": "正確！72＝8×9＝2³×3²。"}, {"key": "C", "text": "2×2×2×3×3", "mis": "PF04", "feedback": "值是對的，但標準分解式要把相同的質因數合併成次方。"}, {"key": "D", "text": "2^2×3^3", "mis": "PF07", "feedback": "乘回去是 4×27＝108，次方對調了。"}], "answer": "B", "check": {"type": "factorize", "n": 72}, "hint": "分解完要檢查：都是質數嗎？相同的有合併嗎？乘回去是 72 嗎？", "set": "A", "pair": "P01"}, {"bloom": "理解", "lc": "N-7-2", "stem": "108 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2×2×3×3×3", "mis": "PF04", "feedback": "值是對的，但相同的質因數要合併成次方。"}, {"key": "B", "text": "2^3×3^2", "mis": "PF07", "feedback": "乘回去是 8×9＝72，次方對調了。"}, {"key": "C", "text": "2^2×27", "mis": "PF03", "feedback": "27＝3×3×3 還是合數，要繼續分解。"}, {"key": "D", "text": "2^2×3^3", "mis": null, "feedback": "正確！108＝4×27＝2²×3³。"}], "answer": "D", "check": {"type": "factorize", "n": 108}, "hint": "三個檢查：都是質數嗎？相同的有合併嗎？乘回去是 108 嗎？", "id": "P01B", "set": "B", "pair": "P01"}, {"id": "P02A", "bloom": "分析", "lc": "N-7-2", "stem": "小明用短除法分解 546，做到 546＝2×3×91 就停了。546 的標準分解式應該是哪一個？", "options": [{"key": "A", "text": "2×3×91", "mis": "PF03", "feedback": "91＝7×13，不是質數，還要繼續分解。"}, {"key": "B", "text": "1×2×3×7×13", "mis": "PF01", "feedback": "1 不是質數，標準分解式不寫 1。"}, {"key": "C", "text": "2×3×7×13", "mis": null, "feedback": "正確！91 還能分解成 7×13。"}, {"key": "D", "text": "3×2×7×13", "mis": "PF05", "feedback": "質因數都對，但要由小到大排列。"}], "answer": "C", "check": {"type": "factorize", "n": 546}, "hint": "91 是質數嗎？試試看用 7 除。", "set": "A", "pair": "P02"}, {"bloom": "分析", "lc": "N-7-2", "stem": "小華用短除法分解 390，做到 390＝2×5×39 就停了。390 的標準分解式應該是哪一個？", "options": [{"key": "A", "text": "5×2×3×13", "mis": "PF05", "feedback": "質因數都對，但要由小到大排列。"}, {"key": "B", "text": "2×5×39", "mis": "PF03", "feedback": "39＝3×13，不是質數，還要繼續分解。"}, {"key": "C", "text": "1×2×3×5×13", "mis": "PF01", "feedback": "1 不是質數，標準分解式不寫 1。"}, {"key": "D", "text": "2×3×5×13", "mis": null, "feedback": "正確！39 還能分解成 3×13，再由小到大排好。"}], "answer": "D", "check": {"type": "factorize", "n": 390}, "hint": "39 是質數嗎？各位數字和是多少？", "id": "P02B", "set": "B", "pair": "P02"}, {"id": "P03A", "bloom": "理解", "lc": "N-7-2", "stem": "60 的質因數有哪些？", "options": [{"key": "A", "text": "1、2、3、5", "mis": "PF01", "feedback": "1 不是質數，所以不是質因數。"}, {"key": "B", "text": "2、3、5", "mis": null, "feedback": "正確！60＝2²×3×5，質因數是 2、3、5。"}, {"key": "C", "text": "2、2、3、5", "mis": "PF08", "feedback": "問「有哪些」質因數，2 只要列一次。"}, {"key": "D", "text": "2、3、4、5、6、10", "mis": "PF02", "feedback": "4、6、10 是因數，但不是質數，所以不是質因數。"}], "answer": "B", "check": {"type": "primeSet", "n": 60}, "hint": "質因數＝是 60 的因數，而且是質數。", "set": "A", "pair": "P03"}, {"bloom": "理解", "lc": "N-7-2", "stem": "84 的質因數有哪些？", "options": [{"key": "A", "text": "2、2、3、7", "mis": "PF08", "feedback": "問「有哪些」質因數，2 只要列一次。"}, {"key": "B", "text": "2、3、4、6、7、12", "mis": "PF02", "feedback": "4、6、12 是因數，但不是質數，所以不是質因數。"}, {"key": "C", "text": "2、3、7", "mis": null, "feedback": "正確！84＝2²×3×7，質因數是 2、3、7。"}, {"key": "D", "text": "1、2、3、7", "mis": "PF01", "feedback": "1 不是質數，所以不是質因數。"}], "answer": "C", "check": {"type": "primeSet", "n": 84}, "hint": "質因數＝是 84 的因數，而且是質數。", "id": "P03B", "set": "B", "pair": "P03"}, {"id": "P04A", "bloom": "應用", "lc": "N-7-2", "stem": "360 有幾個相異的質因數？", "options": [{"key": "A", "text": "3", "mis": null, "feedback": "正確！360＝2³×3²×5，相異質因數是 2、3、5。"}, {"key": "B", "text": "6", "mis": "PF08", "feedback": "6 是把 2、2、2、3、3、5 全部算進去；「相異」只數不同的。"}, {"key": "C", "text": "4", "mis": "PF01", "feedback": "1 不是質因數，不能算進去。"}, {"key": "D", "text": "24", "mis": "PF02", "feedback": "24 是 360 的因數個數，不是質因數個數。"}], "answer": "A", "check": {"type": "value", "fn": "distinctPrimes", "n": 360}, "hint": "先寫出 360 的標準分解式，再數底數有幾種。", "set": "A", "pair": "P04"}, {"bloom": "應用", "lc": "N-7-2", "stem": "1260 有幾個相異的質因數？", "options": [{"key": "A", "text": "6", "mis": "PF08", "feedback": "6 是把 2、2、3、3、5、7 全部算進去；「相異」只數不同的。"}, {"key": "B", "text": "4", "mis": null, "feedback": "正確！1260＝2²×3²×5×7，相異質因數是 2、3、5、7。"}, {"key": "C", "text": "36", "mis": "PF02", "feedback": "36 是 1260 的因數個數，不是質因數個數。"}, {"key": "D", "text": "5", "mis": "PF01", "feedback": "1 不是質因數，不能算進去。"}], "answer": "B", "check": {"type": "value", "fn": "distinctPrimes", "n": 1260}, "hint": "先寫出 1260 的標準分解式，再數底數有幾種。", "id": "P04B", "set": "B", "pair": "P04"}, {"id": "P05A", "bloom": "記憶", "lc": "N-7-2", "stem": "2^3×3^2 的值是多少？", "options": [{"key": "A", "text": "36", "mis": "PF06", "feedback": "2³ 是 2×2×2＝8，不是 2×3。"}, {"key": "B", "text": "72", "mis": null, "feedback": "正確！8×9＝72。"}, {"key": "C", "text": "108", "mis": "PF07", "feedback": "108＝2²×3³，次方對調了。"}, {"key": "D", "text": "6^5", "mis": "PF14", "feedback": "底數不同不能把次方相加：2³×3²＝8×9，不是 6⁵。"}], "answer": "B", "check": {"type": "value", "expr": "2^3×3^2"}, "hint": "把 2³ 和 3² 先展開成連乘。", "set": "A", "pair": "P05"}, {"bloom": "記憶", "lc": "N-7-2", "stem": "2^2×5^3 的值是多少？", "options": [{"key": "A", "text": "60", "mis": "PF06", "feedback": "5³ 是 5×5×5＝125，不是 5×3。"}, {"key": "B", "text": "200", "mis": "PF07", "feedback": "200＝2³×5²，次方對調了。"}, {"key": "C", "text": "500", "mis": null, "feedback": "正確！4×125＝500。"}, {"key": "D", "text": "10^5", "mis": "PF14", "feedback": "底數不同不能把次方相加：2²×5³＝4×125，不是 10⁵。"}], "answer": "C", "check": {"type": "value", "expr": "2^2×5^3"}, "hint": "把 2² 和 5³ 先展開成連乘。", "id": "P05B", "set": "B", "pair": "P05"}, {"id": "P06A", "bloom": "分析", "lc": "N-7-2", "stem": "已知 M＝2^3×3^2×5，下列哪一個是 M 的因數？（不用把 M 算出來）", "options": [{"key": "A", "text": "2^4×3", "mis": "PF09", "feedback": "M 只有 2³，2⁴ 的次方太大，不是因數。"}, {"key": "B", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！每個質因數的次方都不超過 M 的次方。"}, {"key": "C", "text": "2×7", "mis": "PF11", "feedback": "14 比 M 小，但 M 沒有質因數 7，所以不是因數。"}, {"key": "D", "text": "3^3", "mis": "PF09", "feedback": "M 只有 3²，3³ 的次方太大。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^3×3^2×5", "want": true}, "hint": "一個一個質因數比次方：有沒有超過 M？", "set": "A", "pair": "P06"}, {"bloom": "分析", "lc": "N-7-2", "stem": "已知 N＝2^2×3^3×7，下列哪一個是 N 的因數？（不用把 N 算出來）", "options": [{"key": "A", "text": "2×5", "mis": "PF11", "feedback": "10 比 N 小，但 N 沒有質因數 5，所以不是因數。"}, {"key": "B", "text": "7^2", "mis": "PF09", "feedback": "N 只有一個 7，7² 的次方太大。"}, {"key": "C", "text": "2^3×3", "mis": "PF09", "feedback": "N 只有 2²，2³ 的次方太大。"}, {"key": "D", "text": "2^2×3^2×7", "mis": null, "feedback": "正確！每個質因數的次方都不超過 N 的次方。"}], "answer": "D", "check": {"type": "isFactor", "of": "2^2×3^3×7", "want": true}, "hint": "一個一個質因數比次方：有沒有超過 N？", "id": "P06B", "set": "B", "pair": "P06"}, {"id": "P07A", "bloom": "分析", "lc": "N-7-2", "stem": "已知 N＝2^2×3×7，下列哪一個「不是」N 的因數？", "options": [{"key": "A", "text": "4", "mis": "PF10", "feedback": "N＝4×21，4 是因數；因數不需要含有全部的質因數。"}, {"key": "B", "text": "8", "mis": null, "feedback": "正確！8＝2³，但 N 只有 2²。"}, {"key": "C", "text": "2×3×7", "mis": "PF10", "feedback": "42 是因數（N＝2×42）；因數不必每個質因數的次方都一樣。"}, {"key": "D", "text": "84", "mis": "PF13", "feedback": "84 就是 N 本身，每個數都是自己的因數。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^2×3×7", "want": false}, "hint": "把每個選項寫成標準分解式，再和 N 比次方。", "set": "A", "pair": "P07"}, {"bloom": "分析", "lc": "N-7-2", "stem": "已知 K＝2×3^2×5，下列哪一個「不是」K 的因數？", "options": [{"key": "A", "text": "90", "mis": "PF13", "feedback": "90 就是 K 本身，每個數都是自己的因數。"}, {"key": "B", "text": "9", "mis": "PF10", "feedback": "K＝9×10，9 是因數；因數不需要含有全部的質因數。"}, {"key": "C", "text": "27", "mis": null, "feedback": "正確！27＝3³，但 K 只有 3²。"}, {"key": "D", "text": "2×3×5", "mis": "PF10", "feedback": "30 是因數（K＝3×30）；因數不必每個質因數的次方都一樣。"}], "answer": "C", "check": {"type": "isFactor", "of": "2×3^2×5", "want": false}, "hint": "把每個選項寫成標準分解式，再和 K 比次方。", "id": "P07B", "set": "B", "pair": "P07"}, {"id": "P08A", "bloom": "理解", "lc": "N-7-2", "stem": "180 的標準分解式是哪一個？", "options": [{"key": "A", "text": "3^2×2^2×5", "mis": "PF05", "feedback": "值對了，但要由小到大排列：2 寫在 3 前面。"}, {"key": "B", "text": "2^2×9×5", "mis": "PF03", "feedback": "9 還是合數，要寫成 3²。"}, {"key": "C", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！"}, {"key": "D", "text": "2×2×3×3×5", "mis": "PF04", "feedback": "值對了，但相同質因數要合併成次方。"}], "answer": "C", "check": {"type": "factorize", "n": 180}, "hint": "和第 1 題一樣，三個檢查：質數、合併、排序。", "set": "A", "pair": "P08"}, {"bloom": "理解", "lc": "N-7-2", "stem": "252 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2^2×9×7", "mis": "PF03", "feedback": "9 還是合數，要寫成 3²。"}, {"key": "B", "text": "3^2×2^2×7", "mis": "PF05", "feedback": "值對了，但要由小到大排列：2 寫在 3 前面。"}, {"key": "C", "text": "2×2×3×3×7", "mis": "PF04", "feedback": "值對了，但相同質因數要合併成次方。"}, {"key": "D", "text": "2^2×3^2×7", "mis": null, "feedback": "正確！"}], "answer": "D", "check": {"type": "factorize", "n": 252}, "hint": "三個檢查：質數、合併、排序。", "id": "P08B", "set": "B", "pair": "P08"}, {"id": "P09A", "bloom": "應用", "lc": "N-7-1", "stem": "下列哪一個是質數？", "options": [{"key": "A", "text": "51", "mis": "PF12", "feedback": "51＝3×17，各位數字和是 6，是 3 的倍數。"}, {"key": "B", "text": "91", "mis": "PF12", "feedback": "91＝7×13。"}, {"key": "C", "text": "53", "mis": null, "feedback": "正確！53 不能被 2、3、5、7 整除，是質數。"}, {"key": "D", "text": "57", "mis": "PF12", "feedback": "57＝3×19，各位數字和是 12。"}], "answer": "C", "check": {"type": "isPrime", "want": true}, "hint": "試除 2、3、5、7（7×7＝49，8×8＝64 已超過）。", "set": "A", "pair": "P09"}, {"bloom": "應用", "lc": "N-7-1", "stem": "下列哪一個是質數？", "options": [{"key": "A", "text": "87", "mis": "PF12", "feedback": "87＝3×29，各位數字和是 15，是 3 的倍數。"}, {"key": "B", "text": "119", "mis": "PF12", "feedback": "119＝7×17。"}, {"key": "C", "text": "111", "mis": "PF12", "feedback": "111＝3×37，各位數字和是 3。"}, {"key": "D", "text": "59", "mis": null, "feedback": "正確！59 不能被 2、3、5、7 整除，是質數。"}], "answer": "D", "check": {"type": "isPrime", "want": true}, "hint": "試除 2、3、5、7 就夠了（因為 11×11＝121 已經超過這些數）。", "id": "P09B", "set": "B", "pair": "P09"}], "note": "每組平行題（P01～P09）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字"};
+window.BANK_A = {"schema": "fa-bank/1", "id": "A-7上2-1-質因數分解", "title": "七上 2-1 質因數分解・標準分解式（路線 A）", "route": "A", "unit": {"grade": "七上", "code": "2-1", "name": "質因數分解、標準分解式", "curriculum": ["N-7-1 質數與合數", "N-7-2 質因數分解的標準分解式"]}, "source": "Claude 依 115-教科書/知識卡/七上2-1.md（三版教學順序、迷思清單、教學建議）產題，題目答案經自動驗算器重算，老師審題後使用", "createdAt": "2026-11-04", "misconceptions": [{"code": "PF01", "name": "把 1 當成質數或質因數", "desc": "分解時寫出 1×…，或把 1 列入質因數", "example": "12＝1×2²×3", "diag": "has1", "remedy": "回到定義：質數要有「恰好兩個」正因數。請學生說 1 有幾個因數，再問寫 1× 會不會改變乘積。", "source": "知識卡迷思「1 是質數／最小合數」三版課本皆處理", "card": "1 是質數／最小合數"}, {"code": "PF02", "name": "質因數與因數混淆", "desc": "把所有因數（含合數）都當成質因數", "example": "60 的質因數：2、3、4、5、6、10", "remedy": "先列出 60 的所有因數，再請學生圈出其中的質數：「質因數＝是因數、又是質數」。", "source": "知識卡迷思「質因數與因數混淆」三版課本皆處理", "card": "質因數與因數混淆"}, {"code": "PF03", "name": "分解未完全：留下合數就停", "desc": "短除法或樹狀圖做到一半，剩下的商還是合數", "example": "546＝2×3×91", "diag": "composite", "remedy": "請學生檢查最後一列（或每片葉子）是不是都是質數；91＝7×13 常被誤認為質數。", "source": "知識卡迷思「短除法只做一步就停」（南一課本）", "card": "短除法只做一步就停（546=2×3×91）"}, {"code": "PF04", "name": "相同質因數沒有合併成次方", "desc": "結果正確但仍寫成連乘，不是標準分解式", "example": "72＝2×2×2×3×3", "diag": "notCombined", "remedy": "對照國小與國中的記法：國小寫連乘、國中改記成指數。請學生把連乘「數一數」改寫成次方。", "source": "知識卡：國小六上三版都只寫連乘，國中才改記成標準分解式"}, {"code": "PF05", "name": "質因數沒有由小到大排列", "desc": "值正確、也是質數，但沒有依約定排序", "example": "546＝3×2×7×13", "diag": "order", "remedy": "同一個數用 4×9、2×18、6×6 各拆一次，比較結果，再問「為什麼要約定由小到大」。", "source": "知識卡教學建議；三版七上課本都在定義中約定由小到大"}, {"code": "PF06", "name": "把次方當成乘法", "desc": "把 aⁿ 算成 a×n", "example": "2³×3²＝6×6＝36", "remedy": "把 2³ 展開寫成 2×2×2，再和 2×3 並排比較。", "source": "指數律（七上 2-4）前的常見錯誤"}, {"code": "PF07", "name": "次方數錯（底數與次方對應錯）", "desc": "數錯每個質因數出現的次數，或把次方對調", "example": "72＝2²×3³", "diag": "wrongValue", "remedy": "寫完標準分解式後一定要乘回去驗算；用短除法時數一數每個除數出現幾次。", "source": "知識卡迷思「標準分解式漏記次方或排序」三版皆處理", "card": "標準分解式漏記次方或排序"}, {"code": "PF08", "name": "「相異」質因數重複計數", "desc": "把重複出現的質因數也算進相異質因數的個數", "example": "360 的相異質因數有 6 個（2、2、2、3、3、5）", "remedy": "請學生先寫出標準分解式，再數「底數有幾個」。區分「質因數有哪些」和「質因數連乘中有幾項」。", "source": "標準分解式的讀法"}, {"code": "PF09", "name": "判因數只看底數、忽略次方", "desc": "以為底數都出現在原數中就是因數", "example": "2⁴×3 是 2³×3²×5 的因數", "remedy": "不用算出來：比較同一個質因數的次方，「每個次方都不超過」才是因數。可用知識卡建議題：M＝3³×5²×7 能不能被 15、63、2 整除？", "source": "知識卡：用標準分解式判因倍數只有翰林在 2-1 課文正式教"}, {"code": "PF10", "name": "以為因數要含有全部的質因數", "desc": "認為缺少某個質因數就不是因數", "example": "4 不是 2²×3×7 的因數（因為沒有 3、7）", "remedy": "把 2²×3×7 寫成 4×21，讓學生看到 4 直接是乘數之一。", "source": "用標準分解式判因數的常見錯誤"}, {"code": "PF11", "name": "用「數值比較小」判斷是因數", "desc": "只要比原數小就認為是因數", "example": "14 比 360 小，所以是 360 的因數", "remedy": "回到定義：因數要能整除。請學生舉一個比 360 小但不是因數的數。", "source": "因數定義的常見錯誤"}, {"code": "PF12", "name": "看似質數的合數誤判為質數", "desc": "沒有試除 7、13、17 等較大的質數", "example": "51、57、91 是質數", "remedy": "用篩法或試除到 √n：51＝3×17、57＝3×19、91＝7×13。", "source": "知識卡：三版都有篩法；數字大挑戰中 51 常被當成質數"}, {"code": "PF13", "name": "以為一個數不是自己的因數", "desc": "忽略「a 是 a 的因數」", "example": "84 不是 84 的因數", "remedy": "84÷84＝1，整除，所以 84 是自己的因數；1 和自己是每個正整數都有的因數。", "source": "知識卡：因數倍數定義（三版 2-1 開頭）"}, {"code": "PF14", "name": "不同底數也把次方相加", "desc": "把指數律（同底數相乘、指數相加）用在不同底數上，底數相乘、指數相加", "example": "2³×3²＝6⁵", "remedy": "指數律只適用於同底數。把 2³×3² 展開成 2×2×2×3×3，和 6⁵＝6×6×6×6×6 比一比。", "source": "指數律（七上 2-4）誤用；依教學經驗"}], "items": [{"id": "P01A", "bloom": "理解", "lc": "N-7-2", "stem": "72 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2^3×9", "mis": "PF03", "feedback": "9＝3×3 還是合數，要繼續分解。"}, {"key": "B", "text": "2^3×3^2", "mis": null, "feedback": "正確！72＝8×9＝2³×3²。"}, {"key": "C", "text": "2×2×2×3×3", "mis": "PF04", "feedback": "值是對的，但標準分解式要把相同的質因數合併成次方。"}, {"key": "D", "text": "2^2×3^3", "mis": "PF07", "feedback": "乘回去是 4×27＝108，次方對調了。"}], "answer": "B", "check": {"type": "factorize", "n": 72}, "hint": "分解完要檢查：都是質數嗎？相同的有合併嗎？乘回去是 72 嗎？", "set": "A", "pair": "P01"}, {"bloom": "理解", "lc": "N-7-2", "stem": "108 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2×2×3×3×3", "mis": "PF04", "feedback": "值是對的，但相同的質因數要合併成次方。"}, {"key": "B", "text": "2^3×3^2", "mis": "PF07", "feedback": "乘回去是 8×9＝72，次方對調了。"}, {"key": "C", "text": "2^2×27", "mis": "PF03", "feedback": "27＝3×3×3 還是合數，要繼續分解。"}, {"key": "D", "text": "2^2×3^3", "mis": null, "feedback": "正確！108＝4×27＝2²×3³。"}], "answer": "D", "check": {"type": "factorize", "n": 108}, "hint": "三個檢查：都是質數嗎？相同的有合併嗎？乘回去是 108 嗎？", "id": "P01B", "set": "B", "pair": "P01"}, {"id": "P02A", "bloom": "分析", "lc": "N-7-2", "stem": "小明用短除法分解 546，做到 546＝2×3×91 就停了。546 的標準分解式應該是哪一個？", "options": [{"key": "A", "text": "2×3×91", "mis": "PF03", "feedback": "91＝7×13，不是質數，還要繼續分解。"}, {"key": "B", "text": "1×2×3×7×13", "mis": "PF01", "feedback": "1 不是質數，標準分解式不寫 1。"}, {"key": "C", "text": "2×3×7×13", "mis": null, "feedback": "正確！91 還能分解成 7×13。"}, {"key": "D", "text": "3×2×7×13", "mis": "PF05", "feedback": "質因數都對，但要由小到大排列。"}], "answer": "C", "check": {"type": "factorize", "n": 546}, "hint": "91 是質數嗎？試試看用 7 除。", "set": "A", "pair": "P02"}, {"bloom": "分析", "lc": "N-7-2", "stem": "小華用短除法分解 390，做到 390＝2×5×39 就停了。390 的標準分解式應該是哪一個？", "options": [{"key": "A", "text": "5×2×3×13", "mis": "PF05", "feedback": "質因數都對，但要由小到大排列。"}, {"key": "B", "text": "2×5×39", "mis": "PF03", "feedback": "39＝3×13，不是質數，還要繼續分解。"}, {"key": "C", "text": "1×2×3×5×13", "mis": "PF01", "feedback": "1 不是質數，標準分解式不寫 1。"}, {"key": "D", "text": "2×3×5×13", "mis": null, "feedback": "正確！39 還能分解成 3×13，再由小到大排好。"}], "answer": "D", "check": {"type": "factorize", "n": 390}, "hint": "39 是質數嗎？各位數字和是多少？", "id": "P02B", "set": "B", "pair": "P02"}, {"id": "P03A", "bloom": "理解", "lc": "N-7-2", "stem": "60 的質因數有哪些？", "options": [{"key": "A", "text": "1、2、3、5", "mis": "PF01", "feedback": "1 不是質數，所以不是質因數。"}, {"key": "B", "text": "2、3、5", "mis": null, "feedback": "正確！60＝2²×3×5，質因數是 2、3、5。"}, {"key": "C", "text": "2、2、3、5", "mis": "PF08", "feedback": "問「有哪些」質因數，2 只要列一次。"}, {"key": "D", "text": "2、3、4、5、6、10", "mis": "PF02", "feedback": "4、6、10 是因數，但不是質數，所以不是質因數。"}], "answer": "B", "check": {"type": "primeSet", "n": 60}, "hint": "質因數＝是 60 的因數，而且是質數。", "set": "A", "pair": "P03"}, {"bloom": "理解", "lc": "N-7-2", "stem": "84 的質因數有哪些？", "options": [{"key": "A", "text": "2、2、3、7", "mis": "PF08", "feedback": "問「有哪些」質因數，2 只要列一次。"}, {"key": "B", "text": "2、3、4、6、7、12", "mis": "PF02", "feedback": "4、6、12 是因數，但不是質數，所以不是質因數。"}, {"key": "C", "text": "2、3、7", "mis": null, "feedback": "正確！84＝2²×3×7，質因數是 2、3、7。"}, {"key": "D", "text": "1、2、3、7", "mis": "PF01", "feedback": "1 不是質數，所以不是質因數。"}], "answer": "C", "check": {"type": "primeSet", "n": 84}, "hint": "質因數＝是 84 的因數，而且是質數。", "id": "P03B", "set": "B", "pair": "P03"}, {"id": "P04A", "bloom": "應用", "lc": "N-7-2", "stem": "360 有幾個相異的質因數？", "options": [{"key": "A", "text": "3", "mis": null, "feedback": "正確！360＝2³×3²×5，相異質因數是 2、3、5。"}, {"key": "B", "text": "6", "mis": "PF08", "feedback": "6 是把 2、2、2、3、3、5 全部算進去；「相異」只數不同的。"}, {"key": "C", "text": "4", "mis": "PF01", "feedback": "1 不是質因數，不能算進去。"}, {"key": "D", "text": "24", "mis": "PF02", "feedback": "24 是 360 的因數個數，不是質因數個數。"}], "answer": "A", "check": {"type": "value", "fn": "distinctPrimes", "n": 360}, "hint": "先寫出 360 的標準分解式，再數底數有幾種。", "set": "A", "pair": "P04"}, {"bloom": "應用", "lc": "N-7-2", "stem": "1260 有幾個相異的質因數？", "options": [{"key": "A", "text": "6", "mis": "PF08", "feedback": "6 是把 2、2、3、3、5、7 全部算進去；「相異」只數不同的。"}, {"key": "B", "text": "4", "mis": null, "feedback": "正確！1260＝2²×3²×5×7，相異質因數是 2、3、5、7。"}, {"key": "C", "text": "36", "mis": "PF02", "feedback": "36 是 1260 的因數個數，不是質因數個數。"}, {"key": "D", "text": "5", "mis": "PF01", "feedback": "1 不是質因數，不能算進去。"}], "answer": "B", "check": {"type": "value", "fn": "distinctPrimes", "n": 1260}, "hint": "先寫出 1260 的標準分解式，再數底數有幾種。", "id": "P04B", "set": "B", "pair": "P04"}, {"id": "P05A", "bloom": "記憶", "lc": "N-7-2", "stem": "2^3×3^2 的值是多少？", "options": [{"key": "A", "text": "36", "mis": "PF06", "feedback": "2³ 是 2×2×2＝8，不是 2×3。"}, {"key": "B", "text": "72", "mis": null, "feedback": "正確！8×9＝72。"}, {"key": "C", "text": "108", "mis": "PF07", "feedback": "108＝2²×3³，次方對調了。"}, {"key": "D", "text": "6^5", "mis": "PF14", "feedback": "底數不同不能把次方相加：2³×3²＝8×9，不是 6⁵。"}], "answer": "B", "check": {"type": "value", "expr": "2^3×3^2"}, "hint": "把 2³ 和 3² 先展開成連乘。", "set": "A", "pair": "P05"}, {"bloom": "記憶", "lc": "N-7-2", "stem": "2^2×5^3 的值是多少？", "options": [{"key": "A", "text": "60", "mis": "PF06", "feedback": "5³ 是 5×5×5＝125，不是 5×3。"}, {"key": "B", "text": "200", "mis": "PF07", "feedback": "200＝2³×5²，次方對調了。"}, {"key": "C", "text": "500", "mis": null, "feedback": "正確！4×125＝500。"}, {"key": "D", "text": "10^5", "mis": "PF14", "feedback": "底數不同不能把次方相加：2²×5³＝4×125，不是 10⁵。"}], "answer": "C", "check": {"type": "value", "expr": "2^2×5^3"}, "hint": "把 2² 和 5³ 先展開成連乘。", "id": "P05B", "set": "B", "pair": "P05"}, {"id": "P06A", "bloom": "分析", "lc": "N-7-2", "stem": "已知 M＝2^3×3^2×5，下列哪一個是 M 的因數？（不用把 M 算出來）", "options": [{"key": "A", "text": "2^4×3", "mis": "PF09", "feedback": "M 只有 2³，2⁴ 的次方太大，不是因數。"}, {"key": "B", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！每個質因數的次方都不超過 M 的次方。"}, {"key": "C", "text": "2×7", "mis": "PF11", "feedback": "14 比 M 小，但 M 沒有質因數 7，所以不是因數。"}, {"key": "D", "text": "3^3", "mis": "PF09", "feedback": "M 只有 3²，3³ 的次方太大。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^3×3^2×5", "want": true}, "hint": "一個一個質因數比次方：有沒有超過 M？", "set": "A", "pair": "P06"}, {"bloom": "分析", "lc": "N-7-2", "stem": "已知 N＝2^2×3^3×7，下列哪一個是 N 的因數？（不用把 N 算出來）", "options": [{"key": "A", "text": "2×5", "mis": "PF11", "feedback": "10 比 N 小，但 N 沒有質因數 5，所以不是因數。"}, {"key": "B", "text": "7^2", "mis": "PF09", "feedback": "N 只有一個 7，7² 的次方太大。"}, {"key": "C", "text": "2^3×3", "mis": "PF09", "feedback": "N 只有 2²，2³ 的次方太大。"}, {"key": "D", "text": "2^2×3^2×7", "mis": null, "feedback": "正確！每個質因數的次方都不超過 N 的次方。"}], "answer": "D", "check": {"type": "isFactor", "of": "2^2×3^3×7", "want": true}, "hint": "一個一個質因數比次方：有沒有超過 N？", "id": "P06B", "set": "B", "pair": "P06"}, {"id": "P07A", "bloom": "分析", "lc": "N-7-2", "stem": "已知 N＝2^2×3×7，下列哪一個「不是」N 的因數？", "options": [{"key": "A", "text": "4", "mis": "PF10", "feedback": "N＝4×21，4 是因數；因數不需要含有全部的質因數。"}, {"key": "B", "text": "8", "mis": null, "feedback": "正確！8＝2³，但 N 只有 2²。"}, {"key": "C", "text": "2×3×7", "mis": "PF10", "feedback": "42 是因數（N＝2×42）；因數不必每個質因數的次方都一樣。"}, {"key": "D", "text": "84", "mis": "PF13", "feedback": "84 就是 N 本身，每個數都是自己的因數。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^2×3×7", "want": false}, "hint": "把每個選項寫成標準分解式，再和 N 比次方。", "set": "A", "pair": "P07"}, {"bloom": "分析", "lc": "N-7-2", "stem": "已知 K＝2×3^2×5，下列哪一個「不是」K 的因數？", "options": [{"key": "A", "text": "90", "mis": "PF13", "feedback": "90 就是 K 本身，每個數都是自己的因數。"}, {"key": "B", "text": "9", "mis": "PF10", "feedback": "K＝9×10，9 是因數；因數不需要含有全部的質因數。"}, {"key": "C", "text": "27", "mis": null, "feedback": "正確！27＝3³，但 K 只有 3²。"}, {"key": "D", "text": "2×3×5", "mis": "PF10", "feedback": "30 是因數（K＝3×30）；因數不必每個質因數的次方都一樣。"}], "answer": "C", "check": {"type": "isFactor", "of": "2×3^2×5", "want": false}, "hint": "把每個選項寫成標準分解式，再和 K 比次方。", "id": "P07B", "set": "B", "pair": "P07"}, {"id": "P08A", "bloom": "理解", "lc": "N-7-2", "stem": "180 的標準分解式是哪一個？", "options": [{"key": "A", "text": "3^2×2^2×5", "mis": "PF05", "feedback": "值對了，但要由小到大排列：2 寫在 3 前面。"}, {"key": "B", "text": "2^2×9×5", "mis": "PF03", "feedback": "9 還是合數，要寫成 3²。"}, {"key": "C", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！"}, {"key": "D", "text": "2×2×3×3×5", "mis": "PF04", "feedback": "值對了，但相同質因數要合併成次方。"}], "answer": "C", "check": {"type": "factorize", "n": 180}, "hint": "和第 1 題一樣，三個檢查：質數、合併、排序。", "set": "A", "pair": "P08"}, {"bloom": "理解", "lc": "N-7-2", "stem": "252 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2^2×9×7", "mis": "PF03", "feedback": "9 還是合數，要寫成 3²。"}, {"key": "B", "text": "3^2×2^2×7", "mis": "PF05", "feedback": "值對了，但要由小到大排列：2 寫在 3 前面。"}, {"key": "C", "text": "2×2×3×3×7", "mis": "PF04", "feedback": "值對了，但相同質因數要合併成次方。"}, {"key": "D", "text": "2^2×3^2×7", "mis": null, "feedback": "正確！"}], "answer": "D", "check": {"type": "factorize", "n": 252}, "hint": "三個檢查：質數、合併、排序。", "id": "P08B", "set": "B", "pair": "P08"}, {"id": "P09A", "bloom": "應用", "lc": "N-7-1", "stem": "下列哪一個是質數？", "options": [{"key": "A", "text": "51", "mis": "PF12", "feedback": "51＝3×17，各位數字和是 6，是 3 的倍數。"}, {"key": "B", "text": "91", "mis": "PF12", "feedback": "91＝7×13。"}, {"key": "C", "text": "53", "mis": null, "feedback": "正確！53 不能被 2、3、5、7 整除，是質數。"}, {"key": "D", "text": "57", "mis": "PF12", "feedback": "57＝3×19，各位數字和是 12。"}], "answer": "C", "check": {"type": "isPrime", "want": true}, "hint": "試除 2、3、5、7（7×7＝49，8×8＝64 已超過）。", "set": "A", "pair": "P09"}, {"bloom": "應用", "lc": "N-7-1", "stem": "下列哪一個是質數？", "options": [{"key": "A", "text": "87", "mis": "PF12", "feedback": "87＝3×29，各位數字和是 15，是 3 的倍數。"}, {"key": "B", "text": "119", "mis": "PF12", "feedback": "119＝7×17。"}, {"key": "C", "text": "111", "mis": "PF12", "feedback": "111＝3×37，各位數字和是 3。"}, {"key": "D", "text": "59", "mis": null, "feedback": "正確！59 不能被 2、3、5、7 整除，是質數。"}], "answer": "D", "check": {"type": "isPrime", "want": true}, "hint": "試除 2、3、5、7 就夠了（因為 11×11＝121 已經超過這些數）。", "id": "P09B", "set": "B", "pair": "P09"}], "note": "每組平行題（P01～P09）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字"};
+window.FA_TPL = {"tpl": {"七上1-2": {"schema": "fa-tpl/1", "unit": {"grade": "七上", "code": "1-2", "name": "整數的加減、去括號、兩點距離", "curriculum": ["N-7-3 負數與數的四則混合運算（加減）", "N-7-5 數線上兩點的距離"]}, "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 rules.js 的規則 id，pick 是每題用幾條", "tpls": [{"tpl": "AS-add", "title": "異號相加", "kind": "asAdd", "bloom": "理解", "lc": "N-7-3", "params": {"a": [2, 3, 4, 5, 6, 7, 9, 12], "b": [3, 5, 7, 8, 9, 11, 13, 15]}, "when": "b > a + 1 && a + b <= 24", "stem": "{a}＋(−{b})＝？", "answer": "a - b", "check": {"type": "value", "expr": "{a}+(−{b})"}, "okfb": "正確！異號相加：{b}−{a}＝{b-a}，正負號跟絕對值大的 −{b}，得 {sgn(a-b)}。", "hint": "異號相加：大的絕對值減小的，正負號跟絕對值大的數。", "distractors": ["AS02", "AS10", "AS01"], "pick": 3}, {"tpl": "AS-sub", "title": "減去負數", "kind": "asSub", "bloom": "理解", "lc": "N-7-3", "params": {"a": [2, 3, 4, 5, 6, 7], "s": [-1], "b": [4, 6, 8, 9, 11, 12]}, "when": "a < b && b - a != a + b", "stem": "{a}−(−{b})＝？", "answer": "a + b", "check": {"type": "value", "expr": "{a}−(−{b})"}, "okfb": "正確！減去 −{b} 就是加上 {b}：{a}＋{b}＝{a+b}。", "hint": "減去一個數，等於加上它的相反數。", "distractors": ["AS08", "AS04", "AS03"], "pick": 3}, {"tpl": "AS-paren", "title": "去括號", "kind": "asParen", "bloom": "應用", "lc": "N-7-3", "params": {"a": [8, 10, 12, 15, 20], "b": [2, 3, 4, 6], "c": [5, 7, 8, 9]}, "when": "b < c && a - b - c != 0", "stem": "{a}−({b}−{c})＝？", "answer": "a - b + c", "check": {"type": "value", "expr": "{a}−({b}−{c})"}, "okfb": "正確！括號裡 {b}−{c}＝−{c-b}，{a}−(−{c-b})＝{a-b+c}；或去括號 {a}−{b}＋{c}＝{a-b+c}。", "hint": "括號前是減號，去括號時括號裡每一項都要變號。", "distractors": ["AS05", "AS03", "AS04"], "pick": 3}, {"tpl": "AS-abs", "title": "減去絕對值", "kind": "asAbs", "bloom": "理解", "lc": "N-7-3", "params": {"a": [2, 3, 4, 5, 6], "b": [7, 8, 9, 11, 12]}, "when": "a < b", "stem": "{a}−|−{b}|＝？", "answer": "a - b", "check": {"type": "value", "expr": "{a}−|−{b}|"}, "okfb": "正確！|−{b}|＝{b}，{a}−{b}＝{sgn(a-b)}。", "hint": "先算絕對值，再做減法。", "distractors": ["AS06", "AS03", "AS10"], "pick": 3}, {"tpl": "AS-dist", "title": "數線上兩點距離", "kind": "asDist", "bloom": "應用", "lc": "N-7-5", "params": {"a": [2, 3, 4, 5, 6, 7], "b": [3, 4, 5, 6, 8, 9]}, "when": "a != b", "stem": "數線上 A(−{a})、B({b})，A、B 兩點的距離是多少？", "answer": "a + b", "check": {"type": "value", "expr": "{b}−(−{a})"}, "okfb": "正確！距離＝右邊減左邊：{b}−(−{a})＝{a+b}。", "hint": "距離＝右邊的坐標減左邊的坐標，一定是正的。", "distractors": ["AS09", "AS07", "G03"], "pick": 3}, {"tpl": "AS-range", "title": "哪一個比原數大", "kind": "asRange", "bloom": "分析", "lc": "N-7-3", "params": {"x": [-2, -3, -4, -5], "b": [3, 4, 5, 6], "e": [2, 3, 5, 7], "c": [2, 3, 4, 6], "g": [1, 2, 3, 4], "h": [8, 9, 10, 11, 12]}, "when": "e != c && g - h < x", "stem": "下列哪一個算式的結果比 {sgn(x)} 大？", "answer": "sgn(x) + '−(−' + b + ')'", "check": {"type": "range", "gt": "{x}"}, "okfb": "正確！{sgn(x)}−(−{b})＝{sgn(x)}＋{b}＝{sgn(x+b)}，比 {sgn(x)} 大。", "hint": "每個算式都先算出來，再和 {sgn(x)} 比。", "distractors": ["AS01", "AS06", "AS02"], "pick": 3}]}, "七上1-4": {"schema": "fa-tpl/1", "unit": {"grade": "七上", "code": "1-4", "name": "指數記法、10 的負次方、科學記號", "curriculum": ["N-7-6 指數的意義", "N-7-8 科學記號"]}, "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 rules.js 的規則 id，pick 是每題用幾條", "tpls": [{"tpl": "EX-negOut", "title": "負號在次方外面", "kind": "exPow", "bloom": "理解", "lc": "N-7-6", "params": {"a": [2, 3, 4, 5, 6, 7], "n": [2, 4], "form": "out"}, "when": "pow(a,n) <= 700 && pow(a,n) != a*n", "stem": "−{a}^{n}＝？", "answer": "-pow(a,n)", "check": {"type": "value", "expr": "−{a}^{n}"}, "okfb": "正確！先算 {a}^{n}＝{pow(a,n)}，再加負號：−{pow(a,n)}。", "hint": "負號在次方外面：先算次方，再加負號。", "distractors": ["EX01", "EX02", "EX02s"], "pick": 3}, {"tpl": "EX-negIn", "title": "負數的奇數次方", "kind": "exPow", "bloom": "理解", "lc": "N-7-6", "params": {"a": [2, 3, 4, 5], "n": [3, 5], "form": "in"}, "when": "pow(a,n) <= 1000", "stem": "(−{a})^{n}＝？", "answer": "pow(-a,n)", "check": {"type": "value", "expr": "(−{a})^{n}"}, "okfb": "正確！{n} 個 −{a} 相乘，奇數個負數相乘是負的：−{pow(a,n)}。", "hint": "負數的奇數次方是負的，偶數次方是正的。", "distractors": ["EX04", "EX02", "EX02s"], "pick": 3}, {"tpl": "EX-01", "title": "0 和 1 的次方", "kind": "ex01", "bloom": "理解", "lc": "N-7-6", "params": {"m": [3, 4, 5, 6, 7, 8, 9], "k": [2, 3, 4, 5, 6]}, "when": "m != k && m != 2", "stem": "1^{m}＋0^{k}＝？", "answer": "1", "check": {"type": "value", "expr": "1^{m}+0^{k}"}, "okfb": "正確！1^{m}＝1、0^{k}＝0，1＋0＝1。", "hint": "1 的任何次方都是 1；0 的正整數次方都是 0。", "distractors": ["EX03a", "EX03b", "EX02"], "pick": 3}, {"tpl": "EX-neg10", "title": "10 的負次方", "kind": "exNeg10", "bloom": "理解", "lc": "N-7-6", "params": {"n": [2, 3, 4, 5, 6]}, "stem": "10^-{n}＝？", "answer": "dec(n)", "check": {"type": "value", "expr": "10^-{n}"}, "okfb": "正確！10^-{n}＝1/10^{n}＝{dec(n)}，1 在小數點後第 {n} 位。", "hint": "10 的負 n 次方＝1/10ⁿ，1 在小數點後第 n 位。", "distractors": ["EX06", "EX07a", "EX07b", "EX02"], "pick": 3}, {"tpl": "EX-sci", "title": "寫成科學記號", "kind": "exSci", "bloom": "理解", "lc": "N-7-8", "params": {"M": [12, 15, 23, 36, 48, 235, 306, 725, 108, 4125], "k": [4, 5, 6, 7, 8]}, "let": {"d": "len(M) - 1", "N": "sciN(M, len(M) - 1, k)"}, "when": "k > d", "stem": "{N} 用科學記號表示是哪一個？", "answer": "shift(M, d) + '×10^' + k", "check": {"type": "sci", "value": "{N}"}, "okfb": "正確！{N}＝{shift(M,d)}×10^{k}，1≤{shift(M,d)}＜10。", "hint": "a×10ⁿ：a 要在 1 到 10 之間（可以是 1，不能是 10）。", "distractors": ["EX08a", "EX10", "EX08b"], "pick": 3}, {"tpl": "EX-cmp", "title": "科學記號比大小", "kind": "exCmp", "bloom": "分析", "lc": "N-7-8", "params": {"a1": [1.2, 1.5, 2.1, 3.4], "m": [4, 5, 6, 7], "c1": [9.8, 8.7, 7.6], "c2": [9.9, 9.5, 6.4], "c3": [7.5, 8.2, 9.1], "e": [3, 4, 5, 6, 7, 8]}, "stem": "下列哪一個數最大？", "answer": "a1 + '×10^' + m", "check": {"type": "extreme", "want": "max"}, "okfb": "正確！先比指數：10^{m} 最大，所以 {a1}×10^{m} 最大。", "hint": "科學記號比大小：先比指數，指數一樣再比係數。", "distractors": ["EX09a", "EX09b", "EX11"], "pick": 3, "distinctAB": ["m"]}]}, "七上2-1": {"schema": "fa-tpl/1", "unit": {"grade": "七上", "code": "2-1", "name": "質因數分解、標準分解式", "curriculum": ["N-7-1 質數與合數", "N-7-2 質因數分解的標準分解式"]}, "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 rules.js 的規則 id，pick 是每題用幾條", "tpls": [{"tpl": "PF-factorize", "title": "標準分解式辨認", "kind": "factorize", "bloom": "理解", "lc": "N-7-2", "params": {"p": [2, 3], "a": [1, 2, 3, 4], "q": [3, 5, 7], "b": [1, 2, 3], "r": [1, 7, 11, 13]}, "let": {"n": "pow(p,a)*pow(q,b)*r"}, "when": "p < q && (r == 1 || q < r) && a + b >= 3 && n >= 40 && n <= 800", "stem": "{n} 的標準分解式是哪一個？", "answer": "fac(n)", "check": {"type": "factorize", "n": "{n}"}, "okfb": "正確！{n}＝{fac(n)}。", "hint": "分解完要檢查：都是質數嗎？相同的有合併嗎？乘回去是 {n} 嗎？", "distractors": ["PF07", "PF04", "PF03", "PF05", "PF01"], "pick": 3}, {"tpl": "PF-value", "title": "標準分解式求值", "kind": "pfValue", "bloom": "理解", "lc": "N-7-2", "params": {"p": [2, 3, 5], "a": [1, 2, 3, 4], "q": [3, 5, 7], "b": [1, 2, 3]}, "when": "p < q && a + b >= 3 && pow(p,a)*pow(q,b) <= 1500", "stem": "{pw(p,a)}×{pw(q,b)} 的值是多少？", "answer": "pow(p,a)*pow(q,b)", "check": {"type": "value", "expr": "{pw(p,a)}×{pw(q,b)}"}, "okfb": "正確！{pw(p,a)}×{pw(q,b)}＝{pow(p,a)}×{pow(q,b)}＝{pow(p,a)*pow(q,b)}。", "hint": "先把每個次方算出來，再相乘。", "distractors": ["PF06", "PF07", "PF14", "G01"], "pick": 3}, {"tpl": "PF-count", "title": "相異質因數個數", "kind": "pfCount", "bloom": "理解", "lc": "N-7-2", "params": {"p": [2, 3], "a": [1, 2, 3], "q": [3, 5, 7], "b": [1, 2], "r": [1, 5, 7, 11]}, "let": {"n": "pow(p,a)*pow(q,b)*r"}, "when": "p < q && (r == 1 || q < r) && a + b >= 3 && n >= 60 && n <= 2000", "stem": "{n} 有幾個相異的質因數？", "answer": "distinctPrimes(n)", "check": {"type": "value", "fn": "distinctPrimes", "n": "{n}"}, "okfb": "正確！{n}＝{fac(n)}，相異質因數是 {primes(n)}。", "hint": "先寫出標準分解式，再數有幾個不同的底數。", "distractors": ["PF08", "PF01", "PF02"], "pick": 3}, {"tpl": "PF-primeSet", "title": "質因數有哪些", "kind": "pfSet", "bloom": "理解", "lc": "N-7-2", "params": {"p": [2, 3], "a": [1, 2, 3], "q": [3, 5, 7], "b": [1, 2], "r": [1, 5, 7]}, "let": {"n": "pow(p,a)*pow(q,b)*r"}, "when": "p < q && (r == 1 || q < r) && a + b >= 3 && n >= 40 && n <= 400", "stem": "{n} 的質因數有哪些？", "answer": "primes(n)", "check": {"type": "primeSet", "n": "{n}"}, "okfb": "正確！{n}＝{fac(n)}，質因數是 {primes(n)}。", "hint": "質因數＝是 {n} 的因數、又是質數。", "distractors": ["PF01", "PF08", "PF02"], "pick": 3}, {"tpl": "PF-isFactor", "title": "用標準分解式判因數", "kind": "pfIsFactor", "bloom": "應用", "lc": "N-7-2", "params": {"p": [2, 3], "a": [2, 3, 4], "q": [3, 5], "b": [1, 2, 3], "r": [5, 7, 11]}, "let": {"N": "pow(p,a)*pow(q,b)*r"}, "when": "p < q && q < r", "stem": "已知 M＝{fac(N)}，下列哪一個是 M 的因數？（不用把 M 算出來）", "answer": "pw(p,a-1) + '×' + pw(q,b) + '×' + r", "check": {"type": "isFactor", "of": "{fac(N)}", "want": true}, "okfb": "正確！每個質因數的次方都不超過 M：{pw(p,a-1)}≤{pw(p,a)}、{pw(q,b)}、{r} 都在 M 裡。", "hint": "比較同一個質因數的次方，每個次方都不能超過 M。", "distractors": ["PF09a", "PF09b", "PF11"], "pick": 3}, {"tpl": "PF-isPrime", "title": "質數辨認", "kind": "pfIsPrime", "bloom": "理解", "lc": "N-7-1", "params": {"x": [53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113], "c1": [51, 57, 87, 93], "c2": [91, 119, 133, 143], "c3": [111, 117, 129, 141, 161]}, "stem": "下列哪一個是質數？", "answer": "x", "check": {"type": "isPrime", "want": true}, "okfb": "正確！{x} 試除到 √{x} 都不能整除，是質數。", "hint": "試除 2、3、5、7、11：用到的質數平方超過這個數就可以停。", "distractors": ["PF12a", "PF12b", "PF12c", "PF01"], "pick": 3, "distinctAB": ["x", "c1", "c2", "c3"]}]}, "七上2-4": {"schema": "fa-tpl/1", "unit": {"grade": "七上", "code": "2-4", "name": "指數律（同底數乘除、次方的次方、積的次方、分數與 0 次方）", "curriculum": ["N-7-7 指數律", "N-7-6 指數的意義（a⁰＝1、同底數比大小）"]}, "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 rules.js 的規則 id，pick 是每題用幾條", "tpls": [{"tpl": "EL-mul", "title": "同底數相乘", "kind": "elMul", "bloom": "理解", "lc": "N-7-7", "params": {"b": [2, 3, 5, 7, -2, -3], "m": [2, 3, 4], "n": [3, 4, 5, 6]}, "when": "m < n && m * n != m + n", "stem": "{pb(b,m)}×{pb(b,n)} 寫成指數形式是哪一個？", "answer": "pb(b, m + n)", "check": {"type": "powForm", "expr": "{pb(b,m)}×{pb(b,n)}", "base": "{b}"}, "okfb": "正確！同底數相乘，指數相加：{m}＋{n}＝{m+n}，得 {pb(b,m+n)}。", "hint": "同底數相乘：底數不變，指數相加。", "distractors": ["EL01", "EL04", "EL10", "EL07"], "pick": 3}, {"tpl": "EL-div", "title": "同底數相除", "kind": "elDiv", "bloom": "理解", "lc": "N-7-7", "params": {"b": [2, 3, 5, 6, 7], "m": [6, 8, 9, 10, 12], "n": [2, 3]}, "when": "m % n == 0 && m / n != m - n", "stem": "{pb(b,m)}÷{pb(b,n)} 寫成指數形式是哪一個？", "answer": "pb(b, m - n)", "check": {"type": "powForm", "expr": "{pb(b,m)}÷{pb(b,n)}", "base": "{b}"}, "okfb": "正確！同底數相除，指數相減：{m}−{n}＝{m-n}，得 {pb(b,m-n)}。", "hint": "同底數相除：底數不變，指數相減。", "distractors": ["EL02", "EL10", "EL02b"], "pick": 3}, {"tpl": "EL-powpow", "title": "次方的次方", "kind": "elPowPow", "bloom": "理解", "lc": "N-7-7", "params": {"b": [-2, -3, -5], "m": [2, 3, 5], "n": [2, 4]}, "when": "m * n != m + n", "stem": "({pb(b,m)})^{n} 寫成指數形式是哪一個？", "answer": "pb(b, m * n)", "check": {"type": "powForm", "expr": "({pb(b,m)})^{n}", "base": "{b}"}, "okfb": "正確！次方的次方，指數相乘：{m}×{n}＝{m*n}，得 {pb(b,m*n)}。", "hint": "次方的次方：指數相乘；注意底數有負號要留在括號裡。", "distractors": ["EL03", "EL07", "EL11"], "pick": 3}, {"tpl": "EL-prod", "title": "積的次方", "kind": "elProd", "bloom": "理解", "lc": "N-7-7", "params": {"a": [2, 3], "c": [3, 5, 7], "n": [3, 4, 5, 6]}, "when": "a < c", "stem": "{a}^{n}×{c}^{n} 寫成一個次方是哪一個？", "answer": "pb(a * c, n)", "check": {"type": "powForm", "expr": "{a}^{n}×{c}^{n}", "base": "{a*c}"}, "okfb": "正確！指數相同，底數相乘：({a}×{c})^{n}＝{a*c}^{n}。", "hint": "aⁿ×bⁿ＝(a×b)ⁿ：底數相乘，指數不變。", "distractors": ["EL04a", "EL04b", "EL01"], "pick": 3}, {"tpl": "EL-frac", "title": "分數的次方", "kind": "elFrac", "bloom": "理解", "lc": "N-7-7", "params": {"p": [2, 3, 4], "q": [3, 5, 7], "n": [2, 3, 4]}, "when": "p < q && gcd(p, q) == 1 && pow(q, n) <= 2500", "stem": "({p}/{q})^{n}＝？", "answer": "pow(p,n) + '/' + pow(q,n)", "check": {"type": "fraction", "expr": "({p}/{q})^{n}"}, "okfb": "正確！分子分母都 {n} 次方：{p}^{n}/{q}^{n}＝{pow(p,n)}/{pow(q,n)}。", "hint": "分數的次方：分子、分母都要乘方。", "distractors": ["EL06a", "EL06b", "EL11"], "pick": 3}, {"tpl": "EL-zero", "title": "0 次方", "kind": "elZero", "bloom": "理解", "lc": "N-7-6", "params": {"c": [2, 3, 4, 5], "a": [2, 3, 4, 5, 6, 7]}, "when": "c != a", "stem": "{c}×(−{a})^0＝？", "answer": "c", "check": {"type": "value", "expr": "{c}×(−{a})^0"}, "okfb": "正確！(−{a})⁰＝1，{c}×1＝{c}。", "hint": "不是 0 的數，0 次方都是 1。", "distractors": ["EL08a", "EL08b", "EL07"], "pick": 3}]}}, "mis": {"七上1-2": {"schema": "fa-mis/1", "unit": "七上1-2", "name": "七上 1-2", "from": "routeA", "sourceNote": "路線 A 題庫的迷思表（題庫_七上1-2_整數的加減_路線A.json）；card 對到比較頁迷思表", "misconceptions": [{"code": "AS01", "name": "以為加上一定變大", "desc": "以為加上一個數結果一定變大（減去一個數一定變小），忽略加減的是負數", "example": "−2＋(−5) 比 −2 大", "remedy": "用數線箭頭：加負數往左走；用相關題列 5＋2、5＋1、5＋0、5＋(−1)… 看結果怎麼變。", "source": "知識卡迷思「加上一個數，結果一定比原數大」三版課本皆處理、「減去一個數，結果一定比原數小」翰林處理", "card": "加上一個數，結果一定比原數大"}, {"code": "AS02", "name": "和的正負號判斷錯", "desc": "異號數相加時，和的正負號取第一個數或取錯（應跟絕對值較大的數）", "example": "5＋(−8)＝3", "remedy": "先比兩數的絕對值，和的正負號跟絕對值較大的數；用黑白棋抵銷檢查。", "source": "知識卡迷思「異號數相加：大減小顛倒，或符號取第一個數」三版課本皆處理", "card": "異號數相加：大減小顛倒，或符號取第一個數"}, {"code": "AS03", "name": "小減大漏了負號", "desc": "小數減大數時直接用大減小，忘了結果是負的", "example": "3−5＝2", "remedy": "用數線：從 3 往左走 5 格；或改寫成 3＋(−5) 再判斷正負號。", "source": "知識卡迷思「異號數相加：大減小顛倒」三版課本皆處理"}, {"code": "AS04", "name": "以為減法有交換律", "desc": "把 a−b 當成 b−a，前後對調不影響結果", "example": "7−10＝10−7", "remedy": "請學生分別算 7−10 與 10−7 對照，看出兩者互為相反數。", "source": "知識卡迷思「減法有交換律、結合律（a−b＝b−a）」康軒、南一課本處理", "card": "減法有交換律、結合律（a−b＝b−a）"}, {"code": "AS05", "name": "去括號只改第一個數", "desc": "括號前是減號時，去括號只改第一個數的符號", "example": "10−(3−5)＝10−3−5", "remedy": "先問「a＋b 與 −a−b 相加是多少？」說明 −(a＋b)＝−a−b，括號內每一項都要變號。", "source": "知識卡迷思「去括號只改第一個數的符號」三版課本皆處理", "card": "去括號只改第一個數的符號"}, {"code": "AS06", "name": "把絕對值當成括號", "desc": "把 |−8| 當成 (−8) 直接代入，5−|−8| 算成 5−(−8)", "example": "5−|−8|＝13", "remedy": "先把絕對值算出來寫成正數（|−8|＝8），再做加減。", "source": "知識卡迷思「把絕對值符號當成括號（2−｜−5｜＝2−(−5)）」康軒、翰林課本處理", "card": "把絕對值符號當成括號（2−｜−5｜＝2−(−5)）"}, {"code": "AS07", "name": "兩點距離寫成負數", "desc": "用「左減右」得到負數也照寫，把距離和坐標的大小混淆", "example": "A(−3)、B(5) 的距離＝−3−5＝−8", "remedy": "強調距離一定是正數或 0：用「右邊坐標減左邊坐標」或 |a−b|。", "source": "知識卡迷思「距離與大小混淆（AO＞BO 則 a＞b；距離為負）」三版課本皆處理", "card": "距離與大小混淆（AO＞BO 則 a＞b；距離為負）"}, {"code": "AS08", "name": "減負數沒改成加相反數", "desc": "減法改成加法時只去掉負號或只改運算符號，例如 4−(−6) 算成 4−6、−2−1 當成 −2＋1", "example": "4−(−6)＝−2", "remedy": "板書 a−b＝a＋(−b)，用相關題列 5−1、5−0、5−(−1)、5−(−2)… 讓學生看到答案每次多 1。", "source": "知識卡教學建議（a−b＝a＋(−b)、相關題列）；迷思清單未列，依教學經驗"}, {"code": "AS09", "name": "兩點距離把坐標相加", "desc": "求數線上兩點距離時，把兩個坐標直接相加", "example": "A(−3)、B(5) 的距離＝−3＋5＝2", "remedy": "在數線上數格子，再對照「右邊坐標減左邊坐標」。", "source": "依教學經驗"}, {"code": "AS10", "name": "異號相加把數字相加", "desc": "異號數相加時，把兩數的數字部分相加再加上負號", "example": "5＋(−8)＝−13", "remedy": "用黑白棋或數線說明正、負會互相抵銷，數字部分要相減。", "source": "依教學經驗（與知識卡「異號數相加」迷思相關）"}], "cards": ["加上一個數，結果一定比原數大", "異號數相加：大減小顛倒，或符號取第一個數", "減去一個數，結果一定比原數小", "減法有交換律、結合律（a−b＝b−a）", "去括號只改第一個數的符號", "把絕對值符號當成括號（2−｜−5｜＝2−(−5)）", "距離與大小混淆（AO＞BO 則 a＞b；距離為負）"]}, "七上1-4": {"schema": "fa-mis/1", "unit": "七上1-4", "name": "七上 1-4", "from": "routeA", "sourceNote": "路線 A 題庫的迷思表（題庫_七上1-4_指數與科學記號_路線A.json）；card 對到比較頁迷思表", "misconceptions": [{"code": "EX01", "name": "負號在次方外或內不分", "desc": "把 −3^2 當成 (−3)^2，以為等於 9", "example": "−3^2＝9", "remedy": "問「次方管到哪裡？」：−3^2 是 −(3×3)；有括號才是 (−3)×(−3)。", "source": "知識卡迷思「(−3)² 與 −3² 意義不同」三版課本皆處理", "card": "(−3)² 與 −3² 意義不同（−a² 與 (−a)² 混淆）"}, {"code": "EX02", "name": "把乘方當成乘法", "desc": "把底數乘以指數，例如 2^3＝2×3", "example": "2^3＝6", "remedy": "先寫成連乘：2^3＝2×2×2，再算。", "source": "知識卡迷思「把乘方當成乘法或連加（2³＝2×3）」康軒、南一課本處理", "card": "把乘方當成乘法或連加（2³＝2×3、5³＝5×3）"}, {"code": "EX03", "name": "0^n、1^n 的值錯", "desc": "以為 0^5＝1，或把 1^7、0^5 的指數當成結果", "example": "1^7＋0^5＝12", "remedy": "寫成連乘：1×1×…×1＝1、0×0×…×0＝0。", "source": "知識卡迷思「0ⁿ、1ⁿ 與 0⁰ 的值」三版課本皆處理（把指數當結果的情形依教學經驗）", "card": "0ⁿ、1ⁿ 與 0⁰ 的值"}, {"code": "EX04", "name": "負數奇偶次方符號錯", "desc": "負數的奇次方寫成正的，或偶次方寫成負的", "example": "(−2)^5＝32", "remedy": "數負號個數：偶數個得正、奇數個得負，再算數字部分。", "source": "知識卡迷思「負數的奇偶次方，符號怎麼判斷」三版課本皆處理", "card": "負數的奇偶次方，符號怎麼判斷"}, {"code": "EX05", "name": "含乘方的運算順序錯", "desc": "先乘再次方，例如把 −2×(−3)^2 算成 (−2×−3)^2", "example": "−2×(−3)^2＝36", "remedy": "次方優先：先算 (−3)^2＝9，再做乘法。", "source": "知識卡迷思「含乘方的混合運算，順序或符號做錯」三版課本皆處理", "card": "含乘方的混合運算，順序或符號做錯"}, {"code": "EX06", "name": "負指數就是負數", "desc": "以為 10^-3 是負數", "example": "10^-3＝−1000", "remedy": "接續 10^3、10^2、10^1、10^0 的規律往下推，每次 ÷10，10^-1＝0.1。", "source": "知識卡迷思「負指數就是負數（10⁻⁶＜0）」康軒、南一課本處理", "card": "負指數就是負數（10⁻⁶＜0）"}, {"code": "EX07", "name": "小數點後位數多或少一", "desc": "把負指數換成小數時多寫或少寫一個 0，例如 4.2×10^-5 的 4 認為在第 6 位", "example": "10^-3＝0.0001", "remedy": "先預測「小數點往左移幾位」，再乘開驗證：10^-3 是小數點後第 3 位出現 1。", "source": "知識卡迷思「小數點後第幾位＝指數（4.2×10⁻⁵ 誤認為第 6 位）」三版課本皆處理", "card": "小數點後第幾位＝指數（4.2×10⁻⁵ 誤認為第 6 位）"}, {"code": "EX08", "name": "科學記號 a 的範圍錯", "desc": "把 235×10^4、0.235×10^7 這類 a 不在 1≤a＜10 的式子當成科學記號", "example": "2350000＝235×10^4", "remedy": "用 72.4×10^18、0.47×10^15 讓學生改寫，並說明為什麼 a 要在 1 到 10 之間。", "source": "知識卡迷思「a 的範圍（235×10⁵、0.47×10¹⁵ 是不是科學記號）」三版課本皆處理", "card": "a 的範圍（235×10⁵、0.47×10¹⁵ 是不是科學記號）"}, {"code": "EX09", "name": "比大小只看係數", "desc": "比較科學記號時只看 a，沒有先比 10 的指數", "example": "9.9×10^4＞1.2×10^6", "remedy": "先比指數 n，n 相同再比 a。", "source": "知識卡迷思「比較大小只看係數，或忽略負指數的方向」三版課本皆處理（拆成 EX09、EX11 兩個代碼）", "card": "比較大小只看係數，或忽略負指數的方向"}, {"code": "EX10", "name": "整數位數當成指數", "desc": "7 位數的整數寫成 ×10^7（指數應是位數減 1）", "example": "2350000＝2.35×10^7", "remedy": "n 位數的整數，科學記號的指數是 n−1；用「小數點往左移幾位」驗證。", "source": "知識卡教學建議「位數（n＋1 位）」；迷思清單未列，依教學經驗"}, {"code": "EX11", "name": "忽略負指數的方向", "desc": "把 10^-8 的「8」當成很大，以為指數 −8 的數比較大", "example": "7.5×10^-8＞1.2×10^6", "remedy": "10 的負次方都小於 1；指數愈小（愈負），數愈小。", "source": "知識卡迷思「比較大小只看係數，或忽略負指數的方向」三版課本皆處理（拆成 EX09、EX11 兩個代碼）", "card": "比較大小只看係數，或忽略負指數的方向"}], "cards": ["(−3)² 與 −3² 意義不同（−a² 與 (−a)² 混淆）", "把乘方當成乘法或連加（2³＝2×3、5³＝5×3）", "0ⁿ、1ⁿ 與 0⁰ 的值", "負數的奇偶次方，符號怎麼判斷", "含乘方的混合運算，順序或符號做錯", "負指數就是負數（10⁻⁶＜0）", "小數點後第幾位＝指數（4.2×10⁻⁵ 誤認為第 6 位）", "a 的範圍（235×10⁵、0.47×10¹⁵ 是不是科學記號）", "比較大小只看係數，或忽略負指數的方向"]}, "七上2-1": {"schema": "fa-mis/1", "unit": "七上2-1", "name": "七上 2-1", "from": "routeA", "sourceNote": "路線 A 題庫的迷思表（題庫_七上2-1_質因數分解_路線A.json）；card 對到比較頁迷思表", "misconceptions": [{"code": "PF01", "name": "把 1 當成質數或質因數", "desc": "分解時寫出 1×…，或把 1 列入質因數", "example": "12＝1×2²×3", "diag": "has1", "remedy": "回到定義：質數要有「恰好兩個」正因數。請學生說 1 有幾個因數，再問寫 1× 會不會改變乘積。", "source": "知識卡迷思「1 是質數／最小合數」三版課本皆處理", "card": "1 是質數／最小合數"}, {"code": "PF02", "name": "質因數與因數混淆", "desc": "把所有因數（含合數）都當成質因數", "example": "60 的質因數：2、3、4、5、6、10", "remedy": "先列出 60 的所有因數，再請學生圈出其中的質數：「質因數＝是因數、又是質數」。", "source": "知識卡迷思「質因數與因數混淆」三版課本皆處理", "card": "質因數與因數混淆"}, {"code": "PF03", "name": "分解未完全：留下合數就停", "desc": "短除法或樹狀圖做到一半，剩下的商還是合數", "example": "546＝2×3×91", "diag": "composite", "remedy": "請學生檢查最後一列（或每片葉子）是不是都是質數；91＝7×13 常被誤認為質數。", "source": "知識卡迷思「短除法只做一步就停」（南一課本）", "card": "短除法只做一步就停（546=2×3×91）"}, {"code": "PF04", "name": "相同質因數沒有合併成次方", "desc": "結果正確但仍寫成連乘，不是標準分解式", "example": "72＝2×2×2×3×3", "diag": "notCombined", "remedy": "對照國小與國中的記法：國小寫連乘、國中改記成指數。請學生把連乘「數一數」改寫成次方。", "source": "知識卡：國小六上三版都只寫連乘，國中才改記成標準分解式"}, {"code": "PF05", "name": "質因數沒有由小到大排列", "desc": "值正確、也是質數，但沒有依約定排序", "example": "546＝3×2×7×13", "diag": "order", "remedy": "同一個數用 4×9、2×18、6×6 各拆一次，比較結果，再問「為什麼要約定由小到大」。", "source": "知識卡教學建議；三版七上課本都在定義中約定由小到大"}, {"code": "PF06", "name": "把次方當成乘法", "desc": "把 aⁿ 算成 a×n", "example": "2³×3²＝6×6＝36", "remedy": "把 2³ 展開寫成 2×2×2，再和 2×3 並排比較。", "source": "指數律（七上 2-4）前的常見錯誤"}, {"code": "PF07", "name": "次方數錯（底數與次方對應錯）", "desc": "數錯每個質因數出現的次數，或把次方對調", "example": "72＝2²×3³", "diag": "wrongValue", "remedy": "寫完標準分解式後一定要乘回去驗算；用短除法時數一數每個除數出現幾次。", "source": "知識卡迷思「標準分解式漏記次方或排序」三版皆處理", "card": "標準分解式漏記次方或排序"}, {"code": "PF08", "name": "「相異」質因數重複計數", "desc": "把重複出現的質因數也算進相異質因數的個數", "example": "360 的相異質因數有 6 個（2、2、2、3、3、5）", "remedy": "請學生先寫出標準分解式，再數「底數有幾個」。區分「質因數有哪些」和「質因數連乘中有幾項」。", "source": "標準分解式的讀法"}, {"code": "PF09", "name": "判因數只看底數、忽略次方", "desc": "以為底數都出現在原數中就是因數", "example": "2⁴×3 是 2³×3²×5 的因數", "remedy": "不用算出來：比較同一個質因數的次方，「每個次方都不超過」才是因數。可用知識卡建議題：M＝3³×5²×7 能不能被 15、63、2 整除？", "source": "知識卡：用標準分解式判因倍數只有翰林在 2-1 課文正式教"}, {"code": "PF10", "name": "以為因數要含有全部的質因數", "desc": "認為缺少某個質因數就不是因數", "example": "4 不是 2²×3×7 的因數（因為沒有 3、7）", "remedy": "把 2²×3×7 寫成 4×21，讓學生看到 4 直接是乘數之一。", "source": "用標準分解式判因數的常見錯誤"}, {"code": "PF11", "name": "用「數值比較小」判斷是因數", "desc": "只要比原數小就認為是因數", "example": "14 比 360 小，所以是 360 的因數", "remedy": "回到定義：因數要能整除。請學生舉一個比 360 小但不是因數的數。", "source": "因數定義的常見錯誤"}, {"code": "PF12", "name": "看似質數的合數誤判為質數", "desc": "沒有試除 7、13、17 等較大的質數", "example": "51、57、91 是質數", "remedy": "用篩法或試除到 √n：51＝3×17、57＝3×19、91＝7×13。", "source": "知識卡：三版都有篩法；數字大挑戰中 51 常被當成質數"}, {"code": "PF13", "name": "以為一個數不是自己的因數", "desc": "忽略「a 是 a 的因數」", "example": "84 不是 84 的因數", "remedy": "84÷84＝1，整除，所以 84 是自己的因數；1 和自己是每個正整數都有的因數。", "source": "知識卡：因數倍數定義（三版 2-1 開頭）"}, {"code": "PF14", "name": "不同底數也把次方相加", "desc": "把指數律（同底數相乘、指數相加）用在不同底數上，底數相乘、指數相加", "example": "2³×3²＝6⁵", "remedy": "指數律只適用於同底數。把 2³×3² 展開成 2×2×2×3×3，和 6⁵＝6×6×6×6×6 比一比。", "source": "指數律（七上 2-4）誤用；依教學經驗"}], "cards": ["3 的倍數必為 9 的倍數", "個位數是 4 的倍數就是 4 的倍數（114）", "用 4 的規則（末兩位）判 9 的倍數", "1 是質數／最小合數", "因數只有配對的兩個（12=3×4 → 只有 3、4）", "0 是任何整數的因數", "質因數與因數混淆", "短除法只做一步就停（546=2×3×91）", "標準分解式漏記次方或排序"]}, "七上2-4": {"schema": "fa-mis/1", "unit": "七上2-4", "name": "七上 2-4", "from": "routeA", "sourceNote": "路線 A 題庫的迷思表（題庫_七上2-4_指數律_路線A.json）；card 對到比較頁迷思表", "misconceptions": [{"code": "EL01", "name": "同底數相乘指數相乘", "desc": "同底數相乘時把指數相乘（或連底數也相乘）", "example": "3^2×3^4＝3^8", "remedy": "寫成連乘：2 個 3 乘 4 個 3，共 (2＋4) 個 3；用對照題 3^2×3^4 與 (3^2)^4 各算一次。", "source": "知識卡迷思「同底數相乘時把指數相乘」：康軒 p.151 例5；南一 p.150 錯誤診療；翰林 p.139（備課眉批提醒學生常寫 3^(2×4)）", "card": "同底數相乘時把指數相乘（3²×3⁴＝3⁸）"}, {"code": "EL02", "name": "同底數相除指數相除", "desc": "同底數相除時把指數相除（或連底數也相除）", "example": "6^8÷6^2＝6^4", "remedy": "用約分看：8 個 6 約掉 2 個 6，剩 (8−2) 個。", "source": "知識卡迷思「同底數相除時把指數相除」：康軒 p.152 例6；南一 p.150 錯誤診療；翰林書末〈迷思逃脫〉2-4（5^6÷5^3 誤作 5^2）", "card": "同底數相除時把指數相除（6÷3）"}, {"code": "EL03", "name": "次方的次方指數相加", "desc": "(a^m)^n 把指數相加（或做成 m^n）", "example": "(7^3)^2＝7^5", "remedy": "展開：(7^3)^2＝7^3×7^3，是 2 個 7^3，指數 3×2。", "source": "知識卡迷思「(aᵐ)ⁿ 誤把指數相加」：康軒 p.157 自我檢核4；南一、翰林未見", "card": "(aᵐ)ⁿ 誤把指數相加（(7³)²＝7³⁺²）"}, {"code": "EL04", "name": "積的次方與相乘混用", "desc": "把不同底數的次方相乘時，指數相加或底數相加", "example": "2^5×3^5＝6^10", "remedy": "(a×b)^n＝a^n×b^n 只在指數相同時倒過來用；寫成 5 個 (2×3) 檢查。", "source": "知識卡迷思「混用乘法指數律與積的乘方」：康軒 p.157 自我檢核5；南一、翰林未見", "card": "混用乘法指數律與積的乘方（(2×3)⁵⁺⁴＝2⁵×3⁴）"}, {"code": "EL05", "name": "以為次方愈高愈大", "desc": "忽略 0＜a＜1 時，次方愈高反而愈小", "example": "(2/3)^5＞(2/3)^2", "remedy": "用 (3/5)×(3/5)×(3/5) 問「每多乘一次，變大還是變小」，連到國小「乘數＜1 積變小」。", "source": "知識卡迷思「n 愈大 aⁿ 愈大（忽略 0<a<1）」：康軒 p.148、p.149 例2、p.157；南一 p.142 例2、p.149 自評1；翰林 2-4 未見（1-4 p.67 探索活動）", "card": "n 愈大 aⁿ 愈大（忽略 0<a<1）"}, {"code": "EL06", "name": "分數次方只取分子", "desc": "(b/a)^n 只對分子（或只對分母）取次方", "example": "(2/3)^4＝16/3", "remedy": "寫成連乘：(2/3)×(2/3)×…，分子分母都乘了 4 次。", "source": "知識卡迷思「(b/a)ⁿ 只對分子取次方」：康軒 p.157 自我檢核1；南一 p.142 課文；翰林 p.138 隨堂、p.146 自評1", "card": "(b/a)ⁿ 只對分子取次方"}, {"code": "EL07", "name": "負號在次方內外不分", "desc": "把 −2^6 當成 (−2)^6，或以為負數的偶次方是負的", "example": "((−2)^3)^2＝−2^6", "remedy": "問「次方管到哪裡？」：−2^6＝−(2^6)；(−2)^6 是 6 個 −2 相乘，偶數個負號得正。", "source": "知識卡迷思「−aⁿ 與 (−a)ⁿ 混淆」：康軒 p.155 動動腦、p.159 挑錯題；南一 p.143 解迷三角；翰林 p.138 隨堂、p.146 自評1", "card": "−aⁿ 與 (−a)ⁿ 混淆（把 −2⁶ 當 (−2)⁶）"}, {"code": "EL08", "name": "以為零次方是0或a", "desc": "把 a^0 當成 0 或當成 a", "example": "(−3)^0＝0", "remedy": "用 3^4÷3^4 兩種算法並排（算出 1、用指數律得 3^0），再說「規定 a^0＝1（a≠0）」。", "source": "知識卡迷思「a⁰＝0 或 a⁰＝a」：康軒 p.155；南一 p.144；翰林 p.141（翰林課本沒有 a⁰ 的練習題）", "card": "a⁰＝0 或 a⁰＝a"}, {"code": "EL09", "name": "把加法也套指數律", "desc": "算式中有加號時，把整個式子的指數合併", "example": "2^2×2^3＋2^6÷2^3＝2^8", "remedy": "先分別算乘、除兩段，再相加；用 2^5＋2^3 與 2^8 的值對照。", "source": "知識卡迷思「把加法也套指數律」：南一 p.150 錯誤診療；康軒、翰林未見", "card": "把加法也套指數律（2²×2³＋2⁶÷2³＝2⁶⁺²）"}, {"code": "EL10", "name": "乘除的指數律弄混", "desc": "同底數相除時把指數相加（把除法當成乘法的規則）", "example": "6^8÷6^2＝6^10", "remedy": "相除是「約掉」幾個，指數要相減；用 6^8÷6^2 的約分圖對照。", "source": "依教學經驗（與知識卡「同底數相除」迷思相關）"}, {"code": "EL11", "name": "把次方當成乘法", "desc": "把 a^n 當成 a×n", "example": "(2/3)^4＝8/12", "remedy": "先寫成連乘再算：(2/3)^4＝(2/3)×(2/3)×(2/3)×(2/3)。", "source": "知識卡七上1-4 迷思「把乘方當成乘法或連加（2³＝2×3）」：康軒、南一課本處理"}], "cards": ["同底數相乘時把指數相乘（3²×3⁴＝3⁸）", "同底數相除時把指數相除（6÷3）", "(aᵐ)ⁿ 誤把指數相加（(7³)²＝7³⁺²）", "混用乘法指數律與積的乘方（(2×3)⁵⁺⁴＝2⁵×3⁴）", "誤把 (a×b)ⁿ 的律用在 (a＋b)ⁿ（(a＋b)ⁿ＝aⁿ＋bⁿ）", "n 愈大 aⁿ 愈大（忽略 0<a<1）", "(b/a)ⁿ 只對分子取次方", "−aⁿ 與 (−a)ⁿ 混淆（把 −2⁶ 當 (−2)⁶）", "a⁰＝0 或 a⁰＝a", "把加法也套指數律（2²×2³＋2⁶÷2³＝2⁶⁺²）"]}}};
 </script>
 <script type="module">
 // ============================================================
@@ -1102,7 +1780,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.9.1（2026-11-04）';
+const APP_VERSION = 'v3.0（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1826,7 +2504,7 @@ function openSummary() {
   const stu = seats.map(seat => { const a = s1.seats[seat], b = s2.seats[seat]; return { seat, a, b, d1: s1.done.has(seat), d2: s2.done.has(seat) }; });
   show('v-sum'); stopLive();
   $('v-sum').innerHTML = `<div class="row" style="justify-content:space-between"><h2 style="font-size:30px">本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2>
-    <div class="row" style="gap:8px"><button class="btn sm" id="u-csv">匯出學生 CSV</button><button class="btn sm" id="u-csv2">匯出作答明細 CSV</button>
+    <div class="row" style="gap:8px"><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv">匯出學生 CSV</button><button class="btn sm" id="u-csv2">匯出作答明細 CSV</button>
     <button class="btn sm" id="u-print">列印</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
     <div class="stat-row"><div class="stat"><b>${seats.length}</b><span>參與人數</span></div><div class="stat"><b>${N}</b><span>每場題數</span></div>
       <div class="stat"><b>${pct(avg(s1))}</b><span>第一場平均答對率</span></div><div class="stat"><b>${has2 ? pct(avg(s2)) : '—'}</b><span>第二場（平行題）平均答對率</span></div>
@@ -1855,6 +2533,7 @@ function openSummary() {
       </div></div>`;
   $('u-back').onclick = () => openLive(L.code);
   $('u-print').onclick = () => window.print();
+  $('u-prep').onclick = () => { const d = prepClassData(); download(`prep_class_${d.unit || '單元'}_${d.class.replace(/[\\/:*?"<>|\s]+/g, '') || '班級'}_${d.date.replace(/-/g, '')}.json`, JSON.stringify(d, null, 2), 'application/json'); toast('已下載，請放進 115-教科書/_網頁素材暫存/，再跑 mkprep.py'); };
   $('u-csv').onclick = () => {
     const head = ['座號', '第一場答對', '第一場作答', '第二場答對', '第二場作答', '第一場迷思', '第二場迷思', '第一場很確定卻答錯題號', '第二場很確定卻答錯題號'];
     const rows = stu.map(x => [x.seat, x.a ? x.a.ok : '', x.a ? x.a.n : '', x.b ? x.b.ok : '', x.b ? x.b.n : '', x.a ? [...x.a.mis].join(' ') : '', x.b ? [...x.b.mis].join(' ') : '', x.a ? x.a.sure.join(' ') : '', x.b ? x.b.sure.join(' ') : '']);
@@ -1872,6 +2551,22 @@ function openSummary() {
     if (!L.exported && !confirm('還沒有匯出 CSV。結束後資料會從雲端刪除，確定要結束嗎？')) return;
     if (L.exported && !confirm('結束場次並刪除雲端作答資料？')) return;
     await store.endSession(L.code, true); ls.del('fa-tbank:' + L.code); toast('場次已結束'); openBankView();
+  };
+}
+// v3.0：明日備課串接（fa-class/1，規格見 明日備課串接規格_prep_class.md）——只有人數，沒有座號
+function prepClassData() {
+  const s = L.session, s1 = statRound(1), s2 = statRound(2), mm = misMapOf(L.bank), has2 = s.round >= 2;
+  const seatsOf = r => new Set(L.resp.filter(x => x.round === r).map(x => +x.seat));
+  const codes = [...new Set([...setOf(1), ...(has2 ? setOf(2) : [])].flatMap(it => it.options.map(o => o.mis).filter(Boolean)))];   // 這次有考到的迷思（0 人也列）
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  const r2 = x => x == null ? null : Math.round(x * 100) / 100;
+  return {
+    schema: 'fa-class/1', unit: unitKey(L.bank), class: String(s.label || ''), date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+    session: s.code || L.code, bankId: L.bank.id || s.bankId || '',
+    n1: seatsOf(1).size, n2: has2 ? seatsOf(2).size : null,
+    mis: codes.map(c => ({ code: c, name: mm[c] ? mm[c].name : c, card: mm[c] && mm[c].card ? mm[c].card : null,
+      r1: s1.mis[c] ? s1.mis[c].seats.size : 0, r2: has2 ? (s2.mis[c] ? s2.mis[c].seats.size : 0) : null })),
+    pairs: s1.perItem.map((p, i) => ({ pair: p.it.pair || p.it.id, rate1: r2(p.rate), rate2: has2 && s2.perItem[i] ? r2(s2.perItem[i].rate) : null }))
   };
 }
 function csv(name, rows) { const t = '﻿' + rows.map(r => r.map(v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }).join(',')).join('\r\n'); download(name, t, 'text/csv'); }
@@ -1927,15 +2622,16 @@ ${misRule}
 ${note ? '老師補充：' + note + '\n' : ''}
 ${GEN_SCHEMA_DOC}`;
 }
-function renderGenPane() {
+function renderAiPane() {
   const g = ls.get('fa-gen-form', {});
   const key = ls.get('fa-gemini-key', '');
   $('tp-gen').innerHTML = `<div class="gen-form card scroll">
+      ${genModeSw()}
       <h3 style="font-size:22px">輸入單元，AI 生題</h3>
       <label class="fl">單元<input type="text" id="g-unit" value="${esc(g.unit || '七上 2-1 質因數分解、標準分解式')}"></label>
       <label class="fl">補充說明（選填：重點、班級程度）<textarea id="g-note" style="height:84px">${esc(g.note ?? '著重標準分解式的寫法與讀法、短除法沒做完、用標準分解式判斷因數。')}</textarea></label>
       <div class="fl">迷思從哪裡來
-        <label class="row small"><input type="radio" name="g-mis" value="A" ${(g.mis || 'A') === 'A' ? 'checked' : ''}> 沿用路線 A 題庫的迷思表（依知識卡，建議）</label>
+        <label class="row small"><input type="radio" name="g-mis" value="A" ${(g.mis || 'A') === 'A' ? 'checked' : ''}> 沿用路線 A 題庫的迷思表（依知識卡，建議；沒有題庫就用比較頁迷思表）</label>
         <label class="row small"><input type="radio" name="g-mis" value="paste" ${g.mis === 'paste' ? 'checked' : ''}> 自己貼上迷思清單（一行一個）</label>
         <label class="row small"><input type="radio" name="g-mis" value="ai" ${g.mis === 'ai' ? 'checked' : ''}> 由 AI 自己列（出處會標「AI 推測」）</label>
         <div id="g-misinfo" class="small muted"></div>
@@ -1954,7 +2650,7 @@ function renderGenPane() {
   document.querySelectorAll('input[name="g-mis"]').forEach(r => r.onchange = () => { $('g-mispaste').hidden = misMode() !== 'paste'; loadMisInfo(); });
   $('g-unit').onchange = () => { T.misA = null; loadMisInfo(); };
   loadMisInfo();
-  if (T.genBank) showGenResult();
+  if (T.genBank && T.genBank.gen !== 'template') showGenResult();
 }
 const misMode = () => (document.querySelector('input[name="g-mis"]:checked') || {}).value || 'A';
 const unitKeyOf = t => { const m = /([七八九][上下])\s*(\d+-\d+)/.exec(t || ''); return m ? m[1] + m[2] : ''; };
@@ -1964,15 +2660,25 @@ async function fetchUnitBank(key) {
   }
   const local = Banks.list().find(b => b.route !== 'B' && unitKey(b) === key); return local || null;
 }
+// v3.0：沒有路線 A 題庫時，改讀迷思庫 mis/<單元>.json（60 節，從比較頁迷思表轉出）
+async function fetchUnitMis(key) {
+  if (FT.mis && FT.mis[key]) return FT.mis[key];
+  for (const base of ['mis/', 'https://ryansu2021.github.io/formative-check/mis/']) {
+    try { const r = await fetch(base + encodeURIComponent(key) + '.json', { cache: 'no-cache' }); if (r.ok) return await r.json(); } catch (e) { }
+  }
+  return null;
+}
 async function loadMisInfo() {
   const box = $('g-misinfo'); if (!box) return;
   if (misMode() !== 'A') { box.textContent = misMode() === 'ai' ? '迷思由 AI 自己列，每個迷思的出處會標「AI 推測」，請務必逐條確認。' : '貼上的每一行會變成一個迷思；沒寫代碼的會自動編 M01、M02…'; return; }
   const key = unitKeyOf($('g-unit').value); if (!key) { box.textContent = '單元請寫成「七上 2-1 …」的格式，才找得到路線 A 題庫。'; return; }
   box.textContent = `讀取 ${key} 的路線 A 題庫…`;
-  const b = T.misA && T.misA.key === key ? T.misA.bank : await fetchUnitBank(key);
-  T.misA = { key, bank: b };
-  box.innerHTML = b ? `已載入 ${esc(key)} 路線 A 的迷思表：<b>${(b.misconceptions || []).length} 個迷思</b>（${(b.misconceptions || []).slice(0, 4).map(m => esc(m.name)).join('、')}…）`
-    : `<span style="color:var(--zhu)">${esc(key)} 還沒有路線 A 題庫，請改選「自己貼上」或「由 AI 自己列」。</span>`;
+  let b = T.misA && T.misA.key === key ? T.misA.bank : await fetchUnitBank(key), from = '路線 A 題庫';
+  if (T.misA && T.misA.key === key) from = T.misA.from;
+  else if (!b) { const mi = await fetchUnitMis(key); if (mi) { b = { misconceptions: mi.misconceptions }; from = `迷思庫 mis/${key}.json（${mi.sourceNote || ''}）`; } }
+  T.misA = { key, bank: b, from };
+  box.innerHTML = b ? `已載入 ${esc(key)} 的迷思表：<b>${(b.misconceptions || []).length} 個迷思</b>（${(b.misconceptions || []).slice(0, 4).map(m => esc(m.name)).join('、')}…）<br>來源：${esc(from)}`
+    : `<span style="color:var(--zhu)">${esc(key)} 沒有路線 A 題庫，也沒有迷思庫，請改選「自己貼上」或「由 AI 自己列」。</span>`;
 }
 function parseMisPaste(t) {
   return String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean).map((x, i) => {
@@ -1981,19 +2687,40 @@ function parseMisPaste(t) {
     return { code: m ? m[1].toUpperCase() : 'M' + String(i + 1).padStart(2, '0'), name: ex ? body.slice(0, ex.index).trim() : body, example: ex ? ex[1] : '', remedy: '', source: '老師提供' };
   });
 }
-async function callGemini(prompt) {
-  const key = $('g-key').value.trim(); const model = $('g-model').value.trim() || 'gemini-3.5-flash';
-  if (!key) throw new Error('請先填 Gemini API key');
-  if ($('g-remember').checked) ls.set('fa-gemini-key', key); else ls.del('fa-gemini-key');
+// v3.0：503／429／500 自動等 2、4、8 秒重試三次；gemini-3.5-flash 還是失敗就改 gemini-3.5-flash-lite；callGemini.lastModel 記實際用的模型
+const RETRY_WAIT = [2, 4, 8];
+const sleep = s => new Promise(r => setTimeout(r, s * 1000 * (window.__FA_WAIT_SCALE ?? 1)));
+async function callGeminiOnce(prompt, key, model) {
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json', temperature: 0.6 } })
   });
   const j = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + res.status));
+  if (!res.ok) { const e = new Error((j.error && j.error.message) || ('HTTP ' + res.status)); e.status = res.status; throw e; }
   const text = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
   if (!text) throw new Error('AI 沒有回傳內容' + (j.promptFeedback ? '（' + JSON.stringify(j.promptFeedback) + '）' : ''));
   return text;
+}
+async function callGemini(prompt) {
+  const key = ($('g-key') ? $('g-key').value.trim() : '') || T.gemKey || ls.get('fa-gemini-key', '');   // T.gemKey：這次開著網頁期間記得，關掉就不留
+  if (key) T.gemKey = key;
+  const model = ($('g-model') && $('g-model').value.trim()) || 'gemini-3.5-flash';
+  if (!key) throw new Error('請先填 Gemini API key');
+  if ($('g-remember')) { if ($('g-remember').checked) ls.set('fa-gemini-key', key); else ls.del('fa-gemini-key'); }
+  const models = model === 'gemini-3.5-flash' ? [model, 'gemini-3.5-flash-lite'] : [model];
+  const log = []; let last;
+  for (const m of models) {
+    for (let t = 0; t <= RETRY_WAIT.length; t++) {
+      try { const text = await callGeminiOnce(prompt, key, m); callGemini.lastModel = m; callGemini.log = log; return text; }
+      catch (e) {
+        last = e; log.push(`${m}：${e.status || ''} ${e.message}`);
+        if (![429, 500, 503].includes(e.status)) break;                       // 金鑰錯、格式錯：重試沒用
+        if (t < RETRY_WAIT.length) { const st = $('g-status') || $('m-status'); if (st) st.innerHTML = `<span class="spinner"></span> ${esc(m)} 忙線（${e.status}），${RETRY_WAIT[t]} 秒後重試（第 ${t + 1}／3 次）…`; await sleep(RETRY_WAIT[t]); }
+      }
+    }
+    if (models.length > 1 && m === models[0]) { const st = $('g-status') || $('m-status'); if (st) st.innerHTML = `<span class="spinner"></span> ${esc(m)} 一直忙線，改用 ${esc(models[1])}…`; }
+  }
+  callGemini.log = log; throw last;
 }
 function parseBankJSON(text) {
   let t = text.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
@@ -2004,7 +2731,7 @@ function normalizeBank(b, unit, fixedMis, mode) {
   b.schema = 'fa-bank/1'; b.route = 'B'; b.misMode = mode;
   b.id = 'B-' + unit.replace(/\s+/g, '') + '-' + new Date().toISOString().slice(5, 16).replace(/[-T:]/g, '');
   b.title = (b.title || unit) + '（路線 B）';
-  b.source = `Gemini（${$('g-model').value.trim()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
+  b.source = `Gemini（${callGemini.lastModel || $('g-model').value.trim()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
   b.misconceptions = b.misconceptions || []; b.items = (b.items || []).map((it, i) => ({ ...it, id: it.id || `Q${String(i + 1).padStart(2, '0')}`, set: it.set === 'B' ? 'B' : (it.pair ? 'A' : it.set), options: (it.options || []).map(o => ({ ...o, mis: o.mis === 'null' ? null : (o.mis || null) })) }));
   if (fixedMis && fixedMis.length) {
     // 迷思表以老師／路線 A 的為準；AI 若仍用了清單外的代碼，另外列出並標明
@@ -2016,7 +2743,7 @@ function normalizeBank(b, unit, fixedMis, mode) {
   } else {
     b.misconceptions = b.misconceptions.map(m => ({ ...m, source: /AI 推測/.test(m.source || '') ? m.source : 'AI 推測' + (m.source ? `（AI 自述：${m.source}）` : '') }));
   }
-  b.source += mode === 'A' ? '；迷思表沿用路線 A（知識卡）' : mode === 'paste' ? '；迷思表由老師貼上' : '；迷思表由 AI 自列（出處為 AI 推測）';
+  b.source += mode === 'A' ? `；迷思表：${(T.misA && T.misA.from) || '路線 A（知識卡）'}` : mode === 'paste' ? '；迷思表由老師貼上' : '；迷思表由 AI 自列（出處為 AI 推測）';
   return b;
 }
 async function runGen(fixOnly) {
@@ -2051,6 +2778,7 @@ async function runGen(fixOnly) {
   finally { btns.forEach(b => b.disabled = false); }
 }
 function showGenResult() {
+  if (T.genBank && T.genBank.gen === 'template') return showTplResult();
   const b = T.genBank; const vr = V.verifyBank(b).results; const s = V.verifyBank(b).summary;
   $('g-result').innerHTML = `<div class="row" style="justify-content:space-between"><div><h3 style="font-size:21px">${esc(b.title)}</h3>
       <div class="small muted">${b.items.length} 題（${s.pairs} 組平行題，結構一致 ${s.pairOk} 組）・${b.misconceptions.length} 個迷思・驗算 ${s.pass}✓ ${s.fail}✗ ${s.manual}⚠${b.fixRounds ? `・AI 修正 ${b.fixRounds} 次` : ''}</div></div>
@@ -2060,6 +2788,244 @@ function showGenResult() {
     <div class="items scroll">${renderItemCards(b, vr, {}, false, true)}</div>`;
   const fx = $('g-fix'); if (fx) fx.onclick = () => runGen(true);
   $('g-save').onclick = () => { Banks.save(JSON.parse(JSON.stringify(b))); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
+}
+
+// ============================================================
+//  路線 B：模板出題（不用 AI；v3.0）——正解、誘答、回饋都由 rules.js 的錯誤規則算出
+// ============================================================
+const FR = window.FARules, FT = window.FA_TPL || { tpl: {}, mis: {} };
+const tplUnits = () => Object.keys(FT.tpl || {});
+const genModeSw = () => `<div class="seg-sw" style="align-self:flex-start"><button data-gm="tpl" class="${!T.genMode || T.genMode === 'tpl' ? 'on' : ''}">📐 模板出題（不用 AI）</button><button data-gm="my" class="${T.genMode === 'my' ? 'on' : ''}">✍️ 我的迷思</button><button data-gm="ai" class="${T.genMode === 'ai' ? 'on' : ''}">🤖 AI 生題</button></div>`;
+function bindGenModeSw() { document.querySelectorAll('[data-gm]').forEach(b => b.onclick = () => { T.genMode = b.dataset.gm; renderGenPane(); }); }
+function renderGenPane() { if (T.genMode === 'ai') renderAiPane(); else if (T.genMode === 'my') renderMyPane(); else renderTplPane(); bindGenModeSw(); }
+// 迷思表：組進網頁的 mis/<單元>.json（第一優先）→ repo banks/<單元>.json → 只有規則名稱
+async function tplMisTable(u) {
+  if (FT.mis && FT.mis[u] && FT.mis[u].misconceptions) return { list: FT.mis[u].misconceptions, src: FT.mis[u].sourceNote || `mis/${u}.json` };
+  const b = await fetchUnitBank(u); if (b && b.misconceptions) return { list: b.misconceptions, src: `路線 A 題庫 banks/${u}.json` };
+  return { list: [], src: '找不到迷思表，只顯示規則名稱' };
+}
+async function renderTplPane() {
+  const f = ls.get('fa-tpl-form', {}); const units = tplUnits();
+  const u = units.includes(f.unit) ? f.unit : units.includes(T.tplUnit) ? T.tplUnit : units[0]; T.tplUnit = u;
+  const key = ls.get('fa-gemini-key', '');
+  $('tp-gen').innerHTML = `<div class="gen-form card scroll">
+      ${genModeSw()}
+      <h3 style="font-size:22px">選單元、勾迷思，程式直接出題</h3>
+      <div class="small muted" style="line-height:1.6">每個誘答都由「學生的錯誤算法」（錯誤規則）算出來，回饋就是那個算法；不需要 API key，幾毫秒出好。</div>
+      <label class="fl">單元<select id="m-unit">${units.map(x => `<option ${x === u ? 'selected' : ''}>${esc(x)}</option>`).join('')}</select></label>
+      <div class="fl">要診斷的迷思（只列有錯誤規則的）<div class="row small" style="gap:8px"><button class="btn sm ghost" id="m-all">全選</button><button class="btn sm ghost" id="m-none">全不選</button></div>
+        <div id="m-mis" class="small" style="line-height:1.9"></div><div id="m-missrc" class="small muted"></div>
+        <div id="m-my" class="small" style="line-height:1.9"></div></div>
+      <div class="row"><label class="fl" style="width:150px">平行題組數<input type="number" id="m-n" value="${f.n || 6}" min="1" max="12"></label>
+        <div class="small muted" id="m-tplinfo" style="flex:1"></div></div>
+      <button class="btn zhu big" id="m-go">模板出題</button>
+      <div id="m-status" class="small"></div>
+      <details class="small"><summary style="cursor:pointer;font-weight:700">AI 改寫題幹（選用，要 Gemini key）</summary>
+        <div class="small muted" style="margin:6px 0">只改題幹文字（例如改成生活情境）；程式會檢查題幹裡的數字和原題一樣，不一樣就退回模板題幹。</div>
+        <div class="row"><label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash')}"></label></div>
+        <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
+        <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
+    </div>
+    <div class="col" style="flex:1;min-height:0" id="g-result"><div class="card muted" style="line-height:1.8">出題後，這裡會列出每一組 A、B 卷。每個誘答旁有<b>「學生怎麼算出這個」</b>：<br>・勾「我的學生真的會這樣算」＝老師確認過這個誘答<br>・按「刪掉，換一個」＝這條規則不要，由下一條規則補上（A、B 卷一起換）<br>確認後按「存入題庫」，就能到「題庫與建立場次」開課。</div></div>`;
+  $('m-unit').onchange = e => { T.tplUnit = e.target.value; ls.set('fa-tpl-form', { ...ls.get('fa-tpl-form', {}), unit: T.tplUnit }); renderTplPane().then(bindGenModeSw); };
+  $('m-go').onclick = runTplGen;
+  await loadTplMis(u);
+  if (T.genBank && T.genBank.gen === 'template') showGenResult();
+}
+async function loadTplMis(u) {
+  const tpls = (FT.tpl[u] || {}).tpls || []; const byMis = FR.rulesOf(tpls);
+  const mt = await tplMisTable(u); T.tplMis = { unit: u, list: mt.list, src: mt.src };
+  const mm = {}; mt.list.concat(FR.GENERIC).forEach(m => mm[m.code] = m);
+  const saved = (ls.get('fa-tpl-form', {}).mis || {})[u];
+  $('m-mis').innerHTML = Object.keys(byMis).sort().map(c => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-mc="${esc(c)}" ${!saved || saved.includes(c) ? 'checked' : ''}>
+      <span class="mis-code">${esc(c)}</span><b>${esc(mm[c] ? mm[c].name : byMis[c][0].name)}</b><span class="muted">${esc(byMis[c].map(r => (tpls.find(t => t.tpl === r.tpl) || {}).title || r.tpl).filter((x, i, a) => a.indexOf(x) === i).join('、'))}</span></label>`).join('');
+  $('m-missrc').textContent = '迷思名稱來源：' + mt.src + (Object.keys(byMis).some(c => /^G/.test(c)) ? '；G 開頭是通用計算失誤（各單元共用）' : '');
+  $('m-tplinfo').textContent = `${tpls.length} 種模板：${tpls.map(t => t.title || t.tpl).join('、')}`;
+  const my = myList(); const exprT = tpls.filter(t => t.check && t.check.type === 'value' && t.check.expr);
+  $('m-my').innerHTML = my.length ? `<div style="margin-top:6px"><b>我的迷思</b><span class="muted">（套在算式題：${esc(exprT.map(t => t.title || t.tpl).join('、') || '這一節沒有算式題模板')}）</span></div>` +
+    my.map(m => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-my="${esc(m.code)}" ${exprT.length ? '' : 'disabled'}><span class="mis-code">${esc(m.code)}</span><b>${esc(m.name)}</b><span class="muted">${esc(m.expr)}＝${esc(m.wrong)}</span></label>`).join('') : '';
+  $('m-all').onclick = () => { document.querySelectorAll('[data-mc]').forEach(c => c.checked = true); };
+  $('m-none').onclick = () => { document.querySelectorAll('[data-mc]').forEach(c => c.checked = false); };
+}
+function runTplGen() {
+  const u = T.tplUnit, T0 = FT.tpl[u]; const n = Math.max(1, Math.min(12, parseInt($('m-n').value, 10) || 6));
+  const codes = [...document.querySelectorAll('[data-mc]:checked')].map(c => c.dataset.mc);
+  const custom = [...document.querySelectorAll('[data-my]:checked')].map(c => myList().find(m => m.code === c.dataset.my)).filter(Boolean);
+  const f = ls.get('fa-tpl-form', {}); ls.set('fa-tpl-form', { ...f, unit: u, n, mis: { ...(f.mis || {}), [u]: codes } });
+  const st = $('m-status'); const t0 = performance.now();
+  try {
+    const un = T0.unit;
+    const b = FR.genBank({ unit: un, tpls: T0.tpls, mis: T.tplMis && T.tplMis.unit === u ? T.tplMis.list : [], count: n, rules: codes, custom, route: 'B',
+      id: 'B-' + u + '-模板-' + new Date().toISOString().slice(5, 16).replace(/[-T:]/g, ''),
+      title: `${un.grade} ${un.code} ${un.name}（模板出題）`,
+      source: `模板出題（不用 AI）：${new Date().toLocaleString('zh-TW')} 由錯誤規則產生，正解、誘答、回饋都由程式算出，經自動驗算；迷思表：${T.tplMis ? T.tplMis.src : '—'}` });
+    b.gen = 'template'; b.tplUnit = u; b.tplRules = codes; b.misMode = 'template';
+    T.genBank = b;
+    const s = b.verify; st.innerHTML = `完成（${Math.max(1, Math.round(performance.now() - t0))} 毫秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過；平行題 ${s.pairOk}/${s.pairs}`;
+    showGenResult();
+  } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">沒辦法出題：${esc(e.message)}</span>`; console.error(e); }
+}
+// 題幹數字檢查：AI 改寫後的數字（含次方）要和模板題幹完全一樣（多重集合相同）
+const SUPN = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
+const numsOf = s => (String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48)).replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUPN[c]).join('')).match(/\d+(\.\d+)?/g) || []).sort();
+function stemNumsOk(orig, neu) { const a = numsOf(orig), b = numsOf(neu); return a.length === b.length && a.every((x, i) => x === b[i]); }
+function tplOf(b, it) { return ((FT.tpl[b.tplUnit] || {}).tpls || []).find(t => t.tpl === it.tpl); }
+function showTplResult() {
+  const b = T.genBank; const vb = V.verifyBank(b); const vr = vb.results; const s = vb.summary; const mm = misMapOf(b);
+  const ds = b.items.flatMap(it => it.options.filter(o => o.key !== it.answer)); const okN = ds.filter(o => o.teacherOk).length;
+  const ps = bankPairs(b); const tpls = (FT.tpl[b.tplUnit] || {}).tpls || [];
+  $('g-result').innerHTML = `<div class="row" style="justify-content:space-between"><div><h3 style="font-size:21px">${esc(b.title)}</h3>
+      <div class="small muted">${b.items.length} 題（${s.pairs} 組平行題，結構一致 ${s.pairOk} 組）・驗算 ${s.pass}✓ ${s.fail}✗・誘答 ${ds.length} 個，全部由規則算出・老師已確認 <b id="m-okn">${okN}</b> 個</div></div>
+      <div class="row" style="gap:8px"><button class="btn sm qing" id="g-save">存入題庫</button></div></div>
+    <div class="items scroll" id="m-review">${ps.map((p, i) => `<div class="pair on"><div class="pair-h"><b>第 ${i + 1} 組</b><span class="muted small">${esc(p.pair)}・${esc((tpls.find(t => t.tpl === p.A.tpl) || {}).title || p.A.tpl)}</span></div>
+      ${[p.A, p.B].filter(Boolean).map(it => { const r = vr[it.id];
+        return `<div class="item"><div class="item-h"><span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span><span class="st">${M(it.stem)}</span>
+          ${it.stemOrig ? `<span class="badge bl" title="${esc('模板題幹：' + it.stemOrig)}">AI 改寫</span>` : ''}
+          ${r.status === 'pass' ? '<span class="badge pass">✓ 驗算通過</span>' : '<span class="badge fail">✗ 驗算未通過</span>'}
+          <button class="btn sm ghost" data-rw="${esc(it.id)}" style="padding:2px 8px">✏️ AI 改寫題幹</button>${it.stemOrig ? `<button class="btn sm ghost" data-rb="${esc(it.id)}" style="padding:2px 8px">還原</button>` : ''}</div>
+          <div class="tr-opts">${it.options.map(o => o.key === it.answer
+            ? `<div class="tr-o"><b style="color:${OPT_COLOR(o.key)}">${o.key}</b><span class="ok">${M(o.text)} ✓ 正解</span></div>`
+            : `<div class="tr-o"><b style="color:${OPT_COLOR(o.key)}">${o.key}</b><span>${M(o.text)}</span><span class="mis-code" title="${esc(mm[o.mis] ? mm[o.mis].name : '')}">${esc(o.mis)} ${esc(mm[o.mis] ? mm[o.mis].name : '')}</span>
+                <div class="trace">學生怎麼算出這個：${V.mathHTML(o.trace || '')}<br><span class="muted">怎麼改：${V.mathHTML(o.fix || '')}</span></div>
+                <label class="small tr-ok"><input type="checkbox" data-ok="${esc(it.id + '|' + o.key)}" ${o.teacherOk ? 'checked' : ''}> 我的學生真的會這樣算</label>
+                <button class="btn sm ghost" data-del="${esc(p.pair + '|' + o.rule)}" style="padding:1px 8px">刪掉，換一個</button></div>`).join('')}</div></div>`; }).join('')}</div>`).join('')}</div>`;
+  $('g-save').onclick = () => { Banks.save(JSON.parse(JSON.stringify(b))); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
+  $('m-review').querySelectorAll('[data-ok]').forEach(cb => cb.onchange = () => {
+    const [id, k] = cb.dataset.ok.split('|'); const o = b.items.find(x => x.id === id).options.find(x => x.key === k);
+    if (cb.checked) o.teacherOk = true; else delete o.teacherOk; $('m-okn').textContent = b.items.flatMap(it => it.options).filter(x => x.teacherOk).length;
+  });
+  $('m-review').querySelectorAll('[data-del]').forEach(bt => bt.onclick = () => {
+    const [pair, rule] = bt.dataset.del.split('|'); const A = b.items.find(x => x.pair === pair && x.set === 'A'), B = b.items.find(x => x.pair === pair && x.set === 'B');
+    const backup = JSON.stringify([A, B]); const tp = tplOf(b, A);
+    const got = tp ? FR.replaceDistractor(A, B, tp, rule, { rules: b.tplRules }) : null;
+    if (!got) { toast('這一題沒有其他規則可以補（或補上會和其他選項同值），要換就重新出題', 3500); return; }
+    if ([A, B].some(it => V.verifyItem(it, misMapOf(b)).status !== 'pass')) { const [a0, b0] = JSON.parse(backup); Object.assign(A, a0); Object.assign(B, b0); toast('換上的誘答沒通過驗算，已還原'); return; }
+    syncMisTable(b); toast(`已換成 ${got}（A、B 卷一起換）`); showTplResult();
+  });
+  $('m-review').querySelectorAll('[data-rw]').forEach(bt => bt.onclick = () => rewriteStem(bt.dataset.rw, bt));
+  $('m-review').querySelectorAll('[data-rb]').forEach(bt => bt.onclick = () => { const it = b.items.find(x => x.id === bt.dataset.rb); it.stem = it.stemOrig; delete it.stemOrig; delete it.stemBy; showTplResult(); });
+}
+// 換誘答後，迷思表只留用到的；新用到的從原迷思表補回
+function syncMisTable(b) {
+  const all = {}; ((T.tplMis && T.tplMis.list) || []).concat(FR.GENERIC, b.misconceptions).forEach(m => all[m.code] = all[m.code] || m);
+  const used = [...new Set(b.items.flatMap(it => it.options.map(o => o.mis).filter(Boolean)))];
+  b.misconceptions = used.map(c => all[c] || { code: c, name: c });
+}
+async function rewriteStem(id, btn) {
+  const b = T.genBank; const it = b.items.find(x => x.id === id); const orig = it.stemOrig || it.stem;
+  const prompt = `把下面這一題國中數學選擇題的「題幹」改寫得更貼近臺灣國中生的生活情境（繁體中文、臺灣用語），規則：
+1. 題目要問的數學內容、算式、所有數字都不能改，不能多加或少掉任何數字（包括次方）。算式照原樣保留，次方用 ^ 寫。
+2. 不能透露答案或提示解法，不要改成需要更多步驟的應用題。
+3. 只回傳 JSON：{"stem":"改寫後的題幹"}
+原題幹：${orig}
+選項（不要改，只是讓你知道在問什麼）：${it.options.map(o => o.text).join('／')}`;
+  btn.disabled = true; btn.textContent = '改寫中…';
+  try {
+    const neu = String(parseBankJSON(await callGemini(prompt)).stem || '').trim();
+    if (!neu) throw new Error('AI 沒有回傳題幹');
+    if (!stemNumsOk(orig, neu)) { toast(`AI 改寫的題幹數字和原題不一致（原題 ${numsOf(orig).join('、')}；改寫 ${numsOf(neu).join('、') || '沒有數字'}），已退回模板題幹`, 5000); it.stem = orig; delete it.stemOrig; }
+    else { it.stemOrig = orig; it.stem = neu; it.stemBy = callGemini.lastModel; toast(`已改寫（${callGemini.lastModel}），數字檢查通過`); }
+  } catch (e) { toast('改寫失敗：' + e.message, 4000); }
+  showTplResult();
+}
+
+// ============================================================
+//  路線 B：白話迷思 → 規則（v3.0）——「我的迷思」存在這台電腦的瀏覽器，可匯出 JSON
+// ============================================================
+const MYK = 'fa-my-mis';
+const myList = () => ls.get(MYK, []);
+const mySave = a => ls.set(MYK, a);
+function nextMyCode() { const used = myList().map(m => m.code); for (let i = 1; ; i++) { const c = 'MY' + String(i).padStart(2, '0'); if (!used.includes(c)) return c; } }
+function renderMyPane() {
+  const TF = FR.my.TRANSFORMS; const key = ls.get('fa-gemini-key', ''); const d = T.myDraft || {};
+  $('tp-gen').innerHTML = `<div class="gen-form card scroll">
+      ${genModeSw()}
+      <h3 style="font-size:22px">白話寫一條自己的迷思</h3>
+      <div class="small muted" style="line-height:1.6">寫一句描述＋一個例子。AI（或你自己）從下面的「變形」挑 1～3 個組合成學生的錯誤算法，程式用例子驗證：算得出你寫的錯誤答案才能存。</div>
+      <label class="fl">描述<input type="text" id="y-desc" value="${esc(d.desc || '')}" placeholder="例：學生把 −3² 當成 9"></label>
+      <div class="row"><label class="fl" style="flex:1">例子：算式<input type="text" id="y-expr" value="${esc(d.expr || '')}" placeholder="−3^2"></label>
+        <label class="fl" style="width:150px">學生算出<input type="text" id="y-wrong" value="${esc(d.wrong || '')}" placeholder="9"></label></div>
+      <div class="row"><label class="fl" style="width:110px">代碼<input type="text" id="y-code" value="${esc(d.code || nextMyCode())}"></label>
+        <label class="fl" style="flex:1">迷思名稱<input type="text" id="y-name" value="${esc(d.name || '')}" placeholder="負號也被次方"></label></div>
+      <div class="row" style="gap:8px"><button class="btn zhu" id="y-ai">🤖 AI 翻成規則</button><span class="small muted">或自己勾下面的變形，再按「用例子驗證」</span></div>
+      <div class="fl">變形（白名單，最多勾 3 個，依序套用）<div id="y-tf" class="small" style="line-height:1.9">${Object.entries(TF).map(([k, t]) => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-tf="${k}" ${(d.transforms || []).includes(k) ? 'checked' : ''}><b>${esc(t.name)}</b><span class="muted">${esc(t.ex)}</span></label>`).join('')}</div></div>
+      <label class="fl">怎麼改（選填，學生答錯時看到）<input type="text" id="y-fix" value="${esc(d.fix || '')}" placeholder="負號在次方外面：先算 3²＝9，再加負號"></label>
+      <div class="row" style="gap:8px"><button class="btn" id="y-check">用例子驗證</button><button class="btn qing" id="y-save" disabled>存進我的迷思</button></div>
+      <div id="y-status" class="small" style="line-height:1.7"></div>
+      <details class="small"><summary style="cursor:pointer;font-weight:700">Gemini 設定（AI 翻成規則才需要）</summary>
+        <div class="row"><label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash')}"></label></div>
+        <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
+        <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
+    </div>
+    <div class="col" style="flex:1;min-height:0" id="y-list"></div>`;
+  const tfSel = () => [...document.querySelectorAll('[data-tf]:checked')].map(c => c.dataset.tf);
+  const form = () => ({ code: $('y-code').value.trim().toUpperCase(), name: $('y-name').value.trim(), desc: $('y-desc').value.trim(), expr: $('y-expr').value.trim(), wrong: $('y-wrong').value.trim(), transforms: tfSel(), fix: $('y-fix').value.trim() });
+  const keep = () => { T.myDraft = { ...form(), by: T.myDraft && T.myDraft.by } };
+  document.querySelectorAll('#tp-gen input').forEach(x => x.addEventListener('input', () => { keep(); $('y-save').disabled = true; }));
+  document.querySelectorAll('[data-tf]').forEach(x => x.addEventListener('change', () => { if (tfSel().length > 3) { x.checked = false; toast('最多 3 個變形'); } keep(); $('y-save').disabled = true; if (T.myDraft) T.myDraft.by = '老師勾選'; }));
+  $('y-check').onclick = () => { keep(); showMyCheck(form()); };
+  $('y-ai').onclick = () => myAI(form());
+  $('y-save').onclick = () => {
+    const f = { ...form(), by: (T.myDraft && T.myDraft.by) || '老師勾選' }; const r = FR.my.check(f);
+    if (!r.ok) { showMyCheck(f); return; }
+    if (!/^[A-Z]{1,4}\d{1,3}$/.test(f.code)) { toast('代碼請用英文字母加數字，例如 MY01'); return; }
+    if (!f.name) f.name = f.desc || f.transforms.map(t => FR.my.TRANSFORMS[t].name).join('＋');
+    const a = myList().filter(m => m.code !== f.code); a.push({ ...f, trace: r.trace, createdAt: new Date().toISOString().slice(0, 10) }); mySave(a);
+    T.myDraft = null; toast(`已存進我的迷思：${f.code} ${f.name}`); renderMyPane(); bindGenModeSw();
+  };
+  renderMyList();
+}
+function showMyCheck(f) {
+  const r = FR.my.check(f); const st = $('y-status');
+  st.innerHTML = r.ok ? `<span style="color:var(--qing);font-weight:700">✓ 重現了你的例子</span>：${V.mathHTML(r.trace)}<br><span class="muted">正確答案是 ${esc(r.right)}；學生這樣算會得到 ${esc(r.got)}。</span>`
+    : `<span style="color:var(--zhu);font-weight:700">✗ ${esc(r.msg)}</span>${r.trace ? `<br><span class="muted">${V.mathHTML(r.trace)}</span>` : ''}`;
+  $('y-save').disabled = !r.ok; return r;
+}
+async function myAI(f) {
+  if (!f.desc && !f.expr) { toast('先寫描述或例子'); return; }
+  const TF = FR.my.TRANSFORMS; const st = $('y-status'); $('y-ai').disabled = true;
+  const ask = extra => `你要把國中數學老師描述的「學生錯誤算法」翻成規則。規則只能從下面的變形挑 1～3 個（依序套用），不能自己發明：
+${Object.entries(TF).map(([k, t]) => `- ${k}：${t.name}（${t.ex}）`).join('\n')}
+老師的描述：${f.desc || '（沒寫）'}
+老師的例子：${f.expr ? `算式 ${f.expr}${f.wrong ? `，學生算出 ${f.wrong}` : ''}` : '（沒寫，請從描述裡找出算式和學生的答案）'}
+只回傳 JSON：{"name":"迷思名稱（12 字內）","expr":"例子的算式（次方用 ^，負號用 −）","wrong":"學生算出的答案（數字或分數）","transforms":["變形代碼"],"fix":"給學生的一句改正說明"}${extra ? '\n' + extra : ''}`;
+  try {
+    let tries = 0, extra = '', r, j;
+    while (tries < 2) {
+      st.innerHTML = `<span class="spinner"></span> AI 翻譯中…${tries ? '（第 2 次，附上驗證結果）' : ''}`;
+      j = parseBankJSON(await callGemini(ask(extra)));
+      const g = { ...f, name: f.name || j.name || '', expr: f.expr || j.expr || '', wrong: f.wrong || j.wrong || '', transforms: Array.isArray(j.transforms) ? j.transforms : [], fix: f.fix || j.fix || '' };
+      r = FR.my.check(g); tries++;
+      T.myDraft = { ...g, code: f.code, by: 'AI（' + callGemini.lastModel + '）' };
+      if (r.ok) break;
+      extra = `上一次你回的變形 ${JSON.stringify(g.transforms)} 用程式驗證失敗：${r.msg}。請重新挑。`;
+    }
+    renderMyPane(); bindGenModeSw();
+    const r2 = showMyCheck(T.myDraft);
+    if (!r2.ok) $('y-status').innerHTML += '<br><b>AI 翻出的規則重現不了你的例子，請把描述寫得更具體（例如學生每一步怎麼算），或自己勾變形。</b>';
+    else $('y-status').innerHTML += `<br><span class="muted">由 ${esc(T.myDraft.by)} 翻譯；確認沒問題再按「存進我的迷思」。</span>`;
+  } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">AI 失敗：${esc(e.message)}</span>（也可以自己勾變形）`; }
+  finally { const b = $('y-ai'); if (b) b.disabled = false; }
+}
+function renderMyList() {
+  const a = myList();
+  $('y-list').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="font-size:21px">我的迷思（${a.length}）</h3>
+      <div class="row" style="gap:8px"><button class="btn sm" id="y-exp" ${a.length ? '' : 'disabled'}>匯出 JSON</button><button class="btn sm ghost" id="y-imp">匯入 JSON</button><input type="file" id="y-file" accept=".json" hidden></div></div>
+    <div class="small muted">存在這台電腦的瀏覽器。到「📐 模板出題」勾選，就會用在算式題（例如 −3²、5＋(−8)、(2/3)⁴）的誘答。</div>
+    <div class="items scroll">${a.map(m => `<div class="item"><div class="item-h"><span class="mis-code">${esc(m.code)}</span><b>${esc(m.name)}</b><span class="muted small">${esc(m.desc || '')}</span>
+        <button class="btn sm ghost" data-ydel="${esc(m.code)}" style="margin-left:auto;padding:2px 8px">刪除</button></div>
+        <div class="small" style="margin:6px 0 0 8px;line-height:1.7">例子：${V.mathHTML(m.trace || '')}<br>變形：${m.transforms.map(t => esc(FR.my.TRANSFORMS[t] ? FR.my.TRANSFORMS[t].name : t)).join(' → ')}<span class="muted">　｜　${esc(m.by || '')}・${esc(m.createdAt || '')}</span>${m.fix ? `<br>怎麼改：${esc(m.fix)}` : ''}</div></div>`).join('') || '<div class="card muted">還沒有。左邊寫一句描述＋一個例子試試看，例如「學生把 −3² 當成 9」。</div>'}</div>`;
+  document.querySelectorAll('[data-ydel]').forEach(b => b.onclick = () => { if (!confirm('刪除這條迷思？')) return; mySave(myList().filter(m => m.code !== b.dataset.ydel)); renderMyList(); });
+  $('y-exp').onclick = () => download(`我的迷思_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.json`, JSON.stringify({ schema: 'fa-mymis/1', items: myList() }, null, 2), 'application/json');
+  $('y-imp').onclick = () => $('y-file').click();
+  $('y-file').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const j = JSON.parse(await f.text()); const items = j.items || j; let n = 0, bad = [];
+      const a = myList(); items.forEach(m => { const r = FR.my.check(m); if (r.ok) { const i = a.findIndex(x => x.code === m.code); const v = { ...m, trace: r.trace }; if (i >= 0) a[i] = v; else a.push(v); n++; } else bad.push(`${m.code}：${r.msg}`); });
+      mySave(a); renderMyList(); toast(`匯入 ${n} 條${bad.length ? `；${bad.length} 條重現不了例子沒有匯入` : ''}`, 4000); if (bad.length) console.warn(bad);
+    } catch (err) { alert('匯入失敗：' + err.message); }
+    e.target.value = '';
+  };
 }
 
 // ---------- 路線比較 ----------
@@ -2141,7 +3107,7 @@ function renderCmpPane() {
   if (role === 'teacher') { openTeacherLogin(); return; }
   show('v-home');
 })();
-window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, Banks, V };
+window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, Banks, V, stemNumsOk, callGemini, prepClassData };
 
 </script>
 </body>
