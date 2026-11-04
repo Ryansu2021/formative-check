@@ -1,0 +1,910 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9下3-1-空間中的線平面與柱體",
+ "title": "九下 3-1 空間中的線、平面與形體（前半）（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九下",
+  "code": "3-1",
+  "name": "空間中的線、平面與形體（前半）",
+  "curriculum": [
+   "S-9-12 空間中的線與平面：長方體與正四面體的示意圖，利用長方體與正四面體作為特例，介紹線與線的平行、垂直與歪斜關係，線與平面的垂直與平行關係。",
+   "S-9-13 表面積與體積：直角柱、直圓錐、正角錐的展開圖；直角柱、直圓錐、正角錐的表面積；直角柱的體積。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九下3-1.md（三版教學順序、迷思清單、教學建議、會考題）與比較頁迷思表頁碼產題；學習內容條文依備課用書所列；空間線面只在長方體內判斷，只用直角柱、直圓柱；2026-11-05 依老師決定：空心圓管題換成直三角柱表面積（P06），側面積相等比體積改簡單版（P08），原題留作進階 P09；能算的題目答案經驗算器重算，P02、P03、P04 為看圖判斷（manual），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "updated": "2026-11-05T01:51",
+ "misconceptions": [
+  {
+   "code": "SP01",
+   "name": "不相交就當成平行",
+   "desc": "空間中兩直線不相交，就認定是平行，忽略「在同一平面上」，不知道還有歪斜",
+   "example": "長方體中 AB 與 CG 不相交，就說 AB∥CG",
+   "remedy": "拿長方體模型找 AB 與 CG：能不能找到一個平面同時放下這兩條稜？放不下就是歪斜。",
+   "source": "知識卡迷思：康軒 p.102–103 定義、p.118 自評1；南一 p.107 解迷三角；翰林 p.101 歪斜與 Thinking（✓／✓／✓）",
+   "card": "不相交的兩直線就是平行（忽略「在同一平面上」，漏掉歪斜）",
+   "tiers": [
+    "九下3-1-S2T1"
+   ]
+  },
+  {
+   "code": "SP02",
+   "name": "垂直一線就垂直平面",
+   "desc": "直線只要和平面上一條直線垂直，就認定它垂直整個平面",
+   "example": "AF⊥FG，就說 AF 垂直平面 EFGH",
+   "remedy": "在模型上檢查平面上通過垂足、不同方向的直線（例如 EF 和 FG）；只要有一條不垂直就不是線面垂直。",
+   "source": "知識卡迷思：康軒 p.101 旋轉長方體；南一 p.105 三個圖；翰林 p.99 旋轉長方體（備課 p.164 眉批反例）（✓／✓／✓）",
+   "card": "直線只要與平面上一條直線垂直，就以為垂直這個平面",
+   "tiers": [
+    "九下3-1-S1T2"
+   ]
+  },
+  {
+   "code": "SP03",
+   "name": "側面只能是長方形",
+   "desc": "以為圓柱的側面展開只能是長方形，平行四邊形不行",
+   "example": "平行四邊形紙片「不能捲成圓柱」",
+   "remedy": "發平行四邊形紙片讓學生把兩條斜邊接起來捲捲看，再指出哪一條邊繞底圓一圈。",
+   "source": "知識卡迷思：康軒 p.108、p.109 隨堂；南一 p.97 探索活動；翰林 p.107 隨堂（✓／✓／✓）",
+   "card": "圓柱的側面展開只能是長方形（其實也可以是平行四邊形）",
+   "tiers": [
+    "九下3-1-S3T2"
+   ]
+  },
+  {
+   "code": "SP04",
+   "name": "側面長與底周長不符",
+   "desc": "沒檢查側面繞底一圈的長是否等於底面周長（圓柱、角柱），或搞錯哪一邊繞底圓",
+   "example": "底半徑 2 的圓柱，側面長方形長 2π 也當展開圖",
+   "remedy": "先問「哪一條邊會繞底圓一圈？」再算底圓周長，兩者相等才能接合。",
+   "source": "知識卡迷思：康軒 p.109 隨堂；南一 p.97 隨堂；翰林 p.107 隨堂（✓／✓／✓）",
+   "card": "側面的長和底圓周長不相等，也當成圓柱的展開圖",
+   "tiers": [
+    "九下3-1-S3T2"
+   ]
+  },
+  {
+   "code": "SP05",
+   "name": "角柱兩底面接錯",
+   "desc": "角柱展開圖兩個底面接在側面的同一側，或底面接在長度不合的邊上",
+   "example": "三角柱的兩個三角形都接在側面長方形的上邊",
+   "remedy": "用附件或紙模型實際摺：兩個底面要分在側面兩側，而且接合的邊要一樣長。",
+   "source": "知識卡迷思：康軒 p.119 挑錯題、p.105 隨堂；南一 學生課本 3-1 未見；翰林 p.104 隨堂（✓／–／✓）",
+   "card": "角柱展開圖兩個底面接錯位置、邊長無法疊合",
+   "tiers": [
+    "九下3-1-S3T2"
+   ]
+  },
+  {
+   "code": "SP06",
+   "name": "表面積只算一個底",
+   "desc": "算柱體表面積時只算一個底面",
+   "example": "圓柱表面積寫成 πr²＋2πrh",
+   "remedy": "先攤開展開圖一面一面數：上底、下底各一個，再加側面。",
+   "source": "知識卡迷思：康軒 p.111 例4 Hint；南一 學生課本未見；翰林 備課 p.176 數問速答（只在備課用書）（✓／–／備）",
+   "card": "表面積漏算：空心容器的內側面、只算一個底面",
+   "tiers": [
+    "九下3-1-S3T1"
+   ]
+  },
+  {
+   "code": "SP08",
+   "name": "側面積等就體積等",
+   "desc": "同一張紙捲成的兩個圓柱側面積相等，就以為體積也相等",
+   "example": "同一張長方形紙長邊、短邊各捲一次，說兩個圓柱一樣大",
+   "remedy": "實際算兩個圓柱的底半徑和高，或用 A4 紙捲兩種圓柱裝米比比看。",
+   "source": "知識卡迷思：康軒 學生課本未見；南一 p.112 錯誤診療；翰林 p.126 自我挑戰（–／✓／✓）",
+   "card": "側面積相等（同一張紙捲成）就以為體積相等"
+  },
+  {
+   "code": "SP09",
+   "name": "照立體圖畫面判斷位置",
+   "desc": "用斜投影圖上「看起來」的樣子判斷：畫面交叉就當相交，畫面上不是直角就當不垂直",
+   "example": "圖上 DH 穿過 AB，就說 DH 與 AB 相交",
+   "remedy": "回到模型：圖上交叉的兩條稜真的碰在一起嗎？圖上的直角也要用長方體的面來判斷，不能用量角器量圖。",
+   "source": "依教學經驗（對應主幹卡卡點「在立體圖上看不出哪裡是直角」「在立體圖上看起來交叉，就以為相交」）",
+   "tiers": [
+    "九下3-1-S1T1",
+    "九下3-1-S2T1"
+   ]
+  },
+  {
+   "code": "SP10",
+   "name": "把平行的稜也算歪斜",
+   "desc": "以為不相交就是歪斜，把平行的稜也算進去",
+   "example": "與 AB 歪斜的稜，把 EF、HG 也算進去",
+   "remedy": "先問「這兩條稜在不在同一個面上？」在同一面又不相交是平行，不在同一平面才是歪斜。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SP11",
+   "name": "面面垂直就線面垂直",
+   "desc": "以為兩平面垂直，其中一個平面上的任一直線都垂直另一個平面",
+   "example": "平面 ABFE⊥平面 EFGH，就說 AF⊥平面 EFGH",
+   "remedy": "在模型上指出 ABFE 上的 AE 與 AF：只有和交線 EF 垂直的那條才垂直底面。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SP12",
+   "name": "側面積與體積公式混用",
+   "desc": "把「底周長×高」和「底面積×高」搞混：側面積用底面積×高，或體積用底周長×高",
+   "example": "圓柱側面積寫成 πr²×h",
+   "remedy": "攤開側面：它是長方形，長＝底周長、寬＝高；體積才是一層一層的底面疊起來。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SP13",
+   "name": "把直徑當成半徑",
+   "desc": "題目給直徑（或由周長÷π 得到直徑），直接當半徑代入公式",
+   "example": "直徑 6 的圓，面積算成 π×6²",
+   "remedy": "代公式前先寫「r＝？」，看清楚題目給的是直徑還是半徑。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SP15",
+   "name": "比體積只看高",
+   "desc": "比較兩個圓柱體積時只看高，以為比較高的體積比較大",
+   "example": "半徑 6 高 4 與半徑 4 高 6 的兩圓柱，說高 6 的比較大",
+   "remedy": "把兩個圓柱的「底面積」和「高」分別列出來，再相乘比較。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SP14",
+   "name": "比體積只看底面積",
+   "desc": "比較兩個圓柱體積時只比底面積，忘了高也不同",
+   "example": "底周長 12 與 8 的兩圓柱，體積比寫成 9：4",
+   "remedy": "把兩個圓柱的「底面積」和「高」分別列出來，再相乘比較。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "分析",
+   "lc": "S-9-12",
+   "stem": "如圖長方體 ABCD−EFGH（虛線是看不見的稜）。在 CG、DH、EF、HG、AD 這 5 條稜中，和 AB 歪斜的有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4 條",
+     "mis": "SP10",
+     "feedback": "你把和 AB 平行的 EF、HG 也算進去了。EF、HG 和 AB 在同一個平面上又不相交，是平行，不是歪斜。"
+    },
+    {
+     "key": "B",
+     "text": "0 條",
+     "mis": "SP01",
+     "feedback": "你把不相交的都當成平行。CG、DH 和 AB 不相交，也找不到同一個平面放下它們，是歪斜。"
+    },
+    {
+     "key": "C",
+     "text": "2 條",
+     "mis": null,
+     "feedback": "正確！CG、DH 和 AB 既不相交、也不在同一平面上，是歪斜；EF、HG 平行，AD 相交。"
+    },
+    {
+     "key": "D",
+     "text": "1 條",
+     "mis": "SP09",
+     "feedback": "你看到圖上 DH 穿過 AB，就當成相交。DH 在後面，兩條稜其實沒有碰到，DH 和 AB 歪斜。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "2"
+   },
+   "hint": "一條一條判斷：相交？在同一平面上不相交（平行）？都不是才是歪斜。",
+   "seg": "九下3-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"35.0\" y1=\"65.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"65.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"145.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"145.0\" x2=\"35.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"65.0\" x2=\"80.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"200.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"115.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"80.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"25.0\" y=\"70.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"147.0\" y=\"62.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"161.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"25.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"72.0\" y=\"34.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"210.0\" y=\"40.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"210.0\" y=\"126.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">G</text><text x=\"70.0\" y=\"114.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text></svg>"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "分析",
+   "lc": "S-9-12",
+   "stem": "如圖長方體 ABCD−EFGH（虛線是看不見的稜）。在 AE、BF、AB、AD、EF 這 5 條稜中，和 GH 歪斜的有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3 條",
+     "mis": null,
+     "feedback": "正確！AE、BF、AD 和 GH 既不相交、也不在同一平面上，是歪斜；AB、EF 和 GH 平行。"
+    },
+    {
+     "key": "B",
+     "text": "5 條",
+     "mis": "SP10",
+     "feedback": "你把和 GH 平行的 AB、EF 也算進去了。AB、EF 和 GH 在同一個平面上又不相交，是平行，不是歪斜。"
+    },
+    {
+     "key": "C",
+     "text": "2 條",
+     "mis": "SP09",
+     "feedback": "你看到圖上 BF 穿過 GH，就當成相交。BF 在前面、GH 在後面，其實沒有碰到，BF 和 GH 歪斜。"
+    },
+    {
+     "key": "D",
+     "text": "0 條",
+     "mis": "SP01",
+     "feedback": "你把不相交的都當成平行。AE、BF、AD 和 GH 不相交，也不在同一平面上，是歪斜。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "3"
+   },
+   "hint": "一條一條判斷：相交？在同一平面上不相交（平行）？都不是才是歪斜。",
+   "seg": "九下3-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"35.0\" y1=\"65.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"65.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"145.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"145.0\" x2=\"35.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"65.0\" x2=\"80.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"200.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"115.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"80.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"25.0\" y=\"70.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"147.0\" y=\"62.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"161.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"25.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"72.0\" y=\"34.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"210.0\" y=\"40.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"210.0\" y=\"126.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">G</text><text x=\"70.0\" y=\"114.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text></svg>"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "分析",
+   "lc": "S-9-12",
+   "stem": "如圖長方體 ABCD−EFGH，AF 是長方形 ABFE 的對角線，已知 AF⊥FG。小華說：「所以 AF 垂直平面 EFGH。」下列判斷何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "正確，因為平面 ABFE 垂直平面 EFGH，AF 在平面 ABFE 上",
+     "mis": "SP11",
+     "feedback": "兩平面垂直，不代表面上每條線都垂直另一面。ABFE 上只有和交線 EF 垂直的 AE、BF 才垂直底面。"
+    },
+    {
+     "key": "B",
+     "text": "正確，因為 AF 和平面 EFGH 上的直線 FG 垂直",
+     "mis": "SP02",
+     "feedback": "只垂直平面上的一條直線不夠。再檢查通過 F 的 EF：AF 和 EF 不垂直，所以 AF 不垂直平面 EFGH。"
+    },
+    {
+     "key": "C",
+     "text": "錯誤，因為 AF 和平面 EFGH 上通過 F 的直線 EF 不垂直",
+     "mis": null,
+     "feedback": "正確！線垂直平面，要和平面上通過垂足的每一條直線都垂直；AF 和 EF 不垂直，所以不成立。"
+    },
+    {
+     "key": "D",
+     "text": "錯誤，因為圖上 AF 和 FG 的夾角看起來不是直角",
+     "mis": "SP09",
+     "feedback": "結論對，理由不對。圖上看起來不是直角，實際上 AF⊥FG（FG 垂直平面 ABFE）；要用 EF 來說明。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "線垂直平面：平面上通過交點的直線都要檢查，不能只看一條。",
+   "seg": "九下3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"35.0\" y1=\"65.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"65.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"145.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"145.0\" x2=\"35.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"65.0\" x2=\"80.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"200.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"115.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"80.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"25.0\" y=\"70.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"147.0\" y=\"62.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"161.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"25.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"72.0\" y=\"34.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"210.0\" y=\"40.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"210.0\" y=\"126.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">G</text><text x=\"70.0\" y=\"114.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><line x1=\"35\" y1=\"65\" x2=\"155\" y2=\"145\" stroke=\"#333\" stroke-width=\"2\"/></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "分析",
+   "lc": "S-9-12",
+   "stem": "如圖長方體 ABCD−EFGH，BG 是長方形 BCGF 的對角線，已知 BG⊥AB。小美說：「所以 BG 垂直平面 ABCD。」下列判斷何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "錯誤，因為 BG 和平面 ABCD 上通過 B 的直線 BC 不垂直",
+     "mis": null,
+     "feedback": "正確！線垂直平面，要和平面上通過垂足的每一條直線都垂直；BG 和 BC 不垂直，所以不成立。"
+    },
+    {
+     "key": "B",
+     "text": "正確，因為 BG 和平面 ABCD 上的直線 AB 垂直",
+     "mis": "SP02",
+     "feedback": "只垂直平面上的一條直線不夠。再檢查通過 B 的 BC：BG 和 BC 不垂直，所以 BG 不垂直平面 ABCD。"
+    },
+    {
+     "key": "C",
+     "text": "錯誤，因為圖上 BG 和 AB 的夾角看起來不是直角",
+     "mis": "SP09",
+     "feedback": "結論對，理由不對。圖上看起來不是直角，實際上 BG⊥AB（AB 垂直平面 BCGF）；要用 BC 來說明。"
+    },
+    {
+     "key": "D",
+     "text": "正確，因為平面 BCGF 垂直平面 ABCD，BG 在平面 BCGF 上",
+     "mis": "SP11",
+     "feedback": "兩平面垂直，不代表面上每條線都垂直另一面。BCGF 上只有和交線 BC 垂直的 BF、CG 才垂直 ABCD。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "線垂直平面：平面上通過交點的直線都要檢查，不能只看一條。",
+   "seg": "九下3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"35.0\" y1=\"65.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"65.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"155.0\" y1=\"145.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"145.0\" x2=\"35.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"65.0\" x2=\"80.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"200.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"155.0\" y2=\"65.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"35.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"200.0\" y1=\"115.0\" x2=\"155.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"35.0\" x2=\"80.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"35.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"80.0\" y1=\"115.0\" x2=\"200.0\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"25.0\" y=\"70.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"147.0\" y=\"62.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"161.0\" y=\"162.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"25.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"72.0\" y=\"34.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"210.0\" y=\"40.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"210.0\" y=\"126.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">G</text><text x=\"70.0\" y=\"114.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><line x1=\"155\" y1=\"65\" x2=\"200\" y2=\"115\" stroke=\"#333\" stroke-width=\"2\"/></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "下列四個圖都由正三角形和長方形組成（三角形的邊長和長方形的寬相等），哪一個可以摺成一個三角柱？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SP05",
+     "feedback": "甲的兩個三角形都接在長方形的上邊，摺起來會疊在同一端，另一端沒有底面。兩個底面要分在側面的兩側。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SP06",
+     "feedback": "乙只有一個三角形。三角柱有上、下兩個底面，展開圖要有 2 個三角形。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": null,
+     "feedback": "正確！3 個長方形圍成側面，2 個三角形分別接在上邊和下邊，摺起來剛好是上底和下底。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SP05",
+     "feedback": "丁的一個三角形接在長方形較長的直邊上，三角形的邊比那條邊短，摺起來對不上。底面要接在長度相同的邊。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "摺摺看：兩個底面要分在側面的兩側，接合的邊要一樣長。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 400 260\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"4.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（甲）</text><polygon points=\"50.0,34.0 78.0,34.0 78.0,74.0 50.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"78.0,34.0 106.0,34.0 106.0,74.0 78.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,34.0 134.0,34.0 134.0,74.0 106.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"50.0,34.0 78.0,34.0 64.0,9.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,34.0 134.0,34.0 120.0,9.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"204.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（乙）</text><polygon points=\"250.0,34.0 278.0,34.0 278.0,74.0 250.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"278.0,34.0 306.0,34.0 306.0,74.0 278.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"306.0,34.0 334.0,34.0 334.0,74.0 306.0,74.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"278.0,34.0 306.0,34.0 292.0,9.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"4.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丙）</text><polygon points=\"50.0,164.0 78.0,164.0 78.0,204.0 50.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"78.0,164.0 106.0,164.0 106.0,204.0 78.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,164.0 134.0,164.0 134.0,204.0 106.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"50.0,164.0 78.0,164.0 64.0,139.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,204.0 134.0,204.0 120.0,228.2\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"204.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丁）</text><polygon points=\"250.0,164.0 278.0,164.0 278.0,204.0 250.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"278.0,164.0 306.0,164.0 306.0,204.0 278.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"306.0,164.0 334.0,164.0 334.0,204.0 306.0,204.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"250.0,164.0 278.0,164.0 264.0,139.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"334.0,170.0 334.0,198.0 358.2,184.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "下列四個圖都由正方形和長方形組成（正方形的邊長和長方形的寬相等），哪一個可以摺成一個四角柱？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SP06",
+     "feedback": "甲只有一個正方形。四角柱有上、下兩個底面，展開圖要有 2 個正方形。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": null,
+     "feedback": "正確！4 個長方形圍成側面，2 個正方形分別接在上邊和下邊，摺起來剛好是上底和下底。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SP05",
+     "feedback": "丙的一個正方形接在長方形較長的直邊上，正方形的邊比那條邊短，摺起來對不上。底面要接在長度相同的邊。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SP05",
+     "feedback": "丁的兩個正方形都接在長方形的上邊，摺起來會疊在同一端，另一端沒有底面。兩個底面要分在側面的兩側。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "摺摺看：兩個底面要分在側面的兩側，接合的邊要一樣長。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 400 260\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"4.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（甲）</text><polygon points=\"50.0,34.0 78.0,34.0 78.0,78.0 50.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"78.0,34.0 106.0,34.0 106.0,78.0 78.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,34.0 134.0,34.0 134.0,78.0 106.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"134.0,34.0 162.0,34.0 162.0,78.0 134.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"78.0,34.0 106.0,34.0 106.0,6.0 78.0,6.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"204.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（乙）</text><polygon points=\"250.0,34.0 278.0,34.0 278.0,78.0 250.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"278.0,34.0 306.0,34.0 306.0,78.0 278.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"306.0,34.0 334.0,34.0 334.0,78.0 306.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"334.0,34.0 362.0,34.0 362.0,78.0 334.0,78.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"250.0,34.0 278.0,34.0 278.0,6.0 250.0,6.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"334.0,78.0 362.0,78.0 362.0,106.0 334.0,106.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"4.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丙）</text><polygon points=\"50.0,164.0 78.0,164.0 78.0,208.0 50.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"78.0,164.0 106.0,164.0 106.0,208.0 78.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"106.0,164.0 134.0,164.0 134.0,208.0 106.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"134.0,164.0 162.0,164.0 162.0,208.0 134.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"50.0,164.0 78.0,164.0 78.0,136.0 50.0,136.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"162.0,172.0 162.0,200.0 190.0,200.0 190.0,172.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"204.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丁）</text><polygon points=\"250.0,164.0 278.0,164.0 278.0,208.0 250.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"278.0,164.0 306.0,164.0 306.0,208.0 278.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"306.0,164.0 334.0,164.0 334.0,208.0 306.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"334.0,164.0 362.0,164.0 362.0,208.0 334.0,208.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"250.0,164.0 278.0,164.0 278.0,136.0 250.0,136.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><polygon points=\"334.0,164.0 362.0,164.0 362.0,136.0 334.0,136.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "一個圓柱的底面直徑 4 公分、高 5 公分。下列哪一個是這個圓柱的展開圖？（圖中數字單位：公分）",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SP13",
+     "feedback": "甲的圓半徑是 4、側面長 8π，是把直徑 4 當成半徑做出來的。這個圓柱的半徑是 2。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SP04",
+     "feedback": "乙的側面長只有 2π，但底圓周長是 4π，側面捲起來圍不住底圓。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SP06",
+     "feedback": "丙只有一個圓。圓柱有上、下兩個底面，展開圖要有 2 個圓。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": null,
+     "feedback": "正確！半徑 2 的兩個圓，側面長＝底圓周長 2×π×2＝4π，寬＝高 5。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先算底圓周長，再看側面繞底圓一圈的那一邊是不是一樣長；底面要有幾個？",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 420 330\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"4.0\" y=\"16.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（甲）</text><polygon points=\"20.8,74.4 179.2,74.4 179.2,105.9 20.8,105.9\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"49.2\" r=\"25.2\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"131.1\" r=\"25.2\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"100.0\" y=\"94.2\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">8π</text><text x=\"183.2\" y=\"94.2\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">5</text><text x=\"129.2\" y=\"53.2\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 4</text><text x=\"214.0\" y=\"16.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（乙）</text><polygon points=\"290.2,49.2 329.8,49.2 329.8,80.7 290.2,80.7\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"36.6\" r=\"12.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"93.3\" r=\"12.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"310.0\" y=\"69.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">2π</text><text x=\"333.8\" y=\"69.0\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">5</text><text x=\"326.6\" y=\"40.6\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 2</text><text x=\"4.0\" y=\"181.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丙）</text><polygon points=\"60.4,214.2 139.6,214.2 139.6,245.7 60.4,245.7\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"201.6\" r=\"12.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"100.0\" y=\"233.9\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">4π</text><text x=\"143.6\" y=\"233.9\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">5</text><text x=\"116.6\" y=\"205.6\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 2</text><text x=\"214.0\" y=\"181.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丁）</text><polygon points=\"270.4,214.2 349.6,214.2 349.6,245.7 270.4,245.7\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"201.6\" r=\"12.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"258.3\" r=\"12.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"310.0\" y=\"233.9\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">4π</text><text x=\"353.6\" y=\"233.9\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">5</text><text x=\"326.6\" y=\"205.6\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 2</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "一個圓柱的底面直徑 6 公分、高 4 公分。下列哪一個是這個圓柱的展開圖？（圖中數字單位：公分）",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SP06",
+     "feedback": "甲只有一個圓。圓柱有上、下兩個底面，展開圖要有 2 個圓。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": null,
+     "feedback": "正確！半徑 3 的兩個圓，側面長＝底圓周長 2×π×3＝6π，寬＝高 4。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SP13",
+     "feedback": "丙的圓半徑是 6、側面長 12π，是把直徑 6 當成半徑做出來的。這個圓柱的半徑是 3。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SP04",
+     "feedback": "丁的側面長只有 3π，但底圓周長是 6π，側面捲起來圍不住底圓。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先算底圓周長，再看側面繞底圓一圈的那一邊是不是一樣長；底面要有幾個？",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 420 330\" xmlns=\"http://www.w3.org/2000/svg\"><text x=\"4.0\" y=\"16.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（甲）</text><polygon points=\"56.6,51.6 143.4,51.6 143.4,70.0 56.6,70.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"37.8\" r=\"13.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"100.0\" y=\"64.8\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6π</text><text x=\"147.4\" y=\"64.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">4</text><text x=\"117.8\" y=\"41.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 3</text><text x=\"214.0\" y=\"16.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（乙）</text><polygon points=\"266.6,51.6 353.4,51.6 353.4,70.0 266.6,70.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"37.8\" r=\"13.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"83.8\" r=\"13.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"310.0\" y=\"64.8\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6π</text><text x=\"357.4\" y=\"64.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">4</text><text x=\"327.8\" y=\"41.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 3</text><text x=\"4.0\" y=\"181.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丙）</text><polygon points=\"13.3,244.2 186.7,244.2 186.7,262.6 13.3,262.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"216.6\" r=\"27.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"100.0\" cy=\"290.2\" r=\"27.6\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"100.0\" y=\"257.4\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">12π</text><text x=\"190.7\" y=\"257.4\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">4</text><text x=\"131.6\" y=\"220.6\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 6</text><text x=\"214.0\" y=\"181.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">（丁）</text><polygon points=\"288.3,216.6 331.7,216.6 331.7,235.0 288.3,235.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"202.8\" r=\"13.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"310.0\" cy=\"248.8\" r=\"13.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"310.0\" y=\"229.8\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">3π</text><text x=\"335.7\" y=\"229.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">4</text><text x=\"327.8\" y=\"206.8\" font-size=\"12\" text-anchor=\"start\" fill=\"#333\">半徑 3</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "一個圓柱的底面直徑 6 公分、高 5 公分，它的表面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "39π",
+     "mis": "SP06",
+     "feedback": "你只算了一個底面：9π＋30π。圓柱有上、下兩個底面，要算 2×9π。"
+    },
+    {
+     "key": "B",
+     "text": "48π",
+     "mis": null,
+     "feedback": "正確！半徑 3：兩底 2×π×3²＝18π，側面 2×π×3×5＝30π，合計 48π。"
+    },
+    {
+     "key": "C",
+     "text": "63π",
+     "mis": "SP12",
+     "feedback": "你把側面積算成底面積×高（9π×5）。側面攤開是長方形，長＝底周長 6π，面積 6π×5＝30π。"
+    },
+    {
+     "key": "D",
+     "text": "132π",
+     "mis": "SP13",
+     "feedback": "你把直徑 6 當成半徑。半徑是 3：2×9π＋6π×5＝48π。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2×π×3^2+2×π×3×5"
+   },
+   "hint": "表面積＝2 個底面積＋側面積；側面是長方形，長＝底圓周長。",
+   "seg": "九下3-1-S3"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "一個圓柱的底面直徑 10 公分、高 3 公分，它的表面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "125π",
+     "mis": "SP12",
+     "feedback": "你把側面積算成底面積×高（25π×3）。側面攤開是長方形，長＝底周長 10π，面積 10π×3＝30π。"
+    },
+    {
+     "key": "B",
+     "text": "260π",
+     "mis": "SP13",
+     "feedback": "你把直徑 10 當成半徑。半徑是 5：2×25π＋10π×3＝80π。"
+    },
+    {
+     "key": "C",
+     "text": "55π",
+     "mis": "SP06",
+     "feedback": "你只算了一個底面：25π＋30π。圓柱有上、下兩個底面，要算 2×25π。"
+    },
+    {
+     "key": "D",
+     "text": "80π",
+     "mis": null,
+     "feedback": "正確！半徑 5：兩底 2×π×5²＝50π，側面 2×π×5×3＝30π，合計 80π。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2×π×5^2+2×π×5×3"
+   },
+   "hint": "表面積＝2 個底面積＋側面積；側面是長方形，長＝底圓周長。",
+   "seg": "九下3-1-S3"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "如圖，直三角柱的底面是直角三角形，兩股 3 公分、4 公分，斜邊 5 公分，柱高 10 公分。它的表面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "126 平方公分",
+     "mis": "SP06",
+     "feedback": "你只算了一個底面：6＋120。三角柱有上、下兩個底面，要算 2×6。"
+    },
+    {
+     "key": "B",
+     "text": "72 平方公分",
+     "mis": "SP12",
+     "feedback": "你把側面積算成底面積×高（6×10）。側面攤開是長方形，長＝底周長 12，面積 12×10＝120。"
+    },
+    {
+     "key": "C",
+     "text": "132 平方公分",
+     "mis": null,
+     "feedback": "正確！兩個底面 2×(3×4÷2)＝12，側面 (3＋4＋5)×10＝120，合計 132。"
+    },
+    {
+     "key": "D",
+     "text": "82 平方公分",
+     "mis": "SP04",
+     "feedback": "你的側面只算了 (3＋4)×10，漏了斜邊那一面。側面攤開的長要等於底面周長 3＋4＋5＝12。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "2×(3×4÷2)+(3+4+5)×10"
+   },
+   "hint": "表面積＝2 個底面積＋側面積；側面攤開是長方形，長＝底面周長。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"40.0\" y1=\"130.0\" x2=\"40.0\" y2=\"70.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"70.0\" x2=\"120.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"120.0\" y1=\"130.0\" x2=\"40.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"70.0\" x2=\"140.0\" y2=\"30.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"120.0\" y1=\"130.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"140.0\" y1=\"30.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"130.0\" x2=\"140.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"140.0\" y1=\"90.0\" x2=\"140.0\" y2=\"30.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"140.0\" y1=\"90.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><polyline points=\"40,122 48,122 48,130\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"32.0\" y=\"104.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">3</text><text x=\"80.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"92.0\" y=\"90.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"178.0\" y=\"118.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">10</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "如圖，直三角柱的底面是直角三角形，兩股 9 公分、12 公分，斜邊 15 公分，柱高 5 公分。它的表面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "213 平方公分",
+     "mis": "SP04",
+     "feedback": "你的側面只算了 (9＋12)×5，漏了斜邊那一面。側面攤開的長要等於底面周長 9＋12＋15＝36。"
+    },
+    {
+     "key": "B",
+     "text": "288 平方公分",
+     "mis": null,
+     "feedback": "正確！兩個底面 2×(9×12÷2)＝108，側面 (9＋12＋15)×5＝180，合計 288。"
+    },
+    {
+     "key": "C",
+     "text": "234 平方公分",
+     "mis": "SP06",
+     "feedback": "你只算了一個底面：54＋180。三角柱有上、下兩個底面，要算 2×54。"
+    },
+    {
+     "key": "D",
+     "text": "378 平方公分",
+     "mis": "SP12",
+     "feedback": "你把側面積算成底面積×高（54×5）。側面攤開是長方形，長＝底周長 36，面積 36×5＝180。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "2×(9×12÷2)+(9+12+15)×5"
+   },
+   "hint": "表面積＝2 個底面積＋側面積；側面攤開是長方形，長＝底面周長。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"40.0\" y1=\"130.0\" x2=\"40.0\" y2=\"70.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"70.0\" x2=\"120.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"120.0\" y1=\"130.0\" x2=\"40.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"70.0\" x2=\"140.0\" y2=\"30.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"120.0\" y1=\"130.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"140.0\" y1=\"30.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"40.0\" y1=\"130.0\" x2=\"140.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"140.0\" y1=\"90.0\" x2=\"140.0\" y2=\"30.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><line x1=\"140.0\" y1=\"90.0\" x2=\"220.0\" y2=\"90.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><polyline points=\"40,122 48,122 48,130\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"32.0\" y=\"104.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">9</text><text x=\"80.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">12</text><text x=\"92.0\" y=\"90.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">15</text><text x=\"178.0\" y=\"118.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "如圖，一張平行四邊形紙片底邊長 8π 公分、高 5 公分。把兩條斜邊剛好接合，捲成一個圓柱的側面（底邊剛好繞底圓一圈）。這個圓柱的體積是多少立方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "不能捲成圓柱",
+     "mis": "SP03",
+     "feedback": "平行四邊形也可以：兩條斜邊接起來，底邊繞底圓一圈。底圓周長 8π，半徑 4。"
+    },
+    {
+     "key": "B",
+     "text": "40π",
+     "mis": "SP12",
+     "feedback": "你算的是底周長×高（側面積）。體積是底面積×高：半徑 4，π×4²×5＝80π。"
+    },
+    {
+     "key": "C",
+     "text": "320π",
+     "mis": "SP13",
+     "feedback": "8π÷π＝8 是直徑，不是半徑。半徑 4：π×4²×5＝80π。"
+    },
+    {
+     "key": "D",
+     "text": "80π",
+     "mis": null,
+     "feedback": "正確！底圓周長 8π，半徑 4，圓柱高＝平行四邊形的高 5，體積 π×4²×5＝80π。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "π×4^2×5"
+   },
+   "hint": "底邊繞底圓一圈：底圓周長＝8π，先求半徑；圓柱的高是平行四邊形的高。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"40.0,130.0 180.0,130.0 220.0,50.0 80.0,50.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"50.0\" x2=\"80.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"110.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">8π</text><text x=\"70.0\" y=\"95.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">5</text><text x=\"150.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">8π</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "應用",
+   "lc": "S-9-13",
+   "stem": "如圖，一張平行四邊形紙片底邊長 6π 公分、高 7 公分。把兩條斜邊剛好接合，捲成一個圓柱的側面（底邊剛好繞底圓一圈）。這個圓柱的體積是多少立方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "252π",
+     "mis": "SP13",
+     "feedback": "6π÷π＝6 是直徑，不是半徑。半徑 3：π×3²×7＝63π。"
+    },
+    {
+     "key": "B",
+     "text": "63π",
+     "mis": null,
+     "feedback": "正確！底圓周長 6π，半徑 3，圓柱高＝平行四邊形的高 7，體積 π×3²×7＝63π。"
+    },
+    {
+     "key": "C",
+     "text": "不能捲成圓柱",
+     "mis": "SP03",
+     "feedback": "平行四邊形也可以：兩條斜邊接起來，底邊繞底圓一圈。底圓周長 6π，半徑 3。"
+    },
+    {
+     "key": "D",
+     "text": "42π",
+     "mis": "SP12",
+     "feedback": "你算的是底周長×高（側面積）。體積是底面積×高：半徑 3，π×3²×7＝63π。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "π×3^2×7"
+   },
+   "hint": "底邊繞底圓一圈：底圓周長＝6π，先求半徑；圓柱的高是平行四邊形的高。",
+   "seg": "九下3-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"40.0,130.0 180.0,130.0 220.0,50.0 80.0,50.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"80.0\" y1=\"50.0\" x2=\"80.0\" y2=\"130.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\" fill=\"none\"/><text x=\"110.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">6π</text><text x=\"70.0\" y=\"95.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">7</text><text x=\"150.0\" y=\"44.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">6π</text></svg>"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "圓柱甲：底半徑 6 公分、高 4 公分；圓柱乙：底半徑 4 公分、高 6 公分。兩個圓柱的側面積相等。甲的體積是乙的幾倍？（1 倍表示一樣大）",
+   "options": [
+    {
+     "key": "A",
+     "text": "1 倍",
+     "mis": "SP08",
+     "feedback": "側面積相等，體積不一定相等。體積＝底面積×高：甲 36π×4＝144π，乙 16π×6＝96π。"
+    },
+    {
+     "key": "B",
+     "text": "3/2 倍",
+     "mis": null,
+     "feedback": "正確！甲 π×6²×4＝144π，乙 π×4²×6＝96π，144π÷96π＝3/2，甲比較大。"
+    },
+    {
+     "key": "C",
+     "text": "9/4 倍",
+     "mis": "SP14",
+     "feedback": "你只比了底面積（36π：16π），忘了高也不同：甲高 4、乙高 6。"
+    },
+    {
+     "key": "D",
+     "text": "2/3 倍",
+     "mis": "SP15",
+     "feedback": "你只看高（4：6），以為比較高的乙比較大。半徑大的影響更大，要算底面積×高。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(6^2×4)÷(4^2×6)"
+   },
+   "hint": "體積＝底面積×高，兩個圓柱分別算出來再比。",
+   "seg": "九下3-1-S3"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-13",
+   "stem": "圓柱甲：底半徑 2 公分、高 6 公分；圓柱乙：底半徑 3 公分、高 4 公分。兩個圓柱的側面積相等。甲的體積是乙的幾倍？（1 倍表示一樣大）",
+   "options": [
+    {
+     "key": "A",
+     "text": "3/2 倍",
+     "mis": "SP15",
+     "feedback": "你只看高（6：4），以為比較高的甲比較大。半徑大的影響更大，要算底面積×高。"
+    },
+    {
+     "key": "B",
+     "text": "4/9 倍",
+     "mis": "SP14",
+     "feedback": "你只比了底面積（4π：9π），忘了高也不同：甲高 6、乙高 4。"
+    },
+    {
+     "key": "C",
+     "text": "2/3 倍",
+     "mis": null,
+     "feedback": "正確！甲 π×2²×6＝24π，乙 π×3²×4＝36π，24π÷36π＝2/3，乙比較大。"
+    },
+    {
+     "key": "D",
+     "text": "1 倍",
+     "mis": "SP08",
+     "feedback": "側面積相等，體積不一定相等。體積＝底面積×高：甲 4π×6＝24π，乙 9π×4＝36π。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "(2^2×6)÷(3^2×4)"
+   },
+   "hint": "體積＝底面積×高，兩個圓柱分別算出來再比。",
+   "seg": "九下3-1-S3"
+  },
+  {
+   "id": "P09A",
+   "set": "A",
+   "pair": "P09",
+   "bloom": "分析",
+   "lc": "S-9-13",
+   "stem": "兩張一樣的長方形紙，長 12 公分、寬 8 公分，各捲成一個圓柱的側面（剛好接合、不重疊）：甲讓長邊繞底圓一圈，乙讓短邊繞底圓一圈。甲的體積是乙的幾倍？",
+   "options": [
+    {
+     "key": "A",
+     "text": "1 倍",
+     "mis": "SP08",
+     "feedback": "兩個圓柱側面積一樣，但底面積和高都不同，體積不一定相等。要分別算底面積×高。"
+    },
+    {
+     "key": "B",
+     "text": "2/3 倍",
+     "mis": "SP04",
+     "feedback": "你把甲的底周長和高對調了。甲是長邊 12 繞底圓（周長 12），高是 8。"
+    },
+    {
+     "key": "C",
+     "text": "9/4 倍",
+     "mis": "SP14",
+     "feedback": "你只比了底面積（12²：8²），忘了甲的高 8、乙的高 12 也不同。"
+    },
+    {
+     "key": "D",
+     "text": "3/2 倍",
+     "mis": null,
+     "feedback": "正確！體積＝(周長²÷4π)×高，甲：乙＝(12²×8)：(8²×12)＝3：2。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(12^2×8)÷(8^2×12)"
+   },
+   "hint": "先決定每個圓柱「哪一邊是底圓周長、哪一邊是高」，再分別算底面積×高。",
+   "seg": "九下3-1-S3",
+   "optional": true
+  },
+  {
+   "id": "P09B",
+   "set": "B",
+   "pair": "P09",
+   "bloom": "分析",
+   "lc": "S-9-13",
+   "stem": "兩張一樣的長方形紙，長 20 公分、寬 16 公分，各捲成一個圓柱的側面（剛好接合、不重疊）：甲讓長邊繞底圓一圈，乙讓短邊繞底圓一圈。甲的體積是乙的幾倍？",
+   "options": [
+    {
+     "key": "A",
+     "text": "5/4 倍",
+     "mis": null,
+     "feedback": "正確！體積＝(周長²÷4π)×高，甲：乙＝(20²×16)：(16²×20)＝5：4。"
+    },
+    {
+     "key": "B",
+     "text": "25/16 倍",
+     "mis": "SP14",
+     "feedback": "你只比了底面積（20²：16²），忘了甲的高 16、乙的高 20 也不同。"
+    },
+    {
+     "key": "C",
+     "text": "1 倍",
+     "mis": "SP08",
+     "feedback": "兩個圓柱側面積一樣，但底面積和高都不同，體積不一定相等。要分別算底面積×高。"
+    },
+    {
+     "key": "D",
+     "text": "4/5 倍",
+     "mis": "SP04",
+     "feedback": "你把甲的底周長和高對調了。甲是長邊 20 繞底圓（周長 20），高是 16。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "(20^2×16)÷(16^2×20)"
+   },
+   "hint": "先決定每個圓柱「哪一邊是底圓周長、哪一邊是高」，再分別算底面積×高。",
+   "seg": "九下3-1-S3",
+   "optional": true
+  }
+ ],
+ "note": "每組平行題（P01～P09）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形；P09 為進階（optional）"
+}
