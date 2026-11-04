@@ -195,6 +195,8 @@ table.t td.l,table.t th.l{text-align:left}
 /* ---------- 路線 B：AI 生題 / 比較 ---------- */
 .gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
 .gen-form>*{flex-shrink:0}
+.fig{display:flex;justify-content:center;margin:6px 0}.fig svg{max-width:100%;height:auto;max-height:260px}.fig-stu svg{max-height:34vh}.fig-live svg{max-height:38vh}.fig-sm svg{max-height:140px}.fig-sm{display:inline-flex;vertical-align:middle;margin:0 8px}
+.fig svg text{font-family:inherit}
 .gen-form textarea{height:150px;resize:none;font-size:15.5px;line-height:1.5}
 .tr-opts{display:flex;flex-direction:column;gap:6px;margin:8px 0 0 34px;font-size:15px}
 .tr-o{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
@@ -677,7 +679,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     return { base, e, neg: !!m[1], q };
   }
   // 選項文字裡的數：去掉前面的「第」與後面的中文單位（個、位、組、分鐘、秒、公尺…）
-  const numText = t => String(t).trim().replace(/^第\s*/, '').replace(/\s*[\u4e00-\u9fff]+$/, '');
+  const numText = t => String(t).trim().replace(/^第\s*/, '').replace(/\s*[\u4e00-\u9fff]+$/, '').replace(/\s*(°|度|(平方|立方)?(公分|公尺|公里|毫米)|(mm|cm|km|m|kg|g)[²³]?)$/, '');   // v3.1：去掉度數與長度、面積、體積單位
   // 科學記號 a×10^n → {a, n}；不是這個形式回傳 null
   function parseSci(src) {
     const m = /^([+-]?\d+(?:\.\d+)?)\*10\^([+-]?\d+)$/.exec(norm(src));
@@ -1226,6 +1228,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           out.computedAnswer = '解為 ' + fmtSol(T, vs);
           opts.forEach(o => {
             let r; try { r = solveLinear(o.text, vs); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            // 選項是一個多元方程式（例：列出 2x＋y＝50 這一條）：給 sol 時，只看這組數是否滿足
+            if (ck.sol && vs.length > 1 && eqList(o.text).length === 1 && r.kind === 'many') {
+              const t = splitRel(o.text), env = T.sol; const ok1 = qEq(evalV(t.L, env), evalV(t.R, env));
+              out.perOption[o.key] = { diag: ok1 ? 'standard' : 'other', msg: ok1 ? '這組數滿足這條方程式' : '這組數不滿足這條方程式' };
+              if (ok1) correctKeys.push(o.key); return;
+            }
             const ok = solEq(r, T, vs);
             out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '同解' : '解為 ' + fmtSol(r, vs) };
             if (ok) correctKeys.push(o.key);
@@ -1259,8 +1267,10 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           out.computedAnswer = (want ? '唯一在圖形上的點：' : '唯一不在圖形上的點：') + list.join('；');
           opts.forEach(o => {
             const m = /^[（(]\s*([^,，]+)[,，]\s*([^)）]+)[)）]$/.exec(String(o.text).replace(/^[A-Z]\s*/, '').trim());
-            if (!m) { out.perOption[o.key] = { diag: 'unparsable', msg: '點要寫成 (a, b)' }; return; }
-            const env = { [vs[0]]: evalQ(m[1]), [vs[1]]: evalQ(m[2]) };
+            let env;
+            if (m) env = { [vs[0]]: evalQ(m[1]), [vs[1]]: evalQ(m[2]) };
+            else { try { const r = parseSolText(o.text, vs); if (r.kind === 'one' && vs.every(v => r.sol[v])) env = r.sol; } catch (e) {} }   // 也可寫「x＝3，y＝1」（v3.1）
+            if (!env) { out.perOption[o.key] = { diag: 'unparsable', msg: '點要寫成 (a, b) 或 x＝a，y＝b' }; return; }
             const okEach = list.map(e => { const t = splitRel(e); const a = evalV(t.L, env), b = evalV(t.R, env); return !a.u && !b.u && qEq(a, b); });
             const on = okEach.every(Boolean);
             out.perOption[o.key] = { diag: on ? 'standard' : 'other', msg: on ? '在圖形上' : (okEach.some(Boolean) ? '只在其中一條上' : '不在圖形上') };
@@ -1275,6 +1285,21 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           out.computedAnswer = `(${fmtQ(x)}, ${fmtQ(y)}) 在${where}`;
           const nz = t => String(t).replace(/\s+/g, '').replace(/^在/, '').replace(/^(x|y)軸$/, '$1軸上');
           opts.forEach(o => { const ok = nz(o.text) === where.replace(/\s+/g, ''); out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '正確' : `其實在${where}` }; if (ok) correctKeys.push(o.key); });
+          break;
+        }
+        case 'propKind': {                    // 選項是 x、y 的關係式（y＝3x、xy＝12、y＝2x＋1），唯一是正比（want:'direct'）或反比（want:'inverse'）
+          const want = ck.want === 'inverse' ? 'inverse' : 'direct';
+          out.computedAnswer = want === 'direct' ? '唯一 y 和 x 成正比（y÷x 是固定的數，不是 0）' : '唯一 y 和 x 成反比（x×y 是固定的數，不是 0）';
+          opts.forEach(o => {
+            let kind = 'other';
+            try {
+              const ys = [2, 3, 5, 7].map(x => { const t = splitRel(String(o.text).replace(/^.*?(?=[^：:]*[＝=])/, '')); const r = solveLinear([`${t.L}＝${t.R}`.replace(/x/g, `(${x})`)], ['y']); if (r.kind !== 'one') throw new Error('y 不是唯一'); return [Q(BigInt(x)), r.sol.y]; });
+              const k1 = ys.map(([x, y]) => qDiv(y, x)), k2 = ys.map(([x, y]) => qMul(y, x));
+              if (k1.every(k => qEq(k, k1[0])) && k1[0].n !== 0n) kind = 'direct'; else if (k2.every(k => qEq(k, k2[0])) && k2[0].n !== 0n) kind = 'inverse';
+            } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            out.perOption[o.key] = { diag: kind === want ? 'standard' : 'other', msg: kind === 'direct' ? '正比' : kind === 'inverse' ? '反比' : '不是正比也不是反比' };
+            if (kind === want) correctKeys.push(o.key);
+          });
           break;
         }
         case 'manual':
@@ -1329,6 +1354,39 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     };
   }
 
+
+  // ---------- 題目附圖（v3.1）：fig 是 SVG 字串，只留白名單裡的基本圖形與文字 ----------
+  const SVG_TAGS = new Set(['svg', 'g', 'line', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'path', 'text', 'tspan']);
+  const SVG_ATTR = new Set(['viewBox', 'width', 'height', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry', 'points', 'd', 'fill', 'stroke',
+    'stroke-width', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'fill-opacity', 'opacity', 'font-size', 'font-weight', 'font-style', 'text-anchor',
+    'dominant-baseline', 'transform', 'dx', 'dy', 'xmlns']);
+  const SVG_DROP_CONTENT = /^(script|style|foreignObject|iframe|object|embed|title|desc|metadata)$/i;
+  function safeSVG(src) {
+    const s = String(src || '').trim(); if (!/^<svg[\s>]/i.test(s)) return '';
+    const out = []; let i = 0, skip = 0; const stack = [];
+    while (i < s.length) {
+      if (s[i] !== '<') { const j = s.indexOf('<', i); const t = s.slice(i, j < 0 ? s.length : j); if (!skip && stack.length && /^(text|tspan)$/.test(stack[stack.length - 1])) out.push(t.replace(/&(?!amp;|lt;|gt;|quot;|#\d+;)/g, '&amp;').replace(/>/g, '&gt;')); i = j < 0 ? s.length : j; continue; }
+      if (s.startsWith('<!--', i)) { const j = s.indexOf('-->', i); i = j < 0 ? s.length : j + 3; continue; }
+      const m = /^<\s*(\/?)\s*([a-zA-Z][\w:-]*)([^>]*?)(\/?)\s*>/.exec(s.slice(i));
+      if (!m) { i++; continue; }
+      i += m[0].length; const close = !!m[1], tag = m[2], self = !!m[4];
+      if (SVG_DROP_CONTENT.test(tag)) { if (!close && !self) skip++; else if (close && skip) skip--; continue; }
+      if (skip || !SVG_TAGS.has(tag)) continue;
+      if (close) { if (stack[stack.length - 1] === tag) { stack.pop(); out.push(`</${tag}>`); } continue; }
+      const attrs = []; const re = /([a-zA-Z][\w:-]*)\s*=\s*("([^"]*)"|'([^']*)')/g; let a;
+      while ((a = re.exec(m[3]))) {
+        const k = a[1], v = a[3] !== undefined ? a[3] : a[4];
+        if (!SVG_ATTR.has(k) || /url\s*\(|javascript:|expression\s*\(|[<>]/i.test(v)) continue;
+        if (k === 'xmlns' && v !== 'http://www.w3.org/2000/svg') continue;
+        attrs.push(`${k}="${v.replace(/"/g, '&quot;')}"`);
+      }
+      out.push(`<${tag}${attrs.length ? ' ' + attrs.join(' ') : ''}${self ? '/>' : '>'}`);
+      if (!self) stack.push(tag);
+    }
+    while (stack.length) out.push(`</${stack.pop()}>`);
+    return out.join('');
+  }
+
   // 把 2^3×3^2 轉成 HTML 上標
   function mathHTML(text) {
     const esc = String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1339,7 +1397,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
                  parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
                  diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL,
-                 evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, parseSolText };
+                 evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, parseSolText, safeSVG };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -2088,7 +2146,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.1（2026-11-04）';
+const APP_VERSION = 'v3.1.1（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -2326,7 +2384,7 @@ function renderStudent() {
   $('v-stu').innerHTML = `
     <div class="stu-head"><span class="qno">${name}・第 ${S.idx + 1} / ${N} 題</span>${r === 2 ? '<span class="chip" style="background:var(--huang-l)">平行題：數字換了，想法一樣</span>' : ''}
       <div class="pdots">${dots}</div><span class="chip">已答 ${nAns} / ${N}</span></div>
-    <div class="stem">${M(it.stem)}</div>
+    <div class="stem">${M(it.stem)}</div>${FIG(it, "fig-stu")}
     <div class="opts">${it.options.map(o => `<div class="opt ${a.choice === o.key ? 'sel' : ''}" data-k="${o.key}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span><span>${M(o.text)}</span></div>`).join('')}</div>
     <div class="row" style="justify-content:space-between;margin-top:auto">
       <div class="conf ${a.choice && !a.conf ? 'need' : ''}" id="s-conf">你有多確定？${Object.entries(CONF).map(([k, t]) => `<button data-c="${k}" class="${a.conf === k ? 'sel' : ''}">${t}</button>`).join('')}</div>
@@ -2490,7 +2548,7 @@ function renderItemCards(b, vr, picked, withPick, withSet) {
     const msgs = r.msgs.map(m => `<div class="vmsg ${r.status === 'fail' ? '' : 'w'}">${r.status === 'fail' ? '✗' : '⚠'} ${esc(m)}</div>`).join('');
     const tag = withSet ? `<span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span>` : `<span class="muted small">${i + 1}.</span>`;
     return `<div class="item"><div class="item-h">${withPick ? `<input type="checkbox" data-pick="${esc(it.id)}" ${picked[it.id] ? 'checked' : ''}>` : ''}
-      ${tag}<span class="st">${M(it.stem)}</span>
+      ${tag}<span class="st">${M(it.stem)}</span>${FIG(it, "fig-sm")}
       <span class="badge bl">${esc(it.bloom || '')}</span>${badge}</div><div class="item-o">${opts}</div>${msgs}</div>`;
   }).join('');
 }
@@ -2517,7 +2575,8 @@ $('b-file').onchange = async e => {
 $('b-export').onclick = () => { const b = Banks.get(T.bankId); if (!b) return; const { builtIn, ...clean } = b; download(`${b.id}.json`, JSON.stringify(clean, null, 2), 'application/json'); };
 function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type + ';charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
 
-const pubItem = it => ({ id: it.id, pair: it.pair || it.id, stem: it.stem, bloom: it.bloom || '', options: it.options.map(o => ({ key: o.key, text: o.text })) });
+const pubItem = it => Object.assign({ id: it.id, pair: it.pair || it.id, stem: it.stem, bloom: it.bloom || '', options: it.options.map(o => ({ key: o.key, text: o.text })) }, it.fig ? { fig: V.safeSVG(it.fig) } : {});
+const FIG = (it, cls) => it && it.fig ? `<div class="fig ${cls || ''}">${V.safeSVG(it.fig)}</div>` : '';   // 題目附圖（v3.1）：一律先過白名單
 $('c-go').onclick = async () => {
   const b = Banks.get(T.bankId); const ps = bankPairs(b).filter(p => T.picked[b.id][p.pair]);
   const label = $('c-label').value.trim() || '課堂'; const size = Math.max(1, Math.min(60, parseInt($('c-size').value, 10) || 28));
@@ -2728,7 +2787,7 @@ function renderDetail(st, r, veiled) {
   $('l-main').innerHTML = `<div class="panel" style="grid-column:1/3;grid-row:1/3">
     <div class="row" style="justify-content:space-between"><h3>第${r === 2 ? '二' : '一'}場・第 ${i + 1} 題 <span class="n">${p.n} 人作答</span></h3>
       <div class="row" style="gap:8px"><button class="btn sm" id="d-prev" ${i === 0 ? 'disabled' : ''}>◀ 上一題</button><button class="btn sm" id="d-next" ${i >= st.perItem.length - 1 ? 'disabled' : ''}>下一題 ▶</button><button class="btn sm dai" id="d-back">回總覽</button></div></div>
-    <div class="live-stem" style="font-size:34px">${M(it.stem)}</div>
+    <div class="live-stem" style="font-size:34px">${M(it.stem)}</div>${FIG(it, "fig-live")}
     <div class="bars">${bars}</div>
     ${!veiled && sure.length ? `<div class="suggest" style="background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c">很確定卻答錯：${sure.map(x => x + ' 號').join('、')}</div>` : ''}
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
@@ -2931,15 +2990,17 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"sameExpr","expr":"3(x−2)−(x−5)"}：選項是代數式（3x、2(x＋1)、x^2、(x−1)/3，乘號可省略，字母當變數），只有一個和 expr 等值（化簡、去括號、列式）
 - {"type":"value","expr":"−5x＋3","at":{"x":2}}：代入求值，選項是數
 - {"type":"solve","eq":"3x−5＝2x＋1"}：選項是解（「6」或「x＝6」，可帶單位「13 歲」），只有一個是方程式的解；聯立用 "eqs":["x＋y＝5","x−y＝1"]，選項寫「x＝3，y＝2」或「(3, 2)」；也可以是「無解」「無限多組解」（只支援一次方程式）
-- {"type":"sameSol","sol":{"x":12}} 或 {"type":"sameSol","eq":"2(x＋3)＝x＋10"}：選項是方程式（列式題），只有一個的解是 sol（或和 eq 同解）
+- {"type":"sameSol","sol":{"x":12}} 或 {"type":"sameSol","eq":"2(x＋3)＝x＋10"}：選項是方程式（列式題），只有一個的解是 sol（或和 eq 同解）；選項也可以是聯立「x＋y＝17；x−y＝7」（用「；」分開）；給兩個字母的 sol（{"x":12,"y":5}）而選項是一條二元方程式時，只看這組數是否滿足那一條
 - {"type":"ineq","ineq":"−2x＋3＜7"}：選項是不等式（x＞−2、x≤4），只有一個和 ineq 同解（端點、方向、有沒有等號都要對）
 - {"type":"isLinEq","want":true}：選項是式子，只有一個是一元一次方程式（want:false 時只有一個不是）
 - {"type":"isLinEq","vars":2}：只有一個是二元一次方程式（兩個未知數都不能消掉）
 - 比例式寫成「x：6＝2：3」（a：b＝a÷b），可以用在 solve、sameSol
-- {"type":"pointOn","eq":"2x＋y＝7"}：選項是點「(2, 3)」，只有一個在圖形上（聯立用 "eqs"，要同時滿足；want:false 時只有一個不在）
+- {"type":"pointOn","eq":"2x＋y＝7"}：選項是點「(2, 3)」或「x＝2，y＝3」，只有一個在圖形上（是解）（聯立用 "eqs"，要同時滿足；want:false 時只有一個不在）
 - {"type":"quadrant","pt":"(−3, 2)"}：選項寫「第一象限」～「第四象限」「x 軸上」「y 軸上」「原點」，只有一個是點的位置
+- {"type":"propKind","want":"direct|inverse"}：選項是 x、y 的關係式（y＝3x、xy＝12、y＝12/x、y＝2x＋1），只有一個是 y 與 x 成正比（或反比）
 - {"type":"value","fn":"mean|median|mode|range","nums":[3,5,7,9]}：平均數／中位數／眾數（只能有一個）／全距
 - count 的 cond 可以寫 2x−3＜5 這種含係數的式子
+- 題目需要圖時加 "fig"：一段 SVG 字串（<svg viewBox="0 0 200 120">…</svg>），只能用 line、rect、circle、ellipse、polygon、polyline、path、text、g；不能有 script、事件、連結、圖片；選項可帶單位（70°、12 cm、3 公分）
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
 算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
@@ -3234,7 +3295,7 @@ function showTplResult() {
     <div class="items scroll" id="m-review">${ps.map((p, i) => `<div class="pair on"><div class="pair-h"><b>第 ${i + 1} 組</b><span class="muted small">${esc(p.pair)}・${esc((tpls.find(t => t.tpl === p.A.tpl) || {}).title || p.A.tpl)}</span>
       <button class="btn sm ghost" data-re="${esc(p.pair)}" style="margin-left:auto;padding:2px 10px" title="同一模板、同一組規則重抽數字（A、B 卷一起換）">🎲 換一組數字</button></div>
       ${[p.A, p.B].filter(Boolean).map(it => { const r = vr[it.id];
-        return `<div class="item"><div class="item-h"><span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span><span class="st">${M(it.stem)}</span>
+        return `<div class="item"><div class="item-h"><span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span><span class="st">${M(it.stem)}</span>${FIG(it, "fig-sm")}
           ${it.stemOrig ? `<span class="badge bl" title="${esc('模板題幹：' + it.stemOrig)}">AI 改寫</span>` : ''}
           ${r.status === 'pass' ? '<span class="badge pass">✓ 驗算通過</span>' : '<span class="badge fail">✗ 驗算未通過</span>'}
           <button class="btn sm ghost" data-rw="${esc(it.id)}" style="padding:2px 8px">✏️ AI 改寫題幹</button>${it.stemOrig ? `<button class="btn sm ghost" data-rb="${esc(it.id)}" style="padding:2px 8px">還原</button>` : ''}</div>
