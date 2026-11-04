@@ -990,6 +990,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? rAdd(v, r) : rSub(v, r); } return v; }
     const v = add(); if (i !== s.length) throw new Error('無法解析：' + src); return v;
   }
+  // 含 √ 的數值給 extreme／range 用（v3.2.2）：有理數精確；無理數用近似分數（不會等於有理數端點，比大小不受影響）
+  function evalQR(t) {
+    if (!/√/.test(String(t))) return evalQ(t);
+    const r = evalR(t); if (rIsQ(r)) return rToQ(r);
+    const x = rNum(r); return Q(BigInt(Math.round(x * 1e12)), 10n ** 12n);
+  }
   // 最簡根式的寫法檢查：根號內沒有平方因數、沒有分數、分母沒有根號
   function radFormOK(text) {
     const t = norm(text);
@@ -997,6 +1003,101 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     for (const x of ins) { if (!/^\d+$/.test(x)) return { ok: false, why: '根號裡還有分數或算式' }; const [o] = sqfree(BigInt(x)); if (o > 1n || x === '1' || x === '0') return { ok: false, why: `√${x} 還能化簡` }; }
     if (/\/[^+\-]*√|\/\([^)]*√/.test(t)) return { ok: false, why: '分母還有根號（沒有有理化）' };
     return { ok: true };
+  }
+
+  // ============================================================
+  // 因式分解（v3.3.1）：選項要和原式等值，而且分解完全（每個因式不可再分解、括號裡沒有公因數）
+  // 適用一個字母，或兩個字母的齊次式（x²−2xy＋y² 這類，令 y＝1 判斷）
+  // ============================================================
+  function splitFactors(src) {                   // 最外層的乘積拆成因式：3x(x＋2)(x−1)^2 → ['3','x','(x+2)','(x-1)^2']
+    const s = normV(src); const out = []; let i = 0, cur = '', depth = 0;
+    const push = () => { if (cur) out.push(cur); cur = ''; };
+    while (i < s.length) {
+      const c = s[i];
+      if (depth === 0 && c === '*') { push(); i++; continue; }
+      if (depth === 0 && c === '(' && cur && !/[-+]$/.test(cur)) push();
+      if (depth === 0 && /[a-zA-Z]/.test(c) && cur && !/[-+(^]$/.test(cur) && !/\^\d*$/.test(cur)) push();
+      if (depth === 0 && (c === '+' || c === '-') && (cur || out.length) && !/\^$/.test(cur)) return null;   // 最外層有加減（開頭的負號除外）：不是乘積
+      if (c === '(') depth++; if (c === ')') depth--;
+      cur += c; i++;
+      if (depth === 0 && c === ')' && s[i] !== '^') push();
+    }
+    push(); return out;
+  }
+  function polyCoef(src, v) {                    // 一個字母的多項式 → 係數 [a0, a1, …]（最多 6 次），不是多項式回 null
+    const f = compileV(src).f, at = x => f({ [v]: Q(BigInt(x)) });
+    const N = 7, ys = []; for (let k = 0; k < N; k++) { const y = at(k); if (y.u) return null; ys.push(y); }
+    let cs = ys.slice(); const coef = [];                   // 牛頓差分 → 轉成係數
+    const diffs = [cs[0]]; for (let d = 1; d < N; d++) { cs = cs.slice(1).map((y, k) => qSub(y, cs[k])); diffs.push(cs[0]); }
+    let poly = [Q(0n)];
+    for (let d = N - 1; d >= 0; d--) {               // poly ← poly×(x−d)+diffs[d]/d!
+      const nx = new Array(poly.length + 1).fill(null).map(() => Q(0n));
+      poly.forEach((c, k) => { nx[k + 1] = qAdd(nx[k + 1], c); nx[k] = qSub(nx[k], qMul(c, Q(BigInt(d)))); });
+      let fact = 1n; for (let j = 2n; j <= BigInt(d); j++) fact *= j;
+      nx[0] = qAdd(nx[0], qDiv(diffs[d], Q(fact))); poly = nx;
+    }
+    while (poly.length > 1 && poly[poly.length - 1].n === 0n) poly.pop();
+    if (poly.length > 6) return null;
+    for (const x of [11, -7, 13]) { let y = Q(0n); poly.forEach((c, k) => y = qAdd(y, qMul(c, qPow(Q(BigInt(x)), Q(BigInt(k)))))); const z = f({ [v]: Q(BigInt(x)) }); if (z.u || !qEq(y, z)) return null; }
+    return poly;
+  }
+  const isSq = n => { if (n < 0n) return false; let r = BigInt(Math.floor(Math.sqrt(Number(n)))); while (r * r > n) r--; while ((r + 1n) * (r + 1n) <= n) r++; return r * r === n; };
+  function factorOK(text, expr) {
+    if (!sameExprQ(text, expr)) return { ok: false, why: '和原式不相等', diag: 'other' };
+    const fs = splitFactors(text); if (!fs || !fs.length) return { ok: false, why: '不是乘積的形式（還沒分解）', diag: 'notFactored' };
+    const vars = compileV(text).vars;
+    const homo = vars.length === 2, v = vars[0], w = vars[1];
+    let nonConst = 0;
+    for (let F of fs) {
+      let base = F, m = /^\((.*)\)\^(\d+)$/.exec(F) || /^(.*)\^(\d+)$/.exec(F); if (m) base = m[1];
+      if (/^\(.*\)$/.test(base)) base = base.slice(1, -1);
+      const fv = compileV(base).vars; if (!fv.length) continue;
+      const src1 = homo ? base.replace(new RegExp(w, 'g'), '(1)') : base;
+      const vv = homo ? v : fv[0]; if (!vv) continue;
+      const p = polyCoef(src1, vv); if (!p) return { ok: false, why: `看不懂因式 ${F}`, diag: 'unparsable' };
+      if (p.length - 1 >= 1) nonConst++;
+      if (p.some(c => c.d !== 1n)) return { ok: false, why: `因式 ${F} 有分數係數`, diag: 'notFactored' };
+      const g = p.reduce((a, c) => bgcd(a, c.n), 0n);
+      if (p.length > 1 && g > 1n) return { ok: false, why: `因式 ${F} 裡還有公因數 ${g}`, diag: 'commonLeft' };
+      const deg = p.length - 1;
+      if (deg === 1 && homo && p[1].n !== 0n && p[0].n === 0n && !/[+-]/.test(base.replace(/^-/, ''))) continue;
+      if (deg >= 2) {
+        if (p[0].n === 0n && fv.length >= 1) return { ok: false, why: `因式 ${F} 還能提出 ${vv}`, diag: 'commonLeft' };
+        if (deg === 2) { const [c, b, a] = p.map(x => x.n); if (isSq(b * b - 4n * a * c)) return { ok: false, why: `因式 ${F} 還能再分解`, diag: 'notFactored' }; }
+        else return { ok: false, why: `因式 ${F} 是 ${deg} 次式，還能再分解`, diag: 'notFactored' };
+      }
+    }
+    if (!nonConst) return { ok: false, why: '沒有分解', diag: 'notFactored' };
+    return { ok: true };
+  }
+
+
+  // 一元二次方程式的解（v3.3.1）：回傳根的集合（精確根式），無實數解回 []
+  function quadRootsOf(eq) {
+    const r = splitRel(eq); if (!r || r.op !== '=') throw new Error('不是方程式：' + eq);
+    const vars = [...new Set(compileV(r.L).vars.concat(compileV(r.R).vars))]; if (vars.length !== 1) throw new Error('要是一元方程式');
+    const p = polyCoef(`(${r.L})-(${r.R})`, vars[0]); if (!p) throw new Error('不是多項式方程式');
+    const deg = p.length - 1;
+    if (deg === 1) return { v: vars[0], roots: [rFromQ(qNeg(qDiv(p[0], p[1])))] };
+    if (deg !== 2) throw new Error('只支援一次、二次方程式');
+    const [c, b, a] = p, D = qSub(qMul(b, b), qMul(Q(4n), qMul(a, c)));
+    if (D.n < 0n) return { v: vars[0], roots: [] };
+    const sq = rSqrt(rFromQ(D)), den = rFromQ(qMul(Q(2n), a)), mb = rFromQ(qNeg(b));
+    const r1 = rMul(rAdd(mb, sq), rInv(den)), r2 = rMul(rSub(mb, sq), rInv(den));
+    return { v: vars[0], roots: rEq(r1, r2) ? [r1] : [r1, r2] };
+  }
+  // 選項「3、−2」「x＝3 或 x＝−2」「2±√3」「(1±√5)/2」「無解」「沒有實數解」→ 根的陣列
+  function parseRootSet(t) {
+    let s = String(t).replace(/\s+/g, '').replace(/[a-zA-Z]＝|[a-zA-Z]=/g, '').replace(/（重根）|\(重根\)|重根/g, '');
+    if (/^(無解|沒有實數解|沒有解|無實數解)$/.test(s)) return [];
+    const parts = s.split(/[、,，或]/).filter(Boolean); const out = [];
+    for (const p of parts) {
+      const m = /^(.*?)±(.*)$/.exec(p.replace(/^\((.*)\)\/(\d+)$/, '$1@$2'));
+      if (m) { const [x, tail] = [m[1], m[2]]; const d = /@(\d+)$/.exec(tail); const y = tail.replace(/@\d+$/, ''); const div = d ? `/${d[1]}` : '';
+        out.push(evalR(`(${x || 0}+${y})${div}`), evalR(`(${x || 0}-${y})${div}`)); }
+      else out.push(evalR(p));
+    }
+    return out;
   }
 
   // ---------- 判讀：一個乘積式錯在哪 ----------
@@ -1024,7 +1125,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     opposite: '互為相反數', reciprocal: '互為倒數', sciCoef: 'a 不在 1～10',
     gcd: '最大公因數', lcm: '最小公倍數', product: '各數乘積', commonFactor: '公因數但不是最大', commonMultiple: '公倍數但不是最小',
     coprime: '互質', notCoprime: '不互質', notReduced: '沒有約到最簡', notMixed: '沒有寫成帶分數', notImproper: '沒有寫成假分數',
-    notFraction: '不是分數的寫法', notSimplified: '沒有化成最簡', noReciprocal: '沒有倒數', notPowForm: '不是指數形式', wrongBase: '底數不對', wrongExp: '指數不對',
+    notFraction: '不是分數的寫法', notSimplified: '沒有化成最簡', notFactored: '沒有分解完全', commonLeft: '還有公因數沒提出', noReciprocal: '沒有倒數', notPowForm: '不是指數形式', wrongBase: '底數不對', wrongExp: '指數不對',
     other: '其他'
   };
 
@@ -1091,7 +1192,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
         }
         case 'extreme': {                     // 選項是數或算式，唯一最大（want:max）或最小（want:min）
           const want = ck.want === 'min' ? 'min' : 'max';
-          const vals = {}; opts.forEach(o => { vals[o.key] = evalQ(o.text); if (vals[o.key].u) throw new Error(`選項 ${o.key} 無法計算`); });
+          const vals = {}; opts.forEach(o => { vals[o.key] = evalQR(o.text); if (vals[o.key].u) throw new Error(`選項 ${o.key} 無法計算`); });
           const vs = Object.values(vals); const sgn = want === 'max' ? 1 : -1;
           const best = vs.reduce((m, x) => qCmp(x, m) * sgn > 0 ? x : m);
           out.computedAnswer = (want === 'max' ? '最大＝' : '最小＝') + fmtQ(best);
@@ -1106,11 +1207,11 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
         case 'range': {                       // 選項值落在範圍內（gt/gte/lt/lte 可只給一邊）
           const lim = ['gt', 'gte', 'lt', 'lte'].filter(k => ck[k] !== undefined);
           if (!lim.length) throw new Error('range 要給 gt、gte、lt、lte 至少一個');
-          const L = {}; lim.forEach(k => L[k] = qFrom(ck[k]));
+          const L = {}; lim.forEach(k => L[k] = typeof ck[k] === 'string' ? evalQR(ck[k]) : qFrom(ck[k]));
           const SYM = { gt: '>', gte: '≥', lt: '<', lte: '≤' };
           out.computedAnswer = lim.map(k => `${SYM[k]} ${fmtQ(L[k])}`).join(' 且 ');
           opts.forEach(o => {
-            const v = evalQ(o.text); if (v.u) throw new Error(`選項 ${o.key} 無法計算`);
+            const v = evalQR(numText(o.text)); if (v.u) throw new Error(`選項 ${o.key} 無法計算`);
             const bad = lim.filter(k => { const c = qCmp(v, L[k]); return !(k === 'gt' ? c > 0 : k === 'gte' ? c >= 0 : k === 'lt' ? c < 0 : c <= 0); });
             const onEdge = lim.some(k => qCmp(v, L[k]) === 0);
             out.perOption[o.key] = bad.length ? { diag: onEdge ? 'onEdge' : 'outRange', msg: `＝${fmtQ(v)}，${onEdge ? '剛好在端點' : '不在範圍內'}` } : { diag: 'standard', msg: `＝${fmtQ(v)}，在範圍內` };
@@ -1440,6 +1541,27 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           });
           break;
         }
+        case 'factorForm': {                  // 因式分解（v3.3.1）：選項唯一「和 expr 等值且分解完全」
+          compileV(ck.expr); out.computedAnswer = `${ck.expr} 分解完全的結果`;
+          opts.forEach(o => {
+            let r; try { r = factorOK(o.text, ck.expr); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析：' + e.message }; return; }
+            out.perOption[o.key] = { diag: r.ok ? 'standard' : r.diag, msg: r.ok ? '分解完全' : r.why };
+            if (r.ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'quadRoots': {                   // 一元二次（或一次）方程式的所有實數解（v3.3.1）；選項「3、−2」「2±√3」「無解」
+          const R = quadRootsOf(ck.eq); out.computedAnswer = R.roots.length ? R.roots.map(fmtR).join('、') : '沒有實數解';
+          opts.forEach(o => {
+            let got; try { got = parseRootSet(numText(o.text)); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析：' + e.message }; return; }
+            const uniq = got.filter((x, i) => got.findIndex(y => rEq(x, y)) === i);
+            const ok = uniq.length === R.roots.length && uniq.every(x => R.roots.some(y => rEq(x, y)));
+            const miss = R.roots.filter(y => !uniq.some(x => rEq(x, y))), extra = uniq.filter(x => !R.roots.some(y => rEq(x, y)));
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '正確' : [extra.length ? `${extra.map(fmtR).join('、')} 不是解` : '', miss.length ? `漏了 ${miss.map(fmtR).join('、')}` : ''].filter(Boolean).join('；') };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
         case 'manual':
         default:
           out.status = out.status === 'fail' ? 'fail' : 'manual';
@@ -1535,7 +1657,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
                  parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
                  diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL,
-                 evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, parseSolText, safeSVG, evalR, fmtR, radFormOK };
+                 evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, parseSolText, safeSVG, evalR, fmtR, radFormOK, factorOK, splitFactors, quadRootsOf, parseRootSet };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -2285,7 +2407,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.3（2026-11-05）';
+const APP_VERSION = 'v3.3.1（2026-11-05）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -2788,7 +2910,7 @@ function renderBankPane() {
   $('bank-meta').textContent = (b.source || '') + (b.unit ? `　｜　${(b.unit.curriculum || []).join('、')}` : '');
   const vr = V.verifyBank(b).results; const ps = bankPairs(b);
   const okPair = p => [p.A, p.B].filter(Boolean).every(it => vr[it.id].status === 'pass');
-  if (!T.picked[b.id]) { T.picked[b.id] = {}; ps.forEach(p => T.picked[b.id][p.pair] = okPair(p)); }
+  if (!T.picked[b.id]) { T.picked[b.id] = {}; ps.forEach(p => T.picked[b.id][p.pair] = okPair(p) && !(p.A && p.A.optional)); }   // optional（進階）題組預設不勾（v3.3.1）
   $('item-list').innerHTML = `<div class="small muted">每一組：上面是第一場（A 卷），下面是第二場的平行題（B 卷）；同一組的誘答對應相同的迷思。</div>` +
     ps.map((p, i) => `<div class="pair ${T.picked[b.id][p.pair] ? 'on' : ''}"><label class="pair-h"><input type="checkbox" data-pick="${esc(p.pair)}" ${T.picked[b.id][p.pair] ? 'checked' : ''}>
       <b>第 ${i + 1} 組</b><span class="muted small">${esc(p.pair)}</span>${p.B ? '' : '<span class="badge manual">沒有平行題：第二場重考同一題</span>'}</label>
@@ -2814,7 +2936,7 @@ function renderItemCards(b, vr, picked, withPick, withSet) {
     const msgs = r.msgs.map(m => `<div class="vmsg ${r.status === 'fail' ? '' : 'w'}">${r.status === 'fail' ? '✗' : '⚠'} ${esc(m)}</div>`).join('');
     const tag = withSet ? `<span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span>` : `<span class="muted small">${i + 1}.</span>`;
     return `<div class="item"><div class="item-h">${withPick ? `<input type="checkbox" data-pick="${esc(it.id)}" ${picked[it.id] ? 'checked' : ''}>` : ''}
-      ${tag}<span class="st">${M(it.stem)}</span>${FIG(it, "fig-sm")}
+      ${tag}${it.optional ? '<span class="badge bl" title="進階題（選用）：預設不勾，需要時再勾選">進階</span>' : ''}<span class="st">${M(it.stem)}</span>${FIG(it, "fig-sm")}
       <span class="badge bl">${esc(it.bloom || '')}</span>${badge}</div><div class="item-o">${opts}</div>${msgs}</div>`;
   }).join('');
 }
@@ -3271,8 +3393,12 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"propKind","want":"direct|inverse"}：選項是 x、y 的關係式（y＝3x、xy＝12、y＝12/x、y＝2x＋1），只有一個是 y 與 x 成正比（或反比）
 - {"type":"value","fn":"mean|median|mode|range","nums":[3,5,7,9]}：平均數／中位數／眾數（只能有一個）／全距
 - count 的 cond 可以寫 2x−3＜5 這種含係數的式子
+- 進階（選用）題組：A、B 兩題都加 "optional": true，老師選題時預設不勾
 - 題目需要圖時加 "fig"：一段 SVG 字串（<svg viewBox="0 0 200 120">…</svg>），只能用 line、rect、circle、ellipse、polygon、polyline、path、text、g；不能有 script、事件、連結、圖片；選項可帶單位（70°、12 cm、3 公分）
+- extreme、range 的選項也可以有根式（√10、2√2），range 的端點可寫字串 "√5"
 - {"type":"radValue","expr":"√8＋√18","form":true}：根式（√12、2√3、3√2/2、(√3＋1)^2、√(2/3)），選項只有一個和 expr 精確相等；form:true 時還要是最簡根式（根號內沒有平方因數、沒有分數，分母有理化），值相等但沒化簡的判錯
+- {"type":"factorForm","expr":"6x^2−9x"}：因式分解，選項只有一個「和 expr 相等而且分解完全」（括號裡沒有公因數、每個因式不能再分解）；分解不完全的判錯（一個字母，或兩個字母的齊次式）
+- {"type":"quadRoots","eq":"x^2−2x−1＝0"}：一元二次（或一次）方程式的全部實數解，選項寫「3、−2」「x＝0 或 x＝4」「1±√2」「(1±√5)/2」「x＝3（重根）」「無解」
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
 算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
