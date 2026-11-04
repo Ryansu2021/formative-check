@@ -66,9 +66,17 @@ service cloud.firestore {
           && request.resource.data.uid == request.auth.uid
           && request.resource.data.seat == int(seat)
           && faSession(code).active == true;
+        // 交卷：學生只能把自己的 done1／done2 設成 true
+        allow update: if request.auth != null
+          && resource.data.uid == request.auth.uid
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.seat == resource.data.seat
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['done1', 'done2'])
+          && faSession(code).active == true
+          && faSession(code).phase == 'open';
       }
 
-      // 作答：文件 ID＝座號_題號_r輪次；只有「作答中」、且是目前這一題與這一輪才能寫入
+      // 作答：文件 ID＝座號_題號_r場次；只有「作答中」、且是這一場的題目才能寫入（學生整卷自己往下作答）
       match /responses/{rid} {
         allow get: if isTeacher()
           || (request.auth != null && (resource == null || resource.data.uid == request.auth.uid));
@@ -79,7 +87,7 @@ service cloud.firestore {
           && faOwnsSeat(code, request.resource.data.seat)
           && faSession(code).active == true
           && faSession(code).phase == 'open'
-          && faSession(code).curItemId == request.resource.data.itemId
+          && request.resource.data.itemId in faSession(code).curIds
           && faSession(code).round == request.resource.data.round
           && request.resource.data.choice is string
           && request.resource.data.conf in ['high', 'mid', 'low'];
