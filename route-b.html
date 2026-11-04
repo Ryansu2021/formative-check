@@ -752,7 +752,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.5（2026-11-04）';
+const APP_VERSION = 'v2.6（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1076,8 +1076,18 @@ function renderTabs() {
   $('t-tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { T.tab = b.dataset.t; renderBankView(); });
   ['bank', 'gen', 'cmp', 'howto'].forEach(k => $('tp-' + k).hidden = T.tab !== k);
 }
+// 從備課網頁／明日備課帶 ?unit=七上2-1 進來：選那一單元的題庫；這台電腦沒有就到 banks/<單元>.json 載入
+const unitKey = b => b && b.unit ? (b.unit.grade || '') + (b.unit.code || '') : '';
+async function pickUnitBank() {
+  const want = params.get('unit'); if (!want || T.unitDone) return; T.unitDone = true;
+  let b = Banks.list().find(x => unitKey(x) === want);
+  if (!b) { try { const r = await fetch(`banks/${encodeURIComponent(want)}.json`, { cache: 'no-cache' }); if (r.ok) { b = await r.json(); b.id = b.id || 'U-' + want; Banks.save(b); } } catch (e) { console.warn(e); } }
+  if (b) { T.bankId = b.id; T.tab = 'bank'; toast(`已選好 ${want} 的題庫`); }
+  else toast(`${want} 還沒有形成性檢核題庫`, 3500);
+}
 async function openBankView() {
   show('v-tbank'); stopLive();
+  await pickUnitBank();
   const banks = Banks.list();
   if (!T.bankId || !Banks.get(T.bankId)) T.bankId = banks[0] && banks[0].id;
   renderBankView();

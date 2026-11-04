@@ -15,10 +15,15 @@
 - 投影保護、QR Code 加入、出場摘要、CSV 匯出
 - 示範模式（本機，不需帳號）與雲端模式（Firebase，沿用 prime-challenge 專案）
 
+## 從備課網頁進來
+- 三版本比較網頁的「形成性檢核」分頁與明日備課的「📝 形成性檢核」卡片，會開 `route-a.html?role=teacher&unit=<單元>`，系統自動選好該單元題庫。
+- 這台電腦沒有該題庫時，會到 `banks/<單元>.json` 載入（新單元的題庫放這裡）。
+
 ## 檔案
 - `route-a.html`、`route-b.html`：單檔系統（學生端、教師端同一檔）
 - `bank-7a-2-1-prime-factorization.json`：路線 A 題庫（fa-bank/1 格式）
 - `firestore.rules`：Firebase 安全規則（數字大挑戰＋形成性檢核合併版）
+- `banks/<單元>.json`：各單元題庫（目前：七上2-1）
 - `設定說明.md`
 
 蘇恭弘。數學王子。台南市忠孝國中製作
