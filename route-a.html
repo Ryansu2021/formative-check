@@ -752,7 +752,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.4（2026-11-04）';
+const APP_VERSION = 'v2.5（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1043,13 +1043,20 @@ function renderStudentResults() {
 // ============================================================
 function openTeacherLogin() {
   show('v-tlogin'); $('t-err').hidden = true; setMode('教師', '');
-  if (location.protocol === 'file:') $('t-err').hidden = false, $('t-err').textContent = '目前是從電腦直接開啟的檔案：Google 登入只能在 GitHub Pages 網址使用。測試請按「示範模式」。';
+  if (location.protocol === 'file:') {
+    const online = `https://ryansu2021.github.io/formative-check/route-${ROUTE === 'B' ? 'b' : 'a'}.html?role=teacher`;
+    $('t-google').textContent = '開啟線上版，用 Google 登入（雲端）';
+    $('t-google').onclick = () => { window.open(online, '_blank'); };
+    $('t-err').hidden = false;
+    $('t-err').innerHTML = `現在是從電腦直接開啟的檔案，Google 登入會被擋下（requests-from-referer-null）。<br>上課請用線上版：<a href="${online}" target="_blank" style="color:inherit">${online}</a><br>只想在這台電腦試用，請按「示範模式」。`;
+  }
 }
-$('t-google').onclick = async () => {
+const googleLogin = async () => {
   $('t-err').hidden = true;
   try { store = new FireStore(); const u = await store.teacherUser(true); if (u) enterTeacher(u.email); }
   catch (e) { $('t-err').textContent = '登入失敗：' + (e.message || e.code); $('t-err').hidden = false; }
 };
+if (location.protocol !== 'file:') $('t-google').onclick = googleLogin;
 $('t-demo').onclick = () => { store = new LocalStore(); enterTeacher('示範模式'); };
 function enterTeacher(who) {
   setMode(store.mode === 'demo' ? '示範模式（本機）' : `雲端・${who}`, store.mode === 'demo' ? 'warn' : 'on');
