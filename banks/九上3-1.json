@@ -1,0 +1,747 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上3-1-證明與推理",
+ "title": "九上 3-1 證明與推理（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "3-1",
+  "name": "證明與推理",
+  "curriculum": [
+   "S-9-11 證明的意義：幾何推理（須說明所依據的幾何性質）；代數推理（須說明所依據的代數性質）。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上3-1.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；課程手冊 S-9-11「先以填充式的格式練習表達」，幾何題以填理由、選已知求證為主，不要求完整自寫；輔助線（康軒 3-1 學生課本未教）本份不考；代數證明的式子與相似求長用驗算器重算，判斷題（manual）請老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "PV01",
+   "name": "以舉例代替證明",
+   "desc": "驗證了幾個數或幾個圖都成立，就說這個性質「一定成立」",
+   "example": "1²、3²、5²、7²、9² 都是奇數，所以奇數的平方一定是奇數",
+   "remedy": "問「奇數有幾個、列得完嗎？」，對照國小量內角和：量 10 個也不能保證第 11 個；要用 2k＋1 一次代表所有奇數。",
+   "source": "知識卡迷思：康軒 p.140 漫畫、p.141「只是舉例，而不是證明」；南一 p.145 漫畫、p.151 錯誤診療；翰林 p.148 漫畫（✓／✓／✓）",
+   "card": "以舉例代替證明：驗證幾個數或幾個圖就說「一定成立」",
+   "tiers": [
+    "九上3-1-S3T1"
+   ]
+  },
+  {
+   "code": "PV02",
+   "name": "用結論證結論",
+   "desc": "把要證明的結論（求證）當成已知條件或理由來用",
+   "example": "要證 BD＝CD，卻在已知裡寫 BD＝CD，或在證明中寫「BD＝CD（已知）」",
+   "remedy": "請學生把題目條件抄成「已知」、要證的抄成「求證」，再檢查每個括號理由有沒有用到求證那一欄。",
+   "source": "知識卡迷思：康軒、南一學生課本與備課用書未見；翰林學生課本未見，備課 p.226 教學設計理念、拉頁 p.318 迷思逃脫（–／–／備）",
+   "card": "把要證明的結論當成已知條件使用（用結論證結論）",
+   "tiers": [
+    "九上3-1-S1T1"
+   ]
+  },
+  {
+   "code": "PV03",
+   "name": "理由漏寫或寫錯",
+   "desc": "只寫結果，或括號裡的理由和那一行對不起來（例如把全等的依據和全等後的結果對調）",
+   "example": "∴△ABD≅△ACD（對應邊相等），得 BD＝CD（SAS 全等性質）",
+   "remedy": "用填空梯度：先給理由填結論、再給結論填理由；每一行都問「這一行為什麼成立？」",
+   "source": "知識卡迷思：康軒 p.133、南一 p.137 與自評1（p.149）、翰林 p.139 每步括號寫理由（✓／✓／✓）",
+   "card": "理由漏寫或寫錯：只寫結果，沒寫依據的定義、性質",
+   "tiers": [
+    "九上3-1-S1T2"
+   ]
+  },
+  {
+   "code": "PV04",
+   "name": "全等相似條件或對應錯",
+   "desc": "全等、相似的判別條件用錯（SSA 當全等、沒夾角說成 SAS），或相似時對應邊配錯",
+   "example": "AB、AD 夾 ∠BAD，卻寫成「SSA 全等性質」；△AOB∼△COD 時拿 OA：OB 當 AB：CD",
+   "remedy": "先用同一種記號在兩個三角形上標出相等的邊、角，檢查角有沒有被兩邊夾住、對應頂點順序是否一致。",
+   "source": "知識卡迷思：康軒 p.147 挑錯題；南一書末附錄二 p.189 全等判別表註；翰林學生課本未見，備課 p.241 眉批（✓／✓／備）",
+   "card": "全等、相似的條件或對應寫錯（如 SSA 當 SAS、相似時對應邊不成比例）",
+   "tiers": [
+    "九上3-1-S2T1"
+   ]
+  },
+  {
+   "code": "PV05",
+   "name": "奇偶數用同一個字母",
+   "desc": "設偶數 2k、奇數 2k＋1（同一個 k），以為能代表任意的偶數和奇數，其實只代表相鄰的兩數",
+   "example": "證明偶數＋奇數＝奇數時，設 a＝2k、b＝2k＋1",
+   "remedy": "請學生代 k＝3、k＝5 看看是哪兩個數，問「能代表 4 和 7 嗎？」，再改成 2m、2n＋1。",
+   "source": "知識卡迷思：康軒 p.142 動動腦；南一 p.147 迷思診療；翰林未見，p.149 只示範設 a＝2m、b＝2n＋1（✓／✓／–）",
+   "card": "奇數、偶數用同一個字母（2n 與 2n＋1），只代表相鄰的兩數",
+   "tiers": [
+    "九上3-1-S3T2"
+   ]
+  },
+  {
+   "code": "PV06",
+   "name": "忽略負數",
+   "desc": "只想到正數，以為 a＞b 時 a²＞b² 一定成立（或 a²＞b² 時 a＞b 一定成立）",
+   "example": "「若 a＞b，則 a²＞b²」判為一定成立",
+   "remedy": "請學生代 a＝−1、b＝−2 檢驗，再對照康軒例8 為什麼要限定 a、b 是正數。",
+   "source": "知識卡迷思：康軒 p.145 自我檢核3、p.144 例8 限正數；南一未見（p.148 例8 限正數，只是示範）；翰林 p.151 例8 隨堂延伸到兩負數（✓／–／✓）",
+   "card": "忽略負數：以為 a＞b 則 a²＞b² 一定成立"
+  },
+  {
+   "code": "PV07",
+   "name": "分不清已知與求證",
+   "desc": "不會從文字敘述分出題目給的條件和要證的結論，或找不到要證全等、相似的兩個三角形",
+   "example": "把「證明 BD＝CE」寫成已知、把 AB＝AC 寫成求證；看不出 △AOB 與 △COD 相似",
+   "remedy": "請學生用兩種顏色在題目上畫線：給的條件是已知、要證的是求證；再找分別含要證兩量的兩個三角形並拆圖。",
+   "source": "知識卡迷思：康軒 p.132、p.135 例1 想法框；南一 p.138（備課 p.181 教學提醒③）；翰林 p.140 思路分析、p.142（✓／✓／✓）",
+   "card": "不會從文字敘述分辨已知與求證、找不到要證全等的兩個三角形",
+   "tiers": [
+    "九上3-1-S1T1"
+   ]
+  },
+  {
+   "code": "PV08",
+   "name": "反例選成支持的例子",
+   "desc": "要舉反例時，選了條件成立、結論也成立的例子",
+   "example": "說明「若 a＞b，則 a²＞b²」不一定對，舉 a＝3、b＝2",
+   "remedy": "寫成兩欄檢查：條件成立嗎？結論成立嗎？反例要「條件成立、結論不成立」。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PV09",
+   "name": "反例不符合條件",
+   "desc": "舉反例時，選的數連題目的條件都不成立",
+   "example": "說明「若 a＞b，則 a²＞b²」不一定對，舉 a＝2、b＝3",
+   "remedy": "先檢查例子是否符合「若」後面的條件；條件不成立的例子不能當反例。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PV10",
+   "name": "依圖目測當依據",
+   "desc": "把圖上看起來相等、平行或垂直，但題目沒給、也還沒證明的關係，寫成已知或拿來推論",
+   "example": "已知裡多寫「AC∥BD」；看 CD 和 AB 差不多長就說 CD＝AB",
+   "remedy": "問「題目有給嗎？前面證出來了嗎？」，兩個都沒有就不能用；可以把圖故意畫歪，讓學生看出不能用量的。",
+   "source": "依教學經驗（知識卡先備銜接觀察：三版都在八下交代由操作轉為推理，但都沒有討論「為什麼實測不夠」）"
+  },
+  {
+   "code": "PV11",
+   "name": "沒提出 2 就寫括號",
+   "desc": "整理成 2(　)＋1 時，沒有先提出 2，直接把去掉 1 之後的式子放進括號",
+   "example": "4k²＋4k＋1 寫成 2(4k²＋4k)＋1",
+   "remedy": "請學生把寫好的 2(　)＋1 乘開，檢查是否等於原式。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PV12",
+   "name": "和的平方漏中間項（先備）",
+   "desc": "展開 (a＋b)² 或 (a−b)² 時漏掉中間項 2ab",
+   "example": "(2k＋1)²＝4k²＋1",
+   "remedy": "用面積圖或 (2k＋1)(2k＋1) 逐項相乘，找回 2×2k×1。",
+   "source": "依教學經驗（知識卡先備：八上乘法公式；篩選測驗 J111G8Q19、J114G8Q20 差的平方）"
+  },
+  {
+   "code": "PV13",
+   "name": "係數沒一起平方（先備）",
+   "desc": "(2k)² 只平方字母，係數 2 沒有平方",
+   "example": "(2k＋1)²＝2k²＋4k＋1",
+   "remedy": "把 (2k)² 寫成 2k×2k＝4k²，提醒括號裡的每個因數都要平方。",
+   "source": "依教學經驗（知識卡先備：八上乘法公式）"
+  },
+  {
+   "code": "PV14",
+   "name": "分配律漏乘常數（先備）",
+   "desc": "係數乘進括號時，只乘字母項，漏乘常數項",
+   "example": "3(2n＋1)＝6n＋1",
+   "remedy": "用箭頭畫出係數要乘到括號裡的每一項，再代數字檢查。",
+   "source": "依教學經驗（知識卡篩選測驗 J114G7Q06、J115G7Q19 分配律，先備）"
+  },
+  {
+   "code": "PV15",
+   "name": "看不出 SAS 相似",
+   "desc": "兩線段相交時，沒看出對頂角就是兩組成比例邊的夾角，以為條件不夠判定相似",
+   "example": "OA：OC＝OB：OD，卻說「沒有角相等，無法判定 △AOB∼△COD」",
+   "remedy": "請學生在圖上把對頂角標出來，再描粗夾著它的兩組邊，檢查是否成比例。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PV16",
+   "name": "相似比寫反",
+   "desc": "對應邊配對正確，但比例前後項寫反，由小三角形推大三角形卻乘上小於 1 的比",
+   "example": "AB：CD＝OA：OC＝2：3，卻算成 CD＝AB×2/3",
+   "remedy": "先問「CD 在大三角形還是小三角形？應該比 AB 長還是短？」，再列比例式。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "分析",
+   "lc": "S-9-11",
+   "stem": "要證明「任意一個偶數加一個奇數，和是奇數」。下列哪一個是正確的證明？（m、n、k 都是整數）",
+   "options": [
+    {
+     "key": "A",
+     "text": "2＋3＝5、4＋7＝11、10＋1＝11 都是奇數，所以和一定是奇數",
+     "mis": "PV01",
+     "feedback": "你舉了 3 個例子都成立就說一定成立。偶數、奇數有無限多個，舉例只能猜測；要用字母一次代表所有的偶數、奇數。"
+    },
+    {
+     "key": "B",
+     "text": "設偶數 2k、奇數 2k＋1，和是 4k＋1＝2(2k)＋1，所以是奇數",
+     "mis": "PV05",
+     "feedback": "偶數、奇數用同一個 k，只代表相鄰的兩數（像 4 和 5），4 和 7 就沒算到。要設 2m 和 2n＋1。"
+    },
+    {
+     "key": "C",
+     "text": "設偶數 2m、奇數 2n＋1，和是 2m＋2n＋1＝2(m＋n)＋1，m＋n 是整數，所以是奇數",
+     "mis": null,
+     "feedback": "正確！用不同字母代表任意的偶數、奇數，整理成 2(整數)＋1，就證明了所有情形。"
+    },
+    {
+     "key": "D",
+     "text": "設兩數的和是 2k＋1，因為 2k＋1 是奇數，所以偶數加奇數是奇數",
+     "mis": "PV02",
+     "feedback": "你一開始就把和設成奇數，等於把要證的結論當成已知。要從偶數、奇數的設法出發，推出和是奇數。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "舉例能代表「所有」的偶數和奇數嗎？兩個數可以用同一個字母嗎？",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "分析",
+   "lc": "S-9-11",
+   "stem": "要證明「任意兩個奇數的和是偶數」。下列哪一個是正確的證明？（m、n、k 都是整數）",
+   "options": [
+    {
+     "key": "A",
+     "text": "設兩個奇數 2m＋1、2n＋1，和是 2m＋2n＋2＝2(m＋n＋1)，m＋n＋1 是整數，所以是偶數",
+     "mis": null,
+     "feedback": "正確！用不同字母代表任意兩個奇數，整理成 2(整數)，就證明了所有情形。"
+    },
+    {
+     "key": "B",
+     "text": "設兩數的和是 2k，因為 2k 是偶數，所以兩個奇數的和是偶數",
+     "mis": "PV02",
+     "feedback": "你一開始就把和設成偶數，等於把要證的結論當成已知。要從兩個奇數的設法出發，推出和是偶數。"
+    },
+    {
+     "key": "C",
+     "text": "1＋3＝4、5＋7＝12、9＋11＝20 都是偶數，所以和一定是偶數",
+     "mis": "PV01",
+     "feedback": "你舉了 3 個例子都成立就說一定成立。奇數有無限多個，舉例只能猜測；要用字母一次代表所有的奇數。"
+    },
+    {
+     "key": "D",
+     "text": "設兩個奇數 2k＋1、2k＋3，和是 4k＋4＝2(2k＋2)，所以是偶數",
+     "mis": "PV05",
+     "feedback": "兩個奇數用同一個 k，只代表相鄰的兩個奇數（像 5 和 7），5 和 11 就沒算到。要設 2m＋1 和 2n＋1。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "舉例能代表「所有」的奇數嗎？兩個奇數可以用同一個字母嗎？",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "如圖，等腰三角形 ABC 中，AB＝AC，BD⊥AC 於 D，CE⊥AB 於 E。證明 BD＝CE。下列哪一個是正確的「已知」與「求證」？",
+   "options": [
+    {
+     "key": "A",
+     "text": "已知：AB＝AC，BD⊥AC，CE⊥AB；求證：BD＝CE",
+     "mis": null,
+     "feedback": "正確！題目給的三個條件是已知，要你證明的 BD＝CE 是求證。"
+    },
+    {
+     "key": "B",
+     "text": "已知：BD⊥AC，CE⊥AB，BD＝CE；求證：AB＝AC",
+     "mis": "PV07",
+     "feedback": "你把題目給的 AB＝AC 和要證的 BD＝CE 對調了。題目給的條件是已知，要你證明的才是求證。"
+    },
+    {
+     "key": "C",
+     "text": "已知：AB＝AC，BD⊥AC，CE⊥AB，AE＝AD；求證：BD＝CE",
+     "mis": "PV10",
+     "feedback": "AE＝AD 是從圖上看出來的，題目沒有給、也還沒證明，不能寫進已知。已知只抄題目給的條件。"
+    },
+    {
+     "key": "D",
+     "text": "已知：AB＝AC，BD⊥AC，CE⊥AB，BD＝CE；求證：△ABD≅△ACE",
+     "mis": "PV02",
+     "feedback": "你把要證的 BD＝CE 放進已知，等於用結論證結論。BD＝CE 只能寫在求證。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "用兩種顏色畫線：題目「給你」的是什麼？「要你證明」的是什麼？",
+   "seg": "九上3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120,22 45,150 195,150\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"45.0\" y1=\"150.0\" x2=\"156.7\" y2=\"84.6\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"195.0\" y1=\"150.0\" x2=\"83.3\" y2=\"84.6\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"120\" y=\"16\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"36\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"204\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"167\" y=\"83\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"73\" y=\"83\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "如圖，AB 與 CD 互相平分於 E 點。證明 ∠CAE＝∠DBE。下列哪一個是正確的「已知」與「求證」？",
+   "options": [
+    {
+     "key": "A",
+     "text": "已知：AE＝BE，CE＝DE，∠CAE＝∠DBE；求證：△AEC≅△BED",
+     "mis": "PV02",
+     "feedback": "你把要證的 ∠CAE＝∠DBE 放進已知，等於用結論證結論。它只能寫在求證。"
+    },
+    {
+     "key": "B",
+     "text": "已知：AE＝BE，CE＝DE，AC∥BD；求證：∠CAE＝∠DBE",
+     "mis": "PV10",
+     "feedback": "AC∥BD 是從圖上看出來的，題目沒有給、也還沒證明，不能寫進已知。已知只抄題目給的條件。"
+    },
+    {
+     "key": "C",
+     "text": "已知：∠CAE＝∠DBE；求證：AE＝BE，CE＝DE",
+     "mis": "PV07",
+     "feedback": "你把題目給的「互相平分」和要證的角相等對調了。題目給的條件是已知，要你證明的才是求證。"
+    },
+    {
+     "key": "D",
+     "text": "已知：AE＝BE，CE＝DE；求證：∠CAE＝∠DBE",
+     "mis": null,
+     "feedback": "正確！「AB 與 CD 互相平分於 E」就是 AE＝BE、CE＝DE，要證的 ∠CAE＝∠DBE 是求證。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "「互相平分」寫成符號是什麼？題目要你證明的是哪一個？",
+   "seg": "九上3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"40.0\" y1=\"35.0\" x2=\"200.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"45.0\" y1=\"135.0\" x2=\"195.0\" y2=\"35.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"40.0\" y1=\"35.0\" x2=\"45.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"195.0\" y1=\"35.0\" x2=\"200.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"32\" y=\"31\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"208\" y=\"147\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"37\" y=\"147\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"203\" y=\"31\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120\" y=\"75\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "如圖，等腰三角形 ABC 中，AB＝AC，AD 平分 ∠BAC 交 BC 於 D。求證：BD＝CD。\n證明：∵ AB＝AC（已知），∠BAD＝∠CAD（AD 平分 ∠BAC），AD＝AD（共用邊）\n∴ △ABD≅△ACD（甲）\n得 BD＝CD（乙）\n甲、乙依序應該填什麼？",
+   "options": [
+    {
+     "key": "A",
+     "text": "SSA 全等性質；對應邊相等",
+     "mis": "PV04",
+     "feedback": "∠BAD 夾在 AB、AD 兩邊中間，是「邊角邊」，要寫 SAS。SSA 不是全等性質，不能當理由。"
+    },
+    {
+     "key": "B",
+     "text": "SAS 全等性質；對應邊相等",
+     "mis": null,
+     "feedback": "正確！兩邊和夾角相等用 SAS 判定全等，再由全等得到對應邊 BD＝CD。"
+    },
+    {
+     "key": "C",
+     "text": "對應邊相等；SAS 全等性質",
+     "mis": "PV03",
+     "feedback": "兩個理由放反了：三角形全等的依據是 SAS；BD＝CD 是由全等得到的「對應邊相等」。每一行都問：這一行是怎麼來的？"
+    },
+    {
+     "key": "D",
+     "text": "SAS 全等性質；已知",
+     "mis": "PV02",
+     "feedback": "BD＝CD 是求證，不是已知。它要由全等推出來，理由是「對應邊相等」。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "甲：哪三個條件、什麼順序？乙：BD＝CD 是從哪一行推出來的？",
+   "seg": "九上3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120,22 45,150 195,150\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"120.0\" y1=\"22.0\" x2=\"120.0\" y2=\"150.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"120\" y=\"16\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"36\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"204\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120\" y=\"165\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "如圖，三角形 ABC 中，AB＝AC，D 是 BC 的中點。求證：AD 平分 ∠BAC。\n證明：∵ AB＝AC（已知），BD＝CD（D 是 BC 中點），AD＝AD（共用邊）\n∴ △ABD≅△ACD（甲）\n得 ∠BAD＝∠CAD（乙）\n故 AD 平分 ∠BAC。甲、乙依序應該填什麼？",
+   "options": [
+    {
+     "key": "A",
+     "text": "SSS 全等性質；已知",
+     "mis": "PV02",
+     "feedback": "∠BAD＝∠CAD 就是要證的「AD 平分 ∠BAC」，不是已知。它要由全等推出來，理由是「對應角相等」。"
+    },
+    {
+     "key": "B",
+     "text": "對應角相等；SSS 全等性質",
+     "mis": "PV03",
+     "feedback": "兩個理由放反了：三角形全等的依據是 SSS；∠BAD＝∠CAD 是由全等得到的「對應角相等」。每一行都問：這一行是怎麼來的？"
+    },
+    {
+     "key": "C",
+     "text": "SSS 全等性質；對應角相等",
+     "mis": null,
+     "feedback": "正確！三組邊相等用 SSS 判定全等，再由全等得到對應角 ∠BAD＝∠CAD。"
+    },
+    {
+     "key": "D",
+     "text": "SAS 全等性質；對應角相等",
+     "mis": "PV04",
+     "feedback": "三組相等的都是邊，沒有用到角，是「邊邊邊」SSS。SAS 要兩邊和它們的夾角。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "甲：三個條件是邊還是角？乙：∠BAD＝∠CAD 是從哪一行推出來的？",
+   "seg": "九上3-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120,22 45,150 195,150\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"120.0\" y1=\"22.0\" x2=\"120.0\" y2=\"150.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"120\" y=\"16\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"36\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"204\" y=\"158\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120\" y=\"165\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-11",
+   "stem": "證明「奇數的平方是奇數」：設奇數為 2k＋1（k 是整數），把 (2k＋1)² 整理成 2(　)＋1。括號裡應該是？",
+   "options": [
+    {
+     "key": "A",
+     "text": "k^2＋2k",
+     "mis": "PV13",
+     "feedback": "(2k)² 要連 2 一起平方，是 4k²，不是 2k²。(2k＋1)²＝4k²＋4k＋1。"
+    },
+    {
+     "key": "B",
+     "text": "2k^2",
+     "mis": "PV12",
+     "feedback": "(2k＋1)² 不是 4k²＋1，漏了中間項 2×2k×1＝4k。"
+    },
+    {
+     "key": "C",
+     "text": "4k^2＋4k",
+     "mis": "PV11",
+     "feedback": "4k²＋4k＋1 要先提出 2：4k²＋4k＝2(2k²＋2k)。2(4k²＋4k)＋1 乘開是 8k²＋8k＋1，和原式不同。"
+    },
+    {
+     "key": "D",
+     "text": "2k^2＋2k",
+     "mis": null,
+     "feedback": "正確！(2k＋1)²＝4k²＋4k＋1＝2(2k²＋2k)＋1，2k²＋2k 是整數，所以是奇數。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2k^2+2k"
+   },
+   "hint": "先用和的平方公式展開，再把前兩項提出 2；寫完乘開檢查。",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-11",
+   "stem": "設奇數為 2k−1（k 是整數），要證明它的平方是奇數。把 (2k−1)² 整理成 2(　)＋1。括號裡應該是？",
+   "options": [
+    {
+     "key": "A",
+     "text": "2k^2",
+     "mis": "PV12",
+     "feedback": "(2k−1)² 不是 4k²＋1，漏了中間項 −2×2k×1＝−4k。"
+    },
+    {
+     "key": "B",
+     "text": "2k^2−2k",
+     "mis": null,
+     "feedback": "正確！(2k−1)²＝4k²−4k＋1＝2(2k²−2k)＋1，2k²−2k 是整數，所以是奇數。"
+    },
+    {
+     "key": "C",
+     "text": "4k^2−4k",
+     "mis": "PV11",
+     "feedback": "4k²−4k＋1 要先提出 2：4k²−4k＝2(2k²−2k)。2(4k²−4k)＋1 乘開是 8k²−8k＋1，和原式不同。"
+    },
+    {
+     "key": "D",
+     "text": "k^2−2k",
+     "mis": "PV13",
+     "feedback": "(2k)² 要連 2 一起平方，是 4k²，不是 2k²。(2k−1)²＝4k²−4k＋1。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2k^2-2k"
+   },
+   "hint": "先用差的平方公式展開，再把前兩項提出 2；寫完乘開檢查。",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "要說明「若 a＞b，則 a²＞b²」不一定成立，下列哪一組數可以當作反例？",
+   "options": [
+    {
+     "key": "A",
+     "text": "a＝3，b＝2",
+     "mis": "PV08",
+     "feedback": "3＞2，而且 9＞4，結論也成立，這是支持的例子，不是反例。反例要讓條件成立、結論不成立。"
+    },
+    {
+     "key": "B",
+     "text": "a＝2，b＝3",
+     "mis": "PV09",
+     "feedback": "a＝2、b＝3 時 a＞b 不成立，連條件都不符合，不能當反例。"
+    },
+    {
+     "key": "C",
+     "text": "a＝−1，b＝−2",
+     "mis": null,
+     "feedback": "正確！−1＞−2 條件成立，但 (−1)²＝1、(−2)²＝4，1＜4，結論不成立。"
+    },
+    {
+     "key": "D",
+     "text": "沒有反例，這句話一定成立",
+     "mis": "PV06",
+     "feedback": "你只想到正數。a、b 是負數時，例如 −1＞−2，但 (−1)²＝1＜(−2)²＝4。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "反例要同時做到兩件事：條件成立、結論不成立。負數試過了嗎？",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "stem": "要說明「若 a²＞b²，則 a＞b」不一定成立，下列哪一組數可以當作反例？",
+   "options": [
+    {
+     "key": "A",
+     "text": "a＝−3，b＝1",
+     "mis": null,
+     "feedback": "正確！(−3)²＝9＞1²＝1 條件成立，但 −3＜1，結論不成立。"
+    },
+    {
+     "key": "B",
+     "text": "沒有反例，這句話一定成立",
+     "mis": "PV06",
+     "feedback": "你只想到正數。a 是負數時，例如 a＝−3、b＝1，9＞1，但 −3＜1。"
+    },
+    {
+     "key": "C",
+     "text": "a＝3，b＝1",
+     "mis": "PV08",
+     "feedback": "9＞1，而且 3＞1，結論也成立，這是支持的例子，不是反例。反例要讓條件成立、結論不成立。"
+    },
+    {
+     "key": "D",
+     "text": "a＝1，b＝3",
+     "mis": "PV09",
+     "feedback": "a＝1、b＝3 時 a²＝1、b²＝9，a²＞b² 不成立，連條件都不符合，不能當反例。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "反例要同時做到兩件事：條件成立、結論不成立。負數試過了嗎？",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-11",
+   "stem": "a、b 是任意兩個奇數，要證明 2a＋3b 是奇數。把 2a＋3b 整理成 2(　)＋1，括號裡應該是？（m、n 是整數）",
+   "options": [
+    {
+     "key": "A",
+     "text": "2m＋3n＋2",
+     "mis": null,
+     "feedback": "正確！設 a＝2m＋1、b＝2n＋1，2a＋3b＝4m＋2＋6n＋3＝4m＋6n＋5＝2(2m＋3n＋2)＋1。"
+    },
+    {
+     "key": "B",
+     "text": "2m＋3n＋1",
+     "mis": "PV14",
+     "feedback": "3(2n＋1) 要乘開成 6n＋3，你算成 6n＋1，漏乘了常數。"
+    },
+    {
+     "key": "C",
+     "text": "5m＋2",
+     "mis": "PV05",
+     "feedback": "你把 a、b 都設成 2m＋1，只算到 a＝b 的情形。任意兩個奇數要用不同字母：a＝2m＋1、b＝2n＋1。"
+    },
+    {
+     "key": "D",
+     "text": "4m＋6n＋4",
+     "mis": "PV11",
+     "feedback": "4m＋6n＋5 寫成 2(　)＋1 時，要先把 4m＋6n＋4 提出 2，括號裡是 2m＋3n＋2。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "sameExpr",
+    "expr": "2m+3n+2"
+   },
+   "hint": "兩個任意的奇數要用不同字母；乘開後把整數部分提出 2，寫完乘開檢查。",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-11",
+   "stem": "a、b 是任意兩個奇數，要證明 4a＋3b 是奇數。把 4a＋3b 整理成 2(　)＋1，括號裡應該是？（m、n 是整數）",
+   "options": [
+    {
+     "key": "A",
+     "text": "8m＋6n＋6",
+     "mis": "PV11",
+     "feedback": "8m＋6n＋7 寫成 2(　)＋1 時，要先把 8m＋6n＋6 提出 2，括號裡是 4m＋3n＋3。"
+    },
+    {
+     "key": "B",
+     "text": "7m＋3",
+     "mis": "PV05",
+     "feedback": "你把 a、b 都設成 2m＋1，只算到 a＝b 的情形。任意兩個奇數要用不同字母：a＝2m＋1、b＝2n＋1。"
+    },
+    {
+     "key": "C",
+     "text": "4m＋3n＋3",
+     "mis": null,
+     "feedback": "正確！設 a＝2m＋1、b＝2n＋1，4a＋3b＝8m＋4＋6n＋3＝8m＋6n＋7＝2(4m＋3n＋3)＋1。"
+    },
+    {
+     "key": "D",
+     "text": "4m＋3n＋2",
+     "mis": "PV14",
+     "feedback": "3(2n＋1) 要乘開成 6n＋3，你算成 6n＋1，漏乘了常數。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "sameExpr",
+    "expr": "4m+3n+3"
+   },
+   "hint": "兩個任意的奇數要用不同字母；乘開後把整數部分提出 2，寫完乘開檢查。",
+   "seg": "九上3-1-S3"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-11",
+   "stem": "如圖，AC 與 BD 交於 O 點，OA＝4、OC＝6、OB＝8、OD＝12，AB＝6。CD 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "12",
+     "mis": "PV04",
+     "feedback": "對應邊配錯了：AB 對應的是 CD，比例要用 OA：OC（＝OB：OD），不是 OA：OB。"
+    },
+    {
+     "key": "B",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！OA：OC＝OB：OD＝2：3，夾角 ∠AOB＝∠COD（對頂角），△AOB∼△COD（SAS 相似），AB：CD＝2：3，CD＝9。"
+    },
+    {
+     "key": "C",
+     "text": "4",
+     "mis": "PV16",
+     "feedback": "相似比寫反了：AB 對應 CD，AB：CD＝OA：OC＝2：3，CD 比 AB 長。"
+    },
+    {
+     "key": "D",
+     "text": "無法求出",
+     "mis": "PV15",
+     "feedback": "∠AOB 和 ∠COD 是對頂角，正好夾在成比例 2：3 的兩組邊中間，△AOB∼△COD（SAS 相似），可以求出 CD。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "6×6/4"
+   },
+   "hint": "含 AB 和含 CD 的是哪兩個三角形？兩組邊成比例嗎？夾角呢？",
+   "seg": "九上3-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"63.0\" y1=\"79.8\" x2=\"158.0\" y2=\"120.7\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"25.0\" y1=\"128.9\" x2=\"215.0\" y2=\"47.1\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"63.0\" y1=\"79.8\" x2=\"25.0\" y2=\"128.9\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"158.0\" y1=\"120.7\" x2=\"215.0\" y2=\"47.1\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"51\" y=\"80\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"13\" y=\"139\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"170\" y=\"131\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"227\" y=\"47\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"118\" y=\"101\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"87\" y=\"81\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"124\" y=\"125\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"68\" y=\"129\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"153\" y=\"65\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">12</text><text x=\"34\" y=\"101\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-11",
+   "stem": "如圖，AC 與 BD 交於 O 點，OA＝6、OC＝10、OB＝12、OD＝20，AB＝15。CD 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9",
+     "mis": "PV16",
+     "feedback": "相似比寫反了：AB 對應 CD，AB：CD＝OA：OC＝3：5，CD 比 AB 長。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PV15",
+     "feedback": "∠AOB 和 ∠COD 是對頂角，正好夾在成比例 3：5 的兩組邊中間，△AOB∼△COD（SAS 相似），可以求出 CD。"
+    },
+    {
+     "key": "C",
+     "text": "30",
+     "mis": "PV04",
+     "feedback": "對應邊配錯了：AB 對應的是 CD，比例要用 OA：OC（＝OB：OD），不是 OA：OB。"
+    },
+    {
+     "key": "D",
+     "text": "25",
+     "mis": null,
+     "feedback": "正確！OA：OC＝OB：OD＝3：5，夾角 ∠AOB＝∠COD（對頂角），△AOB∼△COD（SAS 相似），AB：CD＝3：5，CD＝25。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "15×5/3"
+   },
+   "hint": "含 AB 和含 CD 的是哪兩個三角形？兩組邊成比例嗎？夾角呢？",
+   "seg": "九上3-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"130.4\" y1=\"50.5\" x2=\"47.5\" y2=\"110.5\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"37.1\" y1=\"28.0\" x2=\"202.9\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"130.4\" y1=\"50.5\" x2=\"37.1\" y2=\"28.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><line x1=\"47.5\" y1=\"110.5\" x2=\"202.9\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.8\" fill=\"none\"/><text x=\"141\" y=\"48\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"27\" y=\"25\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"37\" y=\"123\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"213\" y=\"161\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"99\" y=\"95\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"122\" y=\"77\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"66\" y=\"86\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">10</text><text x=\"61\" y=\"66\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">12</text><text x=\"159\" y=\"105\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">20</text><text x=\"87\" y=\"32\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">15</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P07）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或情境",
+ "updated": "2026-11-05T01:48"
+}
