@@ -14,6 +14,7 @@
  },
  "source": "Claude 依 115-教科書/知識卡/七下1-1.md（三版教學順序、迷思清單、教學建議）、prep_core 主幹卡與比較頁迷思表（digest_raw MS）頁碼產題；題目答案經驗算器重算（isLinEq、pointOn、solve、count、sameSol、sameExpr），老師審題後使用",
  "createdAt": "2026-11-04",
+ "updated": "2026-11-04T21:30",
  "misconceptions": [
   {
    "code": "LE01",
