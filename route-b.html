@@ -775,7 +775,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     }
     const s = s0; let i = 0; const vars = new Set();
     const peek = () => s[i];
-    const isL = c => c !== undefined && /[a-zA-Z]/.test(c);
+    const isL = c => c !== undefined && /[a-zA-Zπ]/.test(c);   // π 當成一個符號（v3.3.2）：6π、25π−50 用 sameExpr 精確比對
     function num() {
       const m = /^(\d+)(?:\.(\d+))?/.exec(s.slice(i));
       if (!m) throw new Error('無法解析：' + src);
@@ -2407,7 +2407,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.3.1（2026-11-05）';
+const APP_VERSION = 'v3.3.2（2026-11-05）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -3397,6 +3397,7 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - 題目需要圖時加 "fig"：一段 SVG 字串（<svg viewBox="0 0 200 120">…</svg>），只能用 line、rect、circle、ellipse、polygon、polyline、path、text、g；不能有 script、事件、連結、圖片；選項可帶單位（70°、12 cm、3 公分）
 - extreme、range 的選項也可以有根式（√10、2√2），range 的端點可寫字串 "√5"
 - {"type":"radValue","expr":"√8＋√18","form":true}：根式（√12、2√3、3√2/2、(√3＋1)^2、√(2/3)），選項只有一個和 expr 精確相等；form:true 時還要是最簡根式（根號內沒有平方因數、沒有分數，分母有理化），值相等但沒化簡的判錯
+- 含 π 的答案（6π、25π−50、9π/2）用 {"type":"sameExpr","expr":"(1/4)×π×6^2"}，π 當成一個符號精確比對
 - {"type":"factorForm","expr":"6x^2−9x"}：因式分解，選項只有一個「和 expr 相等而且分解完全」（括號裡沒有公因數、每個因式不能再分解）；分解不完全的判錯（一個字母，或兩個字母的齊次式）
 - {"type":"quadRoots","eq":"x^2−2x−1＝0"}：一元二次（或一次）方程式的全部實數解，選項寫「3、−2」「x＝0 或 x＝4」「1±√2」「(1±√5)/2」「x＝3（重根）」「無解」
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
