@@ -1832,7 +1832,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.0.2（2026-11-04）';
+const APP_VERSION = 'v3.0.3（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -2890,7 +2890,8 @@ async function renderTplPane() {
       <button class="btn zhu big" id="m-go">模板出題</button>
       <div id="m-status" class="small"></div>
       <details class="small"><summary style="cursor:pointer;font-weight:700">AI 改寫題幹（選用，要 Gemini key）</summary>
-        <div class="small muted" style="margin:6px 0">只改題幹文字（例如改成生活情境）；程式會檢查題幹裡的數字和原題一樣，不一樣就退回模板題幹。</div>
+        <div class="small muted" style="margin:6px 0">只改題幹文字（例如改成生活情境）；程式會檢查：改寫後出現的數字和原題相同（重複出現可以），而且原題的算式原樣出現在題幹裡，不符合就退回模板題幹。</div>
+        <label class="fl">情境（選填，例如「夜市擺攤」「籃球比賽」；空白＝一般生活情境）<input type="text" id="g-ctx" value="${esc(T.rwCtx || '')}" placeholder="夜市擺攤" maxlength="40"></label>
         <div class="row"><label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash')}"></label></div>
         <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
         <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
@@ -2934,10 +2935,26 @@ function runTplGen() {
     showGenResult();
   } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">沒辦法出題：${esc(e.message)}</span>`; console.error(e); }
 }
-// 題幹數字檢查：AI 改寫後的數字（含次方）要和模板題幹完全一樣（多重集合相同）
+// 題幹數字檢查（v3.0.3）：①改寫後出現的數字集合＝原題的數字集合（重複出現可以）②原題的算式要原樣出現在改寫後的題幹裡
 const SUPN = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
 const numsOf = s => (String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48)).replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUPN[c]).join('')).match(/\d+(\.\d+)?/g) || []).sort();
-function stemNumsOk(orig, neu) { const a = numsOf(orig), b = numsOf(neu); return a.length === b.length && a.every((x, i) => x === b[i]); }
+const exprNorm = s => String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48)).replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUPN[c]).join(''))
+  .replace(/[-－–]/g, '−').replace(/\+/g, '＋').replace(/[*＊]/g, '×').replace(/（/g, '(').replace(/）/g, ')').replace(/｜/g, '|').replace(/\s+/g, '');
+// 題幹裡的算式：連續的數字、運算符號、括號、絕對值；去掉外層括號與開頭的正負號後，中間還有運算符號的才算（「A(−5)」「126」不算）
+function exprsOf(s) {
+  return (exprNorm(s).match(/[\d.^＋−×÷/()|]+/g) || []).map(x => x.replace(/^[^\d(|−]+|[^\d)|]+$/g, ''))
+    .filter(x => /\d/.test(x) && /\d[\^＋−×÷/]|[)|][\^＋−×÷/]/.test(x.replace(/^\(?−/, '')));
+}
+function stemCheck(orig, neu) {
+  const a = [...new Set(numsOf(orig))], b = [...new Set(numsOf(neu))];
+  const sameNums = a.length === b.length && a.every((x, i) => x === b[i]);
+  const N = exprNorm(neu), missing = exprsOf(orig).filter(e => !N.includes(e));
+  const msgs = [];
+  if (!sameNums) msgs.push(`數字不一樣（原題 ${a.join('、') || '沒有數字'}；改寫 ${b.join('、') || '沒有數字'}）`);
+  if (missing.length) msgs.push(`原題的算式 ${missing.join('、')} 沒有原樣出現`);
+  return { ok: !msgs.length, msgs };
+}
+const stemNumsOk = (orig, neu) => stemCheck(orig, neu).ok;
 function tplOf(b, it) { return ((FT.tpl[b.tplUnit] || {}).tpls || []).find(t => t.tpl === it.tpl); }
 function showTplResult() {
   const b = T.genBank; const vb = V.verifyBank(b); const vr = vb.results; const s = vb.summary; const mm = misMapOf(b);
@@ -2981,7 +2998,7 @@ function showTplResult() {
       b.items[iA] = A; b.items[iB] = B; toast('已換一組數字（同一組規則，A、B 卷一起換）'); showTplResult();
     } catch (e) { toast('換不了：' + e.message, 4000); }
   });
-  $('m-review').querySelectorAll('[data-rb]').forEach(bt => bt.onclick = () => { const it = b.items.find(x => x.id === bt.dataset.rb); it.stem = it.stemOrig; delete it.stemOrig; delete it.stemBy; showTplResult(); });
+  $('m-review').querySelectorAll('[data-rb]').forEach(bt => bt.onclick = () => { const it = b.items.find(x => x.id === bt.dataset.rb); it.stem = it.stemOrig; delete it.stemOrig; delete it.stemBy; delete it.stemCtx; showTplResult(); });
 }
 // 換誘答後，迷思表只留用到的；新用到的從原迷思表補回
 function syncMisTable(b) {
@@ -2991,18 +3008,21 @@ function syncMisTable(b) {
 }
 async function rewriteStem(id, btn) {
   const b = T.genBank; const it = b.items.find(x => x.id === id); const orig = it.stemOrig || it.stem;
+  const ctxEl = $('g-ctx'); const ctxW = (ctxEl ? ctxEl.value : T.rwCtx || '').trim().slice(0, 40); T.rwCtx = ctxW;
   const prompt = `把下面這一題國中數學選擇題的「題幹」改寫得更貼近臺灣國中生的生活情境（繁體中文、臺灣用語），規則：
-1. 題目要問的數學內容、算式、所有數字都不能改，不能多加或少掉任何數字（包括次方）。算式照原樣保留，次方用 ^ 寫。
+1. 題目要問的數學內容、算式、所有數字都不能改，不能多加新的數字（包括次方）；原題的算式要原樣出現在改寫後的題幹裡，次方用 ^ 寫。數字可以在情境敘述和算式裡重複出現。
 2. 不能透露答案或提示解法，不要改成需要更多步驟的應用題。
-3. 只回傳 JSON：{"stem":"改寫後的題幹"}
+${ctxW ? `3. 情境用「${ctxW}」。數字在情境裡要有意義（例如代表錢、分數、溫度、人數、距離），讓學生看得出算式在算情境裡的什麼；不能只在算式前面加一句和數字無關的話。
+4.` : '3.'} 只回傳 JSON：{"stem":"改寫後的題幹"}
 原題幹：${orig}
 選項（不要改，只是讓你知道在問什麼）：${it.options.map(o => o.text).join('／')}`;
   btn.disabled = true; btn.textContent = '改寫中…';
   try {
     const neu = String(parseBankJSON(await callGemini(prompt)).stem || '').trim();
     if (!neu) throw new Error('AI 沒有回傳題幹');
-    if (!stemNumsOk(orig, neu)) { toast(`AI 改寫的題幹數字和原題不一致（原題 ${numsOf(orig).join('、')}；改寫 ${numsOf(neu).join('、') || '沒有數字'}），已退回模板題幹`, 5000); it.stem = orig; delete it.stemOrig; }
-    else { it.stemOrig = orig; it.stem = neu; it.stemBy = callGemini.lastModel; toast(`已改寫（${callGemini.lastModel}），數字檢查通過`); }
+    const ck = stemCheck(orig, neu);
+    if (!ck.ok) { toast(`AI 改寫的題幹沒通過檢查：${ck.msgs.join('；')}，已退回模板題幹`, 5000); it.stem = orig; delete it.stemOrig; delete it.stemCtx; }
+    else { it.stemOrig = orig; it.stem = neu; it.stemBy = callGemini.lastModel; if (ctxW) it.stemCtx = ctxW; else delete it.stemCtx; toast(`已改寫（${callGemini.lastModel}${ctxW ? '，情境：' + ctxW : ''}），數字與算式檢查通過`); }
   } catch (e) { toast('改寫失敗：' + e.message, 4000); }
   showTplResult();
 }
@@ -3188,7 +3208,7 @@ function renderCmpPane() {
   if (role === 'teacher') { openTeacherLogin(); return; }
   show('v-home');
 })();
-window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, Banks, V, stemNumsOk, callGemini, prepClassData, FR };
+window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, Banks, V, stemNumsOk, stemCheck, exprsOf, callGemini, prepClassData, FR };
 
 </script>
 </body>
