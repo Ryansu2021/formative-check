@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>課堂形成性檢核・路線A</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
@@ -243,6 +243,129 @@ table.t td.l,table.t th.l{text-align:left}
 .mis-ghost{position:absolute;top:-3px;bottom:-3px;border-right:3px dashed var(--ink);transition:left .4s}
 .live-grid .veil{inset:44px 10px 10px}
 .stale{display:flex;align-items:center;gap:14px;font-weight:700;font-size:16px;padding:10px 16px;border-radius:12px;background:var(--zhu-l);border:2px solid var(--zhu);color:#7d2a1c}
+
+/* ============ 備課網頁風格（與三版本教科書比較網頁一致） ============ */
+:root{
+  --paper:#f3f8fb; --paper2:#edf3f8; --card:#fff; --ink:#18324a; --ink2:#4f6679; --ink3:#8aa0b2; --line:#e2ecf3;
+  --zhu:#e2574c; --zhu-l:#fdecea;            /* 錯誤、迷思：紅 */
+  --qing:#12a37f; --qing-l:#e3f6ef;          /* 正確：綠（南一綠） */
+  --huang:#e0901c; --huang-l:#fff3df;        /* 提醒：橘（翰林橘） */
+  --dai:#2f7fd8; --dai-l:#e8f2fd;            /* 主要：藍（康軒藍） */
+  --vio:#7a6ad8; --vio-l:#efecfc;            /* 強調：紫 */
+  --oA:#2f7fd8; --oB:#12a37f; --oC:#e0901c; --oD:#7a6ad8; --oE:#4f6679;
+  --serif:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --sh:0 6px 18px rgba(24,50,74,.06); --sh2:0 2px 8px rgba(24,50,74,.07);
+}
+html,body{background:#e6eef5}
+#stage{background:radial-gradient(1200px 600px at 85% -10%,#dff1ff 0,transparent 60%),radial-gradient(900px 500px at -10% 110%,#e0f7ee 0,transparent 55%),var(--paper);box-shadow:0 10px 40px rgba(24,50,74,.15)}
+h1,h2,h3{font-weight:800;letter-spacing:.01em}
+header.top{background:rgba(243,248,251,.94);border-bottom:2px solid var(--line)}
+.brand{font-weight:800;letter-spacing:.5px}
+.brand .seal{background:var(--vio);border-radius:10px}
+.route-tag{border:2px solid var(--vio);color:var(--vio);background:var(--card)}
+.chip{background:var(--card);border:2px solid var(--line);color:var(--ink2);box-shadow:none}
+footer.by{font-family:var(--sans)}
+/* 按鈕：膠囊、柔和陰影 */
+.btn{border:2px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;box-shadow:var(--sh2);font-weight:700}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(24,50,74,.10);border-color:var(--ink3)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn:disabled{box-shadow:none;transform:none}
+.btn.zhu{background:var(--zhu);border-color:var(--zhu);color:#fff;box-shadow:0 4px 12px rgba(226,87,76,.25)}
+.btn.qing{background:var(--qing);border-color:var(--qing);color:#fff;box-shadow:0 4px 12px rgba(18,163,127,.25)}
+.btn.dai{background:var(--dai);border-color:var(--dai);color:#fff;box-shadow:0 4px 12px rgba(47,127,216,.25)}
+.btn.ghost{background:transparent;box-shadow:none}
+.btn.sm{box-shadow:var(--sh2);border-radius:999px}
+.btn.big{border-radius:999px}
+/* 卡片：白底、圓角 20、上緣色條 */
+.card,.panel{background:var(--card);border:none;border-radius:20px;box-shadow:var(--sh)}
+.panel{border-top:6px solid var(--dai)}
+.live-grid .panel:nth-child(2){border-top-color:var(--qing)} .live-grid .panel:nth-child(3){border-top-color:var(--zhu)}
+.home-card{border:none;border-top:8px solid var(--dai);border-radius:22px;box-shadow:var(--sh)}
+.home-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(24,50,74,.12)}
+#go-tea{border-top-color:var(--vio)}
+.home-card b{font-weight:800}
+#v-home h1{font-weight:900;letter-spacing:4px}
+#v-home .sub{font-family:var(--sans)}
+/* 分頁：膠囊；選取＝深藍實心 */
+.tabs{border-bottom:2px solid var(--line);gap:10px;padding-bottom:8px}
+.tab{border:2px solid var(--vio-l);border-radius:999px;margin-bottom:0;background:var(--card);color:var(--ink2);font-weight:700;box-shadow:var(--sh2);font-size:17px;padding:8px 20px}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg-sw{border:2px solid var(--line);border-radius:999px}
+.seg-sw button{font-weight:700}
+.seg-sw button.on{background:var(--ink)}
+/* 題庫 */
+.bank-li{border:2px solid var(--line);border-radius:16px;background:var(--card)}
+.bank-li.on{border-color:var(--vio);box-shadow:0 0 0 3px var(--vio-l)}
+.bank-li b{font-weight:800}
+.rtag.A{background:var(--dai)} .rtag.B{background:var(--huang)}
+.pair{border:2px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.5)}
+.pair.on{border:2px solid var(--vio-l);background:#fff;box-shadow:var(--sh)}
+.pair-h input,.item-h input[type=checkbox]{accent-color:var(--vio)}
+.item{border:1.5px solid var(--line);border-radius:14px;background:#fbfdff}
+.settag.a{background:var(--dai)} .settag.b{background:var(--huang)}
+.mis-code{color:var(--zhu);border-color:var(--zhu);background:#fff;border-radius:999px;padding:0 7px}
+input[type=text],input[type=number],input[type=password],textarea,select{border:2px solid var(--line);border-radius:12px;background:#fff}
+input:focus,textarea:focus,select:focus{border-color:var(--vio)}
+.keynote{background:var(--vio-l)}
+/* 學生作答 */
+.stem{font-weight:800}
+.opt{border:2px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--sh2)}
+.opt:hover{border-color:var(--ink3)}
+.opt .k{border-radius:12px}
+.opt.sel{border-color:var(--vio);box-shadow:0 0 0 4px var(--vio-l);background:#fff}
+.opt.right{border-color:var(--qing);background:var(--qing-l)}
+.opt.wrong{border-color:var(--zhu);background:var(--zhu-l)}
+.conf button{border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink2)}
+.conf button.sel{background:var(--vio);border-color:var(--vio);color:#fff}
+.conf.need button{border-color:var(--huang);background:var(--huang-l);color:#9a5d00}
+.pdot{border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.pdot.ok{background:var(--ink);border-color:var(--ink)}
+.pdot.warn{background:var(--huang-l);border-color:var(--huang);color:#9a5d00}
+.pdot.cur{outline:3px solid var(--vio)}
+.stu-head .qno{color:var(--vio);font-weight:800}
+.round-banner{background:var(--huang-l);border:2px solid var(--huang);color:#8a5200;border-radius:16px}
+.fb{border-radius:16px}
+.stu-msg .big{font-weight:900}
+/* 儀表板 */
+.code-big{color:var(--vio);border:2px solid var(--vio);background:#fff;border-radius:14px;font-weight:900;font-family:var(--sans)}
+.phase{border-radius:999px;background:var(--paper2);color:var(--ink2)}
+.phase.open{background:var(--qing);color:#fff} .phase.locked{background:var(--huang);color:#fff} .phase.reveal{background:var(--dai);color:#fff}
+.suggest{background:var(--huang-l);border:2px solid #f6d7a3;color:#8a5200;border-radius:14px}
+.irow{border-radius:12px} .irow:hover{background:#f5faff;border-color:var(--line)}
+.ino{color:var(--vio)}
+.sbar{border-radius:999px;background:var(--paper2)}
+.sbar .seg{opacity:.9}
+.bar-track{background:var(--paper2);border-radius:12px} .bar-fill{border-radius:12px}
+.bar-row .k{border-radius:10px}
+.mis-track{background:var(--paper2);border-radius:999px} .mis-fill{background:#f08a80} .mis-fill.sure{background:var(--zhu)}
+.quad div{border-radius:14px;border:2px solid var(--line)}
+.quad .q-ok{background:var(--qing-l);border-color:#bfe8d9} .quad .q-luck{background:#f2faf6} .quad .q-learn{background:#fff8ee} .quad .q-stuck{background:var(--zhu-l);border-color:#f6c4be;color:#b23a30}
+.seat{border-radius:10px;border:2px dashed var(--line)}
+.seat.in{border:2px solid var(--line);background:#fff;color:var(--ink2)}
+.seat.ans{background:var(--ink2);border-color:var(--ink2)}
+.seat.ok{background:var(--qing);border-color:var(--qing)} .seat.mid{background:var(--huang);border-color:var(--huang)} .seat.no{background:var(--zhu);border-color:var(--zhu)}
+.seat.sure::after{border:3px solid #8f2a22;border-radius:13px}
+.seat i{background:var(--vio)}
+.veil{background:repeating-linear-gradient(135deg,var(--paper2) 0 14px,#fff 14px 28px);border-radius:14px}
+.stale{background:var(--zhu-l);border:2px solid #f6c4be;color:#b23a30;border-radius:14px}
+.qr-box{border:none;border-radius:24px;box-shadow:0 20px 50px rgba(24,50,74,.25)}
+.qr-box .c{color:var(--vio);font-family:var(--sans);font-weight:900}
+.qr-modal{background:rgba(24,50,74,.45)}
+/* 摘要 */
+.stat{background:var(--card);border:none;border-radius:18px;box-shadow:var(--sh);border-top:5px solid var(--dai)}
+.stat-row .stat:nth-child(3){border-top-color:var(--qing)} .stat-row .stat:nth-child(4){border-top-color:var(--huang)} .stat-row .stat:nth-child(5){border-top-color:var(--zhu)}
+.stat b{font-weight:900}
+.grp{border:none;border-left:6px solid var(--zhu);border-radius:14px;background:#fff;box-shadow:var(--sh2)}
+table.t th{background:#f5f9fc;color:var(--ink2)}
+table.t th,table.t td{border-bottom:1px solid var(--line)}
+.err{border-radius:12px}
+.toast{background:var(--ink);border-radius:999px}
+.badge.bl{background:var(--dai-l);color:var(--dai);border-color:#c9def6}
+.math{font-family:var(--sans);font-weight:600;letter-spacing:.3px}
+.mis-code{border-radius:7px}
+.create-box input{width:100%;min-width:0}
+.create-box .row>label{min-width:0}
 </style>
 </head>
 <body>
@@ -629,7 +752,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.3（2026-11-04）';
+const APP_VERSION = 'v2.4（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -788,7 +911,7 @@ $('route-tag').textContent = ROUTE === 'B' ? '路線 B・系統內建 AI 生題'
 $('home-sub').textContent = ROUTE === 'B'
   ? '老師輸入單元 → AI 生題 → 程式自動驗算 → 老師審題 → 課堂即時看迷思分布'
   : '題庫由 Claude 在備課端產生（依三版本教科書知識卡）→ 程式自動驗算 → 老師審題 → 課堂即時看迷思分布';
-$('home-note').innerHTML = '兩輪作答＋信心程度：先個人作答，看全班分布決定「直接公布／同儕討論後再答／老師講解」。<br>「很確定卻答錯」的學生會特別標出來，那通常是頑固的迷思，不是粗心。';
+$('home-note').innerHTML = '第一場學生整卷自己往下作答 → 依迷思分布帶全班討論 → 第二場平行題（同迷思、換數字；沒時間可省略）。<br>每題勾信心程度，「很確定卻答錯」的學生會特別標出來，那通常是頑固的迷思，不是粗心。';
 $('go-stu').onclick = () => openJoin();
 $('go-tea').onclick = () => openTeacherLogin();
 
