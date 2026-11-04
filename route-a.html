@@ -797,7 +797,9 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   const eqList = eqs => (Array.isArray(eqs) ? eqs : String(eqs).split(/[；;\n]|且/)).map(x => String(x).trim()).filter(Boolean);
   // 線性方程組求解：回傳 {kind:'one', sol:{x:Q}} | {kind:'none'} | {kind:'many'}；不是一次式會丟錯
   function solveLinear(eqs, varsHint) {
-    const rows = eqList(eqs).map(e => { const r = splitRel(e); if (!r || r.op !== '=') throw new Error('不是方程式：' + e); const L = compileV(r.L), R = compileV(r.R); return { f: env => qSub(L.f(env), R.f(env)), vars: L.vars.concat(R.vars), src: e }; });
+    const cross = r => { const a = normV(r.L).replace(/：/g, ':').split(':'), b = normV(r.R).replace(/：/g, ':').split(':');   // 比例式 a：b＝c：d → a×d＝b×c（未知數可在後項）
+      return a.length === 2 && b.length === 2 ? { L: `(${a[0]})*(${b[1]})`, op: '=', R: `(${a[1]})*(${b[0]})` } : r; };
+    const rows = eqList(eqs).map(e => { let r = splitRel(e); if (!r || r.op !== '=') throw new Error('不是方程式：' + e); r = cross(r); const L = compileV(r.L), R = compileV(r.R); return { f: env => qSub(L.f(env), R.f(env)), vars: L.vars.concat(R.vars), src: e }; });
     const vars = varsHint && varsHint.length ? varsHint.slice() : [...new Set(rows.flatMap(r => r.vars))].sort();
     const zero = () => { const e = {}; vars.forEach(v => e[v] = Q(0n)); return e; };
     const M = rows.map(r => {
@@ -2146,7 +2148,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.1.1（2026-11-04）';
+const APP_VERSION = 'v3.1.2（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
