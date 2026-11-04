@@ -514,16 +514,18 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   const FN = { distinctPrimes, primeFactorCount, divisorCount };
 
   // ---------- 算式解析 ----------
-  // 統一符號：× x X * · ⋅ → *；÷ → /；上標數字 → ^n；全形數字 → 半形
-  const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9' };
+  // 統一符號：× x X * · ⋅ → *；÷ → /；上標數字 → ^n；全形數字 → 半形；− – － → -；｜ → |
+  const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
   function norm(s) {
     s = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48));
-    s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUP[c]).join(''));
+    s = s.replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUP[c]).join(''));
     return s.replace(/[×xX*·⋅]/g, '*').replace(/÷/g, '/').replace(/（/g, '(').replace(/）/g, ')')
-            .replace(/－/g, '-').replace(/＋/g, '+').replace(/\s+/g, '');
+            .replace(/[－−–]/g, '-').replace(/＋/g, '+').replace(/｜/g, '|').replace(/．/g, '.').replace(/\s+/g, '');
   }
 
-  // 一般四則＋次方（安全解析，不用 eval）
+  // 一般四則＋次方＋絕對值（安全解析，不用 eval）
+  // 優先順序：括號、絕對值 > 次方（右結合，指數可帶負號）> 一元正負號 > 乘除 > 加減
+  // 所以 -3^2＝−9、(-3)^2＝9、2^-1＝0.5、2×-3＝−6
   function evalExpr(src) {
     const s = norm(src); let i = 0;
     const peek = () => s[i];
@@ -534,16 +536,57 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     }
     function atom() {
       if (peek() === '(') { i++; const v = add(); if (s[i] !== ')') throw new Error('括號不成對'); i++; return v; }
-      if (peek() === '-') { i++; return -atom(); }
+      if (peek() === '|') { i++; const v = add(); if (s[i] !== '|') throw new Error('絕對值符號不成對'); i++; return Math.abs(v); }
       return num();
     }
-    function pow() { const b = atom(); if (peek() === '^') { i++; return Math.pow(b, pow()); } return b; }
-    function mul() { let v = pow(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = pow(); v = o === '*' ? v * r : v / r; } return v; }
+    function expo() { if (peek() === '-') { i++; return -expo(); } if (peek() === '+') { i++; return expo(); } return pow(); }
+    function pow() { const b = atom(); if (peek() === '^') { i++; return Math.pow(b, expo()); } return b; }
+    function unary() { if (peek() === '-') { i++; return -unary(); } if (peek() === '+') { i++; return unary(); } return pow(); }
+    function mul() { let v = unary(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = unary(); v = o === '*' ? v * r : v / r; } return v; }
     function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? v + r : v - r; } return v; }
     const v = add();
     if (i !== s.length) throw new Error('無法解析：' + src);
     return v;
   }
+  const fmt = v => Number.isFinite(v) ? String(+v.toPrecision(10)) : String(v);   // 判讀訊息用：0.1111111111→0.1111111111
+  const near = (a, b) => Math.abs(a - b) < 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+
+  // 關係式：可連寫（-3<x<2）；符號 > < = ≥ ≤ ≧ ≦ ≠ 與全形 ＞＜＝
+  function evalRel(src) {
+    const t = String(src).replace(/[≥≧]/g, '>=').replace(/[≤≦]/g, '<=').replace(/≠/g, '!=')
+      .replace(/＞/g, '>').replace(/＜/g, '<').replace(/＝/g, '=');
+    const parts = t.split(/(<=|>=|!=|<|>|=)/);
+    if (parts.length < 3) throw new Error('不是關係式：' + src);
+    const vals = []; const ops = [];
+    parts.forEach((p, k) => { if (k % 2) ops.push(p); else vals.push(evalExpr(p)); });
+    return ops.every((o, k) => {
+      const a = vals[k], b = vals[k + 1];
+      return o === '<' ? a < b && !near(a, b) : o === '>' ? a > b && !near(a, b) : o === '<=' ? a < b || near(a, b)
+        : o === '>=' ? a > b || near(a, b) : o === '=' ? near(a, b) : !near(a, b);
+    });
+  }
+  // 代入 x 後判斷條件（條件只用變數 x）
+  const condAt = (cond, x) => evalRel(String(cond).replace(/x/g, `(${x})`));
+  const intSolutions = (cond, range) => { const [lo, hi] = range || [-100, 100]; const out = []; for (let x = lo; x <= hi; x++) if (condAt(cond, x)) out.push(x); return out; };
+  // 數值集合：「6、−6」「沒有這樣的數」→ []
+  const NONE_RE = /^(沒有這樣的數|沒有|無解|不存在|無)$/;
+  function parseNumSet(src) {
+    const s = String(src).replace(/[{}｛｝\s]/g, '');
+    if (NONE_RE.test(s) || s === '') return [];
+    return s.split(/[,，、或]/).map(p => evalExpr(p));
+  }
+  const fmtSet = a => a.length ? a.join('、') : '沒有這樣的數';
+  // 選項文字裡的數：去掉「第」「位」「個」「種」「位數」
+  const numText = t => String(t).replace(/^第/, '').replace(/(位數|個|種|位)$/, '');
+  // 科學記號 a×10^n → {a, n}；不是這個形式回傳 null
+  function parseSci(src) {
+    const m = /^([+-]?\d+(?:\.\d+)?)\*10\^([+-]?\d+)$/.exec(norm(src));
+    return m ? { a: parseFloat(m[1]), n: parseInt(m[2], 10) } : null;
+  }
+  const expOf = v => parseInt(Math.abs(v).toExponential(12).split('e')[1], 10);   // 科學記號的指數
+  const firstNonzeroPlace = v => { if (!(Math.abs(v) < 1) || v === 0) throw new Error('firstNonzeroPlace 只用於 0＜|x|＜1'); return -expOf(v); };
+  const intDigits = v => { if (!(Math.abs(v) >= 1)) throw new Error('intDigits 只用於 |x|≥1'); return expOf(Math.trunc(v)) + 1; };
+  const FNX = { firstNonzeroPlace, intDigits };
 
   // 乘積式 → [[底數, 指數], ...]（保留原本順序與重複）；不是純乘積就回傳 null
   function parseProduct(src) {
@@ -582,6 +625,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     dupInSet: '重複列出', hasComposite: '含合數', hasOne: '含 1', missing: '缺少質因數',
     divisorCount: '＝因數個數', primeFactorCount: '＝含重複的質因數個數', distinctPrimes: '＝相異質因數個數',
     isFactor: '是因數', notFactor: '不是因數', prime: '是質數', composite_n: '是合數',
+    onEdge: '在端點', outRange: '不在範圍', true: '成立', false: '不成立', undefined: '無法計算', defined: '可以計算',
+    opposite: '互為相反數', reciprocal: '互為倒數', sciCoef: 'a 不在 1～10',
     other: '其他'
   };
 
@@ -615,16 +660,131 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           break;
         }
         case 'value': {
-          const target = ck.fn ? FN[ck.fn](ck.n) : evalExpr(ck.expr);
-          if (ck.fn && !FN[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
-          out.computedAnswer = String(target);
+          if (ck.fn && !FN[ck.fn] && !FNX[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
+          const target = ck.fn ? (FNX[ck.fn] ? FNX[ck.fn](evalExpr(ck.x)) : FN[ck.fn](ck.n)) : evalExpr(ck.expr);
+          out.computedAnswer = fmt(target);
           opts.forEach(o => {
-            let v; try { v = evalExpr(o.text.replace(/[個種]$/, '')); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
-            const ok = Math.abs(v - target) < 1e-9;
-            let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${v}`;
+            let v; try { v = evalExpr(numText(o.text)); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            const ok = near(v, target);
+            let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${fmt(v)}`;
             if (!ok && ck.n) for (const [k, f] of Object.entries(FN)) if (f(ck.n) === v) { diag = k; msg = DIAG_LABEL[k]; }
+            if (!ok && !ck.fn) { if (near(v, -target)) msg += '（正負號相反）'; else if (target !== 0 && near(v, 1 / target)) msg += '（是倒數）'; else if (target !== 0 && near(v, -1 / target)) msg += '（是負倒數）'; }
             out.perOption[o.key] = { diag, msg };
             if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'extreme': {                     // 選項是數或算式，唯一最大（want:max）或最小（want:min）
+          const want = ck.want === 'min' ? 'min' : 'max';
+          const vals = {}; opts.forEach(o => { vals[o.key] = evalExpr(o.text); });
+          const vs = Object.values(vals); const best = want === 'max' ? Math.max(...vs) : Math.min(...vs);
+          out.computedAnswer = (want === 'max' ? '最大＝' : '最小＝') + fmt(best);
+          const sorted = [...new Set(vs)].sort((x, y) => want === 'max' ? y - x : x - y);
+          opts.forEach(o => {
+            const ok = near(vals[o.key], best);
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: `＝${fmt(vals[o.key])}，第 ${sorted.findIndex(x => near(x, vals[o.key])) + 1} ${want === 'max' ? '大' : '小'}` };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'range': {                       // 選項值落在範圍內（gt/gte/lt/lte 可只給一邊）
+          const lim = ['gt', 'gte', 'lt', 'lte'].filter(k => ck[k] !== undefined);
+          if (!lim.length) throw new Error('range 要給 gt、gte、lt、lte 至少一個');
+          const L = {}; lim.forEach(k => L[k] = typeof ck[k] === 'number' ? ck[k] : evalExpr(ck[k]));
+          const SYM = { gt: '>', gte: '≥', lt: '<', lte: '≤' };
+          out.computedAnswer = lim.map(k => `${SYM[k]} ${fmt(L[k])}`).join(' 且 ');
+          opts.forEach(o => {
+            const v = evalExpr(o.text);
+            const bad = lim.filter(k => !(k === 'gt' ? v > L[k] && !near(v, L[k]) : k === 'gte' ? v > L[k] || near(v, L[k]) : k === 'lt' ? v < L[k] && !near(v, L[k]) : v < L[k] || near(v, L[k])));
+            const onEdge = lim.some(k => near(v, L[k]));
+            out.perOption[o.key] = bad.length ? { diag: onEdge ? 'onEdge' : 'outRange', msg: `＝${fmt(v)}，${onEdge ? '剛好在端點' : '不在範圍內'}` } : { diag: 'standard', msg: `＝${fmt(v)}，在範圍內` };
+            if (!bad.length) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'trueStmt': {                    // 選項是關係式，唯一成立（want:false 時唯一不成立）
+          const want = ck.want !== false;
+          out.computedAnswer = want ? '唯一成立的式子' : '唯一不成立的式子';
+          opts.forEach(o => {
+            const t = evalRel(o.text);
+            out.perOption[o.key] = { diag: t ? 'true' : 'false', msg: t ? '成立' : '不成立' };
+            if (t === want) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'sameValue': {                   // 選項是算式，唯一和 expr 同值
+          const target = evalExpr(ck.expr);
+          out.computedAnswer = `${ck.expr}＝${fmt(target)}`;
+          opts.forEach(o => {
+            const v = evalExpr(o.text); const ok = near(v, target);
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? `＝${fmt(v)}，同值` : `＝${fmt(v)}${near(v, -target) ? '（正負號相反）' : ''}` };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'count': {                       // 選項是數，等於滿足 cond 的整數個數
+          const sol = intSolutions(ck.cond, ck.range);
+          out.computedAnswer = `${sol.length} 個（${fmtSet(sol)}）`;
+          const pos = sol.filter(x => x > 0).length, hasZero = sol.includes(0);
+          opts.forEach(o => {
+            let v; try { v = evalExpr(numText(o.text)); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            const ok = v === sol.length; let msg = ok ? '正確' : `${v} 個`;
+            if (!ok && v === pos) msg += '（只算正整數）';
+            else if (!ok && hasZero && v === sol.length - 1) msg += '（漏掉 0）';
+            else if (!ok && v === pos + 1 && hasZero) msg += '（只算 0 和正整數）';
+            else if (!ok && /<(?!=)|>(?!=)/.test(ck.cond) && v === intSolutions(ck.cond.replace(/<(?!=)/g, '<=').replace(/>(?!=)/g, '>='), ck.range).length) msg += '（把端點也算進去）';
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'solveSet': {                    // 選項是「6、−6」或「沒有這樣的數」，集合等於整數解
+          const sol = intSolutions(ck.cond, ck.range);
+          out.computedAnswer = fmtSet(sol);
+          opts.forEach(o => {
+            let s; try { s = parseNumSet(o.text); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            const ok = s.length === sol.length && new Set(s).size === s.length && s.every(x => sol.some(y => near(x, y)));
+            const extra = s.filter(x => !sol.some(y => near(x, y))), miss = sol.filter(y => !s.some(x => near(x, y)));
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '正確' : [extra.length ? `${extra.join('、')} 不合` : '', miss.length ? `漏了 ${miss.join('、')}` : ''].filter(Boolean).join('；') || '重複列出' };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'undefinedOne': {                // 選項是算式，唯一無法計算（除以 0）
+          out.computedAnswer = '無法計算（除以 0）的算式';
+          opts.forEach(o => {
+            const v = evalExpr(o.text); const und = !Number.isFinite(v);
+            out.perOption[o.key] = { diag: und ? 'undefined' : 'defined', msg: und ? '除以 0，無法計算' : `可以算，＝${near(v, 0) ? 0 : v}` };
+            if (und) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'pairRel': {                     // 選項「a 與 b」，唯一互為相反數（rel:opposite）或倒數（rel:reciprocal）
+          const rel = ck.rel || 'opposite';
+          if (!['opposite', 'reciprocal'].includes(rel)) throw new Error('pairRel 只支援 opposite、reciprocal');
+          out.computedAnswer = rel === 'opposite' ? '互為相反數（和為 0）' : '互為倒數（積為 1）';
+          opts.forEach(o => {
+            const ps = String(o.text).split(/與|和|,|，|、/).map(t => t.trim()).filter(Boolean);
+            if (ps.length !== 2) { out.perOption[o.key] = { diag: 'unparsable', msg: '要寫成「a 與 b」' }; return; }
+            const [x, y] = ps.map(evalExpr);
+            const opp = near(x + y, 0), rec = near(x * y, 1);
+            const ok = rel === 'opposite' ? opp : rec;
+            out.perOption[o.key] = { diag: opp ? 'opposite' : rec ? 'reciprocal' : 'other', msg: opp ? '互為相反數' : rec ? '互為倒數，不是相反數' : near(x * y, -1) ? '積為 −1（互為負倒數）' : `和＝${fmt(x + y)}，不互為${rel === 'opposite' ? '相反數' : '倒數'}` };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'sci': {                         // 唯一「值正確且 1 ≤ |a| < 10」的 a×10^n
+          const target = typeof ck.value === 'number' ? ck.value : evalExpr(ck.value);
+          const e = expOf(target), a = +(target / Math.pow(10, e)).toPrecision(12);
+          out.computedAnswer = `${a}×10^${e}`;
+          opts.forEach(o => {
+            const f = parseSci(o.text);
+            if (!f) { out.perOption[o.key] = { diag: 'unparsable', msg: '不是 a×10^n 的形式' }; return; }
+            const v = f.a * Math.pow(10, f.n), valOk = near(v, target), aOk = Math.abs(f.a) >= 1 && Math.abs(f.a) < 10;
+            const d = valOk && aOk ? { diag: 'standard', msg: '正確' } : valOk ? { diag: 'sciCoef', msg: `值對，但 a＝${f.a} 不在 1≤a<10` }
+              : { diag: 'wrongValue', msg: `值不對（＝${f.a}×10^${f.n}，差 10^${Math.round(Math.log10(Math.abs(v / target)))} 倍）${aOk ? '' : '，a 也不在 1≤a<10'}` };
+            out.perOption[o.key] = d; if (d.diag === 'standard') correctKeys.push(o.key);
           });
           break;
         }
@@ -723,10 +883,11 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   // 把 2^3×3^2 轉成 HTML 上標
   function mathHTML(text) {
     const esc = String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    return esc.replace(/\^(\{([^}]*)\}|[0-9a-zA-Z]+)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
+    return esc.replace(/\^(\{([^}]*)\}|[-−]?[0-9a-zA-Z]+(?:\.[0-9]+)?)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
   }
 
-  G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, parseProduct, parseSet,
+  G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalRel, parseProduct, parseSet,
+                 parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
                  diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -752,7 +913,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.6（2026-11-04）';
+const APP_VERSION = 'v2.7（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1538,8 +1699,18 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"primeSet","n":60}：選項寫成 2、3、5（用頓號隔開，不加大括號），選出 n 的所有質因數
 - {"type":"isFactor","of":"2^3×3^2×5","want":true}：選項是數或乘積式，只有一個是（want:false 時只有一個不是）因數
 - {"type":"isPrime","want":true}：選項是整數，只有一個是質數
+- {"type":"value","fn":"firstNonzeroPlace|intDigits","x":"4.2×10^-5"}：x 的值在小數點後第幾位才出現第一個不是 0 的數字／x 的整數部分是幾位數（選項寫 5 或「第 5 位」「7 位數」）
+- {"type":"extreme","want":"max|min"}：選項是數或算式，只有一個最大（或最小）
+- {"type":"range","gt":-3,"lt":-2}：選項是數或算式，只有一個落在範圍內；gt＞、gte≥、lt＜、lte≤，可只給一邊，端點不算在 gt/lt 內
+- {"type":"trueStmt","want":true}：選項是關係式（用 > < = ≥ ≤ ≠，如「|−4| = 4」），只有一個成立（want:false 時只有一個不成立）
+- {"type":"sameValue","expr":"7−10"}：選項是算式，只有一個和 expr 的值相同
+- {"type":"count","cond":"|x|<3","range":[-100,100]}：選項是數，等於滿足條件的整數 x 有幾個（條件只用變數 x）
+- {"type":"solveSet","cond":"|x|=6","range":[-100,100]}：選項寫成「6、−6」或「沒有這樣的數」，只有一個等於所有整數解
+- {"type":"undefinedOne"}：選項是算式，只有一個無法計算（除以 0）
+- {"type":"pairRel","rel":"opposite|reciprocal"}：選項寫成「−6 與 6」，只有一組互為相反數（或互為倒數）
+- {"type":"sci","value":2350000}：選項寫成 a×10^n，只有一個值正確且 1 ≤ a < 10（value 也可以是字串算式，如 "0.00042"）
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
-算式寫法：次方用 ^（2^3），乘號用 ×。不要用 LaTeX。`;
+算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。不要用 LaTeX。`;
 function genPrompt(unit, note, count) {
   return `你是台灣國中數學老師的命題助手。請為「${unit}」設計課堂「形成性檢核」用的關鍵題（hinge questions）題庫。
 要求：
