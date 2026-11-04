@@ -3,13 +3,20 @@ rules_version = '2';
 // ============================================================
 //  Firebase 專案 prime-challenge 的完整安全規則
 //  包含：① 數字大挑戰（sessions，原本的規則不變）
-//        ② 課堂形成性檢核（fa_sessions，新增）
+//        ② 課堂形成性評量（fa_sessions；2026-11-05 改成「誰建立的場次誰管理」，任何 Google 帳號的教師都能用）
 //  使用方式：複製全部內容，貼到 Firebase 主控台 → Firestore Database → 規則 → 發布
 //  ⚠ 規則是整份取代：一定要貼這份「合併版」，不要只貼新增的部分，否則數字大挑戰會失效
 // ============================================================
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // 形成性評量的管理者（可清理任何場次）
+    function faAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['ghsghs1@gmail.com'];
+    }
 
     function isTeacher() {
       return request.auth != null
@@ -43,24 +50,41 @@ service cloud.firestore {
       }
     }
 
-    // ---------------- ② 課堂形成性檢核（新增） ----------------
+    // ---------------- ② 課堂形成性評量（fa_sessions；2026-11-05 起開放其他教師：誰建立的場次誰管理） ----------------
     function faSession(code) {
       return get(/databases/$(database)/documents/fa_sessions/$(code)).data;
     }
     function faOwnsSeat(code, seat) {
       return get(/databases/$(database)/documents/fa_sessions/$(code)/students/$(string(seat))).data.uid == request.auth.uid;
     }
+    // 教師＝用 Google 登入（不是匿名登入的學生）
+    function faSignedTeacher() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && request.auth.token.email_verified == true;
+    }
+    // 這個場次的建立者（或管理者）
+    function faOwner(code) {
+      return faAdmin() || (request.auth != null && faSession(code).ownerUid == request.auth.uid);
+    }
 
     // 場次：學生可讀單一場次（題幹、選項、目前題號；正解只在公布後寫入）
     match /fa_sessions/{code} {
       allow get: if request.auth != null;
-      allow list, create, update, delete: if isTeacher();
+      // 列出：管理者看全部；教師只能查自己的（查詢要帶 ownerUid == 自己的 uid）
+      allow list: if faAdmin() || (faSignedTeacher() && resource.data.ownerUid == request.auth.uid);
+      // 建立：任何用 Google 登入的教師；ownerUid 一定要寫自己（代碼已被別人用掉時，這裡會變成 update 而被擋下）
+      allow create: if faSignedTeacher() && request.resource.data.ownerUid == request.auth.uid;
+      // 更新：建立者或管理者，而且不能改 ownerUid
+      allow update: if (faAdmin() || resource.data.ownerUid == request.auth.uid)
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if faAdmin() || resource.data.ownerUid == request.auth.uid;
 
       // 座號：每個座號一份，學生只能占用空座號
       match /students/{seat} {
-        allow get: if isTeacher()
+        allow get: if faOwner(code)
           || (request.auth != null && (resource == null || resource.data.uid == request.auth.uid));
-        allow list, delete: if isTeacher();
+        allow list, delete: if faOwner(code);
         allow create: if request.auth != null
           && seat.matches('^[1-9][0-9]?$')
           && request.resource.data.uid == request.auth.uid
@@ -78,9 +102,9 @@ service cloud.firestore {
 
       // 作答：文件 ID＝座號_題號_r場次；只有「作答中」、且是這一場的題目才能寫入（學生整卷自己往下作答）
       match /responses/{rid} {
-        allow get: if isTeacher()
+        allow get: if faOwner(code)
           || (request.auth != null && (resource == null || resource.data.uid == request.auth.uid));
-        allow list, delete: if isTeacher();
+        allow list, delete: if faOwner(code);
         allow create, update: if request.auth != null
           && request.resource.data.uid == request.auth.uid
           && rid == string(request.resource.data.seat) + '_' + request.resource.data.itemId + '_r' + string(request.resource.data.round)

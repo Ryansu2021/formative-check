@@ -1,0 +1,87 @@
+rules_version = '2';
+
+// ============================================================
+//  給老師自己的 Firebase 專案用的安全規則（只有課堂形成性評量 fa_sessions）
+//  使用方式：複製全部內容，貼到 Firebase 主控台 → Firestore Database → 規則 → 發布
+//  誰建立的場次誰管理；學生用匿名登入，只能占用空座號、在作答中寫自己的答案
+//  （想讓某個帳號可以清理所有場次，把 email 填進 faAdmin() 的清單）
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function faAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [];
+    }
+
+    // ---------------- ② 課堂形成性評量（fa_sessions；2026-11-05 起開放其他教師：誰建立的場次誰管理） ----------------
+    function faSession(code) {
+      return get(/databases/$(database)/documents/fa_sessions/$(code)).data;
+    }
+    function faOwnsSeat(code, seat) {
+      return get(/databases/$(database)/documents/fa_sessions/$(code)/students/$(string(seat))).data.uid == request.auth.uid;
+    }
+    // 教師＝用 Google 登入（不是匿名登入的學生）
+    function faSignedTeacher() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && request.auth.token.email_verified == true;
+    }
+    // 這個場次的建立者（或管理者）
+    function faOwner(code) {
+      return faAdmin() || (request.auth != null && faSession(code).ownerUid == request.auth.uid);
+    }
+
+    // 場次：學生可讀單一場次（題幹、選項、目前題號；正解只在公布後寫入）
+    match /fa_sessions/{code} {
+      allow get: if request.auth != null;
+      // 列出：管理者看全部；教師只能查自己的（查詢要帶 ownerUid == 自己的 uid）
+      allow list: if faAdmin() || (faSignedTeacher() && resource.data.ownerUid == request.auth.uid);
+      // 建立：任何用 Google 登入的教師；ownerUid 一定要寫自己（代碼已被別人用掉時，這裡會變成 update 而被擋下）
+      allow create: if faSignedTeacher() && request.resource.data.ownerUid == request.auth.uid;
+      // 更新：建立者或管理者，而且不能改 ownerUid
+      allow update: if (faAdmin() || resource.data.ownerUid == request.auth.uid)
+        && request.resource.data.ownerUid == resource.data.ownerUid;
+      allow delete: if faAdmin() || resource.data.ownerUid == request.auth.uid;
+
+      // 座號：每個座號一份，學生只能占用空座號
+      match /students/{seat} {
+        allow get: if faOwner(code)
+          || (request.auth != null && (resource == null || resource.data.uid == request.auth.uid));
+        allow list, delete: if faOwner(code);
+        allow create: if request.auth != null
+          && seat.matches('^[1-9][0-9]?$')
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.seat == int(seat)
+          && faSession(code).active == true;
+        // 交卷：學生只能把自己的 done1／done2 設成 true
+        allow update: if request.auth != null
+          && resource.data.uid == request.auth.uid
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.seat == resource.data.seat
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['done1', 'done2'])
+          && faSession(code).active == true
+          && faSession(code).phase == 'open';
+      }
+
+      // 作答：文件 ID＝座號_題號_r場次；只有「作答中」、且是這一場的題目才能寫入（學生整卷自己往下作答）
+      match /responses/{rid} {
+        allow get: if faOwner(code)
+          || (request.auth != null && (resource == null || resource.data.uid == request.auth.uid));
+        allow list, delete: if faOwner(code);
+        allow create, update: if request.auth != null
+          && request.resource.data.uid == request.auth.uid
+          && rid == string(request.resource.data.seat) + '_' + request.resource.data.itemId + '_r' + string(request.resource.data.round)
+          && faOwnsSeat(code, request.resource.data.seat)
+          && faSession(code).active == true
+          && faSession(code).phase == 'open'
+          && request.resource.data.itemId in faSession(code).curIds
+          && faSession(code).round == request.resource.data.round
+          && request.resource.data.choice is string
+          && request.resource.data.conf in ['high', 'mid', 'low'];
+      }
+    }
+  }
+}
