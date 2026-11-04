@@ -635,7 +635,11 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     });
   }
   // 代入 x 後判斷條件（條件只用變數 x）
-  const condAt = (cond, x) => evalRel(String(cond).replace(/x/g, `(${x})`));
+  const condAt = (cond, x) => {
+    const r = typeof splitRel === 'function' ? splitRel(cond) : null;
+    if (r && /\d\s*x|x\s*\(|\)\s*x/.test(String(cond))) { const T = ineqTruth(cond); return T.at(Q(BigInt(x))); }   // 2x−3＜5 這種寫法（v3.1）
+    return evalRel(String(cond).replace(/x/g, `(${x})`));
+  };
   const intSolutions = (cond, range) => { const [lo, hi] = range || [-100, 100]; const out = []; for (let x = lo; x <= hi; x++) if (condAt(cond, x)) out.push(x); return out; };
   // 數值集合：「6、−6」「沒有這樣的數」→ []
   const NONE_RE = /^(沒有這樣的數|沒有|無解|不存在|無)$/;
@@ -688,6 +692,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   const gcd2 = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
   const gcd = ns => posInts(ns).reduce(gcd2);
   const lcm = ns => posInts(ns).reduce((a, b) => a / gcd2(a, b) * b);
+  const sortedQ = ns => ns.map(qFrom).sort(qCmp);
+  const meanQ = ns => { const a = ns.map(qFrom); return qDiv(a.reduce(qAdd, Q(0n)), Q(BigInt(a.length))); };
+  const medianQ = ns => { const a = sortedQ(ns), k = a.length; return k % 2 ? a[(k - 1) / 2] : qDiv(qAdd(a[k / 2 - 1], a[k / 2]), Q(2n)); };
+  const modeQ = ns => { const a = ns.map(qFrom), c = new Map(); a.forEach(x => { const k = fmtQ(x); c.set(k, (c.get(k) || 0) + 1); }); const mx = Math.max(...c.values()); const ms = [...c].filter(([, v]) => v === mx); if (ms.length !== 1) throw new Error('眾數不只一個（或沒有）'); return evalQ(ms[0][0]); };
+  const rangeQ = ns => { const a = sortedQ(ns); return qSub(a[a.length - 1], a[0]); };
+  const FNS = { mean: meanQ, median: medianQ, mode: modeQ, range: rangeQ };   // 統計量（v3.1）：value 的 fn＋nums
   const FNN = { gcd, lcm };
 
   // 乘積式 → [[底數, 指數], ...]（保留原本順序與重複）；不是純乘積就回傳 null
@@ -704,6 +714,161 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     const parts = s.split(/[,，、]/);
     if (parts.some(p => !/^\d+$/.test(p))) return null;
     return parts.map(Number);
+  }
+
+  // ============================================================
+  // 代數（v3.1）：含字母的式子、方程式、聯立、不等式。全程精確分數。
+  // 寫法：3x、2(x＋1)、x^2、−x、x/2、(x−1)/3；1/2x＝(1/2)x；乘號 × 可省略；字母是 a～z（不分大小寫以外的意思，照寫的字母）
+  // ============================================================
+  function normV(s) {
+    s = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48))
+      .replace(/[ａ-ｚ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF41 + 97));
+    s = s.replace(/[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUP[c]).join(''));
+    return s.replace(/[×*·⋅]/g, '*').replace(/（/g, '(').replace(/）/g, ')')
+      .replace(/[－−–]/g, '-').replace(/＋/g, '+').replace(/｜/g, '|').replace(/．/g, '.').replace(/\s+/g, '');
+  }
+  // 解析成函式 env → 有理數；vars 收集用到的字母
+  function compileV(src) {
+    const s0 = normV(src).replace(/：/g, ':');
+    if (s0.includes(':')) {                                                 // 比例 a:b＝前項÷後項（v3.1）
+      const ps = s0.split(':'); if (ps.length !== 2) throw new Error('比例只能有前項和後項：' + src);
+      const A = compileV(ps[0]), B = compileV(ps[1]);
+      return { f: e => qDiv(A.f(e), B.f(e)), vars: [...new Set(A.vars.concat(B.vars))].sort() };
+    }
+    const s = s0; let i = 0; const vars = new Set();
+    const peek = () => s[i];
+    const isL = c => c !== undefined && /[a-zA-Z]/.test(c);
+    function num() {
+      const m = /^(\d+)(?:\.(\d+))?/.exec(s.slice(i));
+      if (!m) throw new Error('無法解析：' + src);
+      i += m[0].length;
+      if (!m[2] && s[i] === '/') { const f = /^\/(\d+)(?![\d.^])/.exec(s.slice(i)); if (f) { i += f[0].length; const v = Q(BigInt(m[1]), BigInt(f[1])); return () => v; } }
+      const v = m[2] ? Q(BigInt(m[1] + m[2]), 10n ** BigInt(m[2].length)) : Q(BigInt(m[1]));
+      return () => v;
+    }
+    function atom() {
+      const c = peek();
+      if (c === '(') { i++; const f = add(); if (s[i] !== ')') throw new Error('括號不成對：' + src); i++; return f; }
+      if (c === '|') { i++; const f = add(); if (s[i] !== '|') throw new Error('絕對值符號不成對：' + src); i++; return e => qAbs(f(e)); }
+      if (isL(c)) { i++; vars.add(c); return e => { if (!(c in e)) throw new Error('沒有給 ' + c + ' 的值'); return qFrom(e[c]); }; }
+      return num();
+    }
+    function expo() { if (peek() === '-') { i++; const f = expo(); return e => qNeg(f(e)); } if (peek() === '+') { i++; return expo(); } return pow(); }
+    function pow() { const b = atom(); if (peek() === '^') { i++; const ex = expo(); return e => qPow(b(e), ex(e)); } return b; }
+    function unary() { if (peek() === '-') { i++; const f = unary(); return e => qNeg(f(e)); } if (peek() === '+') { i++; return unary(); } return pow(); }
+    function mul() {
+      let f = unary();
+      for (;;) {
+        const c = peek();
+        if (c === '*' || c === '/' || c === '÷') { i++; const g = unary(), h = f; f = c === '*' ? (e => qMul(h(e), g(e))) : (e => qDiv(h(e), g(e))); continue; }
+        if (c === '(' || isL(c) || c === '|' && false) { const g = pow(), h = f; f = e => qMul(h(e), g(e)); continue; }   // 省略乘號：3x、2(x+1)、xy
+        return f;
+      }
+    }
+    function add() { let f = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const g = mul(), h = f; f = o === '+' ? (e => qAdd(h(e), g(e))) : (e => qSub(h(e), g(e))); } return f; }
+    const f = add();
+    if (i !== s.length) throw new Error('無法解析：' + src);
+    return { f, vars: [...vars].sort() };
+  }
+  const evalV = (src, env) => compileV(src).f(env || {});
+  // 取樣點：每個字母給不同的有理數（避開 0、1、−1 這種容易巧合的值）
+  const SAMPLE = [[7, 3], [-5, 2], [11, 1], [-13, 4], [17, 5], [3, 7], [-19, 3], [23, 6]];
+  const sampleEnv = (vars, k) => { const e = {}; vars.forEach((v, j) => { const [a, b] = SAMPLE[(k + 3 * j) % SAMPLE.length]; e[v] = Q(BigInt(a + 2 * j), BigInt(b)); }); return e; };
+  // 兩式等值（每個取樣點都相同；兩邊都無法計算的點跳過）
+  function sameExprQ(a, b) {
+    const A = compileV(a), B = compileV(b), vars = [...new Set(A.vars.concat(B.vars))].sort();
+    let used = 0;
+    for (let k = 0; k < SAMPLE.length; k++) {
+      const e = sampleEnv(vars, k), x = A.f(e), y = B.f(e);
+      if (x.u && y.u) continue; if (x.u || y.u || !qEq(x, y)) return false; used++;
+    }
+    return used >= 4;
+  }
+  // 關係式拆開：「左 ＝ 右」或不等式（可用 ＜ ＞ ≤ ≥ ≦ ≧ ≠）
+  function splitRel(src) {
+    const t = String(src).replace(/[≥≧]/g, '>=').replace(/[≤≦]/g, '<=').replace(/≠/g, '!=').replace(/＞/g, '>').replace(/＜/g, '<').replace(/＝/g, '=');
+    const parts = t.split(/(<=|>=|!=|<|>|=)/);
+    if (parts.length !== 3 || !parts[0].trim() || !parts[2].trim()) return null;
+    return { L: parts[0], op: parts[1], R: parts[2] };
+  }
+  // 一組方程式（用「；」「;」「且」或換行分開，或給陣列）
+  const eqList = eqs => (Array.isArray(eqs) ? eqs : String(eqs).split(/[；;\n]|且/)).map(x => String(x).trim()).filter(Boolean);
+  // 線性方程組求解：回傳 {kind:'one', sol:{x:Q}} | {kind:'none'} | {kind:'many'}；不是一次式會丟錯
+  function solveLinear(eqs, varsHint) {
+    const rows = eqList(eqs).map(e => { const r = splitRel(e); if (!r || r.op !== '=') throw new Error('不是方程式：' + e); const L = compileV(r.L), R = compileV(r.R); return { f: env => qSub(L.f(env), R.f(env)), vars: L.vars.concat(R.vars), src: e }; });
+    const vars = varsHint && varsHint.length ? varsHint.slice() : [...new Set(rows.flatMap(r => r.vars))].sort();
+    const zero = () => { const e = {}; vars.forEach(v => e[v] = Q(0n)); return e; };
+    const M = rows.map(r => {
+      const c0 = r.f(zero()); if (c0.u) throw new Error('方程式在 0 無法計算：' + r.src);
+      const cs = vars.map(v => { const e = zero(); e[v] = Q(1n); return qSub(r.f(e), c0); });
+      for (let k = 0; k < 3; k++) {                                         // 檢查是一次式
+        const e = sampleEnv(vars, k); let pred = c0; vars.forEach((v, j) => pred = qAdd(pred, qMul(cs[j], e[v])));
+        const got = r.f(e); if (got.u || !qEq(got, pred)) throw new Error('不是一次方程式：' + r.src);
+      }
+      return cs.concat([qNeg(c0)]);
+    });
+    // 高斯消去
+    const n = vars.length, A = M.map(r => r.slice()); let rank = 0; const piv = [];
+    for (let c = 0; c < n && rank < A.length; c++) {
+      let p = -1; for (let r = rank; r < A.length; r++) if (A[r][c].n !== 0n) { p = r; break; }
+      if (p < 0) continue; [A[rank], A[p]] = [A[p], A[rank]];
+      const pv = A[rank][c]; A[rank] = A[rank].map(x => qDiv(x, pv));
+      for (let r = 0; r < A.length; r++) if (r !== rank && A[r][c].n !== 0n) { const k = A[r][c]; A[r] = A[r].map((x, j) => qSub(x, qMul(k, A[rank][j]))); }
+      piv.push(c); rank++;
+    }
+    for (let r = rank; r < A.length; r++) if (A[r][n].n !== 0n) return { kind: 'none', vars };
+    if (rank < n) return { kind: 'many', vars };
+    const sol = {}; piv.forEach((c, r) => sol[vars[c]] = A[r][n]);
+    return { kind: 'one', sol, vars };
+  }
+  const NOSOL_RE = /^(無解|沒有解|沒有這樣的數|不存在)$/, MANYSOL_RE = /^(無限多解|無限多組解|有無限多解|有無限多組解|任意數|所有數)$/;
+  // 解的寫法：「3」「x＝3」「x＝2，y＝−1」「(2, −1)」「無解」「無限多組解」→ {kind, sol}
+  function parseSolText(t, vars) {
+    const s = String(t).replace(/\s+/g, '');
+    if (NOSOL_RE.test(s)) return { kind: 'none' }; if (MANYSOL_RE.test(s)) return { kind: 'many' };
+    const sol = {};
+    const asg = s.split(/[,，、；;]|且/).filter(Boolean);
+    if (asg.every(a => /^[a-zA-Z][＝=]/.test(a))) { asg.forEach(a => { const [v, x] = a.split(/[＝=]/); sol[v] = evalQ(numText(x)); }); return { kind: 'one', sol }; }
+    const m = /^[（(](.+)[)）]$/.exec(s);
+    if (m && vars.length > 1) { const xs = m[1].split(/[,，]/); if (xs.length !== vars.length) throw new Error('有序數對的個數不對：' + t); vars.forEach((v, j) => sol[v] = evalQ(xs[j])); return { kind: 'one', sol }; }
+    if (vars.length === 1) { sol[vars[0]] = evalQ(numText(s)); return { kind: 'one', sol }; }
+    throw new Error('看不懂這個解：' + t);
+  }
+  const fmtSol = (r, vars) => r.kind === 'none' ? '無解' : r.kind === 'many' ? '無限多組解' : vars.map(v => `${v}＝${fmtQ(r.sol[v])}`).join('，');
+  const solEq = (a, b, vars) => a.kind === b.kind && (a.kind !== 'one' || vars.every(v => a.sol[v] && b.sol[v] && qEq(a.sol[v], b.sol[v])));
+  // 一元不等式的解集合比較：在兩邊的端點與附近、很遠的地方取點，真假都一樣才算同解
+  function ineqTruth(src) {
+    const r = splitRel(src); if (!r) throw new Error('不是關係式：' + src);
+    const L = compileV(r.L), R = compileV(r.R), vars = [...new Set(L.vars.concat(R.vars))];
+    return { vars, at: x => { const e = {}; vars.forEach(v => e[v] = x); const a = L.f(e), b = R.f(e); if (a.u || b.u) return null; const c = qCmp(a, b);
+      return r.op === '<' ? c < 0 : r.op === '>' ? c > 0 : r.op === '<=' ? c <= 0 : r.op === '>=' ? c >= 0 : r.op === '=' ? c === 0 : c !== 0; }, r, L, R };
+  }
+  function ineqBoundary(T) {                       // 一次不等式的端點（左右相等處）
+    const e0 = {}, e1 = {}; T.vars.forEach(v => { e0[v] = Q(0n); e1[v] = Q(1n); });
+    const f0 = qSub(T.L.f(e0), T.R.f(e0)), f1 = qSub(T.L.f(e1), T.R.f(e1)), k = qSub(f1, f0);
+    return k.n === 0n ? null : qNeg(qDiv(f0, k));
+  }
+  function sameIneq(a, b) {
+    const A = ineqTruth(a), B = ineqTruth(b);
+    const pts = [Q(0n), Q(1000n), Q(-1000n)], eps = Q(1n, 1000n);
+    [ineqBoundary(A), ineqBoundary(B)].filter(Boolean).forEach(p => pts.push(p, qAdd(p, eps), qSub(p, eps)));
+    return pts.every(x => A.at(x) === B.at(x));
+  }
+  // 是不是一元一次方程式
+  function linEq1Kind(src, nv) {
+    nv = nv || 1;
+    const r = splitRel(src);
+    if (!r) return { ok: false, why: '沒有等號，不是方程式' };
+    if (r.op !== '=') return { ok: false, why: '是不等式，不是方程式' };
+    const L = compileV(r.L), R = compileV(r.R), vars = [...new Set(L.vars.concat(R.vars))];
+    const NAME = nv === 1 ? '一元一次方程式' : nv === 2 ? '二元一次方程式' : nv + ' 元一次方程式';
+    if (vars.length === 0) return { ok: false, why: '沒有未知數' };
+    if (vars.length !== nv) return { ok: false, why: `有 ${vars.length} 個未知數` };
+    try { const s = solveLinear([src], vars); if (nv > 1) { const e = {}; vars.forEach(v => e[v] = Q(0n)); }
+      if (nv > 1) { const z = {}; vars.forEach(v => z[v] = Q(0n)); const r = splitRel(src), f = env => qSub(evalV(r.L, env), evalV(r.R, env)), c0 = f(z);
+        const zeroCoef = vars.filter(v => { const e = Object.assign({}, z, { [v]: Q(1n) }); return qSub(f(e), c0).n === 0n; }); if (zeroCoef.length) return { ok: false, why: `${zeroCoef.join('、')} 消掉了，不是${NAME}` }; }
+      return { ok: true, why: s.kind === 'one' || nv > 1 ? NAME : NAME + '（' + (s.kind === 'none' ? '無解' : '無限多解') + '）', kind: s.kind }; }
+    catch (e) { return { ok: false, why: '不是一次（含 x 的次方或分母）' }; }
   }
 
   // ---------- 判讀：一個乘積式錯在哪 ----------
@@ -765,11 +930,13 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           break;
         }
         case 'value': {
-          if (ck.fn && !FN[ck.fn] && !FNX[ck.fn] && !FNN[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
+          if (ck.fn && !FN[ck.fn] && !FNX[ck.fn] && !FNN[ck.fn] && !FNS[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
           let target;
-          if (FNN[ck.fn]) { if (!Array.isArray(ck.nums) || ck.nums.length < 2) throw new Error(ck.fn + ' 要給 nums（兩個以上正整數）'); target = Q(BigInt(FNN[ck.fn](ck.nums))); }
+          if (FNS[ck.fn]) { if (!Array.isArray(ck.nums) || ck.nums.length < 2) throw new Error(ck.fn + ' 要給 nums'); target = FNS[ck.fn](ck.nums); }
+          else if (FNN[ck.fn]) { if (!Array.isArray(ck.nums) || ck.nums.length < 2) throw new Error(ck.fn + ' 要給 nums（兩個以上正整數）'); target = Q(BigInt(FNN[ck.fn](ck.nums))); }
           else if (FNX[ck.fn]) target = Q(BigInt(FNX[ck.fn](evalExpr(ck.x))));
           else if (ck.fn) target = Q(BigInt(FN[ck.fn](ck.n)));
+          else if (ck.at) target = evalV(ck.expr, ck.at);                 // 代入求值（v3.1）：{expr:'3x−2y', at:{x:2, y:−1}}
           else target = evalQ(ck.expr);
           if (target.u) throw new Error('正解算式無法計算（除以 0）');
           out.computedAnswer = fmtQ(target);
@@ -779,6 +946,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
             const ok = qEq(q, target), v = qNum(q);
             let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${fmtQ(q)}`;
             if (!ok && ck.n) for (const [k, f] of Object.entries(FN)) if (f(ck.n) === v) { diag = k; msg = DIAG_LABEL[k]; }
+            if (!ok && FNS[ck.fn]) { const NM = { mean: '平均數', median: '中位數', mode: '眾數', range: '全距' }; for (const [k, f] of Object.entries(FNS)) { if (k === ck.fn) continue; let w; try { w = f(ck.nums); } catch (e) { continue; } if (qEq(q, w)) { msg += `（是${NM[k]}）`; break; } }
+              if (ck.fn === 'median' && !/（是/.test(msg)) { const a = ck.nums.map(qFrom), k = a.length; const raw = k % 2 ? a[(k - 1) / 2] : qDiv(qAdd(a[k / 2 - 1], a[k / 2]), Q(2n)); if (qEq(q, raw)) msg += '（沒有先排序）'; } }
             if (!ok && FNN[ck.fn]) {
               const ns = ck.nums, prod = ns.reduce((x, y) => x * y, 1), other = ck.fn === 'gcd' ? 'lcm' : 'gcd';
               if (v === FNN[other](ns)) { diag = other; msg += `（是${DIAG_LABEL[other]}）`; }
@@ -1022,6 +1191,92 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
           out.computedAnswer = want ? '質數' : '合數';
           break;
         }
+        case 'sameExpr': {                    // 選項是代數式，唯一和 expr 等值（化簡、展開、列式）
+          compileV(ck.expr);
+          out.computedAnswer = `和 ${ck.expr} 等值的式子`;
+          opts.forEach(o => {
+            let ok; try { ok = sameExprQ(o.text, ck.expr); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析：' + e.message }; return; }
+            let msg = ok ? '等值' : '不等值';
+            if (!ok) { try { if (sameExprQ(`-(${o.text})`, ck.expr)) msg += '（正負號相反）'; } catch (e) {} }
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'solve': {                       // 方程式（或聯立）的解；選項「3」「x＝3」「x＝2，y＝−1」「無解」「無限多組解」
+          const S = solveLinear(ck.eq || ck.eqs, ck.vars);
+          out.computedAnswer = fmtSol(S, S.vars);
+          opts.forEach(o => {
+            let r; try { r = parseSolText(o.text, S.vars); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            const ok = solEq(r, S, S.vars);
+            let msg = ok ? '正確' : (r.kind === 'one' ? fmtSol(r, S.vars) + ' 不是解' : '其實是 ' + fmtSol(S, S.vars));
+            if (!ok && r.kind === 'one' && S.kind === 'one') {
+              const bad = eqList(ck.eq || ck.eqs).filter(e => { const t = splitRel(e); const env = Object.assign({}, r.sol); S.vars.forEach(v => { if (!env[v]) env[v] = Q(0n); }); return !qEq(evalV(t.L, env), evalV(t.R, env)); });
+              if (S.vars.length > 1 && bad.length < eqList(ck.eq || ck.eqs).length) msg += `（只滿足部分方程式）`;
+            }
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'sameSol': {                     // 選項是方程式（列式），唯一和 eq 同解（或唯一的解是 sol）
+          const vars = ck.vars || null;
+          const T = ck.sol ? { kind: 'one', sol: Object.fromEntries(Object.entries(ck.sol).map(([k, v]) => [k, qFrom(v)])) } : solveLinear(ck.eq || ck.eqs, vars);
+          const vs = vars || Object.keys(T.sol || {}).sort();
+          out.computedAnswer = '解為 ' + fmtSol(T, vs);
+          opts.forEach(o => {
+            let r; try { r = solveLinear(o.text, vs); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            const ok = solEq(r, T, vs);
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '同解' : '解為 ' + fmtSol(r, vs) };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'ineq': {                        // 選項是不等式（x＞3、x≤−2），唯一和 ineq 同解
+          const B = ineqBoundary(ineqTruth(ck.ineq));
+          out.computedAnswer = `和 ${ck.ineq} 同解${B ? '（端點 ' + fmtQ(B) + '）' : ''}`;
+          opts.forEach(o => {
+            let ok; try { ok = sameIneq(o.text, ck.ineq); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            let msg = ok ? '同解' : '不同解';
+            if (!ok) { try { const T = ineqTruth(o.text), b2 = ineqBoundary(T); if (B && b2 && qEq(B, b2)) msg += '（端點對，方向或等號不對）'; else if (b2) msg += `（端點是 ${fmtQ(b2)}）`; } catch (e) {} }
+            out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'isLinEq': {                     // 選項是式子，唯一是一元一次方程式（want:false 時唯一不是）
+          const want = ck.want !== false;
+          const nm = (ck.vars || 1) === 2 ? '二元一次方程式' : '一元一次方程式'; out.computedAnswer = want ? '唯一的' + nm : '唯一不是' + nm + '的';
+          opts.forEach(o => {
+            let k; try { k = linEq1Kind(o.text, ck.vars || 1); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: e.message }; return; }
+            out.perOption[o.key] = { diag: k.ok ? 'standard' : 'other', msg: k.why };
+            if (k.ok === want) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'pointOn': {                     // 選項是點「(2, −3)」，唯一滿足 eq（或聯立 eqs 全部）；want:false 時唯一不滿足
+          const want = ck.want !== false, list = eqList(ck.eq || ck.eqs), vs = ck.vars || ['x', 'y'];
+          out.computedAnswer = (want ? '唯一在圖形上的點：' : '唯一不在圖形上的點：') + list.join('；');
+          opts.forEach(o => {
+            const m = /^[（(]\s*([^,，]+)[,，]\s*([^)）]+)[)）]$/.exec(String(o.text).replace(/^[A-Z]\s*/, '').trim());
+            if (!m) { out.perOption[o.key] = { diag: 'unparsable', msg: '點要寫成 (a, b)' }; return; }
+            const env = { [vs[0]]: evalQ(m[1]), [vs[1]]: evalQ(m[2]) };
+            const okEach = list.map(e => { const t = splitRel(e); const a = evalV(t.L, env), b = evalV(t.R, env); return !a.u && !b.u && qEq(a, b); });
+            const on = okEach.every(Boolean);
+            out.perOption[o.key] = { diag: on ? 'standard' : 'other', msg: on ? '在圖形上' : (okEach.some(Boolean) ? '只在其中一條上' : '不在圖形上') };
+            if (on === want) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'quadrant': {                    // 選項是「第二象限」「x 軸上」「y 軸上」「原點」，正解＝點 pt（或 expr 給的點）的位置
+          const m = /^[（(]\s*([^,，]+)[,，]\s*([^)）]+)[)）]$/.exec(String(ck.pt).trim()); if (!m) throw new Error('pt 要寫成 (a, b)');
+          const x = evalV(m[1], ck.at || {}), y = evalV(m[2], ck.at || {}), sx = qCmp(x, Q(0n)), sy = qCmp(y, Q(0n));
+          const where = sx === 0 && sy === 0 ? '原點' : sy === 0 ? 'x 軸上' : sx === 0 ? 'y 軸上' : sx > 0 ? (sy > 0 ? '第一象限' : '第四象限') : (sy > 0 ? '第二象限' : '第三象限');
+          out.computedAnswer = `(${fmtQ(x)}, ${fmtQ(y)}) 在${where}`;
+          const nz = t => String(t).replace(/\s+/g, '').replace(/^在/, '').replace(/^(x|y)軸$/, '$1軸上');
+          opts.forEach(o => { const ok = nz(o.text) === where.replace(/\s+/g, ''); out.perOption[o.key] = { diag: ok ? 'standard' : 'other', msg: ok ? '正確' : `其實在${where}` }; if (ok) correctKeys.push(o.key); });
+          break;
+        }
         case 'manual':
         default:
           out.status = out.status === 'fail' ? 'fail' : 'manual';
@@ -1083,7 +1338,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalQ, fmtQ, evalRel, parseProduct, parseSet,
                  parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
-                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL };
+                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL,
+                 evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, parseSolText };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -1832,7 +2088,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.0.3（2026-11-04）';
+const APP_VERSION = 'v3.1（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -2672,6 +2928,18 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"fraction","expr":"3/4+1/6","form":"simplest|mixed|improper"}：選項是分數的寫法（3/4、−3/4、帶分數一律寫「1又2/3」、整數），只有一個「值相等而且是最簡」；沒約分的判錯。form:mixed 要寫成帶分數、improper 要寫成假分數。算倒數用 expr "1÷(1又3/5)"（可加 "of":"1又3/5" 判讀「只把分數部分對調」）；expr 除以 0 時正解選項寫「沒有倒數」
 - {"type":"powForm","expr":"7^3×7^2","base":7}：選項寫成一個次方 7^5、(−2)^7、(2/3)^4，只有一個值完全相等（精確比對，不是約等於）；給 base 時底數也要相同；選項寫成數字（16807）判為「不是指數形式」
 - {"type":"sci","value":2350000}：選項寫成 a×10^n，只有一個值正確且 1 ≤ a < 10（value 也可以是字串算式，如 "0.00042"）
+- {"type":"sameExpr","expr":"3(x−2)−(x−5)"}：選項是代數式（3x、2(x＋1)、x^2、(x−1)/3，乘號可省略，字母當變數），只有一個和 expr 等值（化簡、去括號、列式）
+- {"type":"value","expr":"−5x＋3","at":{"x":2}}：代入求值，選項是數
+- {"type":"solve","eq":"3x−5＝2x＋1"}：選項是解（「6」或「x＝6」，可帶單位「13 歲」），只有一個是方程式的解；聯立用 "eqs":["x＋y＝5","x−y＝1"]，選項寫「x＝3，y＝2」或「(3, 2)」；也可以是「無解」「無限多組解」（只支援一次方程式）
+- {"type":"sameSol","sol":{"x":12}} 或 {"type":"sameSol","eq":"2(x＋3)＝x＋10"}：選項是方程式（列式題），只有一個的解是 sol（或和 eq 同解）
+- {"type":"ineq","ineq":"−2x＋3＜7"}：選項是不等式（x＞−2、x≤4），只有一個和 ineq 同解（端點、方向、有沒有等號都要對）
+- {"type":"isLinEq","want":true}：選項是式子，只有一個是一元一次方程式（want:false 時只有一個不是）
+- {"type":"isLinEq","vars":2}：只有一個是二元一次方程式（兩個未知數都不能消掉）
+- 比例式寫成「x：6＝2：3」（a：b＝a÷b），可以用在 solve、sameSol
+- {"type":"pointOn","eq":"2x＋y＝7"}：選項是點「(2, 3)」，只有一個在圖形上（聯立用 "eqs"，要同時滿足；want:false 時只有一個不在）
+- {"type":"quadrant","pt":"(−3, 2)"}：選項寫「第一象限」～「第四象限」「x 軸上」「y 軸上」「原點」，只有一個是點的位置
+- {"type":"value","fn":"mean|median|mode|range","nums":[3,5,7,9]}：平均數／中位數／眾數（只能有一個）／全距
+- count 的 cond 可以寫 2x−3＜5 這種含係數的式子
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
 算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
