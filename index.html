@@ -470,7 +470,7 @@ function viewHome(){
       <p class="lead">選擇年級 → 選學期 → 找到這一節，開啟課堂評量。題庫依三版本教科書知識卡產生、答案經程式驗算；有題庫的小節會自動亮起。</p></div>
       <div class="stats">
         <div class="stat"><b>${CHECKED ? all.ready : '…'}</b><span>個小節已有題庫</span></div>
-        <div class="stat"><b>${all.mk}</b><span>個小節製作中</span></div>
+        <div class="stat"><b>${CHECKED ? Object.values(BANK).reduce((n, b) => n + b.mis, 0) : '…'}</b><span>個迷思可診斷</span></div>
         <div class="stat"><b>${all.total}</b><span>個小節已列入</span></div>
       </div>
     </section>
