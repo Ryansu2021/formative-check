@@ -1,0 +1,655 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-8下4-3-特殊四邊形的性質",
+ "title": "八下 4-3 特殊四邊形的性質（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "八下",
+  "code": "4-3",
+  "name": "特殊四邊形的性質",
+  "curriculum": [
+   "S-8-10 正方形、長方形、箏形的基本性質：長方形的對角線等長且互相平分；菱形對角線互相垂直平分；箏形的其中一條對角線垂直平分另一條對角線。",
+   "S-8-11 梯形的基本性質：等腰梯形的兩底角相等；等腰梯形為線對稱圖形；梯形兩腰中點的連線段長等於兩底長和的一半，且平行於上下底。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/八下4-3.md（三版教學順序、迷思清單、教學建議、會考題）與比較頁迷思表頁碼產題；學習內容條文依 114 國中數學 2 下備課用書所列；用「兩腰中點連線段」不用「梯形中線」（翰林備課 p.307）；梯形面積題都給上底與下底（S-8-11 評量提醒）；題目答案經驗算器重算，P01、P02 為敘述判斷（manual），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "SQ01",
+   "name": "只靠一個對角線條件",
+   "desc": "只看到對角線等長（或互相垂直）一個條件，就判定是長方形（或菱形、正方形）",
+   "example": "「兩條對角線互相垂直的四邊形一定是菱形」",
+   "remedy": "請學生畫兩條互相垂直、但交點不在中點的線段當對角線，連出四邊形，再問要加哪個條件才一定是菱形。",
+   "source": "知識卡迷思：康軒 p.210、p.211 動動腦、南一 p.208 錯誤診療、翰林 p.233 數養2.0（✓／✓／✓）",
+   "card": "只靠一個對角線條件（等長或互相垂直）就判為長方形、菱形或正方形（條件不足）",
+   "tiers": [
+    "八下4-3-S1T2"
+   ]
+  },
+  {
+   "code": "SQ02",
+   "name": "箏形對角線也互相平分",
+   "desc": "把箏形當成菱形，以為兩條對角線都被對方平分",
+   "example": "「箏形的兩條對角線互相垂直平分」",
+   "remedy": "箏形紙片沿對稱軸對摺，量量看當對稱軸的那條對角線有沒有被分成兩半。",
+   "source": "知識卡迷思：康軒 p.223 自我檢核1、南一 p.194、p.205 重點整理、翰林 p.227 重點回顧（✓／✓／✓）",
+   "card": "以為箏形的兩條對角線也互相平分（把箏形當成菱形）",
+   "tiers": [
+    "八下4-3-S2T1"
+   ]
+  },
+  {
+   "code": "SQ03",
+   "name": "箏形當成平行四邊形",
+   "desc": "把「兩組鄰邊等長」和「兩組對邊等長」混在一起，以為箏形是平行四邊形",
+   "example": "「箏形的兩組對邊分別等長」",
+   "remedy": "請學生在箏形上用兩種顏色標出等長的邊，說出它們是「相鄰」還是「相對」。",
+   "source": "知識卡迷思：康軒 p.213 動動腦；南一、翰林學生課本未見（✓／–／–）",
+   "card": "以為箏形是平行四邊形（把兩組鄰邊等長與兩組對邊等長混在一起）",
+   "tiers": [
+    "八下4-3-S2T1"
+   ]
+  },
+  {
+   "code": "SQ04",
+   "name": "包含關係弄反",
+   "desc": "不接受正方形是長方形、也是菱形；或把關係弄反（長方形是正方形的一種、四邊等長就是正方形）",
+   "example": "「四邊等長的四邊形一定是正方形」；正方形只給對角線就說「沒有邊長，算不出面積」",
+   "remedy": "拿定義逐條對：正方形有沒有四個直角？有沒有四邊等長？所以它是誰的一種；四邊等長的四邊形一定有直角嗎？",
+   "source": "知識卡迷思：康軒 p.223 自我檢核4、南一 p.206 自評2、翰林 p.220（✓／✓／✓）",
+   "card": "包含關係弄反或不接受：長方形是正方形的一種、四邊等長就是正方形、矩形不可能是菱形",
+   "tiers": [
+    "八下4-3-S1T1"
+   ]
+  },
+  {
+   "code": "SQ05",
+   "name": "長方形對角線當對稱軸",
+   "desc": "以為長方形的對角線也是對稱軸，所以對角線會平分頂角",
+   "example": "「沿長方形的對角線對摺，兩邊會重合」",
+   "remedy": "用長寬不相等的長方形紙片沿對角線摺摺看，觀察兩邊沒有重合。",
+   "source": "知識卡迷思：三版學生課本未見；手冊 S-8-10 錯誤類型 2；翰林七下備課 p.320 會考觀測站錯誤選項（–／–／–）",
+   "card": "以為長方形的對角線也是對稱軸"
+  },
+  {
+   "code": "SQ06",
+   "name": "對角線相乘忘了除以2",
+   "desc": "菱形、箏形、正方形的面積直接用兩條對角線相乘",
+   "example": "菱形對角線 6、8，面積寫 48",
+   "remedy": "畫出以兩條對角線為長、寬的長方形，請學生數數看菱形占了長方形的幾分之幾。",
+   "source": "知識卡迷思：康軒 p.223 自我檢核2；南一學生課本未見；翰林備課 p.318（✓／–／備）",
+   "card": "菱形、箏形面積直接用兩條對角線相乘（忘了除以 2）",
+   "tiers": [
+    "八下4-3-S2T2"
+   ]
+  },
+  {
+   "code": "SQ07",
+   "name": "中點連線段平分面積",
+   "desc": "以為兩腰中點的連線段把梯形分成面積相等的兩塊",
+   "example": "梯形面積 20，下面那塊就寫 10",
+   "remedy": "請學生比較上下兩塊：高一樣，但「上底＋下底」一樣嗎？哪一塊比較大？",
+   "source": "知識卡迷思：南一 p.201 解迷三角；康軒、翰林學生課本未見（–／✓／–）",
+   "card": "以為梯形兩腰中點連線段把梯形分成面積相等的兩塊",
+   "tiers": [
+    "八下4-3-S3T2"
+   ]
+  },
+  {
+   "code": "SQ08",
+   "name": "一組平行加一組等長",
+   "desc": "一組對邊平行、另一組對邊等長，就判定是等腰梯形（沒想到也可能是平行四邊形）",
+   "example": "「AD∥BC、AB＝CD，所以 ABCD 是等腰梯形」",
+   "remedy": "請學生畫一個平行四邊形，檢查它是否也滿足「AD∥BC、AB＝CD」，再說要加什麼條件才一定是等腰梯形。",
+   "source": "知識卡迷思：康軒 p.222 隨堂、南一 p.203 隨堂、翰林備課 p.304 眉批（✓／✓／備）",
+   "card": "一組對邊平行、另一組對邊等長就判為等腰梯形（也可能是平行四邊形）"
+  },
+  {
+   "code": "SQ09",
+   "name": "兩底和忘了除以2",
+   "desc": "以為兩腰中點連線段＝上底＋下底（或算梯形面積時忘了除以 2）",
+   "example": "上底 2、下底 8，中點連線段寫 10",
+   "remedy": "回到兩個全等梯形拼成平行四邊形：拼出的邊長是上底＋下底，那是「兩條」中點連線段的長。",
+   "source": "依教學經驗（翰林附錄本 p.41 迷思逃脫處理中點連線段長與梯形面積算錯，見比較頁迷思表「以為梯形兩腰中點連線段把梯形分成面積相等的兩塊」列翰林格說明）"
+  },
+  {
+   "code": "SQ10",
+   "name": "對角線全長半長混用",
+   "desc": "算式裡該用整條對角線的地方用了一半（或反過來），例如把 OB 當成 BD；或把半條對角線當成邊長",
+   "example": "菱形 AC＝8、OB＝3，面積寫 8×3÷2＝12",
+   "remedy": "請學生在圖上用不同顏色標出「整條對角線」和「對角線的一半」，再寫出每個數字代表哪一段。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SQ11",
+   "name": "等長垂直張冠李戴",
+   "desc": "把長方形的「對角線等長」和菱形的「對角線互相垂直」弄混，例如以為菱形的對角線等長",
+   "example": "菱形 AC＝8，就說 BD 也是 8",
+   "remedy": "請學生把平行四邊形、長方形、菱形、正方形的對角線性質列成打勾表，逐格說理由。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SQ12",
+   "name": "梯形面積多除以2",
+   "desc": "用「中點連線段×高」算梯形面積後，又多除以 2",
+   "example": "中點連線段 7、高 4，面積寫 7×4÷2＝14",
+   "remedy": "請學生說出中點連線段已經是 (上底＋下底)÷2，所以再乘高就是面積，不必再除。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SQ13",
+   "name": "小梯形高沒取一半",
+   "desc": "中點連線段分出的小梯形，高仍用原梯形的高",
+   "example": "原梯形高 4，下面那塊小梯形的高也寫 4",
+   "remedy": "請學生在圖上量量看：E、F 是兩腰中點，小梯形的高是原來的多少？",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SQ14",
+   "name": "把腰當成高",
+   "desc": "梯形（尤其等腰梯形）面積用斜的腰當高",
+   "example": "腰長 5，面積寫 (4＋10)×5÷2",
+   "remedy": "請學生從上底端點作下底的垂線，比較垂線和腰哪一條才是高。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-8-10",
+   "stem": "下列敘述何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩條對角線互相垂直的四邊形，一定是菱形",
+     "mis": "SQ01",
+     "feedback": "你只用了「垂直」一個條件。兩條垂直但沒有互相平分的對角線，連出來不是菱形；要互相垂直「且平分」才一定是。"
+    },
+    {
+     "key": "B",
+     "text": "四邊等長的四邊形，一定是正方形",
+     "mis": "SQ04",
+     "feedback": "四邊等長只保證是菱形；角不一定是直角。再加上一個直角，才一定是正方形。"
+    },
+    {
+     "key": "C",
+     "text": "正方形是菱形，也是長方形",
+     "mis": null,
+     "feedback": "正確！正方形四邊等長（符合菱形的定義），四個角都是直角（符合長方形的定義）。"
+    },
+    {
+     "key": "D",
+     "text": "箏形的兩條對角線一定互相平分",
+     "mis": "SQ02",
+     "feedback": "你把箏形當成菱形了。箏形只有一條對角線被另一條垂直平分，當對稱軸的那條沒有被平分。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "拿定義逐條對：符合定義才是「一種」；說「一定」要想想有沒有反例。",
+   "seg": "八下4-3-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-8-10",
+   "stem": "下列敘述何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "箏形的每一條對角線，都一定被另一條平分",
+     "mis": "SQ02",
+     "feedback": "你把箏形當成菱形了。箏形只有一條對角線被另一條垂直平分，當對稱軸的那條沒有被平分。"
+    },
+    {
+     "key": "B",
+     "text": "有些長方形也是菱形",
+     "mis": null,
+     "feedback": "正確！四邊等長的長方形（正方形）既是長方形也是菱形。"
+    },
+    {
+     "key": "C",
+     "text": "兩條對角線等長的四邊形，一定是長方形",
+     "mis": "SQ01",
+     "feedback": "你只用了「等長」一個條件。兩條等長但沒有互相平分的對角線，連出來不是長方形；要等長「且互相平分」才一定是。"
+    },
+    {
+     "key": "D",
+     "text": "長方形是正方形的一種",
+     "mis": "SQ04",
+     "feedback": "關係弄反了：正方形符合長方形的定義（四個直角），所以正方形是長方形的一種；長寬不等的長方形不是正方形。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "拿定義逐條對：符合定義才是「一種」；說「一定」要想想有沒有反例。",
+   "seg": "八下4-3-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "記憶",
+   "lc": "S-8-10",
+   "stem": "下列敘述何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "箏形一定是平行四邊形",
+     "mis": "SQ03",
+     "feedback": "箏形是兩組「鄰邊」分別等長，平行四邊形是兩組「對邊」分別等長，所以箏形不一定是平行四邊形。"
+    },
+    {
+     "key": "B",
+     "text": "長方形的對角線一定是它的對稱軸",
+     "mis": "SQ05",
+     "feedback": "長寬不相等的長方形沿對角線對摺，兩邊不會重合；長方形的對稱軸是連接對邊中點的直線。"
+    },
+    {
+     "key": "C",
+     "text": "一組對邊平行、另一組對邊等長的四邊形，一定是等腰梯形",
+     "mis": "SQ08",
+     "feedback": "平行四邊形也有一組對邊平行、另一組對邊等長，所以不一定是等腰梯形。"
+    },
+    {
+     "key": "D",
+     "text": "等腰梯形的兩條對角線等長",
+     "mis": null,
+     "feedback": "正確！等腰梯形兩底角相等，可用 SAS 說明兩個三角形全等，所以兩條對角線等長。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句都想想：畫得出反例嗎？說「一定」要對所有這種圖形都成立。"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "記憶",
+   "lc": "S-8-10",
+   "stem": "下列敘述何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "四邊形 ABCD 中，AD∥BC、AB＝CD，則 ABCD 一定是等腰梯形",
+     "mis": "SQ08",
+     "feedback": "平行四邊形也滿足 AD∥BC、AB＝CD（這時 AD＝BC），所以不一定是等腰梯形。"
+    },
+    {
+     "key": "B",
+     "text": "箏形的兩條對角線一定互相垂直",
+     "mis": null,
+     "feedback": "正確！箏形的一條對角線是對稱軸，對稱點的連線（另一條對角線）被它垂直平分，所以兩條對角線互相垂直。"
+    },
+    {
+     "key": "C",
+     "text": "長寬不相等的長方形，沿一條對角線對摺，兩邊會完全重合",
+     "mis": "SQ05",
+     "feedback": "摺摺看就會發現兩邊沒有重合；長方形的對角線不是對稱軸。"
+    },
+    {
+     "key": "D",
+     "text": "箏形的兩組對邊一定分別等長",
+     "mis": "SQ03",
+     "feedback": "箏形等長的是兩組「鄰邊」，不是對邊；兩組對邊分別等長的是平行四邊形。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句都想想：畫得出反例嗎？說「一定」要對所有這種圖形都成立。"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-10",
+   "stem": "如圖，正方形 ABCD 的對角線 AC＝10 公分，則正方形 ABCD 的面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "100 平方公分",
+     "mis": "SQ06",
+     "feedback": "你把兩條對角線直接相乘 10×10；以對角線為長、寬的長方形是正方形面積的 2 倍，要再除以 2。"
+    },
+    {
+     "key": "B",
+     "text": "50 平方公分",
+     "mis": null,
+     "feedback": "正確！正方形也是菱形，兩條對角線等長且互相垂直，面積＝10×10÷2＝50。"
+    },
+    {
+     "key": "C",
+     "text": "無法求出",
+     "mis": "SQ04",
+     "feedback": "正方形也是菱形，對角線互相垂直，可以直接用對角線算：10×10÷2＝50。"
+    },
+    {
+     "key": "D",
+     "text": "25 平方公分",
+     "mis": "SQ10",
+     "feedback": "你把對角線的一半 5 當成邊長平方。面積公式要用兩條對角線的全長：10×10÷2。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "10×10÷2"
+   },
+   "hint": "正方形的兩條對角線有什麼關係？對角線互相垂直的四邊形，面積怎麼算？",
+   "seg": "八下4-3-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"70,20 70,140 190,140 190,20\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"70\" y1=\"20\" x2=\"190\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"70\" y1=\"140\" x2=\"190\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"130\" cy=\"80\" r=\"2.4\" fill=\"#333\"/><text x=\"60\" y=\"18\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"60\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"200\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"200\" y=\"18\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"130\" y=\"98\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"130\" y=\"158\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AC＝10</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-10",
+   "stem": "如圖，正方形 ABCD 的對角線 AC＝8 公分，則正方形 ABCD 的面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "16 平方公分",
+     "mis": "SQ10",
+     "feedback": "你把對角線的一半 4 當成邊長平方。面積公式要用兩條對角線的全長：8×8÷2。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "SQ04",
+     "feedback": "正方形也是菱形，對角線互相垂直，可以直接用對角線算：8×8÷2＝32。"
+    },
+    {
+     "key": "C",
+     "text": "32 平方公分",
+     "mis": null,
+     "feedback": "正確！正方形也是菱形，兩條對角線等長且互相垂直，面積＝8×8÷2＝32。"
+    },
+    {
+     "key": "D",
+     "text": "64 平方公分",
+     "mis": "SQ06",
+     "feedback": "你把兩條對角線直接相乘 8×8；以對角線為長、寬的長方形是正方形面積的 2 倍，要再除以 2。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "8×8÷2"
+   },
+   "hint": "正方形的兩條對角線有什麼關係？對角線互相垂直的四邊形，面積怎麼算？",
+   "seg": "八下4-3-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"70,20 70,140 190,140 190,20\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"70\" y1=\"20\" x2=\"190\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"70\" y1=\"140\" x2=\"190\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"130\" cy=\"80\" r=\"2.4\" fill=\"#333\"/><text x=\"60\" y=\"18\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"60\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"200\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"200\" y=\"18\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"130\" y=\"98\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"130\" y=\"158\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AC＝8</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-8-10",
+   "stem": "如圖，菱形 ABCD 的邊長是 5，對角線 AC＝8，兩條對角線交於 O。菱形 ABCD 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "12",
+     "mis": "SQ10",
+     "feedback": "你把 OB＝3 當成整條 BD。菱形的對角線互相平分，BD＝2×OB＝6。"
+    },
+    {
+     "key": "B",
+     "text": "24",
+     "mis": null,
+     "feedback": "正確！OA＝4，由畢氏定理 OB＝3，BD＝6，面積＝8×6÷2＝24。"
+    },
+    {
+     "key": "C",
+     "text": "32",
+     "mis": "SQ11",
+     "feedback": "你以為菱形的兩條對角線等長（BD＝8）。對角線等長的是長方形；菱形的對角線是互相垂直平分。"
+    },
+    {
+     "key": "D",
+     "text": "48",
+     "mis": "SQ06",
+     "feedback": "你把兩條對角線直接相乘 8×6；菱形只占以對角線為長、寬的長方形的一半，要再除以 2。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "8×6÷2"
+   },
+   "hint": "菱形的對角線互相垂直平分：先在直角三角形 AOB 裡求 OB，再想 BD 是 OB 的幾倍。",
+   "seg": "八下4-3-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"48.0,80 120,26.0 192.0,80 120,134.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"48.0\" y1=\"80\" x2=\"192.0\" y2=\"80\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120\" y1=\"26.0\" x2=\"120\" y2=\"134.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"120\" cy=\"80\" r=\"2.4\" fill=\"#333\"/><text x=\"38.0\" y=\"85\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"120\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"202.0\" y=\"85\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120\" y=\"150.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"127\" y=\"95\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"45\" y=\"152\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AC＝8</text><text x=\"74.0\" y=\"48.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-8-10",
+   "stem": "如圖，菱形 ABCD 的邊長是 13，對角線 AC＝24，兩條對角線交於 O。菱形 ABCD 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "240",
+     "mis": "SQ06",
+     "feedback": "你把兩條對角線直接相乘 24×10；菱形只占以對角線為長、寬的長方形的一半，要再除以 2。"
+    },
+    {
+     "key": "B",
+     "text": "288",
+     "mis": "SQ11",
+     "feedback": "你以為菱形的兩條對角線等長（BD＝24）。對角線等長的是長方形；菱形的對角線是互相垂直平分。"
+    },
+    {
+     "key": "C",
+     "text": "60",
+     "mis": "SQ10",
+     "feedback": "你把 OB＝5 當成整條 BD。菱形的對角線互相平分，BD＝2×OB＝10。"
+    },
+    {
+     "key": "D",
+     "text": "120",
+     "mis": null,
+     "feedback": "正確！OA＝12，由畢氏定理 OB＝5，BD＝10，面積＝24×10÷2＝120。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "24×10÷2"
+   },
+   "hint": "菱形的對角線互相垂直平分：先在直角三角形 AOB 裡求 OB，再想 BD 是 OB 的幾倍。",
+   "seg": "八下4-3-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"36.0,80 120,45.0 204.0,80 120,115.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"36.0\" y1=\"80\" x2=\"204.0\" y2=\"80\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"120\" y1=\"45.0\" x2=\"120\" y2=\"115.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"120\" cy=\"80\" r=\"2.4\" fill=\"#333\"/><text x=\"26.0\" y=\"85\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"120\" y=\"39.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"214.0\" y=\"85\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120\" y=\"131.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"127\" y=\"95\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">O</text><text x=\"45\" y=\"152\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AC＝24</text><text x=\"68.0\" y=\"57.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">13</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-11",
+   "stem": "如圖，梯形 ABCD 中，AD∥BC，AD＝2、BC＝8，高是 4；E、F 分別是 AB、CD 的中點。梯形 EBCF 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10",
+     "mis": "SQ07",
+     "feedback": "你以為 EF 把梯形分成面積相等的兩塊（20÷2）。兩塊的高相等，但下面那塊的兩底比較長，面積比較大。"
+    },
+    {
+     "key": "B",
+     "text": "26",
+     "mis": "SQ13",
+     "feedback": "小梯形 EBCF 的高不是 4。E、F 是兩腰中點，小梯形的高是原梯形的一半 2。"
+    },
+    {
+     "key": "C",
+     "text": "13",
+     "mis": null,
+     "feedback": "正確！EF＝(2＋8)÷2＝5，小梯形的高是 4÷2＝2，面積＝(5＋8)×2÷2＝13。"
+    },
+    {
+     "key": "D",
+     "text": "18",
+     "mis": "SQ09",
+     "feedback": "你把 EF 算成 2＋8＝10。中點連線段是兩底和的一半：(2＋8)÷2＝5。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "(5+8)×2÷2"
+   },
+   "hint": "先求 EF 的長，再想小梯形 EBCF 的上底、下底和高各是多少。",
+   "seg": "八下4-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"82,73 48.0,145 192.0,145 118,73\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"65.0\" y1=\"109.0\" x2=\"155.0\" y2=\"109.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"65.0\" cy=\"109.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"155.0\" cy=\"109.0\" r=\"2.4\" fill=\"#333\"/><line x1=\"24.0\" y1=\"73\" x2=\"24.0\" y2=\"145\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"19.0\" y1=\"73\" x2=\"82\" y2=\"73\" stroke=\"#999\" stroke-width=\"1\" stroke-dasharray=\"3 3\"/><line x1=\"19.0\" y1=\"145\" x2=\"29.0\" y2=\"145\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"19.0\" y1=\"73\" x2=\"29.0\" y2=\"73\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"78\" y=\"67\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"38.0\" y=\"150\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"202.0\" y=\"150\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"122\" y=\"67\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"54.0\" y=\"113.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"166.0\" y=\"113.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"100.0\" y=\"67\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"120\" y=\"160\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"14.0\" y=\"114.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-11",
+   "stem": "如圖，梯形 ABCD 中，AD∥BC，AD＝4、BC＝8，高是 6；E、F 分別是 AB、CD 的中點。梯形 EBCF 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "21",
+     "mis": null,
+     "feedback": "正確！EF＝(4＋8)÷2＝6，小梯形的高是 6÷2＝3，面積＝(6＋8)×3÷2＝21。"
+    },
+    {
+     "key": "B",
+     "text": "30",
+     "mis": "SQ09",
+     "feedback": "你把 EF 算成 4＋8＝12。中點連線段是兩底和的一半：(4＋8)÷2＝6。"
+    },
+    {
+     "key": "C",
+     "text": "18",
+     "mis": "SQ07",
+     "feedback": "你以為 EF 把梯形分成面積相等的兩塊（36÷2）。兩塊的高相等，但下面那塊的兩底比較長，面積比較大。"
+    },
+    {
+     "key": "D",
+     "text": "42",
+     "mis": "SQ13",
+     "feedback": "小梯形 EBCF 的高不是 6。E、F 是兩腰中點，小梯形的高是原梯形的一半 3。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "(6+8)×3÷2"
+   },
+   "hint": "先求 EF 的長，再想小梯形 EBCF 的上底、下底和高各是多少。",
+   "seg": "八下4-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"80,61 64.0,145 176.0,145 136,61\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><line x1=\"72.0\" y1=\"103.0\" x2=\"156.0\" y2=\"103.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"72.0\" cy=\"103.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"156.0\" cy=\"103.0\" r=\"2.4\" fill=\"#333\"/><line x1=\"40.0\" y1=\"61\" x2=\"40.0\" y2=\"145\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"35.0\" y1=\"61\" x2=\"80\" y2=\"61\" stroke=\"#999\" stroke-width=\"1\" stroke-dasharray=\"3 3\"/><line x1=\"35.0\" y1=\"145\" x2=\"45.0\" y2=\"145\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"35.0\" y1=\"61\" x2=\"45.0\" y2=\"61\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"76\" y=\"55\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"54.0\" y=\"150\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"186.0\" y=\"150\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"140\" y=\"55\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"61.0\" y=\"107.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"167.0\" y=\"107.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"108.0\" y=\"55\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"120\" y=\"160\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"30.0\" y=\"108.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-11",
+   "stem": "如圖，等腰梯形 ABCD 中，AD∥BC，AD＝4、BC＝10、AB＝CD＝5。等腰梯形 ABCD 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "35",
+     "mis": "SQ14",
+     "feedback": "你把腰長 5 當成高。高要和底垂直：從 A 作 BC 的垂線，用畢氏定理求出高是 4。"
+    },
+    {
+     "key": "B",
+     "text": "14",
+     "mis": "SQ12",
+     "feedback": "你多除了一次 2。中點連線段 7 已經是兩底和的一半，面積＝7×4＝28。"
+    },
+    {
+     "key": "C",
+     "text": "56",
+     "mis": "SQ09",
+     "feedback": "你算了 (4＋10)×4，忘了除以 2。中點連線段是 (4＋10)÷2＝7，面積＝7×4。"
+    },
+    {
+     "key": "D",
+     "text": "28",
+     "mis": null,
+     "feedback": "正確！從 A、D 作高，兩邊各多出 (10−4)÷2＝3，高＝√(5²−3²)＝4，面積＝(4＋10)×4÷2＝28。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(4+10)×4÷2"
+   },
+   "hint": "從 A、D 作 BC 的垂線，兩邊多出來的長度各是多少？再用畢氏定理求高。",
+   "seg": "八下4-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"88.0,71.0 40.0,135 200.0,135 152.0,71.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><text x=\"82.0\" y=\"65.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"30.0\" y=\"140\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"210.0\" y=\"140\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"158.0\" y=\"65.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120\" y=\"65.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"120\" y=\"151\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">10</text><text x=\"54.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"186.0\" y=\"103.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-11",
+   "stem": "如圖，等腰梯形 ABCD 中，AD∥BC，AD＝6、BC＝12、AB＝CD＝5。等腰梯形 ABCD 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "18",
+     "mis": "SQ12",
+     "feedback": "你多除了一次 2。中點連線段 9 已經是兩底和的一半，面積＝9×4＝36。"
+    },
+    {
+     "key": "B",
+     "text": "36",
+     "mis": null,
+     "feedback": "正確！從 A、D 作高，兩邊各多出 (12−6)÷2＝3，高＝√(5²−3²)＝4，面積＝(6＋12)×4÷2＝36。"
+    },
+    {
+     "key": "C",
+     "text": "45",
+     "mis": "SQ14",
+     "feedback": "你把腰長 5 當成高。高要和底垂直：從 A 作 BC 的垂線，用畢氏定理求出高是 4。"
+    },
+    {
+     "key": "D",
+     "text": "72",
+     "mis": "SQ09",
+     "feedback": "你算了 (6＋12)×4，忘了除以 2。中點連線段是 (6＋12)÷2＝9，面積＝9×4。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(6+12)×4÷2"
+   },
+   "hint": "從 A、D 作 BC 的垂線，兩邊多出來的長度各是多少？再用畢氏定理求高。",
+   "seg": "八下4-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"81.0,83.0 42.0,135 198.0,135 159.0,83.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/><text x=\"75.0\" y=\"77.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"32.0\" y=\"140\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"208.0\" y=\"140\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"165.0\" y=\"77.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"120\" y=\"77.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"120\" y=\"151\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">12</text><text x=\"51.5\" y=\"109.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"188.5\" y=\"109.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P06）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形",
+ "updated": "2026-11-05T01:31"
+}

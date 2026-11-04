@@ -1,0 +1,667 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-8下4-1-平行",
+ "title": "八下 4-1 平行（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "八下",
+  "code": "4-1",
+  "name": "平行",
+  "curriculum": [
+   "S-8-1 角：角的種類、兩個角的關係（互餘、互補、對頂角、同位角、內錯角、同側內角）、角平分線的意義。",
+   "S-8-3 平行：平行的意義與符號；平行線截角性質；兩平行線間的距離處處相等。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/八下4-1.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；學習內容條文依康軒 4-1 備課用書所列；題目答案經驗算器重算，P01、P05 為看圖判斷（manual），老師審題後使用；外錯角（基本學習內容不評量）與尺規作圖（S-8-12 可不評量）不出題，輔助線已畫在圖中（翰林備課 p.257）",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "PL01",
+   "name": "沒有平行就套截角性質",
+   "desc": "以為只要是同位角就相等、同側內角就互補，沒先確認兩直線平行",
+   "example": "L1、L2 不平行，仍寫「∠1、∠5 是同位角，所以 ∠1＝∠5」",
+   "remedy": "請學生在兩條明顯不平行的直線上量一組同位角，再說出「同位角相等」缺了哪個條件。",
+   "source": "知識卡迷思：康軒 p.187 隨堂（內錯角 61°、62° 不平行）、p.192 自評3⑵；南一 p.174 錯誤診療「同位角一定相等」；翰林附錄本 p.40〈迷思逃脫〉（✓／✓／✓）",
+   "card": "沒有平行的前提就用截角性質（以為同位角一定相等）",
+   "tiers": [
+    "八下4-1-S2T1"
+   ]
+  },
+  {
+   "code": "PL02",
+   "name": "截角名稱換位置就認錯",
+   "desc": "只在截線直立、兩線水平的標準圖認得出截角；圖轉方向或兩線不平行就認錯，甚至以為不平行就沒有截角名稱",
+   "example": "截線畫成水平時，把同側內角說成內錯角",
+   "remedy": "先用手指描出截線，再看兩角在截線同側或兩側、在被截線同一邊或中間，依位置而不是大小判斷。",
+   "source": "知識卡迷思：康軒 p.179 隨堂截線水平的變式圖；南一 p.162 隨堂非常規標號、p.173 自評2；翰林 p.186 用不平行直線定義截角（✓／✓／✓）",
+   "card": "截角名稱只在標準位置會認，換方向、換標號或兩線不平行就認錯",
+   "tiers": [
+    "八下4-1-S1T1"
+   ]
+  },
+  {
+   "code": "PL03",
+   "name": "用眼睛看判斷平行",
+   "desc": "看兩條線「好像一樣斜」就說平行，不用角的條件或垂線檢查",
+   "example": "「兩條線看起來一樣斜，所以 L1∥L2」",
+   "remedy": "拿錯覺圖（如咖啡牆）讓學生先猜再用三角板檢查，說明為什麼要用角或共同垂線判斷。",
+   "source": "知識卡迷思：康軒只在備課用書 p.280–281 視錯覺頁、南一 p.157 章首與 p.168 咖啡牆錯覺圖、翰林學生課本未見（備／✓／–）",
+   "card": "只用眼睛看判斷兩直線平行（錯覺圖）",
+   "tiers": [
+    "八下4-1-S1T2"
+   ]
+  },
+  {
+   "code": "PL04",
+   "name": "性質與判別方向顛倒",
+   "desc": "要說明平行時，引用「兩直線平行，內錯角相等」這種方向相反的截角性質當理由",
+   "example": "∵∠1＝∠2（兩直線平行，內錯角相等），∴L1∥L2",
+   "remedy": "請學生圈出題目給的是角還是平行：給角要推平行，用「內錯角相等，兩直線平行」（判別性質）。",
+   "source": "知識卡迷思：康軒 p.186、p.191 重點整理截角性質 vs 判別性質；南一 p.163、p.169 分兩個重點框、p.174 錯誤診療；翰林 p.188、p.191 分框（✓／✓／✓）",
+   "card": "截角性質與判別性質混用，因果方向顛倒",
+   "tiers": [
+    "八下4-1-S3T1"
+   ]
+  },
+  {
+   "code": "PL05",
+   "name": "內錯同側內角關係記混",
+   "desc": "把內錯角記成互補，或把同側內角記成相等",
+   "example": "L1∥L2，同側內角一個 68°，就說另一個也是 68°",
+   "remedy": "從同位角出發推：同位角相等，對頂角相等，同一直線上的兩角相加 180°，讓學生自己推出內錯角、同側內角的關係。",
+   "source": "知識卡迷思：康軒 p.191 自我檢核3；南一 p.163 由同位角推內錯角、同側內角；翰林 p.188 由平角推同側內角互補（✓／✓／✓）",
+   "card": "內錯角、同側內角的關係記錯（該相等的寫互補，或反過來）",
+   "tiers": [
+    "八下4-1-S2T1"
+   ]
+  },
+  {
+   "code": "PL06",
+   "name": "用不相交判定平行",
+   "desc": "以為要判斷平行就得看兩直線延長後會不會相交，不知道角的條件就能判斷",
+   "example": "「不知道兩條線延長後會不會相交，所以不能確定平行」",
+   "remedy": "回到定義：平行是「同時垂直於一直線」，不相交是推出來的結果；再說明同位角相等、同側內角互補都能判斷平行。",
+   "source": "知識卡迷思：康軒 p.176–177；南一 p.158、p.160，備課 p.210 國中不宜用不相交定義；翰林 p.184–185（✓／✓／✓）",
+   "card": "用「不相交」判定平行（國小、國中與手冊的定義不同）",
+   "tiers": [
+    "八下4-1-S1T2"
+   ]
+  },
+  {
+   "code": "PL07",
+   "name": "不會利用輔助平行線",
+   "desc": "ㄑ字形折線題即使圖上已畫好輔助平行線，也看不出可以把中間的角拆成兩個內錯角",
+   "example": "「L1、L2 中間沒有截線，求不出 ∠APC」",
+   "remedy": "請學生先把輔助線 L3 和 L1、L2 的平行關係寫出來，再在 P 點把 x 拆成上下兩個角，各找一個內錯角。",
+   "source": "知識卡迷思：康軒 p.185 例4、南一 p.167 例4、翰林 p.194 例4 都一題兩解（✓／✓／✓）；翰林備課 p.257、p.276 建議在圖中給出輔助線，本題已畫好",
+   "card": "需要作輔助平行線時想不到要作，或作了沒說明為什麼平行",
+   "tiers": [
+    "八下4-1-S2T2"
+   ]
+  },
+  {
+   "code": "PL08",
+   "name": "等角不在截角位置也判平行",
+   "desc": "只要看到兩個角相等（或合成 180°）就說平行，沒檢查它們是不是同位角、內錯角或同側內角",
+   "example": "「∠1 和它的對頂角 ∠3 相等，所以 L1∥L2」",
+   "remedy": "請學生先指出兩個角分別在哪條被截線上：同一個交點的兩個角（對頂角、鄰補角）和平行無關。",
+   "source": "依教學經驗（相關：康軒 p.193 挑錯題，翻轉後等角不在同位角位置）"
+  },
+  {
+   "code": "PL09",
+   "name": "互補算成互餘",
+   "desc": "知道兩角互補，卻用 90° 去減",
+   "example": "同側內角互補，另一角寫成 90°−68°＝22°",
+   "remedy": "畫出同一直線上的兩個角，請學生看它們合起來是平角 180°，再對照直角 90°。",
+   "source": "依教學經驗（翰林備課 p.270 提醒互補、互餘容易弄錯）"
+  },
+  {
+   "code": "PL10",
+   "name": "斜線段當成平行線距離",
+   "desc": "把平行線間的斜線段長當成距離或三角形的高，不找垂直線段",
+   "example": "△DBC 的高用 DB＝7 代入",
+   "remedy": "請學生在圖上從頂點畫到底邊的垂直線段，比較它和斜線段哪一個比較短，說明距離要用垂直線段。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PL11",
+   "name": "不知道頂點平移高不變",
+   "desc": "不知道平行線間距離處處相等，以為頂點在平行線上移到別處，三角形的高或面積就會改變或求不出",
+   "example": "「D 不在 A 的位置，高不知道，面積求不出來」",
+   "remedy": "在 L1 上移動頂點，請學生每移一次就量一次到 L2 的距離，再說明同底等高的三角形面積相等。",
+   "source": "依教學經驗（等底等高的等積題見知識卡先備銜接：4-1 三版都放等積隨堂或例題）"
+  },
+  {
+   "code": "PL12",
+   "name": "ㄑ字形中間角用相減",
+   "desc": "ㄑ字形折線題拆角後把兩個角相減，而不是相加",
+   "example": "40° 與 30° 求 ∠APC，寫成 40°−30°＝10°",
+   "remedy": "請學生在 P 點把 x 拆成被 L3 分開的上下兩塊，各標上和它相等的內錯角，再看 x 是兩塊合起來。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PL14",
+   "name": "三角形面積忘了除以2",
+   "desc": "求三角形面積時只算底×高，忘了除以 2",
+   "example": "底 8、高 5，面積寫成 40",
+   "remedy": "請學生把三角形補成同底同高的平行四邊形，看三角形只占一半。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PL15",
+   "name": "移項沒變號",
+   "desc": "解方程式時把一項移到等號另一邊，沒有改變正負號",
+   "example": "5x＋30＝180 寫成 5x＝180＋30",
+   "remedy": "請學生把移項改寫成「等號兩邊同減 30」，再檢查移過去的項的符號。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PL13",
+   "name": "把ㄑ字形當三角形算",
+   "desc": "看到三個角就以為合起來是 180°，用 180° 減去兩個已知角",
+   "example": "40° 與 30° 求 ∠APC，寫成 180°−40°−30°＝110°",
+   "remedy": "請學生找找看圖中有沒有三角形：A、P、C 三點連成的只有兩條線段，不是三角形，再改用輔助平行線拆角。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-8-1",
+   "stem": "如圖，直線 L1、L2 被直線 M 所截，L1 與 L2 不平行。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "∠4 與 ∠5 是內錯角",
+     "mis": "PL02",
+     "feedback": "∠4、∠5 都夾在 L1、L2 中間，而且在截線 M 的同一側，是同側內角。內錯角要在截線兩側，例如 ∠4 與 ∠6。"
+    },
+    {
+     "key": "B",
+     "text": "∠1 與 ∠5 是同位角，所以 ∠1＝∠5",
+     "mis": "PL01",
+     "feedback": "∠1、∠5 確實是同位角，但 L1、L2 不平行，同位角不一定相等。要先有平行，才能說同位角相等。"
+    },
+    {
+     "key": "C",
+     "text": "∠1 與 ∠5 是同位角",
+     "mis": null,
+     "feedback": "正確！名稱只看位置：∠1、∠5 在截線同一側，又都在各自被截線的同一邊，不管兩直線平不平行都是同位角。"
+    },
+    {
+     "key": "D",
+     "text": "因為 L1、L2 不平行，所以 ∠3 與 ∠5 不是內錯角",
+     "mis": "PL02",
+     "feedback": "截角的名稱只看位置，和兩直線平不平行無關。∠3、∠5 夾在兩線中間、在截線兩側，就是內錯角。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先用手指描出截線 M，再看兩個角在 M 的同側還是兩側、在兩線中間還是外面。",
+   "seg": "八下4-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"43.8\" y1=\"164.0\" x2=\"71.6\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"186.7\" y1=\"164.0\" x2=\"158.8\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"57.5\" x2=\"234.0\" y2=\"118.6\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"50.9\" y=\"62.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">1</text><text x=\"164.4\" y=\"95.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"45.7\" y=\"85.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"163.4\" y=\"119.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"69.1\" y=\"90.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"187.4\" y=\"120.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">7</text><text x=\"74.3\" y=\"67.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"188.4\" y=\"96.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><circle cx=\"60.0\" cy=\"72.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"175.9\" cy=\"103.1\" r=\"2.2\" fill=\"#333\"/><rect x=\"71.0\" y=\"15.5\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"81.0\" y=\"25.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"139.4\" y=\"15.5\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"149.4\" y=\"25.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"16.6\" y=\"43.2\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"22.6\" y=\"53.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-8-1",
+   "stem": "如圖，直線 L1、L2 被直線 M 所截，L1 與 L2 不平行。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "∠4 與 ∠6 是內錯角",
+     "mis": null,
+     "feedback": "正確！∠4、∠6 都夾在 L1、L2 中間，又在截線 M 的兩側，是內錯角；名稱和兩直線平不平行無關。"
+    },
+    {
+     "key": "B",
+     "text": "∠2 與 ∠5 是同位角",
+     "mis": "PL02",
+     "feedback": "∠2、∠5 在截線 M 的兩側，不是同位角。和 ∠2 位置相同的是 ∠6。"
+    },
+    {
+     "key": "C",
+     "text": "因為 L1、L2 不平行，所以 ∠3 與 ∠6 不是同側內角",
+     "mis": "PL02",
+     "feedback": "截角的名稱只看位置。∠3、∠6 都夾在兩線中間、在截線同一側，就是同側內角，不管平不平行。"
+    },
+    {
+     "key": "D",
+     "text": "∠4 與 ∠6 是內錯角，所以 ∠4＝∠6",
+     "mis": "PL01",
+     "feedback": "∠4、∠6 確實是內錯角，但 L1、L2 不平行，內錯角不一定相等。要先有平行，才能說內錯角相等。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先用手指描出截線 M，再看兩個角在 M 的同側還是兩側、在兩線中間還是外面。",
+   "seg": "八下4-1-S1",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"6.0\" y1=\"116.6\" x2=\"197.5\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"157.5\" x2=\"234.0\" y2=\"117.3\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"136.9\" y1=\"6.0\" x2=\"109.0\" y2=\"164.0\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"139.8\" y=\"35.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">1</text><text x=\"125.5\" y=\"131.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"116.1\" y=\"39.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"101.5\" y=\"131.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"120.2\" y=\"63.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"101.5\" y=\"155.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">7</text><text x=\"143.9\" y=\"59.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"125.5\" y=\"155.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><circle cx=\"130.0\" cy=\"45.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"113.5\" cy=\"138.6\" r=\"2.2\" fill=\"#333\"/><rect x=\"181.4\" y=\"17.0\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"191.4\" y=\"27.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"208.1\" y=\"101.5\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"218.1\" y=\"111.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"116.6\" y=\"11.3\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"122.6\" y=\"21.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，直線 M 是截線，圖中標出的角是 68°。∠x 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "68°",
+     "mis": "PL05",
+     "feedback": "你把 ∠x 和 68° 的角當成相等。它們都夾在兩線中間、在截線同一側，是同側內角，要相加 180°。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PL02",
+     "feedback": "圖轉了方向，看起來不像標準圖，但 ∠x 和 68° 的角都夾在 L1、L2 中間、在截線同一側，是同側內角，可以求。"
+    },
+    {
+     "key": "C",
+     "text": "22°",
+     "mis": "PL09",
+     "feedback": "你用 90° 去減，那是互餘。同側內角是互補，要用 180° 去減。"
+    },
+    {
+     "key": "D",
+     "text": "112°",
+     "mis": null,
+     "feedback": "正確！∠x 和 68° 的角是同側內角，L1∥L2，所以互補：180°−68°＝112°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "180−68"
+   },
+   "hint": "先描出截線 M，看 ∠x 和 68° 的角是哪一種截角。",
+   "seg": "八下4-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"46.4\" y1=\"164.0\" x2=\"80.0\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"160.1\" y1=\"164.0\" x2=\"193.7\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"109.5\" x2=\"234.0\" y2=\"69.3\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"180.9,66.4 178.8,66.2 176.7,66.3 174.6,66.7 172.6,67.4 170.8,68.5 169.1,69.8 167.7,71.4 166.6,73.2 165.8,75.1 165.3,77.2 165.2,79.3 165.4,81.4\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"161.5\" y=\"66.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">x</text><polyline points=\"62.7,87.3 63.9,87.6 65.1,88.1 66.3,88.6 67.4,89.3 68.4,90.1 69.4,91.0 70.2,91.9 70.9,93.0 71.6,94.1 72.1,95.3 72.5,96.5 72.8,97.7\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"77.3\" y=\"87.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">68°</text><circle cx=\"60.0\" cy=\"100.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"178.2\" cy=\"79.2\" r=\"2.2\" fill=\"#333\"/><rect x=\"78.7\" y=\"15.8\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"88.8\" y=\"26.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"169.0\" y=\"10.8\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"179.1\" y=\"21.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"11.7\" y=\"88.9\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"17.7\" y=\"99.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，直線 M 是截線，圖中標出的角是 57°。∠x 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "33°",
+     "mis": "PL09",
+     "feedback": "你用 90° 去減，那是互餘。同側內角是互補，要用 180° 去減。"
+    },
+    {
+     "key": "B",
+     "text": "123°",
+     "mis": null,
+     "feedback": "正確！∠x 和 57° 的角是同側內角，L1∥L2，所以互補：180°−57°＝123°。"
+    },
+    {
+     "key": "C",
+     "text": "57°",
+     "mis": "PL05",
+     "feedback": "你把 ∠x 和 57° 的角當成相等。它們都夾在兩線中間、在截線同一側，是同側內角，要相加 180°。"
+    },
+    {
+     "key": "D",
+     "text": "無法求出",
+     "mis": "PL02",
+     "feedback": "圖轉了方向，看起來不像標準圖，但 ∠x 和 57° 的角都夾在 L1、L2 中間、在截線同一側，是同側內角，可以求。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "180−57"
+   },
+   "hint": "先描出截線 M，看 ∠x 和 57° 的角是哪一種截角。",
+   "seg": "八下4-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"99.9\" y1=\"164.0\" x2=\"32.8\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"209.2\" y1=\"164.0\" x2=\"142.2\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"60.5\" x2=\"234.0\" y2=\"100.7\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"183.3,102.8 181.0,103.5 178.7,103.8 176.4,103.7 174.2,103.2 172.0,102.3 170.1,101.0 168.4,99.4 167.0,97.5 166.0,95.4 165.4,93.2 165.2,90.9 165.4,88.6\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"163.2\" y=\"114.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">x</text><polyline points=\"65.1,82.0 66.1,81.5 67.0,81.0 67.9,80.3 68.7,79.7 69.5,78.9 70.2,78.1 70.8,77.2 71.4,76.3 71.9,75.3 72.3,74.3 72.6,73.3 72.8,72.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"78.8\" y=\"89.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">57°</text><circle cx=\"60.0\" cy=\"70.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"178.2\" cy=\"90.8\" r=\"2.2\" fill=\"#333\"/><rect x=\"39.3\" y=\"7.8\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"49.3\" y=\"18.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"126.5\" y=\"17.2\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"136.6\" y=\"27.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"11.7\" y=\"68.3\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"17.7\" y=\"78.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "直線 L1、L2 被一條截線所截，有一組同側內角分別是 (3x＋5)° 和 (2x＋25)°。x 是多少時，可以判斷 L1∥L2？",
+   "options": [
+    {
+     "key": "A",
+     "text": "x＝20",
+     "mis": "PL05",
+     "feedback": "你讓兩個角相等。同側內角要「互補」（相加 180°）才能判斷平行：3x＋5＋2x＋25＝180。"
+    },
+    {
+     "key": "B",
+     "text": "x＝42",
+     "mis": "PL15",
+     "feedback": "你把 30 移到右邊時沒有變號：5x＋30＝180 應該得 5x＝180−30＝150。"
+    },
+    {
+     "key": "C",
+     "text": "x＝30",
+     "mis": null,
+     "feedback": "正確！同側內角互補，兩直線平行：3x＋5＋2x＋25＝180，5x＝150，x＝30。"
+    },
+    {
+     "key": "D",
+     "text": "不論 x 是多少都不能判斷，要看兩直線延長後會不會相交",
+     "mis": "PL06",
+     "feedback": "不必看會不會相交。同側內角互補就能判斷兩直線平行（判別性質）。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "3x＋5＋2x＋25＝180"
+   },
+   "hint": "判斷平行時，同側內角要相等還是互補？",
+   "seg": "八下4-1-S3"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "直線 L1、L2 被一條截線所截，有一組內錯角分別是 (3x−20)° 和 (x＋40)°。x 是多少時，可以判斷 L1∥L2？",
+   "options": [
+    {
+     "key": "A",
+     "text": "x＝30",
+     "mis": null,
+     "feedback": "正確！內錯角相等，兩直線平行：3x−20＝x＋40，2x＝60，x＝30。"
+    },
+    {
+     "key": "B",
+     "text": "不論 x 是多少都不能判斷，要看兩直線延長後會不會相交",
+     "mis": "PL06",
+     "feedback": "不必看會不會相交。內錯角相等就能判斷兩直線平行（判別性質）。"
+    },
+    {
+     "key": "C",
+     "text": "x＝40",
+     "mis": "PL05",
+     "feedback": "你讓兩個角相加 180°。內錯角要「相等」才能判斷平行：3x−20＝x＋40。"
+    },
+    {
+     "key": "D",
+     "text": "x＝10",
+     "mis": "PL15",
+     "feedback": "你把 −20 移到右邊時沒有變號：3x−20＝x＋40 應該得 2x＝40＋20＝60。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "3x−20＝x＋40"
+   },
+   "hint": "判斷平行時，內錯角要相等還是互補？",
+   "seg": "八下4-1-S3"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，過 P 點作直線 L3∥L1（虛線）。圖中標出兩個角是 40° 和 30°，∠APC＝x°。x 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！L3∥L1 也∥L2，x 被 L3 分成上下兩個角，分別和 40°、30° 是內錯角，所以 x＝40＋30＝70。"
+    },
+    {
+     "key": "B",
+     "text": "10°",
+     "mis": "PL12",
+     "feedback": "你把兩個角相減。x 被 L3 分成上下兩塊，分別等於 40° 和 30°，要相加。"
+    },
+    {
+     "key": "C",
+     "text": "110°",
+     "mis": "PL13",
+     "feedback": "你用 180° 減去兩個角，把它當成三角形。A、P、C 沒有連成三角形，要用 L3 把 x 拆成兩個內錯角。"
+    },
+    {
+     "key": "D",
+     "text": "無法求出",
+     "mis": "PL07",
+     "feedback": "L3 已經畫好了，而且和 L1、L2 都平行。在 P 點把 x 拆成上下兩塊，各和一個已知角是內錯角。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "40+30"
+   },
+   "hint": "在 P 點，L3 把 x 分成兩塊。每一塊和哪個已知角是內錯角？",
+   "seg": "八下4-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"30\" x2=\"230\" y2=\"30\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"10\" y1=\"135\" x2=\"230\" y2=\"135\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"10\" y1=\"92.2\" x2=\"230\" y2=\"92.2\" stroke=\"#333\" stroke-width=\"1.4\" stroke-dasharray=\"5 4\"/><polyline points=\"40.0,30.0 114.1,92.2 40.0,135.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"58.0,30.0 58.0,31.0 57.9,32.1 57.7,33.1 57.5,34.2 57.2,35.2 56.9,36.2 56.5,37.1 56.1,38.1 55.6,39.0 55.0,39.9 54.4,40.7 53.8,41.6\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"71.9\" y=\"46.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">40°</text><polyline points=\"58.0,135.0 58.0,134.2 57.9,133.4 57.8,132.7 57.7,131.9 57.6,131.1 57.4,130.3 57.2,129.6 56.9,128.8 56.6,128.1 56.3,127.4 56.0,126.7 55.6,126.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"72.8\" y=\"130.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">30°</text><polyline points=\"106.5,85.8 105.9,86.6 105.3,87.5 104.9,88.4 104.5,89.3 104.3,90.3 104.2,91.3 104.1,92.3 104.2,93.4 104.4,94.4 104.6,95.3 105.0,96.3 105.5,97.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"86.2\" y=\"83.9\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"92.2\" y=\"94.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">x</text><circle cx=\"40.0\" cy=\"30.0\" r=\"2.2\" fill=\"#333\"/><text x=\"38.0\" y=\"22.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"40.0\" cy=\"135.0\" r=\"2.2\" fill=\"#333\"/><text x=\"38.0\" y=\"151.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"114.1\" cy=\"92.2\" r=\"2.2\" fill=\"#333\"/><text x=\"124.1\" y=\"86.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"222.0\" y=\"24.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><text x=\"222.0\" y=\"129.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><text x=\"222.0\" y=\"86.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L3</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，過 P 點作直線 L3∥L1（虛線）。圖中標出兩個角是 35° 和 45°，∠APC＝x°。x 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "無法求出",
+     "mis": "PL07",
+     "feedback": "L3 已經畫好了，而且和 L1、L2 都平行。在 P 點把 x 拆成上下兩塊，各和一個已知角是內錯角。"
+    },
+    {
+     "key": "B",
+     "text": "100°",
+     "mis": "PL13",
+     "feedback": "你用 180° 減去兩個角，把它當成三角形。A、P、C 沒有連成三角形，要用 L3 把 x 拆成兩個內錯角。"
+    },
+    {
+     "key": "C",
+     "text": "10°",
+     "mis": "PL12",
+     "feedback": "你把兩個角相減。x 被 L3 分成上下兩塊，分別等於 35° 和 45°，要相加。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": null,
+     "feedback": "正確！L3∥L1 也∥L2，x 被 L3 分成上下兩個角，分別和 35°、45° 是內錯角，所以 x＝35＋45＝80。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "35+45"
+   },
+   "hint": "在 P 點，L3 把 x 分成兩塊。每一塊和哪個已知角是內錯角？",
+   "seg": "八下4-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"30\" x2=\"230\" y2=\"30\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"10\" y1=\"135\" x2=\"230\" y2=\"135\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"10\" y1=\"73.2\" x2=\"230\" y2=\"73.2\" stroke=\"#333\" stroke-width=\"1.4\" stroke-dasharray=\"5 4\"/><polyline points=\"40.0,30.0 101.8,73.2 40.0,135.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"58.0,30.0 58.0,30.9 57.9,31.8 57.8,32.7 57.6,33.6 57.4,34.5 57.2,35.4 56.9,36.3 56.5,37.1 56.1,38.0 55.7,38.8 55.3,39.6 54.7,40.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"72.4\" y=\"44.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">35°</text><polyline points=\"58.0,135.0 58.0,133.8 57.8,132.7 57.7,131.5 57.4,130.3 57.0,129.2 56.6,128.1 56.1,127.0 55.6,126.0 55.0,125.0 54.3,124.0 53.5,123.1 52.7,122.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"71.4\" y=\"126.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">45°</text><polyline points=\"93.6,67.5 93.0,68.5 92.5,69.6 92.1,70.7 91.9,71.8 91.8,73.0 91.8,74.1 92.0,75.3 92.3,76.4 92.7,77.5 93.2,78.5 93.9,79.4 94.7,80.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"73.8\" y=\"68.8\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"79.8\" y=\"79.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">x</text><circle cx=\"40.0\" cy=\"30.0\" r=\"2.2\" fill=\"#333\"/><text x=\"38.0\" y=\"22.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"40.0\" cy=\"135.0\" r=\"2.2\" fill=\"#333\"/><text x=\"38.0\" y=\"151.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"101.8\" cy=\"73.2\" r=\"2.2\" fill=\"#333\"/><text x=\"111.8\" y=\"67.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"222.0\" y=\"24.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><text x=\"222.0\" y=\"129.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><text x=\"222.0\" y=\"67.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L3</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-8-3",
+   "stem": "如圖，直線 L1、L2 被直線 M 所截，∠1＝∠2＝65°。要說明 L1∥L2，下列哪一個理由正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩直線平行，內錯角相等",
+     "mis": "PL04",
+     "feedback": "這是截角性質，要先知道平行才能用，方向反了。題目給的是角，要推出平行，應該用「內錯角相等，兩直線平行」。"
+    },
+    {
+     "key": "B",
+     "text": "∠1 與 ∠3 是對頂角，∠1＝∠3，所以 L1∥L2",
+     "mis": "PL08",
+     "feedback": "∠1、∠3 在同一個交點，對頂角本來就相等，和 L1、L2 平不平行無關。要用兩條線上各一個角。"
+    },
+    {
+     "key": "C",
+     "text": "用眼睛看，L1 和 L2 一樣斜，所以平行",
+     "mis": "PL03",
+     "feedback": "看起來一樣斜不能當理由，眼睛會被騙。要用角的條件（或共同垂線）說明。"
+    },
+    {
+     "key": "D",
+     "text": "內錯角相等，兩直線平行",
+     "mis": null,
+     "feedback": "正確！∠1、∠2 是內錯角而且相等，依判別性質，L1∥L2。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "題目給的是「角」還是「平行」？要推出的是哪一個？",
+   "seg": "八下4-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"6.0\" y1=\"64.8\" x2=\"225.5\" y2=\"6.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"163.3\" x2=\"234.0\" y2=\"102.3\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"47.3\" y1=\"6.0\" x2=\"179.9\" y2=\"164.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"67.4,48.4 67.2,47.2 67.0,45.9 67.0,44.7 67.1,43.5 67.3,42.3 67.6,41.1 68.0,39.9 68.6,38.8 69.2,37.8 69.9,36.8 70.7,35.9 71.6,35.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"57.1\" y=\"42.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><polyline points=\"134.9,128.8 134.7,127.6 134.5,126.4 134.5,125.2 134.6,123.9 134.8,122.7 135.1,121.5 135.5,120.4 136.1,119.3 136.7,118.2 137.4,117.2 138.2,116.3 139.1,115.5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"124.6\" y=\"122.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><polyline points=\"92.6,41.6 92.8,42.8 93.0,44.1 93.0,45.3 92.9,46.5 92.7,47.7 92.4,48.9 92.0,50.1 91.4,51.2 90.8,52.2 90.1,53.2 89.3,54.1 88.4,55.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"102.9\" y=\"56.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">1</text><circle cx=\"80.0\" cy=\"45.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"147.5\" cy=\"125.4\" r=\"2.2\" fill=\"#333\"/><rect x=\"205.1\" y=\"14.8\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"215.1\" y=\"25.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"207.3\" y=\"87.9\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"217.4\" y=\"98.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"59.4\" y=\"2.6\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"65.5\" y=\"13.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "理解",
+   "lc": "S-8-3",
+   "stem": "如圖，直線 L1、L2 被直線 M 所截，∠1＝70°，∠2＝110°。要說明 L1∥L2，下列哪一個理由正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "用眼睛看，L1 和 L2 一樣斜，所以平行",
+     "mis": "PL03",
+     "feedback": "看起來一樣斜不能當理由，眼睛會被騙。要用角的條件（或共同垂線）說明。"
+    },
+    {
+     "key": "B",
+     "text": "同側內角互補，兩直線平行",
+     "mis": null,
+     "feedback": "正確！∠1、∠2 是同側內角，70°＋110°＝180°，依判別性質，L1∥L2。"
+    },
+    {
+     "key": "C",
+     "text": "∠1 與 ∠3 合起來是 180°，所以 L1∥L2",
+     "mis": "PL08",
+     "feedback": "∠1、∠3 在同一個交點，合起來是平角，本來就是 180°，和 L1、L2 平不平行無關。要用兩條線上各一個角。"
+    },
+    {
+     "key": "D",
+     "text": "兩直線平行，同側內角互補",
+     "mis": "PL04",
+     "feedback": "這是截角性質，要先知道平行才能用，方向反了。題目給的是角，要推出平行，應該用「同側內角互補，兩直線平行」。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "題目給的是「角」還是「平行」？要推出的是哪一個？",
+   "seg": "八下4-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"6.0\" y1=\"58.9\" x2=\"234.0\" y2=\"18.7\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"6.0\" y1=\"159.1\" x2=\"234.0\" y2=\"118.9\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"62.5\" y1=\"6.0\" x2=\"153.7\" y2=\"164.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"150.3,133.7 149.8,131.7 148.9,129.8 147.8,128.0 146.4,126.5 144.8,125.2 143.0,124.2 141.0,123.4 139.0,123.0 136.9,122.9 134.9,123.2 132.9,123.8 131.0,124.7\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"147.6\" y=\"118.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><polyline points=\"78.1,46.2 78.4,47.3 78.8,48.3 79.4,49.3 80.2,50.1 81.1,50.8 82.0,51.3 83.1,51.7 84.2,52.0 85.3,52.0 86.4,51.9 87.5,51.5 88.5,51.1\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"74.9\" y=\"71.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><polyline points=\"97.8,42.7 98.0,44.1 98.0,45.4 97.9,46.7 97.6,48.0 97.3,49.3 96.8,50.5 96.2,51.7 95.4,52.8 94.6,53.8 93.6,54.7 92.6,55.5 91.5,56.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"106.8\" y=\"59.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">1</text><circle cx=\"85.0\" cy=\"45.0\" r=\"2.2\" fill=\"#333\"/><circle cx=\"137.5\" cy=\"135.9\" r=\"2.2\" fill=\"#333\"/><rect x=\"212.2\" y=\"26.6\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"222.3\" y=\"37.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><rect x=\"208.1\" y=\"103.1\" width=\"20.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"218.1\" y=\"113.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text><rect x=\"73.8\" y=\"5.7\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"79.9\" y=\"16.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">M</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，A、D 在 L1 上，B、C 在 L2 上，AH⊥L2，AH＝5，BC＝8，DB＝7。△DBC 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "28",
+     "mis": "PL10",
+     "feedback": "你把斜線段 DB＝7 當成高。高要用 D 到 L2 的垂直線段，而平行線間的距離處處相等，就是 AH＝5。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PL11",
+     "feedback": "D 雖然不在 A 的位置，但 L1∥L2，D 到 L2 的距離也是 5，面積是 8×5÷2。"
+    },
+    {
+     "key": "C",
+     "text": "20",
+     "mis": null,
+     "feedback": "正確！平行線間的距離處處相等，△DBC 的高＝AH＝5，面積＝8×5÷2＝20，和 △ABC 一樣。"
+    },
+    {
+     "key": "D",
+     "text": "40",
+     "mis": "PL14",
+     "feedback": "你算了 8×5，忘了除以 2。三角形面積是底×高÷2＝8×5÷2。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "8×5÷2"
+   },
+   "hint": "D 到 L2 的距離是多少？為什麼？",
+   "fig": "<svg viewBox=\"0 0 240 162\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"5\" y1=\"25\" x2=\"235\" y2=\"25\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"5\" y1=\"125.0\" x2=\"235\" y2=\"125.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polygon points=\"60.0,25 30.0,125.0 190.0,125.0\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.3\"/><polygon points=\"128.0,25 30.0,125.0 190.0,125.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"60.0\" y1=\"25\" x2=\"60.0\" y2=\"125.0\" stroke=\"#333\" stroke-width=\"1.2\" stroke-dasharray=\"4 3\"/><polyline points=\"60.0,117.0 68.0,117.0 68.0,125.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><text x=\"60.0\" y=\"18.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"128.0\" y=\"18.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"26.0\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"194.0\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"60.0\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"65.0\" y=\"69.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">5</text><rect x=\"82.0\" y=\"68.6\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"88.0\" y=\"79.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">7</text><text x=\"226.0\" y=\"19.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><text x=\"226.0\" y=\"119.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-3",
+   "stem": "如圖，L1∥L2，A、D 在 L1 上，B、C 在 L2 上，AH⊥L2，AH＝6，BC＝7，DC＝8。△DBC 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "42",
+     "mis": "PL14",
+     "feedback": "你算了 7×6，忘了除以 2。三角形面積是底×高÷2＝7×6÷2。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PL11",
+     "feedback": "D 雖然不在 A 的位置，但 L1∥L2，D 到 L2 的距離也是 6，面積是 7×6÷2。"
+    },
+    {
+     "key": "C",
+     "text": "28",
+     "mis": "PL10",
+     "feedback": "你把斜線段 DC＝8 當成高。高要用 D 到 L2 的垂直線段，而平行線間的距離處處相等，就是 AH＝6。"
+    },
+    {
+     "key": "D",
+     "text": "21",
+     "mis": null,
+     "feedback": "正確！平行線間的距離處處相等，△DBC 的高＝AH＝6，面積＝7×6÷2＝21，和 △ABC 一樣。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "7×6÷2"
+   },
+   "hint": "D 到 L2 的距離是多少？為什麼？",
+   "fig": "<svg viewBox=\"0 0 240 162\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"5\" y1=\"25\" x2=\"235\" y2=\"25\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"5\" y1=\"125.0\" x2=\"235\" y2=\"125.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polygon points=\"185.0,25 40.0,125.0 156.7,125.0\" fill=\"none\" stroke=\"#888\" stroke-width=\"1.3\"/><polygon points=\"68.5,25 40.0,125.0 156.7,125.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"185.0\" y1=\"25\" x2=\"185.0\" y2=\"125.0\" stroke=\"#333\" stroke-width=\"1.2\" stroke-dasharray=\"4 3\"/><polyline points=\"185.0,117.0 193.0,117.0 193.0,125.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><text x=\"185.0\" y=\"18.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"68.5\" y=\"18.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"36.0\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"160.7\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"185.0\" y=\"141.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"190.0\" y=\"69.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">6</text><rect x=\"119.6\" y=\"93.6\" width=\"12.1\" height=\"13.7\" fill=\"#fff\" stroke=\"none\"/><text x=\"125.6\" y=\"104.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"226.0\" y=\"19.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L1</text><text x=\"226.0\" y=\"119.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L2</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P06）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形",
+ "updated": "2026-11-05T01:31"
+}
