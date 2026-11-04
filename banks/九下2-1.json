@@ -1,0 +1,831 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9下2-1-資料的分析",
+ "title": "九下 2-1 資料的分析（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九下",
+  "code": "2-1",
+  "name": "資料的分析",
+  "curriculum": [
+   "D-9-1 統計數據的分布：全距；四分位距；盒狀圖。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九下2-1.md（三版教學順序、迷思清單、教學建議）、主幹卡 prep_core 九下2-1 與比較頁迷思表頁碼產題；四分位數求法依 康軒 p.59 Keypoint、南一 p.56 計算法則、翰林 p.61 算法框（全文索引查證：三版都是 n×k/4，整數取第 a、a＋1 筆平均，非整數取整數部分加 1 那一筆）；資料筆數都避開「4 的倍數多 1」，課本位置法與「前後半段中位數」算法的答案相同；不考百分位數（課綱外）、不考已分組資料；題目答案經驗算器重算，老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "QT01",
+   "name": "沒排序就找位置",
+   "desc": "資料沒有先由小到大排列，就直接照題目給的順序數第幾筆",
+   "example": "10 筆未排序資料，直接取題目寫的第 3 個數當 Q1",
+   "remedy": "要求學生先把資料由小到大重寫一次，數一數筆數對不對，再找位置。",
+   "source": "知識卡迷思：康軒 p.57、p.59 Keypoint「先將資料由小到大排序」、p.61 隨堂；南一 p.56 計算法則第 1 步；翰林 p.58 螢光標示（✓／✓／✓）",
+   "card": "沒有先由小到大排序就找四分位數",
+   "tiers": [
+    "九下2-1-S1T1"
+   ]
+  },
+  {
+   "code": "QT02",
+   "name": "把位置當成數值",
+   "desc": "把 n×k/4 算出的「第幾筆」編號，當成四分位數（或把分數當成人數）",
+   "example": "10×1/4＝2.5，就說 Q1＝2.5",
+   "remedy": "請學生說出算出的 2.5 是「什麼東西的編號」，再到排好的資料裡指出那一筆的數值。",
+   "source": "知識卡迷思：康軒 p.59 Key point 寫明取第 a 個資料（未見辨正）、南一 p.55「數據順位」、翰林 備課 p.152 MATH 診療室錯例（–／✓／備）",
+   "card": "把算出的位置（n×k/4 的值）直接當成四分位數",
+   "tiers": [
+    "九下2-1-S1T2"
+   ]
+  },
+  {
+   "code": "QT03",
+   "name": "非整數位置直接捨去",
+   "desc": "n×k/4 不是整數時，只取整數部分那一筆，忘了要「整數部分加 1」",
+   "example": "10×1/4＝2.5，取第 2 筆當 Q1",
+   "remedy": "用「第 2 筆還不到全部的 1/4」說明為什麼要往後取第 3 筆，再用「≤Q1 的至少 1/4」檢查。",
+   "source": "依教學經驗；取法依據 康軒 p.59 Keypoint、南一 p.56 計算法則、翰林 p.61 算法框（全文索引查證：三版都是 n×k/4，整數取第 a、a＋1 筆平均，非整數取整數部分加 1 那一筆）",
+   "tiers": [
+    "九下2-1-S1T2"
+   ]
+  },
+  {
+   "code": "QT04",
+   "name": "整數位置只取一筆",
+   "desc": "n×k/4 是整數 a 時，只取第 a 筆，沒有取第 a、a＋1 筆的平均",
+   "example": "12×1/4＝3，就取第 3 筆當 Q1",
+   "remedy": "對照七年級偶數筆中位數取中間兩筆平均，說明 n×k/4 剛好是整數時也要取兩筆平均。",
+   "source": "依教學經驗；取法依據 康軒 p.59 Keypoint、南一 p.56 計算法則、翰林 p.61 算法框（全文索引查證：三版都是 n×k/4，整數取第 a、a＋1 筆平均，非整數取整數部分加 1 那一筆）",
+   "tiers": [
+    "九下2-1-S1T2"
+   ]
+  },
+  {
+   "code": "QT05",
+   "name": "全距、四分位距混淆",
+   "desc": "把 Q3−Q1 當成全距，或把最大值−最小值當成四分位距",
+   "example": "問四分位距，卻回答最大值−最小值",
+   "remedy": "在盒狀圖上用兩種顏色標出全距（整條）和四分位距（盒子），請學生各說一次是哪兩個數相減。",
+   "source": "依教學經驗（主幹卡卡點「全距、四分位距分不清」）",
+   "tiers": [
+    "九下2-1-S3T1"
+   ]
+  },
+  {
+   "code": "QT06",
+   "name": "中線當成平均數",
+   "desc": "以為盒狀圖盒子中間那條線是平均數",
+   "example": "盒狀圖中線在 65，就說平均 65 分",
+   "remedy": "請學生說出中線是 Q2、是排在中間那一筆，再用一組資料算平均數，和 Q2 比較。",
+   "source": "知識卡迷思：康軒 未見（只在 p.58 強調 Q2 就是中位數）、南一 p.62 迷思診療、p.68 錯誤診療、翰林 未見（–／✓／–）",
+   "card": "以為盒狀圖中間那條線是平均數",
+   "tiers": [
+    "九下2-1-S2T2"
+   ]
+  },
+  {
+   "code": "QT07",
+   "name": "段愈長人數愈多",
+   "desc": "以為盒狀圖中比較長的那一段（盒子或鬚）人數比較多",
+   "example": "Q3 到最大值那段最長，就說那段的人最多",
+   "remedy": "用南一的雞圈比喻：四段各約 1/4 的人，段長只表示分數比較分散。",
+   "source": "知識卡迷思：康軒 p.67 色帶標出 1/4、1/2、1/4（未明說）、南一 p.60 雞圈比喻與隨堂(2)、翰林 未見（✓／✓／–）",
+   "card": "以為盒狀圖中盒子或鬚比較長的那一段人數比較多",
+   "tiers": [
+    "九下2-1-S2T1"
+   ]
+  },
+  {
+   "code": "QT08",
+   "name": "盒狀圖同就資料同",
+   "desc": "兩組資料的盒狀圖一樣，就以為兩組資料完全相同",
+   "example": "兩班盒狀圖都是 30、55、65、80、95，就說兩班成績完全一樣",
+   "remedy": "借南一 p.64 探索：給兩份不同的原始成績，請學生畫出同一個盒狀圖。",
+   "source": "知識卡迷思：康軒 未見、南一 p.64 探索活動、翰林 未見（–／✓／–）",
+   "card": "兩組資料的盒狀圖相同，就以為兩組資料完全一樣"
+  },
+  {
+   "code": "QT09",
+   "name": "只看全距判斷分散",
+   "desc": "只用全距判斷資料分散程度，忽略全距受極端值影響",
+   "example": "甲班有一人 10 分，全距較大，就說甲班中間一半也比較分散",
+   "remedy": "把一組資料的最大值改成很大的數，請學生分別重算全距和四分位距，看哪一個會變。",
+   "source": "知識卡迷思：康軒 備課 p.66 邊註（學生課本 p.67 只說全距愈大愈分散）、南一 p.54 探索活動、翰林 p.66「未考慮中間數值」（備／✓／✓）",
+   "card": "只用全距描述分散程度，忽略極端值的影響"
+  },
+  {
+   "code": "QT10",
+   "name": "推人數方向弄反",
+   "desc": "由四分位數推人數或排名時方向弄反，或把「至少」「約 1/4」當成「剛好」",
+   "example": "40 人中問 ≥Q3 的至少幾人，算成 40×3/4＝30 人",
+   "remedy": "請學生先在盒狀圖上把題目問的那一段塗色，再說出那一段大約是全部的幾分之幾。",
+   "source": "知識卡迷思：康軒 p.74 挑錯題、南一 p.68 錯誤診療、翰林 p.67 例4（✓／✓／✓）",
+   "card": "由盒狀圖推排名或人數時方向弄反，或把「約 1/4」「至少」當成「剛好」",
+   "tiers": [
+    "九下2-1-S3T2"
+   ]
+  },
+  {
+   "code": "QT11",
+   "name": "四分位距跟著極端值變",
+   "desc": "以為最大值（或最小值）改變時，四分位距也跟著改變同樣多",
+   "example": "最大值 95 改成 150，就說四分位距也多 55",
+   "remedy": "請學生重算改值前後的 Q1、Q3，確認它們的位置和數值都沒變。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "QT12",
+   "name": "全距去掉最高最低",
+   "desc": "以為全距要先去掉最大值和最小值，再用剩下的最大減最小（受比賽「去掉最高、最低分」影響）",
+   "example": "8 筆資料，用第 2 大減第 2 小當全距",
+   "remedy": "強調全距就是「全部資料」的最大值−最小值，正因為包含兩端，才會受極端值影響。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "10 位同學一週運動的時數：18、12、25、9、14、30、21、16、27、11。這組資料的第 1 四分位數 Q1 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "25",
+     "mis": "QT01",
+     "feedback": "你直接取題目寫的第 3 個數 25，資料還沒排序。要先由小到大排成 9、11、12、14、16、18、21、25、27、30，再找第幾筆。"
+    },
+    {
+     "key": "B",
+     "text": "2.5",
+     "mis": "QT02",
+     "feedback": "10×1/4＝2.5 算出的是「第幾筆」的編號，不是 Q1 本身。2.5 不是整數，要取排好後的第 3 筆的數值。"
+    },
+    {
+     "key": "C",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！排序後 10×1/4＝2.5 不是整數，取整數部分加 1，第 3 筆是 12。"
+    },
+    {
+     "key": "D",
+     "text": "11",
+     "mis": "QT03",
+     "feedback": "你取了第 2 筆。2.5 不是整數時要取「整數部分加 1」的第 3 筆，第 2 筆還不到全部的 1/4。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "12"
+   },
+   "hint": "先排序；10×1/4 算出的是第幾筆？不是整數時要怎麼取？",
+   "seg": "九下2-1-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "10 位同學的跳繩次數：42、35、50、28、46、31、55、39、60、33。這組資料的第 3 四分位數 Q3 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "50",
+     "mis": null,
+     "feedback": "正確！排序後 10×3/4＝7.5 不是整數，取整數部分加 1，第 8 筆是 50。"
+    },
+    {
+     "key": "B",
+     "text": "46",
+     "mis": "QT03",
+     "feedback": "你取了第 7 筆。7.5 不是整數時要取「整數部分加 1」的第 8 筆。"
+    },
+    {
+     "key": "C",
+     "text": "39",
+     "mis": "QT01",
+     "feedback": "你直接取題目寫的第 8 個數 39，資料還沒排序。要先排成 28、31、33、35、39、42、46、50、55、60，再找第幾筆。"
+    },
+    {
+     "key": "D",
+     "text": "7.5",
+     "mis": "QT02",
+     "feedback": "10×3/4＝7.5 算出的是「第幾筆」的編號，不是 Q3 本身。要取排好後的第 8 筆的數值。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "50"
+   },
+   "hint": "先排序；10×3/4 算出的是第幾筆？不是整數時要怎麼取？",
+   "seg": "九下2-1-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "12 位同學的身高增加量（公釐）：15、8、22、11、19、6、25、13、17、9、28、20。這組資料的 Q1 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9",
+     "mis": "QT04",
+     "feedback": "12×1/4＝3 是整數，你只取了第 3 筆。整數時要取第 3、4 筆的平均：(9＋11)÷2。"
+    },
+    {
+     "key": "B",
+     "text": "16.5",
+     "mis": "QT01",
+     "feedback": "你直接用題目順序的第 3、4 個數 22、11 求平均，資料還沒排序。要先排成 6、8、9、11、13、15、17、19、20、22、25、28。"
+    },
+    {
+     "key": "C",
+     "text": "3",
+     "mis": "QT02",
+     "feedback": "12×1/4＝3 是「第 3 筆」的編號，不是 Q1。要到排好的資料裡取第 3、4 筆的平均。"
+    },
+    {
+     "key": "D",
+     "text": "10",
+     "mis": null,
+     "feedback": "正確！排序後 12×1/4＝3 是整數，取第 3、4 筆的平均：(9＋11)÷2＝10。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(9+11)/2"
+   },
+   "hint": "先排序；12×1/4 是整數時，要取哪幾筆？",
+   "seg": "九下2-1-S1"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "8 位同學的通勤時間（分鐘）：34、52、27、45、61、38、49、30。這組資料的 Q3 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6",
+     "mis": "QT02",
+     "feedback": "8×3/4＝6 是「第 6 筆」的編號，不是 Q3。要到排好的資料裡取第 6、7 筆的平均。"
+    },
+    {
+     "key": "B",
+     "text": "50.5",
+     "mis": null,
+     "feedback": "正確！排序後 8×3/4＝6 是整數，取第 6、7 筆的平均：(49＋52)÷2＝50.5。"
+    },
+    {
+     "key": "C",
+     "text": "49",
+     "mis": "QT04",
+     "feedback": "8×3/4＝6 是整數，你只取了第 6 筆。整數時要取第 6、7 筆的平均：(49＋52)÷2。"
+    },
+    {
+     "key": "D",
+     "text": "43.5",
+     "mis": "QT01",
+     "feedback": "你直接用題目順序的第 6、7 個數 38、49 求平均，資料還沒排序。要先排成 27、30、34、38、45、49、52、61。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(49+52)/2"
+   },
+   "hint": "先排序；8×3/4 是整數時，要取哪幾筆？",
+   "seg": "九下2-1-S1"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "7 次小考成績由小到大排列：12、15、18、20、23、27、35。這組資料的四分位距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "23",
+     "mis": "QT05",
+     "feedback": "你算的是最大值−最小值 35−12，那是全距。四分位距是 Q3−Q1。"
+    },
+    {
+     "key": "B",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！7×1/4＝1.75 取第 2 筆 Q1＝15，7×3/4＝5.25 取第 6 筆 Q3＝27，四分位距 27−15＝12。"
+    },
+    {
+     "key": "C",
+     "text": "11",
+     "mis": "QT03",
+     "feedback": "你取了第 1 筆和第 5 筆（只取整數部分）。1.75、5.25 不是整數，要取第 2 筆和第 6 筆。"
+    },
+    {
+     "key": "D",
+     "text": "3.5",
+     "mis": "QT02",
+     "feedback": "5.25−1.75 是兩個「第幾筆」編號相減。要先找出第 2 筆、第 6 筆的數值再相減。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "27−15"
+   },
+   "hint": "先分別找 Q1、Q3 是第幾筆，再把兩個數值相減。",
+   "seg": "九下2-1-S3"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "D-9-1",
+   "stem": "某商店 11 天的銷售量（件）由小到大排列：40、43、45、47、50、52、55、58、63、66、80。這組資料的四分位距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "15",
+     "mis": "QT03",
+     "feedback": "你取了第 2 筆和第 8 筆（只取整數部分）。2.75、8.25 不是整數，要取第 3 筆和第 9 筆。"
+    },
+    {
+     "key": "B",
+     "text": "5.5",
+     "mis": "QT02",
+     "feedback": "8.25−2.75 是兩個「第幾筆」編號相減。要先找出第 3 筆、第 9 筆的數值再相減。"
+    },
+    {
+     "key": "C",
+     "text": "40",
+     "mis": "QT05",
+     "feedback": "你算的是最大值−最小值 80−40，那是全距。四分位距是 Q3−Q1。"
+    },
+    {
+     "key": "D",
+     "text": "18",
+     "mis": null,
+     "feedback": "正確！11×1/4＝2.75 取第 3 筆 Q1＝45，11×3/4＝8.25 取第 9 筆 Q3＝63，四分位距 63−45＝18。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "63−45"
+   },
+   "hint": "先分別找 Q1、Q3 是第幾筆，再把兩個數值相減。",
+   "seg": "九下2-1-S3"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "D-9-1",
+   "stem": "甲、乙兩班各 28 人，數學成績的盒狀圖完全相同：最低 30、Q1＝55、Q2＝65、Q3＝80、最高 95 分（如圖）。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩班的成績資料一定完全相同",
+     "mis": "QT08",
+     "feedback": "盒狀圖只畫出五個數，五個數一樣，中間每個人的分數仍可能不同。換兩份不同的成績也能畫出同一個盒狀圖。"
+    },
+    {
+     "key": "B",
+     "text": "兩班各有大約一半同學的成績在 55 分到 80 分之間",
+     "mis": null,
+     "feedback": "正確！Q1 到 Q3 是中間的兩段，大約包含一半的資料。"
+    },
+    {
+     "key": "C",
+     "text": "兩班的平均成績都是 65 分",
+     "mis": "QT06",
+     "feedback": "你把中線當成平均數。中線是 Q2，也就是中位數；平均數從盒狀圖看不出來。"
+    },
+    {
+     "key": "D",
+     "text": "兩班 80～95 分的人數都比 55～65 分多",
+     "mis": "QT07",
+     "feedback": "你看到 80～95 那段比較長，就以為人比較多。每一段大約各有 1/4 的人，段長只表示分數比較分散。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "盒狀圖畫的是哪五個數？每一段大約有多少人？",
+   "seg": "九下2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"15\" x2=\"20\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"15\" x2=\"40\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"15\" x2=\"80\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"15\" x2=\"100\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"15\" x2=\"120\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"15\" x2=\"140\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"15\" x2=\"160\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"15\" x2=\"180\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"15\" x2=\"200\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"15\" x2=\"220\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"38\" x2=\"130\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"38\" x2=\"210\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"30\" x2=\"80\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"210\" y1=\"30\" x2=\"210\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"130\" y=\"24\" width=\"50\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"150\" y1=\"24\" x2=\"150\" y2=\"52\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"43\" font-size=\"13\">甲</text><line x1=\"80\" y1=\"85\" x2=\"130\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"85\" x2=\"210\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"77\" x2=\"80\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"210\" y1=\"77\" x2=\"210\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"130\" y=\"71\" width=\"50\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"150\" y1=\"71\" x2=\"150\" y2=\"99\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"90\" font-size=\"13\">乙</text><line x1=\"20\" y1=\"112\" x2=\"220\" y2=\"112\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"112\" x2=\"20\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"112\" x2=\"40\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"112\" x2=\"60\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"112\" x2=\"80\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"112\" x2=\"100\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"112\" x2=\"120\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"112\" x2=\"140\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"112\" x2=\"160\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"112\" x2=\"180\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"112\" x2=\"200\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"112\" x2=\"220\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"144\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "理解",
+   "lc": "D-9-1",
+   "stem": "甲、乙兩班各 32 人，英文成績的盒狀圖完全相同：最低 20、Q1＝40、Q2＝60、Q3＝70、最高 90 分（如圖）。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "兩班 40～60 分的人數都比 60～70 分多",
+     "mis": "QT07",
+     "feedback": "你看到 40～60 那段比較長，就以為人比較多。每一段大約各有 1/4 的人，段長只表示分數比較分散。"
+    },
+    {
+     "key": "B",
+     "text": "兩班的平均成績都是 60 分",
+     "mis": "QT06",
+     "feedback": "你把中線當成平均數。中線是 Q2，也就是中位數；平均數從盒狀圖看不出來。"
+    },
+    {
+     "key": "C",
+     "text": "兩班的成績資料一定完全相同",
+     "mis": "QT08",
+     "feedback": "盒狀圖只畫出五個數，五個數一樣，中間每個人的分數仍可能不同。換兩份不同的成績也能畫出同一個盒狀圖。"
+    },
+    {
+     "key": "D",
+     "text": "兩班都至少有一半同學的成績大於或等於 60 分",
+     "mis": null,
+     "feedback": "正確！60 分是 Q2（中位數），大於或等於中位數的資料至少占一半。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "盒狀圖畫的是哪五個數？中線是哪一個數？",
+   "seg": "九下2-1-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"15\" x2=\"20\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"15\" x2=\"40\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"15\" x2=\"80\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"15\" x2=\"100\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"15\" x2=\"120\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"15\" x2=\"140\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"15\" x2=\"160\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"15\" x2=\"180\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"15\" x2=\"200\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"15\" x2=\"220\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"38\" x2=\"100\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"160\" y1=\"38\" x2=\"200\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"30\" x2=\"60\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"200\" y1=\"30\" x2=\"200\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"100\" y=\"24\" width=\"60\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"24\" x2=\"140\" y2=\"52\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"43\" font-size=\"13\">甲</text><line x1=\"60\" y1=\"85\" x2=\"100\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"160\" y1=\"85\" x2=\"200\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"77\" x2=\"60\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"200\" y1=\"77\" x2=\"200\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"100\" y=\"71\" width=\"60\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"71\" x2=\"140\" y2=\"99\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"90\" font-size=\"13\">乙</text><line x1=\"20\" y1=\"112\" x2=\"220\" y2=\"112\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"112\" x2=\"20\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"112\" x2=\"40\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"112\" x2=\"60\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"112\" x2=\"80\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"112\" x2=\"100\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"112\" x2=\"120\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"112\" x2=\"140\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"112\" x2=\"160\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"112\" x2=\"180\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"112\" x2=\"200\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"112\" x2=\"220\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"144\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "D-9-1",
+   "stem": "甲班成績：最低 10、Q1＝55、Q2＝62、Q3＝70、最高 98；乙班成績：最低 30、Q1＝45、Q2＝60、Q3＝78、最高 90（如圖）。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲班全距較大，所以甲班中間一半的成績也比較分散",
+     "mis": "QT09",
+     "feedback": "你只看全距。甲班全距大是因為有 10 分這個極端值；比較中間一半要看四分位距：甲 70−55＝15，乙 78−45＝33。"
+    },
+    {
+     "key": "B",
+     "text": "甲班的平均成績比乙班高 2 分",
+     "mis": "QT06",
+     "feedback": "你把中線 62、60 當成平均數。中線是中位數，平均數從盒狀圖看不出來。"
+    },
+    {
+     "key": "C",
+     "text": "乙班 60～78 分的人數比 45～60 分多",
+     "mis": "QT07",
+     "feedback": "你看到 60～78 那段比較長，就以為人比較多。兩段大約各有乙班 1/4 的人。"
+    },
+    {
+     "key": "D",
+     "text": "甲班的四分位距比乙班小，甲班中間一半的成績比較集中",
+     "mis": null,
+     "feedback": "正確！甲班四分位距 70−55＝15，乙班 78−45＝33，甲班中間一半比較集中。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "比較中間一半的資料，要看全距還是四分位距？",
+   "seg": "九下2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"15\" x2=\"20\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"15\" x2=\"40\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"15\" x2=\"80\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"15\" x2=\"100\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"15\" x2=\"120\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"15\" x2=\"140\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"15\" x2=\"160\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"15\" x2=\"180\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"15\" x2=\"200\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"15\" x2=\"220\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"38\" x2=\"130\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"160\" y1=\"38\" x2=\"216\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"40\" y1=\"30\" x2=\"40\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"216\" y1=\"30\" x2=\"216\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"130\" y=\"24\" width=\"30\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"144\" y1=\"24\" x2=\"144\" y2=\"52\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"43\" font-size=\"13\">甲</text><line x1=\"80\" y1=\"85\" x2=\"110\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"176\" y1=\"85\" x2=\"200\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"80\" y1=\"77\" x2=\"80\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"200\" y1=\"77\" x2=\"200\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"110\" y=\"71\" width=\"66\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"71\" x2=\"140\" y2=\"99\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"90\" font-size=\"13\">乙</text><line x1=\"20\" y1=\"112\" x2=\"220\" y2=\"112\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"112\" x2=\"20\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"112\" x2=\"40\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"112\" x2=\"60\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"112\" x2=\"80\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"112\" x2=\"100\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"112\" x2=\"120\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"112\" x2=\"140\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"112\" x2=\"160\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"112\" x2=\"180\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"112\" x2=\"200\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"112\" x2=\"220\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"144\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "D-9-1",
+   "stem": "甲班成績：最低 35、Q1＝50、Q2＝65、Q3＝85、最高 95；乙班成績：最低 5、Q1＝55、Q2＝68、Q3＝75、最高 100（如圖）。下列哪一個敘述正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "乙班的四分位距比甲班小，乙班中間一半的成績比較集中",
+     "mis": null,
+     "feedback": "正確！乙班四分位距 75−55＝20，甲班 85−50＝35，乙班中間一半比較集中。"
+    },
+    {
+     "key": "B",
+     "text": "乙班全距較大，所以乙班中間一半的成績也比較分散",
+     "mis": "QT09",
+     "feedback": "你只看全距。乙班全距大是因為有 5 分這個極端值；比較中間一半要看四分位距：甲 85−50＝35，乙 75−55＝20。"
+    },
+    {
+     "key": "C",
+     "text": "甲班 65～85 分的人數比 50～65 分多",
+     "mis": "QT07",
+     "feedback": "你看到 65～85 那段比較長，就以為人比較多。兩段大約各有甲班 1/4 的人。"
+    },
+    {
+     "key": "D",
+     "text": "乙班的平均成績比甲班高 3 分",
+     "mis": "QT06",
+     "feedback": "你把中線 68、65 當成平均數。中線是中位數，平均數從盒狀圖看不出來。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "比較中間一半的資料，要看全距還是四分位距？",
+   "seg": "九下2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"15\" x2=\"20\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"15\" x2=\"40\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"15\" x2=\"80\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"15\" x2=\"100\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"15\" x2=\"120\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"15\" x2=\"140\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"15\" x2=\"160\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"15\" x2=\"180\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"15\" x2=\"200\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"15\" x2=\"220\" y2=\"112\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"90\" y1=\"38\" x2=\"120\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"190\" y1=\"38\" x2=\"210\" y2=\"38\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"90\" y1=\"30\" x2=\"90\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"210\" y1=\"30\" x2=\"210\" y2=\"46\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"120\" y=\"24\" width=\"70\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"150\" y1=\"24\" x2=\"150\" y2=\"52\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"43\" font-size=\"13\">甲</text><line x1=\"30\" y1=\"85\" x2=\"130\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"170\" y1=\"85\" x2=\"220\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"30\" y1=\"77\" x2=\"30\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"77\" x2=\"220\" y2=\"93\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"130\" y=\"71\" width=\"40\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"156\" y1=\"71\" x2=\"156\" y2=\"99\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"4\" y=\"90\" font-size=\"13\">乙</text><line x1=\"20\" y1=\"112\" x2=\"220\" y2=\"112\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"112\" x2=\"20\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"112\" x2=\"40\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"112\" x2=\"60\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"112\" x2=\"80\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"112\" x2=\"100\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"112\" x2=\"120\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"112\" x2=\"140\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"112\" x2=\"160\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"112\" x2=\"180\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"112\" x2=\"200\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"112\" x2=\"220\" y2=\"117\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"130\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"144\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "理解",
+   "lc": "D-9-1",
+   "stem": "全班 40 人的數學成績盒狀圖：最低 20、Q1＝35、Q2＝45、Q3＝60、最高 100 分（如圖）。成績大於或等於 60 分的至少有幾人？",
+   "options": [
+    {
+     "key": "A",
+     "text": "30 人",
+     "mis": "QT10",
+     "feedback": "40×3/4＝30 是「小於或等於 Q3」那一側的人數，方向弄反了。大於或等於 Q3 的是另一側，約占 1/4。"
+    },
+    {
+     "key": "B",
+     "text": "20 人",
+     "mis": "QT07",
+     "feedback": "你看到 60～100 那段占了整個圖一半，就以為有一半的人。鬚的長短不代表人數，那一段約占 1/4。"
+    },
+    {
+     "key": "C",
+     "text": "10 人",
+     "mis": null,
+     "feedback": "正確！大於或等於 Q3 的至少占全部的 1/4：40×(1−3/4)＝10 人。"
+    },
+    {
+     "key": "D",
+     "text": "11 人",
+     "mis": "QT04",
+     "feedback": "40×3/4＝30 是整數，你把 Q3 當成第 30 筆，算了第 30～40 筆共 11 人。Q3 是第 30、31 筆的平均，確定大於或等於 Q3 的是第 31～40 筆，至少 10 人。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "40×(1−3/4)"
+   },
+   "hint": "先在圖上找出 60 分以上是哪一段，那一段約占全部的幾分之幾？",
+   "seg": "九下2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"30\" x2=\"20\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"30\" x2=\"40\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"30\" x2=\"60\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"30\" x2=\"80\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"30\" x2=\"100\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"30\" x2=\"120\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"30\" x2=\"140\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"30\" x2=\"160\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"30\" x2=\"180\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"30\" x2=\"200\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"30\" x2=\"220\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"68\" x2=\"90\" y2=\"68\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"68\" x2=\"220\" y2=\"68\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"60\" x2=\"60\" y2=\"76\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"60\" x2=\"220\" y2=\"76\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"90\" y=\"54\" width=\"50\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"110\" y1=\"54\" x2=\"110\" y2=\"82\" stroke=\"#333\" stroke-width=\"2\"/><line x1=\"20\" y1=\"105\" x2=\"220\" y2=\"105\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"105\" x2=\"20\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"105\" x2=\"40\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"105\" x2=\"60\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"105\" x2=\"80\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"105\" x2=\"100\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"105\" x2=\"120\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"105\" x2=\"140\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"105\" x2=\"160\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"105\" x2=\"180\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"105\" x2=\"200\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"105\" x2=\"220\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"137\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "理解",
+   "lc": "D-9-1",
+   "stem": "全班 32 人的英文成績盒狀圖：最低 10、Q1＝30、Q2＝40、Q3＝50、最高 90 分（如圖）。成績大於或等於 50 分的至少有幾人？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8 人",
+     "mis": null,
+     "feedback": "正確！大於或等於 Q3 的至少占全部的 1/4：32×(1−3/4)＝8 人。"
+    },
+    {
+     "key": "B",
+     "text": "9 人",
+     "mis": "QT04",
+     "feedback": "32×3/4＝24 是整數，你把 Q3 當成第 24 筆，算了第 24～32 筆共 9 人。Q3 是第 24、25 筆的平均，確定大於或等於 Q3 的是第 25～32 筆，至少 8 人。"
+    },
+    {
+     "key": "C",
+     "text": "24 人",
+     "mis": "QT10",
+     "feedback": "32×3/4＝24 是「小於或等於 Q3」那一側的人數，方向弄反了。大於或等於 Q3 的是另一側，約占 1/4。"
+    },
+    {
+     "key": "D",
+     "text": "16 人",
+     "mis": "QT07",
+     "feedback": "你看到 50～90 那段占了整個圖一半，就以為有一半的人。鬚的長短不代表人數，那一段約占 1/4。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "32×(1−3/4)"
+   },
+   "hint": "先在圖上找出 50 分以上是哪一段，那一段約占全部的幾分之幾？",
+   "seg": "九下2-1-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"30\" x2=\"20\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"30\" x2=\"40\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"60\" y1=\"30\" x2=\"60\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"80\" y1=\"30\" x2=\"80\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"100\" y1=\"30\" x2=\"100\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"120\" y1=\"30\" x2=\"120\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"140\" y1=\"30\" x2=\"140\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"160\" y1=\"30\" x2=\"160\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"180\" y1=\"30\" x2=\"180\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"200\" y1=\"30\" x2=\"200\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"220\" y1=\"30\" x2=\"220\" y2=\"105\" stroke=\"#ccc\" stroke-width=\"1\"/><line x1=\"40\" y1=\"68\" x2=\"80\" y2=\"68\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"120\" y1=\"68\" x2=\"200\" y2=\"68\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"40\" y1=\"60\" x2=\"40\" y2=\"76\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"200\" y1=\"60\" x2=\"200\" y2=\"76\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"80\" y=\"54\" width=\"40\" height=\"28\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"54\" x2=\"100\" y2=\"82\" stroke=\"#333\" stroke-width=\"2\"/><line x1=\"20\" y1=\"105\" x2=\"220\" y2=\"105\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"20\" y1=\"105\" x2=\"20\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"20\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">0</text><line x1=\"40\" y1=\"105\" x2=\"40\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"105\" x2=\"60\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"60\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">20</text><line x1=\"80\" y1=\"105\" x2=\"80\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"100\" y1=\"105\" x2=\"100\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"100\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">40</text><line x1=\"120\" y1=\"105\" x2=\"120\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"140\" y1=\"105\" x2=\"140\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"140\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">60</text><line x1=\"160\" y1=\"105\" x2=\"160\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"180\" y1=\"105\" x2=\"180\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"180\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">80</text><line x1=\"200\" y1=\"105\" x2=\"200\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"220\" y1=\"105\" x2=\"220\" y2=\"110\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"220\" y=\"123\" font-size=\"12\" text-anchor=\"middle\">100</text><text x=\"220\" y=\"137\" font-size=\"12\" text-anchor=\"end\">成績（分）</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "記憶",
+   "lc": "D-9-1",
+   "stem": "8 位同學的仰臥起坐次數：31、18、45、27、52、22、38、60。這組資料的全距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "29",
+     "mis": "QT01",
+     "feedback": "你用題目寫的最後一個數減第一個數 60−31，資料還沒排序。全距是最大值−最小值。"
+    },
+    {
+     "key": "B",
+     "text": "30",
+     "mis": "QT12",
+     "feedback": "你先去掉最大值 60 和最小值 18，再用 52−22。全距要用全部資料，就是 60−18。"
+    },
+    {
+     "key": "C",
+     "text": "24",
+     "mis": "QT05",
+     "feedback": "你算的是 Q3−Q1＝48.5−24.5，那是四分位距。全距是最大值−最小值。"
+    },
+    {
+     "key": "D",
+     "text": "42",
+     "mis": null,
+     "feedback": "正確！全距＝最大值−最小值＝60−18＝42。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "fn": "range",
+    "nums": [
+     31,
+     18,
+     45,
+     27,
+     52,
+     22,
+     38,
+     60
+    ]
+   },
+   "hint": "全距是哪兩個數相減？",
+   "seg": "九下2-1-S3"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "記憶",
+   "lc": "D-9-1",
+   "stem": "12 位同學的跳遠成績（公寸）：14、25、30、9、41、19、12、36、22、17、28、47。這組資料的全距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "17.5",
+     "mis": "QT05",
+     "feedback": "你算的是 Q3−Q1＝33−15.5，那是四分位距。全距是最大值−最小值。"
+    },
+    {
+     "key": "B",
+     "text": "38",
+     "mis": null,
+     "feedback": "正確！全距＝最大值−最小值＝47−9＝38。"
+    },
+    {
+     "key": "C",
+     "text": "33",
+     "mis": "QT01",
+     "feedback": "你用題目寫的最後一個數減第一個數 47−14，資料還沒排序。全距是最大值−最小值。"
+    },
+    {
+     "key": "D",
+     "text": "29",
+     "mis": "QT12",
+     "feedback": "你先去掉最大值 47 和最小值 9，再用 41−12。全距要用全部資料，就是 47−9。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "fn": "range",
+    "nums": [
+     14,
+     25,
+     30,
+     9,
+     41,
+     19,
+     12,
+     36,
+     22,
+     17,
+     28,
+     47
+    ]
+   },
+   "hint": "全距是哪兩個數相減？",
+   "seg": "九下2-1-S3"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "分析",
+   "lc": "D-9-1",
+   "stem": "8 筆資料由小到大排列：40、52、55、60、64、70、78、95。如果把最大值 95 改成 150，新的四分位距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "110",
+     "mis": "QT05",
+     "feedback": "150−40 是新的全距，不是四分位距。四分位距是 Q3−Q1。"
+    },
+    {
+     "key": "B",
+     "text": "20.5",
+     "mis": null,
+     "feedback": "正確！Q1＝(52＋55)÷2＝53.5，Q3＝(70＋78)÷2＝74，最大值改了，Q1、Q3 都不變，四分位距仍是 20.5。"
+    },
+    {
+     "key": "C",
+     "text": "75.5",
+     "mis": "QT11",
+     "feedback": "你以為最大值多了 55，四分位距也跟著多 55。改的是最大值，Q1、Q3 的位置和數值都沒變，四分位距不受影響。"
+    },
+    {
+     "key": "D",
+     "text": "18",
+     "mis": "QT04",
+     "feedback": "8×1/4＝2、8×3/4＝6 是整數，你只取了第 2 筆和第 6 筆（70−52）。要取第 2、3 筆和第 6、7 筆的平均。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(70+78)/2−(52+55)/2"
+   },
+   "hint": "最大值改變時，Q1、Q3 會不會變？",
+   "seg": "九下2-1-S3"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "分析",
+   "lc": "D-9-1",
+   "stem": "12 筆資料由小到大排列：12、15、18、20、22、25、27、30、33、36、40、48。如果把最大值 48 改成 98，新的四分位距是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "15",
+     "mis": "QT04",
+     "feedback": "12×1/4＝3、12×3/4＝9 是整數，你只取了第 3 筆和第 9 筆（33−18）。要取第 3、4 筆和第 9、10 筆的平均。"
+    },
+    {
+     "key": "B",
+     "text": "65.5",
+     "mis": "QT11",
+     "feedback": "你以為最大值多了 50，四分位距也跟著多 50。改的是最大值，Q1、Q3 的位置和數值都沒變，四分位距不受影響。"
+    },
+    {
+     "key": "C",
+     "text": "86",
+     "mis": "QT05",
+     "feedback": "98−12 是新的全距，不是四分位距。四分位距是 Q3−Q1。"
+    },
+    {
+     "key": "D",
+     "text": "15.5",
+     "mis": null,
+     "feedback": "正確！Q1＝(18＋20)÷2＝19，Q3＝(33＋36)÷2＝34.5，最大值改了，Q1、Q3 都不變，四分位距仍是 15.5。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(33+36)/2−(18+20)/2"
+   },
+   "hint": "最大值改變時，Q1、Q3 會不會變？",
+   "seg": "九下2-1-S3"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字。四分位數一律用課本 n×k/4 位置法（康軒 p.59、南一 p.56、翰林 p.61）",
+ "updated": "2026-11-05T01:45"
+}
