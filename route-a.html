@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>課堂形成性檢核・路線A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --paper:#f3ead7; --paper2:#eadfc6; --card:#fbf6ea; --ink:#2a2420; --ink2:#5d5248; --ink3:#8c7f70;
+  --line:#d8c9a8; --zhu:#b5432f; --zhu-l:#f3d9d0; --qing:#4f8a78; --qing-l:#d6e8e0; --huang:#b98a1e; --huang-l:#f3e6c2;
+  --dai:#3c587a; --dai-l:#d9e2ee;
+  --oA:#3c587a; --oB:#b98a1e; --oC:#8b5a3c; --oD:#6d5a8a; --oE:#4a6b4a;
+  --serif:'Noto Serif TC','Songti TC','PMingLiU',serif; --sans:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#d9ccb0;font-family:var(--sans);color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center;
+  background:var(--paper);background-image:radial-gradient(circle at 20% 10%,rgba(255,255,255,.5),transparent 40%),radial-gradient(circle at 90% 90%,rgba(181,67,47,.05),transparent 40%);
+  box-shadow:0 10px 40px rgba(60,40,20,.25);overflow:hidden;display:flex;flex-direction:column}
+header.top{height:64px;flex:0 0 64px;display:flex;align-items:center;gap:18px;padding:0 28px;border-bottom:2px solid var(--line);background:rgba(251,246,234,.7)}
+.brand{font-family:var(--serif);font-weight:900;font-size:26px;letter-spacing:2px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand .seal{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:6px;background:var(--zhu);color:#fff;font-size:17px;letter-spacing:0}
+.route-tag{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;border:1.5px solid var(--ink2);color:var(--ink2);font-family:var(--sans);letter-spacing:0}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;padding:6px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--ink3)}
+.dot.on{background:var(--qing)} .dot.warn{background:var(--huang)} .dot.off{background:var(--zhu)}
+main{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;padding:26px 32px;display:flex;flex-direction:column;gap:18px}
+footer.by{position:absolute;right:18px;bottom:8px;font-size:12px;color:var(--ink3);font-family:var(--serif);pointer-events:none}
+h1,h2,h3{font-family:var(--serif);margin:0}
+.btn{font-family:var(--sans);font-weight:700;font-size:17px;border:2px solid var(--ink);background:var(--card);color:var(--ink);padding:10px 20px;border-radius:10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s;white-space:nowrap}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+.btn.zhu{background:var(--zhu);color:#fff;border-color:#7d2a1c;box-shadow:3px 3px 0 #7d2a1c}
+.btn.qing{background:var(--qing);color:#fff;border-color:#2f5b4d;box-shadow:3px 3px 0 #2f5b4d}
+.btn.dai{background:var(--dai);color:#fff;border-color:#243a55;box-shadow:3px 3px 0 #243a55}
+.btn.ghost{box-shadow:none;border-color:var(--line);background:transparent}
+.btn.sm{font-size:14px;padding:6px 12px;border-radius:8px;box-shadow:2px 2px 0 var(--ink)}
+.btn.big{font-size:22px;padding:16px 28px;border-radius:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px}
+.muted{color:var(--ink3)} .small{font-size:14px}
+input[type=text],input[type=number],input[type=password],textarea,select{font-family:var(--sans);font-size:18px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:#fffdf7;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--dai)}
+label.fl{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:15px;color:var(--ink2)}
+.row{display:flex;gap:14px;align-items:center}
+.col{display:flex;flex-direction:column;gap:12px}
+sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:super}
+.math{font-family:'Times New Roman',var(--serif);letter-spacing:.5px}
+
+/* ---------- 首頁 ---------- */
+#v-home{align-items:center;justify-content:center;gap:30px}
+#v-home h1{font-size:58px;letter-spacing:6px}
+#v-home .sub{font-size:21px;color:var(--ink2);font-family:var(--serif)}
+.home-choice{display:flex;gap:34px;margin-top:10px}
+.home-card{width:420px;height:250px;border:2.5px solid var(--ink);border-radius:20px;background:var(--card);box-shadow:6px 6px 0 var(--ink);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:transform .1s}
+.home-card:hover{transform:translate(-2px,-2px)}
+.home-card .ic{font-size:60px} .home-card b{font-family:var(--serif);font-size:32px} .home-card span{color:var(--ink2);font-size:16px}
+.home-note{max-width:980px;text-align:center;color:var(--ink2);font-size:16px;line-height:1.7}
+
+/* ---------- 學生 ---------- */
+#v-join{align-items:center;justify-content:center}
+.join-box{width:620px;display:flex;flex-direction:column;gap:20px;align-items:stretch}
+.join-box input{font-size:34px;text-align:center;letter-spacing:6px;padding:14px}
+.err{color:var(--zhu);font-weight:700;background:var(--zhu-l);border:1.5px solid var(--zhu);padding:10px 14px;border-radius:10px}
+#v-stu{padding:22px 40px}
+.stu-head{display:flex;align-items:center;gap:16px}
+.stu-head .qno{font-family:var(--serif);font-weight:900;font-size:24px;color:var(--zhu)}
+.round-banner{background:var(--huang-l);border:2px solid var(--huang);color:#6b4f10;font-weight:700;padding:10px 16px;border-radius:12px;font-size:19px}
+.stem{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1.5}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.opt{display:flex;align-items:center;gap:18px;border:2.5px solid var(--line);border-radius:16px;background:var(--card);padding:18px 22px;cursor:pointer;font-size:32px;min-height:96px;transition:all .1s}
+.opt:hover{border-color:var(--ink2)}
+.opt .k{flex:0 0 52px;height:52px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:26px;font-family:var(--sans)}
+.opt.sel{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink);background:#fff}
+.opt.was{outline:3px dashed var(--ink3);outline-offset:3px}
+.opt.right{border-color:var(--qing);background:var(--qing-l)}
+.opt.wrong{border-color:var(--zhu);background:var(--zhu-l)}
+.opt.dim{opacity:.45}
+.conf{display:flex;gap:14px;align-items:center;font-size:20px;font-weight:700}
+.conf button{font-size:20px;padding:10px 18px;border-radius:12px;border:2px solid var(--line);background:var(--card);cursor:pointer;font-family:var(--sans);font-weight:700}
+.conf button.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.stu-msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+.stu-msg .big{font-family:var(--serif);font-size:46px;font-weight:900}
+.fb{font-size:24px;line-height:1.6;padding:16px 20px;border-radius:14px;border:2px solid}
+.fb.ok{background:var(--qing-l);border-color:var(--qing)} .fb.no{background:var(--zhu-l);border-color:var(--zhu)}
+
+/* ---------- 教師：題庫 ---------- */
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--line)}
+.tab{font-family:var(--serif);font-weight:700;font-size:19px;padding:10px 22px;border:2px solid transparent;border-bottom:none;border-radius:12px 12px 0 0;cursor:pointer;color:var(--ink2);background:transparent;margin-bottom:-2px}
+.tab.on{background:var(--card);border-color:var(--line);color:var(--ink)}
+.tpane{flex:1;display:flex;gap:20px;min-height:0}
+.scroll{overflow:auto;min-height:0}
+.scroll::-webkit-scrollbar{width:10px} .scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px}
+.bank-side{width:360px;flex:0 0 360px;display:flex;flex-direction:column;gap:14px}
+.bank-list{display:flex;flex-direction:column;gap:8px}
+.bank-li{border:2px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;background:var(--card)}
+.bank-li.on{border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.bank-li b{font-family:var(--serif);font-size:16px;display:block}
+.bank-li .meta{font-size:13px;color:var(--ink3);margin-top:3px}
+.rtag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;color:#fff;margin-right:6px;vertical-align:1px}
+.rtag.A{background:var(--dai)} .rtag.B{background:var(--huang)}
+.items{flex:1;display:flex;flex-direction:column;gap:10px;padding-right:6px}
+.item{border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:12px 16px}
+.item-h{display:flex;gap:12px;align-items:center}
+.item-h input[type=checkbox]{width:22px;height:22px;accent-color:var(--zhu)}
+.item-h .st{font-family:var(--serif);font-size:18px;font-weight:700;flex:1}
+.badge{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.pass{background:var(--qing-l);color:#245446;border:1px solid var(--qing)}
+.badge.fail{background:var(--zhu-l);color:#7d2a1c;border:1px solid var(--zhu)}
+.badge.manual{background:var(--huang-l);color:#6b4f10;border:1px solid var(--huang)}
+.badge.bl{background:var(--dai-l);color:var(--dai);border:1px solid var(--dai)}
+.item-o{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 18px;margin:8px 0 0 34px;font-size:15px}
+.item-o div{display:flex;gap:8px;align-items:baseline}
+.item-o .ok{color:#245446;font-weight:700}
+.mis-code{font-size:12px;font-weight:700;color:var(--zhu);border:1px solid var(--zhu);border-radius:5px;padding:0 5px}
+.diag{font-size:12px;color:var(--ink3)}
+.vmsg{margin:6px 0 0 34px;font-size:13.5px;color:#7d2a1c}
+.vmsg.w{color:#6b4f10}
+.create-box{display:flex;flex-direction:column;gap:10px}
+
+/* ---------- 教師：即時儀表板 ---------- */
+#v-live{padding:18px 26px;gap:14px}
+.live-bar{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.code-big{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:6px;color:var(--zhu);background:var(--card);border:2px solid var(--zhu);border-radius:12px;padding:2px 16px;cursor:pointer}
+.phase{font-weight:700;font-size:16px;padding:6px 12px;border-radius:10px;background:var(--paper2)}
+.phase.open{background:var(--qing);color:#fff} .phase.locked{background:var(--huang);color:#fff} .phase.reveal{background:var(--dai);color:#fff}
+.live-grid{flex:1;display:grid;grid-template-columns:1.12fr 1fr;grid-template-rows:auto 1fr;gap:14px;min-height:0}
+.panel{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:0;position:relative}
+.panel h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.panel h3 .n{font-family:var(--sans);font-size:14px;color:var(--ink3);font-weight:500}
+.live-stem{font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.45}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:44px 1fr 64px;gap:10px;align-items:center}
+.bar-row .k{height:40px;border-radius:9px;color:#fff;font-weight:900;font-size:20px;display:grid;place-items:center}
+.bar-track{position:relative;height:46px;background:var(--paper2);border-radius:9px;overflow:hidden}
+.bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:9px;transition:width .4s ease;opacity:.3;border-right:6px solid rgba(0,0,0,.25)}
+.bar-fill.r2{opacity:.42;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 8px,transparent 8px 16px)}
+.bar-txt{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;font-weight:700;color:var(--ink);white-space:nowrap;display:flex;gap:10px;align-items:center}
+.bar-row .cnt{font-size:22px;font-weight:900;text-align:right;font-family:var(--serif)}
+.bar-row.right .bar-track{outline:3px solid var(--qing);outline-offset:1px}
+.bar-ghost{position:absolute;top:0;bottom:0;border-right:3px dashed var(--ink2);transition:left .4s}
+.mis-bars{display:flex;flex-direction:column;gap:8px}
+.mis-row{display:grid;grid-template-columns:1fr 54px;gap:10px;align-items:center;cursor:pointer}
+.mis-row .t{font-size:16px;font-weight:700;margin-bottom:3px}
+.mis-row .t .mis-code{margin-right:6px}
+.mis-track{height:24px;background:var(--paper2);border-radius:6px;overflow:hidden;position:relative}
+.mis-fill{position:absolute;left:0;top:0;bottom:0;background:var(--zhu);transition:width .4s}
+.mis-fill.sure{background:#7d2a1c}
+.mis-row .c{font-family:var(--serif);font-weight:900;font-size:22px;text-align:right}
+.mis-seats{font-size:13px;color:var(--ink2);margin-top:2px}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quad div{border-radius:10px;padding:8px 12px;border:1.5px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
+.quad div b{font-family:var(--serif);font-size:26px}
+.quad .q-ok{background:var(--qing-l)} .quad .q-luck{background:#eef3ef} .quad .q-learn{background:#f7eee6} .quad .q-stuck{background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c}
+.seats{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.seat{height:38px;border-radius:8px;border:2px dashed var(--line);display:grid;place-items:center;font-weight:700;font-size:15px;color:var(--ink3);position:relative}
+.seat.in{border-style:solid;border-color:var(--ink3);background:#fff;color:var(--ink2)}
+.seat.ans{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.seat.ok{background:var(--qing);border-color:var(--qing);color:#fff}
+.seat.no{background:var(--zhu);border-color:var(--zhu);color:#fff}
+.seat.sure::after{content:'';position:absolute;inset:-5px;border:3px solid #7d2a1c;border-radius:11px}
+.seat.flash{animation:fl .6s}
+@keyframes fl{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+.suggest{font-size:15.5px;font-weight:700;padding:8px 12px;border-radius:10px;background:var(--huang-l);border:1.5px solid var(--huang);color:#5c430c}
+.veil{position:absolute;inset:44px 10px 10px;background:repeating-linear-gradient(135deg,var(--paper2) 0 14px,var(--card) 14px 28px);border-radius:10px;display:grid;place-items:center;font-weight:700;color:var(--ink2);font-size:18px;text-align:center}
+.trans{display:flex;gap:8px;flex-wrap:wrap}
+.trans span{font-size:14px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--paper2)}
+.qr-modal{position:absolute;inset:0;background:rgba(42,36,32,.55);display:grid;place-items:center;z-index:50}
+.qr-box{background:var(--card);border-radius:22px;padding:30px 44px;display:flex;gap:40px;align-items:center;border:3px solid var(--ink)}
+.qr-box .c{font-family:var(--serif);font-weight:900;font-size:110px;letter-spacing:14px;color:var(--zhu);line-height:1}
+#qr{background:#fff;padding:12px;border-radius:10px}
+
+/* ---------- 出場摘要 ---------- */
+#v-sum{gap:14px}
+.sum-grid{flex:1;display:grid;grid-template-columns:1fr 1.15fr;gap:16px;min-height:0}
+.stat-row{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
+.stat b{display:block;font-family:var(--serif);font-size:32px} .stat span{font-size:14px;color:var(--ink3)}
+table.t{border-collapse:collapse;width:100%;font-size:15px}
+table.t th,table.t td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:center}
+table.t th{background:var(--paper2);font-weight:700;position:sticky;top:0}
+table.t td.l,table.t th.l{text-align:left}
+.grp{border:1.5px solid var(--line);border-left:6px solid var(--zhu);border-radius:10px;padding:10px 14px;background:#fff}
+.grp h4{margin:0 0 4px;font-size:17px;font-family:var(--serif)}
+.grp .seatsline{font-size:15px;font-weight:700;color:var(--zhu)}
+.grp .rem{font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.55}
+
+/* ---------- 路線 B：AI 生題 / 比較 ---------- */
+.gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
+.gen-form textarea{height:150px;resize:none;font-size:15.5px;line-height:1.5}
+.keynote{font-size:13.5px;color:var(--ink2);line-height:1.6;background:var(--paper2);border-radius:10px;padding:10px 12px}
+.spinner{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--zhu);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.cmp td{font-size:15.5px}
+.cmp td.better{font-weight:900;color:#245446}
+.toast{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;z-index:80;font-size:17px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <header class="top">
+    <div class="brand"><span class="seal">檢</span>課堂形成性檢核 <span class="route-tag" id="route-tag"></span></div>
+    <div class="sp"></div>
+    <span class="chip" id="mode-chip"><span class="dot" id="mode-dot"></span><span id="mode-txt">未連線</span></span>
+    <button class="btn sm ghost" id="btn-home" hidden>⌂ 首頁</button>
+  </header>
+  <main>
+    <!-- 首頁 -->
+    <section class="view" id="v-home">
+      <h1>課堂形成性檢核</h1>
+      <div class="sub" id="home-sub"></div>
+      <div class="home-choice">
+        <div class="home-card" id="go-stu"><div class="ic">✍️</div><b>學生作答</b><span>輸入課堂代碼與座號</span></div>
+        <div class="home-card" id="go-tea"><div class="ic">📊</div><b>教師控台</b><span>題庫・開題・迷思儀表板</span></div>
+      </div>
+      <div class="home-note" id="home-note"></div>
+    </section>
+
+    <!-- 學生：加入 -->
+    <section class="view" id="v-join" hidden>
+      <div class="join-box card">
+        <h2 style="font-size:32px;text-align:center">加入課堂</h2>
+        <label class="fl">課堂代碼<input type="text" id="j-code" maxlength="8" autocomplete="off" placeholder="例如 K7Q2"></label>
+        <label class="fl">座號<input type="number" id="j-seat" min="1" max="60" inputmode="numeric" placeholder="1"></label>
+        <label class="row small muted" id="j-demo-wrap"><input type="checkbox" id="j-demo"> 示範模式（和教師控台開在同一台電腦測試用）</label>
+        <div class="err" id="j-err" hidden></div>
+        <button class="btn zhu big" id="j-go">進入課堂</button>
+      </div>
+    </section>
+
+    <!-- 學生：作答 -->
+    <section class="view" id="v-stu" hidden></section>
+
+    <!-- 教師：登入 -->
+    <section class="view" id="v-tlogin" hidden style="align-items:center;justify-content:center">
+      <div class="card col" style="width:640px;gap:18px;padding:30px">
+        <h2 style="font-size:30px">教師登入</h2>
+        <p class="muted" style="margin:0;line-height:1.7">雲端模式：用教師 Google 帳號登入，學生用平板即時作答。<br>示範模式：不連網路，在這台電腦開另一個分頁當學生，或用「模擬全班」看儀表板效果。</p>
+        <button class="btn dai big" id="t-google">以 Google 帳號登入（雲端）</button>
+        <button class="btn big" id="t-demo">進入示範模式（本機）</button>
+        <div class="err" id="t-err" hidden></div>
+      </div>
+    </section>
+
+    <!-- 教師：題庫與建立場次 -->
+    <section class="view" id="v-tbank" hidden>
+      <div class="tabs" id="t-tabs"></div>
+      <div class="tpane" id="tp-bank">
+        <div class="bank-side">
+          <div class="row" style="justify-content:space-between"><h3 style="font-size:20px">題庫</h3>
+            <div class="row" style="gap:8px"><button class="btn sm" id="b-import">匯入 JSON</button><button class="btn sm" id="b-export">匯出</button></div></div>
+          <input type="file" id="b-file" accept=".json,application/json" hidden>
+          <div class="bank-list scroll" id="bank-list" style="max-height:330px"></div>
+          <div class="card create-box">
+            <h3 style="font-size:19px">建立場次</h3>
+            <div class="row"><label class="fl" style="flex:1">班級<input type="text" id="c-label" value="701"></label>
+              <label class="fl" style="width:110px">人數<input type="number" id="c-size" value="28" min="1" max="60"></label></div>
+            <div class="small muted" id="c-picked"></div>
+            <button class="btn zhu" id="c-go">建立場次並產生代碼</button>
+            <button class="btn sm ghost" id="c-resume" hidden>回到進行中的場次</button>
+          </div>
+        </div>
+        <div class="col" style="flex:1;min-height:0">
+          <div class="row" style="justify-content:space-between">
+            <div><h3 style="font-size:22px" id="bank-title"></h3><div class="small muted" id="bank-meta"></div></div>
+            <div class="row" style="gap:8px"><button class="btn sm" id="b-selall">全選通過題</button><button class="btn sm ghost" id="b-selnone">全不選</button></div>
+          </div>
+          <div class="items scroll" id="item-list"></div>
+        </div>
+      </div>
+      <div class="tpane" id="tp-gen" hidden></div>
+      <div class="tpane" id="tp-cmp" hidden></div>
+      <div class="tpane" id="tp-howto" hidden></div>
+    </section>
+
+    <!-- 教師：即時儀表板 -->
+    <section class="view" id="v-live" hidden>
+      <div class="live-bar">
+        <span class="code-big" id="l-code" title="點一下放大 QR Code"></span>
+        <span class="chip" id="l-class"></span>
+        <span class="phase" id="l-phase"></span>
+        <span class="chip" id="l-count"></span>
+        <span class="chip" id="l-timer">⏱ 0:00</span>
+        <div class="sp" style="flex:1"></div>
+        <button class="btn sm" id="l-prev">◀ 上一題</button>
+        <span class="chip" id="l-qno"></span>
+        <button class="btn sm" id="l-next">下一題 ▶</button>
+      </div>
+      <div class="live-bar">
+        <button class="btn qing" id="l-open">▶ 開放作答</button>
+        <button class="btn" id="l-lock">⏸ 鎖題</button>
+        <button class="btn" id="l-r2">🗣 討論後第二輪</button>
+        <button class="btn dai" id="l-reveal">公布答案</button>
+        <div class="suggest" id="l-suggest" hidden></div>
+        <div class="sp" style="flex:1"></div>
+        <button class="btn sm" id="l-sim" hidden>🤖 模擬全班作答</button>
+        <button class="btn sm ghost" id="l-veil">🙈 投影保護：關</button>
+        <button class="btn sm" id="l-sum">出場摘要</button>
+        <button class="btn sm ghost" id="l-back">題庫</button>
+      </div>
+      <div class="live-grid">
+        <div class="panel" style="grid-row:1/3">
+          <h3>選項分布 <span class="n" id="l-optn"></span></h3>
+          <div class="live-stem" id="l-stem"></div>
+          <div class="bars" id="l-bars"></div>
+          <div class="trans" id="l-trans"></div>
+          <h3 style="margin-top:auto">座號 <span class="n">灰虛線＝未加入　白＝已加入　深色＝已作答　公布後：綠對／紅錯，粗框＝很確定卻答錯</span></h3>
+          <div class="seats" id="l-seats"></div>
+        </div>
+        <div class="panel">
+          <h3>信心 × 對錯 <span class="n" id="l-quadn"></span></h3>
+          <div class="quad" id="l-quad"></div>
+          <div class="veil" id="veil1" hidden>投影保護中：公布答案後顯示</div>
+        </div>
+        <div class="panel">
+          <h3>迷思分布 <span class="n">本題，點一下看座號</span></h3>
+          <div class="mis-bars scroll" id="l-mis"></div>
+          <div class="veil" id="veil2" hidden>投影保護中：公布答案後顯示</div>
+        </div>
+      </div>
+      <div class="qr-modal" id="qr-modal" hidden>
+        <div class="qr-box"><div id="qr"></div><div class="col" style="gap:14px"><div class="muted" style="font-size:22px">課堂代碼</div><div class="c" id="qr-code"></div>
+          <div class="small muted" id="qr-url" style="max-width:520px;word-break:break-all"></div><button class="btn" id="qr-close">關閉</button></div></div>
+      </div>
+    </section>
+
+    <!-- 出場摘要 -->
+    <section class="view" id="v-sum" hidden></section>
+    <div class="toast" id="toast" hidden></div>
+  </main>
+  <footer class="by">蘇恭弘。數學王子。台南市忠孝國中製作</footer>
+</div>
+
+<script>
+/* ============================================================
+   形成性檢核：題庫自動驗算器（路線 A、B 共用）
+   - 解析題目選項裡的算式（2^3×3^2×5、{2, 3, 5}、72）
+   - 依 check.type 重算正解，並判讀每個誘答選項「錯在哪」
+   ============================================================ */
+(function (G) {
+  'use strict';
+
+  // ---------- 數論小工具 ----------
+  function isPrime(n) {
+    if (!Number.isInteger(n) || n < 2) return false;
+    for (let d = 2; d * d <= n; d++) if (n % d === 0) return false;
+    return true;
+  }
+  function factorize(n) {                 // → [[p, e], ...] 由小到大
+    const out = []; let m = n;
+    for (let p = 2; p * p <= m; p++) {
+      let e = 0; while (m % p === 0) { m /= p; e++; }
+      if (e) out.push([p, e]);
+    }
+    if (m > 1) out.push([m, 1]);
+    return out;
+  }
+  const distinctPrimes = n => factorize(n).length;
+  const primeFactorCount = n => factorize(n).reduce((s, [, e]) => s + e, 0);
+  const divisorCount = n => factorize(n).reduce((s, [, e]) => s * (e + 1), 1);
+  const FN = { distinctPrimes, primeFactorCount, divisorCount };
+
+  // ---------- 算式解析 ----------
+  // 統一符號：× x X * · ⋅ → *；÷ → /；上標數字 → ^n；全形數字 → 半形
+  const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9' };
+  function norm(s) {
+    s = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFF10 + 48));
+    s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m => '^' + m.split('').map(c => SUP[c]).join(''));
+    return s.replace(/[×xX*·⋅]/g, '*').replace(/÷/g, '/').replace(/（/g, '(').replace(/）/g, ')')
+            .replace(/－/g, '-').replace(/＋/g, '+').replace(/\s+/g, '');
+  }
+
+  // 一般四則＋次方（安全解析，不用 eval）
+  function evalExpr(src) {
+    const s = norm(src); let i = 0;
+    const peek = () => s[i];
+    function num() {
+      const m = /^\d+(\.\d+)?/.exec(s.slice(i));
+      if (!m) throw new Error('無法解析：' + src);
+      i += m[0].length; return parseFloat(m[0]);
+    }
+    function atom() {
+      if (peek() === '(') { i++; const v = add(); if (s[i] !== ')') throw new Error('括號不成對'); i++; return v; }
+      if (peek() === '-') { i++; return -atom(); }
+      return num();
+    }
+    function pow() { const b = atom(); if (peek() === '^') { i++; return Math.pow(b, pow()); } return b; }
+    function mul() { let v = pow(); while (peek() === '*' || peek() === '/') { const o = s[i++]; const r = pow(); v = o === '*' ? v * r : v / r; } return v; }
+    function add() { let v = mul(); while (peek() === '+' || peek() === '-') { const o = s[i++]; const r = mul(); v = o === '+' ? v + r : v - r; } return v; }
+    const v = add();
+    if (i !== s.length) throw new Error('無法解析：' + src);
+    return v;
+  }
+
+  // 乘積式 → [[底數, 指數], ...]（保留原本順序與重複）；不是純乘積就回傳 null
+  function parseProduct(src) {
+    const s = norm(src);
+    if (!/^\d+(\^\d+)?(\*\d+(\^\d+)?)*$/.test(s)) return null;
+    return s.split('*').map(t => { const [b, e] = t.split('^'); return [parseInt(b, 10), e ? parseInt(e, 10) : 1]; });
+  }
+  const productValue = f => f.reduce((v, [b, e]) => v * Math.pow(b, e), 1);
+
+  function parseSet(src) {             // {2, 3, 5} 或 2、3、5
+    const s = String(src).replace(/[{}｛｝\s]/g, '');
+    if (!s) return [];
+    const parts = s.split(/[,，、]/);
+    if (parts.some(p => !/^\d+$/.test(p))) return null;
+    return parts.map(Number);
+  }
+
+  // ---------- 判讀：一個乘積式錯在哪 ----------
+  // 回傳 diag 代碼：standard / has1 / wrongValue / composite / notCombined / order / unparsable
+  function diagnoseFactorization(text, n) {
+    const f = parseProduct(text);
+    if (!f) return { diag: 'unparsable', msg: '不是乘積式' };
+    const val = productValue(f);
+    if (f.some(([b]) => b === 1)) return { diag: 'has1', msg: '含有因數 1' };
+    if (val !== n) return { diag: 'wrongValue', msg: `乘開是 ${val}，不是 ${n}` };
+    if (f.some(([b]) => !isPrime(b))) return { diag: 'composite', msg: '還有合數沒分解完' };
+    const bases = f.map(([b]) => b);
+    if (new Set(bases).size !== bases.length) return { diag: 'notCombined', msg: '相同質因數沒有合併成次方' };
+    for (let k = 1; k < bases.length; k++) if (bases[k] < bases[k - 1]) return { diag: 'order', msg: '質因數沒有由小到大排列' };
+    return { diag: 'standard', msg: '標準分解式' };
+  }
+
+  const DIAG_LABEL = {
+    standard: '正確', has1: '含 1', wrongValue: '值不對', composite: '含合數',
+    notCombined: '未合併次方', order: '未由小到大', unparsable: '無法解析',
+    dupInSet: '重複列出', hasComposite: '含合數', hasOne: '含 1', missing: '缺少質因數',
+    divisorCount: '＝因數個數', primeFactorCount: '＝含重複的質因數個數', distinctPrimes: '＝相異質因數個數',
+    isFactor: '是因數', notFactor: '不是因數', prime: '是質數', composite_n: '是合數',
+    other: '其他'
+  };
+
+  // ---------- 單題驗算 ----------
+  // 回傳 { status: 'pass'|'fail'|'manual', msgs:[...], perOption:{A:{diag,msg,ok}}, computedAnswer }
+  function verifyItem(item, misMap) {
+    const out = { status: 'pass', msgs: [], perOption: {}, computedAnswer: null };
+    const ck = item.check || { type: 'manual' };
+    const opts = item.options || [];
+    const fail = m => { out.status = 'fail'; out.msgs.push(m); };
+    const keys = opts.map(o => o.key);
+
+    // 基本結構
+    if (!item.stem) fail('缺少題幹');
+    if (opts.length < 2) fail('選項少於 2 個');
+    if (new Set(keys).size !== keys.length) fail('選項代號重複');
+    if (!keys.includes(item.answer)) fail('正解代號不在選項中');
+    opts.forEach(o => {
+      if (o.key !== item.answer && !o.mis) out.msgs.push(`選項 ${o.key} 沒有標迷思代碼`);
+      if (o.mis && misMap && !misMap[o.mis]) fail(`選項 ${o.key} 的迷思代碼 ${o.mis} 不在迷思表`);
+      if (o.key === item.answer && o.mis) fail(`正解 ${o.key} 不應標迷思`);
+    });
+
+    let correctKeys = [];
+    try {
+      switch (ck.type) {
+        case 'factorize': {
+          const n = ck.n;
+          out.computedAnswer = factorize(n).map(([p, e]) => e > 1 ? `${p}^${e}` : `${p}`).join('×');
+          opts.forEach(o => { const d = diagnoseFactorization(o.text, n); out.perOption[o.key] = d; if (d.diag === 'standard') correctKeys.push(o.key); });
+          break;
+        }
+        case 'value': {
+          const target = ck.fn ? FN[ck.fn](ck.n) : evalExpr(ck.expr);
+          if (ck.fn && !FN[ck.fn]) throw new Error('不支援的函數 ' + ck.fn);
+          out.computedAnswer = String(target);
+          opts.forEach(o => {
+            let v; try { v = evalExpr(o.text.replace(/[個種]$/, '')); } catch (e) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            const ok = Math.abs(v - target) < 1e-9;
+            let diag = ok ? 'standard' : 'other', msg = ok ? '正確' : `＝${v}`;
+            if (!ok && ck.n) for (const [k, f] of Object.entries(FN)) if (f(ck.n) === v) { diag = k; msg = DIAG_LABEL[k]; }
+            out.perOption[o.key] = { diag, msg };
+            if (ok) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'primeSet': {
+          const want = factorize(ck.n).map(([p]) => p);
+          out.computedAnswer = '{' + want.join(', ') + '}';
+          opts.forEach(o => {
+            const s = parseSet(o.text);
+            if (!s) { out.perOption[o.key] = { diag: 'unparsable', msg: '無法解析' }; return; }
+            let d;
+            if (s.includes(1)) d = { diag: 'has1', msg: '含 1' };
+            else if (new Set(s).size !== s.length) d = { diag: 'dupInSet', msg: '重複列出' };
+            else if (s.some(x => !isPrime(x))) d = { diag: 'hasComposite', msg: '含合數（把因數當質因數）' };
+            else if (s.length === want.length && want.every(p => s.includes(p))) d = { diag: 'standard', msg: '正確' };
+            else d = { diag: 'missing', msg: '缺少或多出質因數' };
+            out.perOption[o.key] = d; if (d.diag === 'standard') correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'isFactor': {
+          const N = Math.round(evalExpr(ck.of));
+          const want = ck.want !== false;
+          out.computedAnswer = (want ? '是 ' : '不是 ') + `${ck.of}（＝${N}）的因數`;
+          opts.forEach(o => {
+            const v = Math.round(evalExpr(o.text));
+            const isF = v !== 0 && N % v === 0;
+            out.perOption[o.key] = { diag: isF ? 'isFactor' : 'notFactor', msg: `${v} ${isF ? '是' : '不是'}因數` };
+            if (isF === want) correctKeys.push(o.key);
+          });
+          break;
+        }
+        case 'isPrime': {
+          const want = ck.want !== false;
+          opts.forEach(o => {
+            const v = Math.round(evalExpr(o.text));
+            const p = isPrime(v);
+            const f = factorize(v);
+            out.perOption[o.key] = { diag: p ? 'prime' : 'composite_n', msg: p ? '質數' : `合數（${f.map(([b, e]) => e > 1 ? b + '^' + e : b).join('×')}）` };
+            if (p === want) correctKeys.push(o.key);
+          });
+          out.computedAnswer = want ? '質數' : '合數';
+          break;
+        }
+        case 'manual':
+        default:
+          out.status = out.status === 'fail' ? 'fail' : 'manual';
+          out.msgs.push('這一題無法自動驗算，請老師人工確認');
+          return out;
+      }
+    } catch (e) { fail('驗算時出錯：' + e.message); return out; }
+
+    if (correctKeys.length === 0) fail('沒有任何選項符合重算結果' + (out.computedAnswer ? `（重算：${out.computedAnswer}）` : ''));
+    else if (correctKeys.length > 1) fail(`有 ${correctKeys.length} 個選項都正確（${correctKeys.join('、')}）`);
+    else if (correctKeys[0] !== item.answer) fail(`重算後正解是 ${correctKeys[0]}，題庫標的是 ${item.answer}`);
+
+    // 迷思標註與自動判讀是否一致（迷思表可寫 diag）
+    if (misMap && ck.type === 'factorize') opts.forEach(o => {
+      const m = o.mis && misMap[o.mis]; const d = out.perOption[o.key];
+      if (m && m.diag && d && d.diag !== m.diag) out.msgs.push(`選項 ${o.key}：自動判讀為「${DIAG_LABEL[d.diag] || d.diag}」，但標的迷思 ${o.mis} 預期「${DIAG_LABEL[m.diag] || m.diag}」`);
+    });
+    return out;
+  }
+
+  function verifyBank(bank) {
+    const misMap = {}; (bank.misconceptions || []).forEach(m => misMap[m.code] = m);
+    const results = {};
+    (bank.items || []).forEach(it => results[it.id] = verifyItem(it, misMap));
+    const vals = Object.values(results);
+    return {
+      results,
+      summary: {
+        total: vals.length,
+        pass: vals.filter(r => r.status === 'pass').length,
+        fail: vals.filter(r => r.status === 'fail').length,
+        manual: vals.filter(r => r.status === 'manual').length,
+        warnings: vals.reduce((s, r) => s + (r.status === 'pass' ? r.msgs.length : 0), 0)
+      }
+    };
+  }
+
+  // 把 2^3×3^2 轉成 HTML 上標
+  function mathHTML(text) {
+    const esc = String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    return esc.replace(/\^(\{([^}]*)\}|[0-9a-zA-Z]+)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
+  }
+
+  G.FAVerify = { isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, parseProduct, parseSet,
+                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+window.ROUTE = 'A';
+window.BANK_A = {"schema": "fa-bank/1", "id": "A-7上2-1-質因數分解", "title": "七上 2-1 質因數分解・標準分解式（路線 A）", "route": "A", "unit": {"grade": "七上", "code": "2-1", "name": "質因數分解、標準分解式", "curriculum": ["N-7-1 質數與合數", "N-7-2 質因數分解的標準分解式"]}, "source": "Claude 依 115-教科書/知識卡/七上2-1.md（三版教學順序、迷思清單、教學建議）產題，題目答案經自動驗算器重算，老師審題後使用", "createdAt": "2026-11-04", "misconceptions": [{"code": "PF01", "name": "把 1 當成質數或質因數", "desc": "分解時寫出 1×…，或把 1 列入質因數", "example": "12＝1×2²×3", "diag": "has1", "remedy": "回到定義：質數要有「恰好兩個」正因數。請學生說 1 有幾個因數，再問寫 1× 會不會改變乘積。", "source": "知識卡迷思「1 是質數／最小合數」三版課本皆處理"}, {"code": "PF02", "name": "質因數與因數混淆", "desc": "把所有因數（含合數）都當成質因數", "example": "60 的質因數：2、3、4、5、6、10", "remedy": "先列出 60 的所有因數，再請學生圈出其中的質數：「質因數＝是因數、又是質數」。", "source": "知識卡迷思「質因數與因數混淆」三版課本皆處理"}, {"code": "PF03", "name": "分解未完全：留下合數就停", "desc": "短除法或樹狀圖做到一半，剩下的商還是合數", "example": "546＝2×3×91", "diag": "composite", "remedy": "請學生檢查最後一列（或每片葉子）是不是都是質數；91＝7×13 常被誤認為質數。", "source": "知識卡迷思「短除法只做一步就停」（南一課本）"}, {"code": "PF04", "name": "相同質因數沒有合併成次方", "desc": "結果正確但仍寫成連乘，不是標準分解式", "example": "72＝2×2×2×3×3", "diag": "notCombined", "remedy": "對照國小與國中的記法：國小寫連乘、國中改記成指數。請學生把連乘「數一數」改寫成次方。", "source": "知識卡：國小六上三版都只寫連乘，國中才改記成標準分解式"}, {"code": "PF05", "name": "質因數沒有由小到大排列", "desc": "值正確、也是質數，但沒有依約定排序", "example": "546＝3×2×7×13", "diag": "order", "remedy": "同一個數用 4×9、2×18、6×6 各拆一次，比較結果，再問「為什麼要約定由小到大」。", "source": "知識卡教學建議；三版七上課本都在定義中約定由小到大"}, {"code": "PF06", "name": "把次方當成乘法", "desc": "把 aⁿ 算成 a×n", "example": "2³×3²＝6×6＝36", "remedy": "把 2³ 展開寫成 2×2×2，再和 2×3 並排比較。", "source": "指數律（七上 2-4）前的常見錯誤"}, {"code": "PF07", "name": "次方數錯（底數與次方對應錯）", "desc": "數錯每個質因數出現的次數，或把次方對調", "example": "72＝2²×3³", "diag": "wrongValue", "remedy": "寫完標準分解式後一定要乘回去驗算；用短除法時數一數每個除數出現幾次。", "source": "知識卡迷思「標準分解式漏記次方或排序」三版皆處理"}, {"code": "PF08", "name": "「相異」質因數重複計數", "desc": "把重複出現的質因數也算進相異質因數的個數", "example": "360 的相異質因數有 6 個（2、2、2、3、3、5）", "remedy": "請學生先寫出標準分解式，再數「底數有幾個」。區分「質因數有哪些」和「質因數連乘中有幾項」。", "source": "標準分解式的讀法"}, {"code": "PF09", "name": "判因數只看底數、忽略次方", "desc": "以為底數都出現在原數中就是因數", "example": "2⁴×3 是 2³×3²×5 的因數", "remedy": "不用算出來：比較同一個質因數的次方，「每個次方都不超過」才是因數。可用知識卡建議題：M＝3³×5²×7 能不能被 15、63、2 整除？", "source": "知識卡：用標準分解式判因倍數只有翰林在 2-1 課文正式教"}, {"code": "PF10", "name": "以為因數要含有全部的質因數", "desc": "認為缺少某個質因數就不是因數", "example": "4 不是 2²×3×7 的因數（因為沒有 3、7）", "remedy": "把 2²×3×7 寫成 4×21，讓學生看到 4 直接是乘數之一。", "source": "用標準分解式判因數的常見錯誤"}, {"code": "PF11", "name": "用「數值比較小」判斷是因數", "desc": "只要比原數小就認為是因數", "example": "14 比 360 小，所以是 360 的因數", "remedy": "回到定義：因數要能整除。請學生舉一個比 360 小但不是因數的數。", "source": "因數定義的常見錯誤"}, {"code": "PF12", "name": "看似質數的合數誤判為質數", "desc": "沒有試除 7、13、17 等較大的質數", "example": "51、57、91 是質數", "remedy": "用篩法或試除到 √n：51＝3×17、57＝3×19、91＝7×13。", "source": "知識卡：三版都有篩法；數字大挑戰中 51 常被當成質數"}, {"code": "PF13", "name": "以為一個數不是自己的因數", "desc": "忽略「a 是 a 的因數」", "example": "84 不是 84 的因數", "remedy": "84÷84＝1，整除，所以 84 是自己的因數；1 和自己是每個正整數都有的因數。", "source": "知識卡：因數倍數定義（三版 2-1 開頭）"}], "items": [{"id": "A01", "bloom": "理解", "lc": "N-7-2", "stem": "72 的標準分解式是哪一個？", "options": [{"key": "A", "text": "2^3×9", "mis": "PF03", "feedback": "9＝3×3 還是合數，要繼續分解。"}, {"key": "B", "text": "2^3×3^2", "mis": null, "feedback": "正確！72＝8×9＝2³×3²。"}, {"key": "C", "text": "2×2×2×3×3", "mis": "PF04", "feedback": "值是對的，但標準分解式要把相同的質因數合併成次方。"}, {"key": "D", "text": "2^2×3^3", "mis": "PF07", "feedback": "乘回去是 4×27＝108，次方對調了。"}], "answer": "B", "check": {"type": "factorize", "n": 72}, "hint": "分解完要檢查：都是質數嗎？相同的有合併嗎？乘回去是 72 嗎？"}, {"id": "A02", "bloom": "分析", "lc": "N-7-2", "stem": "小明用短除法分解 546，做到 546＝2×3×91 就停了。546 的標準分解式應該是哪一個？", "options": [{"key": "A", "text": "2×3×91", "mis": "PF03", "feedback": "91＝7×13，不是質數，還要繼續分解。"}, {"key": "B", "text": "1×2×3×7×13", "mis": "PF01", "feedback": "1 不是質數，標準分解式不寫 1。"}, {"key": "C", "text": "2×3×7×13", "mis": null, "feedback": "正確！91 還能分解成 7×13。"}, {"key": "D", "text": "3×2×7×13", "mis": "PF05", "feedback": "質因數都對，但要由小到大排列。"}], "answer": "C", "check": {"type": "factorize", "n": 546}, "hint": "91 是質數嗎？試試看用 7 除。"}, {"id": "A03", "bloom": "理解", "lc": "N-7-2", "stem": "60 的質因數有哪些？", "options": [{"key": "A", "text": "{1, 2, 3, 5}", "mis": "PF01", "feedback": "1 不是質數，所以不是質因數。"}, {"key": "B", "text": "{2, 3, 5}", "mis": null, "feedback": "正確！60＝2²×3×5，質因數是 2、3、5。"}, {"key": "C", "text": "{2, 2, 3, 5}", "mis": "PF08", "feedback": "問「有哪些」質因數，2 只要列一次。"}, {"key": "D", "text": "{2, 3, 4, 5, 6, 10}", "mis": "PF02", "feedback": "4、6、10 是因數，但不是質數，所以不是質因數。"}], "answer": "B", "check": {"type": "primeSet", "n": 60}, "hint": "質因數＝是 60 的因數，而且是質數。"}, {"id": "A04", "bloom": "應用", "lc": "N-7-2", "stem": "360 有幾個相異的質因數？", "options": [{"key": "A", "text": "3", "mis": null, "feedback": "正確！360＝2³×3²×5，相異質因數是 2、3、5。"}, {"key": "B", "text": "6", "mis": "PF08", "feedback": "6 是把 2、2、2、3、3、5 全部算進去；「相異」只數不同的。"}, {"key": "C", "text": "4", "mis": "PF01", "feedback": "1 不是質因數，不能算進去。"}, {"key": "D", "text": "24", "mis": "PF02", "feedback": "24 是 360 的因數個數，不是質因數個數。"}], "answer": "A", "check": {"type": "value", "fn": "distinctPrimes", "n": 360}, "hint": "先寫出 360 的標準分解式，再數底數有幾種。"}, {"id": "A05", "bloom": "記憶", "lc": "N-7-2", "stem": "2^3×3^2 的值是多少？", "options": [{"key": "A", "text": "36", "mis": "PF06", "feedback": "2³ 是 2×2×2＝8，不是 2×3。"}, {"key": "B", "text": "72", "mis": null, "feedback": "正確！8×9＝72。"}, {"key": "C", "text": "108", "mis": "PF07", "feedback": "108＝2²×3³，次方對調了。"}], "answer": "B", "check": {"type": "value", "expr": "2^3×3^2"}, "hint": "把 2³ 和 3² 先展開成連乘。"}, {"id": "A06", "bloom": "分析", "lc": "N-7-2", "stem": "已知 M＝2^3×3^2×5，下列哪一個是 M 的因數？（不用把 M 算出來）", "options": [{"key": "A", "text": "2^4×3", "mis": "PF09", "feedback": "M 只有 2³，2⁴ 的次方太大，不是因數。"}, {"key": "B", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！每個質因數的次方都不超過 M 的次方。"}, {"key": "C", "text": "2×7", "mis": "PF11", "feedback": "14 比 M 小，但 M 沒有質因數 7，所以不是因數。"}, {"key": "D", "text": "3^3", "mis": "PF09", "feedback": "M 只有 3²，3³ 的次方太大。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^3×3^2×5", "want": true}, "hint": "一個一個質因數比次方：有沒有超過 M？"}, {"id": "A07", "bloom": "分析", "lc": "N-7-2", "stem": "已知 N＝2^2×3×7，下列哪一個「不是」N 的因數？", "options": [{"key": "A", "text": "4", "mis": "PF10", "feedback": "N＝4×21，4 是因數；因數不需要含有全部的質因數。"}, {"key": "B", "text": "8", "mis": null, "feedback": "正確！8＝2³，但 N 只有 2²。"}, {"key": "C", "text": "2×3×7", "mis": "PF10", "feedback": "42 是因數（N＝2×42）；因數不必每個質因數的次方都一樣。"}, {"key": "D", "text": "84", "mis": "PF13", "feedback": "84 就是 N 本身，每個數都是自己的因數。"}], "answer": "B", "check": {"type": "isFactor", "of": "2^2×3×7", "want": false}, "hint": "把每個選項寫成標準分解式，再和 N 比次方。"}, {"id": "A08", "bloom": "理解", "lc": "N-7-2", "stem": "180 的標準分解式是哪一個？", "options": [{"key": "A", "text": "3^2×2^2×5", "mis": "PF05", "feedback": "值對了，但要由小到大排列：2 寫在 3 前面。"}, {"key": "B", "text": "2^2×9×5", "mis": "PF03", "feedback": "9 還是合數，要寫成 3²。"}, {"key": "C", "text": "2^2×3^2×5", "mis": null, "feedback": "正確！"}, {"key": "D", "text": "2×2×3×3×5", "mis": "PF04", "feedback": "值對了，但相同質因數要合併成次方。"}], "answer": "C", "check": {"type": "factorize", "n": 180}, "hint": "和第 1 題一樣，三個檢查：質數、合併、排序。"}, {"id": "A09", "bloom": "應用", "lc": "N-7-1", "stem": "下列哪一個是質數？", "options": [{"key": "A", "text": "51", "mis": "PF12", "feedback": "51＝3×17，各位數字和是 6，是 3 的倍數。"}, {"key": "B", "text": "91", "mis": "PF12", "feedback": "91＝7×13。"}, {"key": "C", "text": "53", "mis": null, "feedback": "正確！53 不能被 2、3、5、7 整除，是質數。"}, {"key": "D", "text": "57", "mis": "PF12", "feedback": "57＝3×19，各位數字和是 12。"}], "answer": "C", "check": {"type": "isPrime", "want": true}, "hint": "試除 2、3、5、7（7×7＝49，8×8＝64 已超過）。"}]};
+</script>
+<script type="module">
+// ============================================================
+//  課堂形成性檢核：主程式（路線 A、B 共用；ROUTE 決定是否顯示 AI 生題）
+// ============================================================
+const V = window.FAVerify;
+const ROUTE = window.ROUTE;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD23OUzbSu2Je_ljhuzZHPnF8sKNw8Elow",
+  authDomain: "prime-challenge-9dafb.firebaseapp.com",
+  projectId: "prime-challenge-9dafb",
+  storageBucket: "prime-challenge-9dafb.firebasestorage.app",
+  messagingSenderId: "1046327881501",
+  appId: "1:1046327881501:web:e33a3f1c08334fb796fbf4"
+};
+const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
+const FB_V = '10.12.2';
+const COL = 'fa_sessions';
+
+// ---------- 小工具 ----------
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const M = t => `<span class="math">${V.mathHTML(t)}</span>`;
+const OPT_COLOR = k => `var(--o${'ABCDE'.includes(k) ? k : 'E'})`;
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { } }
+};
+const ss = {
+  get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { sessionStorage.removeItem(k); } catch (e) { } }
+};
+function toast(msg, ms = 2200) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, ms); }
+function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); $('btn-home').hidden = id === 'v-home'; }
+function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
+function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); $('stage').style.transform = `translate(-50%,-50%) scale(${s})`; }
+addEventListener('resize', fit); fit();
+const rid = () => Math.random().toString(36).slice(2, 10);
+function newCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
+const fmtTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const CONF = { high: '很確定', mid: '有點確定', low: '用猜的' };
+
+// ============================================================
+//  資料層：Firebase（雲端）與 Local（示範模式）實作同一組介面
+// ============================================================
+class LocalStore {
+  constructor() { this.mode = 'demo'; this.uid = ss.get('fa-demo-uid') || rid(); ss.set('fa-demo-uid', this.uid); this.subs = new Set();
+    try { this.bc = new BroadcastChannel('fa-demo'); this.bc.onmessage = () => this._emit(); } catch (e) { this.bc = null; }
+    addEventListener('storage', e => { if (e.key && e.key.startsWith('fa-demo:')) this._emit(); }); }
+  _key(c) { return 'fa-demo:' + c; }
+  _get(c) { return ls.get(this._key(c), null); }
+  _put(c, d) { ls.set(this._key(c), d); try { this.bc && this.bc.postMessage(c); } catch (e) { } this._emit(); }
+  _emit() { this.subs.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  _watch(fn) { this.subs.add(fn); fn(); return () => this.subs.delete(fn); }
+  async teacherUser() { return { email: '示範模式' }; }
+  async createSession(code, data) { this._put(code, { session: { ...data, code, createdAt: Date.now() }, students: {}, responses: {} }); }
+  async listActive() { const out = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('fa-demo:')) { const d = ls.get(k); if (d && d.session.active) out.push(d.session); } } return out; }
+  watchSession(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? d.session : null); }); }
+  async updateSession(code, patch) { const d = this._get(code); if (!d) return; Object.assign(d.session, patch); this._put(code, d); }
+  watchResponses(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? Object.values(d.responses) : []); }); }
+  watchStudents(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? Object.values(d.students) : []); }); }
+  async getSession(code) { const d = this._get(code); return d ? d.session : null; }
+  async join(code, seat) {
+    const d = this._get(code); if (!d) throw new Error('找不到這個課堂代碼（示範模式要和教師控台開在同一台電腦、同一個瀏覽器）。');
+    if (!d.session.active) throw new Error('這堂課已經結束了。');
+    if (seat > (d.session.size || 60)) throw new Error(`座號超出範圍（本班 1～${d.session.size} 號）。`);
+    const st = d.students[seat]; if (st && st.uid !== this.uid && !st.sim) throw new Error(`${seat} 號已經有人登入了，請確認座號。`);
+    d.students[seat] = { uid: this.uid, seat, joinedAt: Date.now() }; this._put(code, d); return d.session;
+  }
+  async submit(code, r) { const d = this._get(code); if (!d || d.session.phase !== 'open') throw new Error('現在不能作答'); d.responses[`${r.seat}_${r.itemId}_r${r.round}`] = { ...r, uid: this.uid, at: Date.now() }; this._put(code, d); }
+  async getMine(code, id) { const d = this._get(code); return d ? d.responses[id] || null : null; }
+  async simulate(code, list, students) { const d = this._get(code); if (!d) return; students.forEach(s => { if (!d.students[s.seat]) d.students[s.seat] = s; }); list.forEach(r => d.responses[`${r.seat}_${r.itemId}_r${r.round}`] = r); this._put(code, d); }
+  async resetSeat(code, seat) { const d = this._get(code); if (!d) return; delete d.students[seat]; this._put(code, d); }
+  async endSession(code, purge) { const d = this._get(code); if (!d) return; if (purge) { ls.del(this._key(code)); this._emit(); } else { d.session.active = false; this._put(code, d); } }
+}
+
+class FireStore {
+  constructor() { this.mode = 'cloud'; }
+  async init() {
+    if (this.ready) return;
+    const [{ initializeApp }, A, F] = await Promise.all([
+      import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-auth.js`),
+      import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-firestore.js`)]);
+    this.A = A; this.F = F;
+    this.app = initializeApp(FIREBASE_CONFIG); this.auth = A.getAuth(this.app); this.db = F.getFirestore(this.app);
+    this.ready = true;
+  }
+  get uid() { return this.auth && this.auth.currentUser ? this.auth.currentUser.uid : null; }
+  async teacherUser(interactive) {
+    await this.init(); const A = this.A;
+    await this.auth.authStateReady?.();
+    let u = this.auth.currentUser;
+    if ((!u || u.isAnonymous) && interactive) {
+      try { u = (await A.signInWithPopup(this.auth, new A.GoogleAuthProvider())).user; }
+      catch (e) {
+        if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment', 'auth/cancelled-popup-request'].includes(e.code)) { await A.signInWithRedirect(this.auth, new A.GoogleAuthProvider()); return null; }
+        throw e;
+      }
+    }
+    if (!u || u.isAnonymous) return null;
+    if (!TEACHER_EMAILS.map(x => x.toLowerCase()).includes((u.email || '').toLowerCase())) { await A.signOut(this.auth); throw new Error(`${u.email} 沒有教師權限（教師名單在程式開頭 TEACHER_EMAILS 與 firestore.rules）。`); }
+    return u;
+  }
+  async signOut() { await this.init(); await this.A.signOut(this.auth); }
+  sref(code) { return this.F.doc(this.db, COL, code); }
+  async createSession(code, data) { const F = this.F; await F.setDoc(this.sref(code), { ...data, code, owner: this.auth.currentUser.email, createdAt: F.serverTimestamp() }); }
+  async listActive() { const F = this.F; const snap = await F.getDocs(F.query(F.collection(this.db, COL), F.where('active', '==', true))); return snap.docs.map(d => d.data()); }
+  watchSession(code, cb) { return this.F.onSnapshot(this.sref(code), s => cb(s.exists() ? s.data() : null), e => console.error(e)); }
+  async updateSession(code, patch) { await this.F.updateDoc(this.sref(code), patch); }
+  watchResponses(code, cb) { const F = this.F; return F.onSnapshot(F.collection(this.db, COL, code, 'responses'), s => cb(s.docs.map(d => d.data())), e => console.error(e)); }
+  watchStudents(code, cb) { const F = this.F; return F.onSnapshot(F.collection(this.db, COL, code, 'students'), s => cb(s.docs.map(d => d.data())), e => console.error(e)); }
+  async getSession(code) { await this.init(); const s = await this.F.getDoc(this.sref(code)); return s.exists() ? s.data() : null; }
+  async join(code, seat) {
+    await this.init(); const F = this.F, A = this.A;
+    if (!this.auth.currentUser) await A.signInAnonymously(this.auth);
+    const s = await F.getDoc(this.sref(code));
+    if (!s.exists()) throw new Error('找不到這個課堂代碼，請再確認一次。');
+    const S = s.data(); if (!S.active) throw new Error('這堂課已經結束了。');
+    if (seat > (S.size || 60)) throw new Error(`座號超出範圍（本班 1～${S.size} 號）。`);
+    const r = F.doc(this.db, COL, code, 'students', String(seat));
+    let snap; try { snap = await F.getDoc(r); } catch (e) { if (e.code === 'permission-denied') throw new Error(`${seat} 號已經有人登入了，請確認座號，或請老師重設。`); throw e; }
+    if (!snap.exists()) await F.setDoc(r, { uid: this.uid, seat, joinedAt: F.serverTimestamp() });
+    return S;
+  }
+  async submit(code, r) { const F = this.F; await F.setDoc(F.doc(this.db, COL, code, 'responses', `${r.seat}_${r.itemId}_r${r.round}`), { ...r, uid: this.uid, at: F.serverTimestamp() }); }
+  async getMine(code, id) { const F = this.F; try { const s = await F.getDoc(F.doc(this.db, COL, code, 'responses', id)); return s.exists() ? s.data() : null; } catch (e) { return null; } }
+  async resetSeat(code, seat) { const F = this.F; await F.deleteDoc(F.doc(this.db, COL, code, 'students', String(seat))); }
+  async endSession(code, purge) {
+    const F = this.F;
+    if (!purge) { await F.updateDoc(this.sref(code), { active: false, phase: 'ended' }); return; }
+    for (const sub of ['responses', 'students']) {
+      const snap = await F.getDocs(F.collection(this.db, COL, code, sub));
+      for (let i = 0; i < snap.docs.length; i += 400) { const b = F.writeBatch(this.db); snap.docs.slice(i, i + 400).forEach(d => b.delete(d.ref)); await b.commit(); }
+    }
+    await F.deleteDoc(this.sref(code));
+  }
+}
+
+let store = null;
+const params = new URLSearchParams(location.search);
+
+// ============================================================
+//  題庫管理（存在老師這台電腦的瀏覽器）
+// ============================================================
+const Banks = {
+  list() {
+    const own = ls.get('fa-banks', []);
+    const builtIn = window.BANK_A ? [{ ...window.BANK_A, builtIn: true }] : [];
+    return [...builtIn, ...own];
+  },
+  save(bank) { const own = ls.get('fa-banks', []).filter(b => b.id !== bank.id); own.unshift(bank); ls.set('fa-banks', own); },
+  remove(id) { ls.set('fa-banks', ls.get('fa-banks', []).filter(b => b.id !== id)); },
+  get(id) { return this.list().find(b => b.id === id); }
+};
+function misMapOf(bank) { const m = {}; (bank.misconceptions || []).forEach(x => m[x.code] = x); return m; }
+
+// ============================================================
+//  首頁
+// ============================================================
+function goHome() {
+  show('v-home'); stopLive(); stopStudent();
+  history.replaceState(null, '', location.pathname);
+}
+$('btn-home').onclick = goHome;
+$('route-tag').textContent = ROUTE === 'B' ? '路線 B・系統內建 AI 生題' : '路線 A・Claude 備課端產題庫';
+$('home-sub').textContent = ROUTE === 'B'
+  ? '老師輸入單元 → AI 生題 → 程式自動驗算 → 老師審題 → 課堂即時看迷思分布'
+  : '題庫由 Claude 在備課端產生（依三版本教科書知識卡）→ 程式自動驗算 → 老師審題 → 課堂即時看迷思分布';
+$('home-note').innerHTML = '兩輪作答＋信心程度：先個人作答，看全班分布決定「直接公布／同儕討論後再答／老師講解」。<br>「很確定卻答錯」的學生會特別標出來，那通常是頑固的迷思，不是粗心。';
+$('go-stu').onclick = () => openJoin();
+$('go-tea').onclick = () => openTeacherLogin();
+
+// ============================================================
+//  學生端
+// ============================================================
+let S = { code: null, seat: null, session: null, unsub: null, mine: {}, sel: null, conf: null, openedAt: 0, lastKey: '' };
+function openJoin(prefill) {
+  show('v-join');
+  $('j-code').value = (prefill && prefill.code) || params.get('code') || '';
+  $('j-demo').checked = params.get('demo') === '1' || (prefill && prefill.demo) || false;
+  $('j-err').hidden = true;
+  setMode('學生', '');
+  setTimeout(() => ($('j-code').value ? $('j-seat') : $('j-code')).focus(), 50);
+}
+$('j-seat').addEventListener('keydown', e => { if (e.key === 'Enter') $('j-go').click(); });
+$('j-go').onclick = async () => {
+  const code = $('j-code').value.trim().toUpperCase(); const seat = parseInt($('j-seat').value, 10);
+  const err = m => { $('j-err').textContent = m; $('j-err').hidden = false; };
+  if (!code) return err('請輸入課堂代碼。');
+  if (!(seat >= 1 && seat <= 60)) return err('請輸入正確的座號（1～60）。');
+  $('j-go').disabled = true; $('j-go').textContent = '連線中…';
+  try {
+    store = $('j-demo').checked ? new LocalStore() : new FireStore();
+    await store.join(code, seat);
+    ss.set('fa-stu', { code, seat, demo: store.mode === 'demo' });
+    startStudent(code, seat);
+  } catch (e) { err(e.message || String(e)); console.error(e); }
+  finally { $('j-go').disabled = false; $('j-go').textContent = '進入課堂'; }
+};
+function stopStudent() { if (S.unsub) S.unsub(); S.unsub = null; }
+function startStudent(code, seat) {
+  stopStudent();
+  Object.assign(S, { code, seat, mine: {}, sel: null, conf: null, lastKey: '' });
+  setMode(`${code}・${seat} 號・${store.mode === 'demo' ? '示範' : '已連線'}`, 'on');
+  show('v-stu');
+  S.unsub = store.watchSession(code, sess => { S.session = sess; renderStudent(); });
+}
+async function renderStudent() {
+  const box = $('v-stu'); const s = S.session;
+  if (!s) { box.innerHTML = `<div class="stu-msg"><div class="big">課堂已結束</div><div class="muted">謝謝你的作答！</div></div>`; setMode('課堂已結束', 'off'); return; }
+  if (!s.active) { box.innerHTML = `<div class="stu-msg"><div class="big">課堂已結束</div><div class="muted">謝謝你的作答！</div></div>`; setMode('課堂已結束', 'off'); return; }
+  const item = (s.items || []).find(i => i.id === s.curItemId);
+  const qno = (s.order || []).indexOf(s.curItemId) + 1;
+  const key = `${s.curItemId}|${s.round}|${s.phase}`;
+  const rkey = `${S.seat}_${s.curItemId}_r${s.round}`;
+  if (key !== S.lastKey) {          // 換題、換輪或換階段
+    if (!S.lastKey.startsWith(`${s.curItemId}|${s.round}|`)) { S.sel = null; S.conf = null; S.openedAt = Date.now(); }
+    S.lastKey = key;
+    if (item && S.mine[rkey] === undefined) { const m = await store.getMine(S.code, rkey); S.mine[rkey] = m; if (m) { S.sel = m.choice; S.conf = m.conf; } }
+    if (item && s.round === 2 && S.mine[`${S.seat}_${s.curItemId}_r1`] === undefined) S.mine[`${S.seat}_${s.curItemId}_r1`] = await store.getMine(S.code, `${S.seat}_${s.curItemId}_r1`);
+  }
+  if (!item || s.phase === 'wait') {
+    box.innerHTML = `<div class="stu-msg"><div class="big">${item ? `第 ${qno} 題即將開始` : '請等老師開題'}</div><div class="muted" style="font-size:22px">${esc(s.label || '')}・${S.seat} 號　畫面會自動更新</div></div>`;
+    return;
+  }
+  const mine = S.mine[rkey]; const r1 = s.round === 2 ? S.mine[`${S.seat}_${s.curItemId}_r1`] : null;
+  const reveal = s.phase === 'reveal' && s.reveal && s.reveal.itemId === item.id ? s.reveal : null;
+  const head = `<div class="stu-head"><span class="qno">第 ${qno} 題</span><span class="chip">${s.round === 2 ? '第二輪' : '第一輪'}</span>
+    <span class="chip">${{ open: '作答中', locked: '已鎖題', reveal: '公布答案' }[s.phase] || ''}</span></div>`;
+  const banner = s.round === 2 && s.phase === 'open' ? `<div class="round-banner">🗣 和旁邊的同學討論後，再作答一次（虛線框是你第一輪的選擇）</div>` : '';
+  const opts = item.options.map(o => {
+    let cls = 'opt';
+    if (S.sel === o.key) cls += ' sel';
+    if (r1 && r1.choice === o.key && s.phase === 'open') cls += ' was';
+    if (reveal) { if (o.key === reveal.answer) cls += ' right'; else if (S.sel === o.key) cls += ' wrong'; else cls += ' dim'; }
+    return `<div class="${cls}" data-k="${o.key}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span><span>${M(o.text)}</span></div>`;
+  }).join('');
+  let bottom = '';
+  if (s.phase === 'open') {
+    bottom = `<div class="row" style="justify-content:space-between">
+      <div class="conf">你有多確定？${Object.entries(CONF).map(([k, t]) => `<button data-c="${k}" class="${S.conf === k ? 'sel' : ''}">${t}</button>`).join('')}</div>
+      <div class="row">${mine ? `<span class="chip" style="background:var(--qing-l)">✓ 已送出 ${esc(mine.choice)}・鎖題前可以改</span>` : ''}
+      <button class="btn zhu big" id="s-send" ${S.sel && S.conf ? '' : 'disabled'}>${mine ? '更新答案' : '送出'}</button></div></div>`;
+  } else if (s.phase === 'locked') {
+    bottom = `<div class="round-banner" style="background:var(--dai-l);border-color:var(--dai);color:var(--dai)">⏸ 老師已鎖題，看看大螢幕${mine ? `　你的答案：${esc(mine.choice)}（${CONF[mine.conf] || ''}）` : '　你這一輪沒有作答'}</div>`;
+  } else if (reveal) {
+    const my = mine ? mine.choice : (s.round === 2 && r1 ? r1.choice : null);
+    const ok = my === reveal.answer;
+    const fb = my ? (reveal.feedback || {})[my] : '';
+    bottom = `<div class="fb ${ok ? 'ok' : 'no'}"><b>${my ? (ok ? '答對了！' : `你選 ${esc(my)}，正解是 ${esc(reveal.answer)}。`) : `這一題你沒有作答，正解是 ${esc(reveal.answer)}。`}</b> ${V.mathHTML(fb || '')}
+      ${!ok && reveal.hint ? `<div class="small" style="margin-top:6px">💡 ${V.mathHTML(reveal.hint)}</div>` : ''}</div>`;
+  }
+  box.innerHTML = `${head}${banner}<div class="stem">${M(item.stem)}</div><div class="opts">${opts}</div>${bottom}`;
+  if (s.phase === 'open') {
+    box.querySelectorAll('.opt').forEach(el => el.onclick = () => { S.sel = el.dataset.k; renderStudent(); });
+    box.querySelectorAll('.conf button').forEach(el => el.onclick = () => { S.conf = el.dataset.c; renderStudent(); });
+    const send = $('s-send');
+    if (send) send.onclick = async () => {
+      send.disabled = true;
+      const r = { seat: S.seat, itemId: item.id, round: s.round, choice: S.sel, conf: S.conf, ms: Date.now() - S.openedAt };
+      try { await store.submit(S.code, r); S.mine[rkey] = r; renderStudent(); }
+      catch (e) { toast(e.code === 'permission-denied' ? '老師已鎖題，這次沒有送出' : '送出失敗，請再按一次'); send.disabled = false; }
+    };
+  }
+}
+
+// ============================================================
+//  教師：登入
+// ============================================================
+function openTeacherLogin() {
+  show('v-tlogin'); $('t-err').hidden = true; setMode('教師', '');
+  if (location.protocol === 'file:') $('t-err').hidden = false, $('t-err').textContent = '目前是從電腦直接開啟的檔案：Google 登入只能在 GitHub Pages 網址使用。測試請按「示範模式」。';
+}
+$('t-google').onclick = async () => {
+  $('t-err').hidden = true;
+  try { store = new FireStore(); const u = await store.teacherUser(true); if (u) enterTeacher(u.email); }
+  catch (e) { $('t-err').textContent = '登入失敗：' + (e.message || e.code); $('t-err').hidden = false; }
+};
+$('t-demo').onclick = () => { store = new LocalStore(); enterTeacher('示範模式'); };
+function enterTeacher(who) {
+  setMode(store.mode === 'demo' ? '示範模式（本機）' : `雲端・${who}`, store.mode === 'demo' ? 'warn' : 'on');
+  ls.set('fa-teacher-mode', store.mode);
+  openBankView();
+}
+
+// ============================================================
+//  教師：題庫分頁
+// ============================================================
+let T = { bankId: null, picked: {}, tab: 'bank', genBank: null };
+const TABS = ROUTE === 'B'
+  ? [['bank', '題庫與建立場次'], ['gen', '🤖 AI 生題'], ['cmp', '路線比較']]
+  : [['bank', '題庫與建立場次'], ['howto', '如何用 Claude 產新單元題庫']];
+function renderTabs() {
+  $('t-tabs').innerHTML = TABS.map(([k, t]) => `<button class="tab ${T.tab === k ? 'on' : ''}" data-t="${k}">${t}</button>`).join('');
+  $('t-tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { T.tab = b.dataset.t; renderBankView(); });
+  ['bank', 'gen', 'cmp', 'howto'].forEach(k => $('tp-' + k).hidden = T.tab !== k);
+}
+async function openBankView() {
+  show('v-tbank'); stopLive();
+  const banks = Banks.list();
+  if (!T.bankId || !Banks.get(T.bankId)) T.bankId = banks[0] && banks[0].id;
+  renderBankView();
+  try { const act = (await store.listActive()).filter(x => x.active); const btn = $('c-resume');
+    if (act.length) { btn.hidden = false; btn.textContent = `回到進行中的場次（${act.map(a => a.code).join('、')}）`; btn.onclick = () => openLive(act[0].code); } else btn.hidden = true;
+  } catch (e) { console.warn(e); }
+}
+function renderBankView() {
+  renderTabs();
+  if (T.tab === 'bank') renderBankPane();
+  if (T.tab === 'gen') renderGenPane();
+  if (T.tab === 'cmp') renderCmpPane();
+  if (T.tab === 'howto') renderHowto();
+}
+function bankMeta(b) {
+  const vb = V.verifyBank(b).summary;
+  return `${(b.items || []).length} 題・${(b.misconceptions || []).length} 個迷思・驗算 ${vb.pass}✓ ${vb.fail ? vb.fail + '✗ ' : ''}${vb.manual ? vb.manual + '⚠' : ''}`;
+}
+function renderBankPane() {
+  const banks = Banks.list();
+  $('bank-list').innerHTML = banks.map(b => `<div class="bank-li ${b.id === T.bankId ? 'on' : ''}" data-id="${esc(b.id)}">
+    <b><span class="rtag ${b.route === 'B' ? 'B' : 'A'}">${b.route === 'B' ? 'B' : 'A'}</span>${esc(b.title)}</b>
+    <div class="meta">${bankMeta(b)}${b.builtIn ? '・內建' : ''}</div>
+    ${b.builtIn ? '' : `<button class="btn sm ghost" data-del="${esc(b.id)}" style="margin-top:6px;padding:2px 10px">刪除</button>`}</div>`).join('') || '<div class="muted">還沒有題庫</div>';
+  $('bank-list').querySelectorAll('.bank-li').forEach(el => el.onclick = e => {
+    if (e.target.dataset.del) { if (confirm('刪除這份題庫？（只刪這台電腦的副本）')) { Banks.remove(e.target.dataset.del); if (T.bankId === e.target.dataset.del) T.bankId = null; openBankView(); } return; }
+    T.bankId = el.dataset.id; renderBankPane();
+  });
+  const b = Banks.get(T.bankId);
+  if (!b) { $('item-list').innerHTML = ''; $('bank-title').textContent = ''; return; }
+  $('bank-title').innerHTML = `<span class="rtag ${b.route === 'B' ? 'B' : 'A'}">${b.route === 'B' ? '路線 B' : '路線 A'}</span>${esc(b.title)}`;
+  $('bank-meta').textContent = (b.source || '') + (b.unit ? `　｜　${(b.unit.curriculum || []).join('、')}` : '');
+  const vr = V.verifyBank(b).results;
+  if (!T.picked[b.id]) { T.picked[b.id] = {}; b.items.forEach(it => T.picked[b.id][it.id] = vr[it.id].status === 'pass'); }
+  $('item-list').innerHTML = renderItemCards(b, vr, T.picked[b.id], true);
+  $('item-list').querySelectorAll('input[data-pick]').forEach(cb => cb.onchange = () => {
+    const id = cb.dataset.pick;
+    if (cb.checked && vr[id].status === 'fail' && !confirm('這一題沒有通過自動驗算，確定要用嗎？')) { cb.checked = false; return; }
+    T.picked[b.id][id] = cb.checked; updatePicked();
+  });
+  updatePicked();
+}
+function renderItemCards(b, vr, picked, withPick) {
+  const mm = misMapOf(b);
+  return b.items.map((it, i) => {
+    const r = vr[it.id];
+    const badge = r.status === 'pass' ? '<span class="badge pass">✓ 驗算通過</span>' : r.status === 'fail' ? '<span class="badge fail">✗ 驗算未通過</span>' : '<span class="badge manual">⚠ 需人工確認</span>';
+    const opts = it.options.map(o => {
+      const d = r.perOption[o.key];
+      const ok = o.key === it.answer;
+      return `<div><b style="color:${OPT_COLOR(o.key)}">${o.key}</b><span class="${ok ? 'ok' : ''}">${M(o.text)}${ok ? ' ✓' : ''}</span>
+        ${o.mis ? `<span class="mis-code" title="${esc(mm[o.mis] ? mm[o.mis].name : '迷思表沒有這個代碼')}">${esc(o.mis)} ${esc(mm[o.mis] ? mm[o.mis].name : '?')}</span>` : ''}
+        ${d && !ok ? `<span class="diag">自動判讀：${esc(d.msg)}</span>` : ''}</div>`;
+    }).join('');
+    const msgs = r.msgs.map(m => `<div class="vmsg ${r.status === 'fail' ? '' : 'w'}">${r.status === 'fail' ? '✗' : '⚠'} ${esc(m)}</div>`).join('');
+    return `<div class="item"><div class="item-h">${withPick ? `<input type="checkbox" data-pick="${esc(it.id)}" ${picked[it.id] ? 'checked' : ''}>` : ''}
+      <span class="muted small">${i + 1}.</span><span class="st">${M(it.stem)}</span>
+      <span class="badge bl">${esc(it.bloom || '')}</span>${badge}</div><div class="item-o">${opts}</div>${msgs}</div>`;
+  }).join('');
+}
+function updatePicked() {
+  const b = Banks.get(T.bankId); if (!b) return;
+  const n = b.items.filter(it => T.picked[b.id][it.id]).length;
+  $('c-picked').textContent = `已選 ${n} 題（形成性檢核建議 3～6 題，一題約 1～2 分鐘）`;
+  $('c-go').disabled = n === 0;
+}
+$('b-selall').onclick = () => { const b = Banks.get(T.bankId); const vr = V.verifyBank(b).results; b.items.forEach(it => T.picked[b.id][it.id] = vr[it.id].status === 'pass'); renderBankPane(); };
+$('b-selnone').onclick = () => { const b = Banks.get(T.bankId); b.items.forEach(it => T.picked[b.id][it.id] = false); renderBankPane(); };
+$('b-import').onclick = () => $('b-file').click();
+$('b-file').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const b = JSON.parse(await f.text());
+    if (!b.items || !Array.isArray(b.items)) throw new Error('檔案裡沒有 items');
+    b.id = b.id || ('IMP-' + Date.now()); if (Banks.get(b.id) && Banks.get(b.id).builtIn) b.id += '-匯入';
+    Banks.save(b); T.bankId = b.id; T.picked[b.id] = null; delete T.picked[b.id]; renderBankPane();
+    const s = V.verifyBank(b).summary; toast(`已匯入：${b.items.length} 題，驗算 ${s.pass} 題通過`);
+  } catch (err) { alert('匯入失敗：' + err.message); }
+  e.target.value = '';
+};
+$('b-export').onclick = () => { const b = Banks.get(T.bankId); if (!b) return; const { builtIn, ...clean } = b; download(`${b.id}.json`, JSON.stringify(clean, null, 2), 'application/json'); };
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type + ';charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+
+$('c-go').onclick = async () => {
+  const b = Banks.get(T.bankId); const items = b.items.filter(it => T.picked[b.id][it.id]);
+  const label = $('c-label').value.trim() || '課堂'; const size = Math.max(1, Math.min(60, parseInt($('c-size').value, 10) || 28));
+  const code = newCode();
+  // 學生端只拿到題幹與選項（不含正解與迷思）
+  const pub = items.map(it => ({ id: it.id, stem: it.stem, bloom: it.bloom || '', options: it.options.map(o => ({ key: o.key, text: o.text })) }));
+  try {
+    $('c-go').disabled = true;
+    await store.createSession(code, { label, size, active: true, bankId: b.id, bankTitle: b.title, route: b.route || ROUTE, items: pub, order: pub.map(x => x.id), curItemId: pub[0].id, phase: 'wait', round: 1, openedAt: null, reveal: null });
+    ls.set('fa-tbank:' + code, { ...b, items }); // 完整題庫（含正解、迷思）只存在老師這台電腦
+    openLive(code, true);
+  } catch (e) { alert('建立失敗：' + (e.message || e.code)); console.error(e); }
+  finally { $('c-go').disabled = false; }
+};
+
+function renderHowto() {
+  $('tp-howto').innerHTML = `<div class="card scroll" style="flex:1;line-height:1.85;font-size:17px">
+  <h3 style="font-size:24px;margin-bottom:8px">路線 A：在 Claude 產生新單元題庫</h3>
+  <ol style="margin:0;padding-left:24px">
+   <li>在 Claude 說：「幫我做 <b>＿＿（年級單元）</b> 的形成性檢核題庫」。Claude 會先讀 115-教科書 的先備知識卡（三版教學順序、迷思清單、教學建議），沒有知識卡才查全文索引。</li>
+   <li>Claude 依 <code>fa-bank/1</code> 格式產出 JSON：迷思表（代碼、名稱、例子、補救建議、出處）＋關鍵題（每個錯誤選項標一個迷思代碼，附回饋與提示、驗算設定 check）。</li>
+   <li>Claude 先在雲端用同一個驗算器跑過，全部通過才交給你。</li>
+   <li>回到這裡按「匯入 JSON」，再看一次每題的「自動判讀」與迷思標註，勾選要用的題目。</li>
+  </ol>
+  <h3 style="font-size:20px;margin:16px 0 6px">驗算設定（check）支援的題型</h3>
+  <table class="t" style="font-size:15px"><tr><th class="l">type</th><th class="l">用途</th><th class="l">例子</th></tr>
+   <tr><td class="l">factorize</td><td class="l">選出 n 的標準分解式；會判讀每個誘答錯在哪（含 1、含合數、未合併次方、未排序、值不對）</td><td class="l">{"type":"factorize","n":72}</td></tr>
+   <tr><td class="l">value</td><td class="l">算式的值，或數論函數（distinctPrimes／primeFactorCount／divisorCount）</td><td class="l">{"type":"value","expr":"2^3×3^2"}</td></tr>
+   <tr><td class="l">primeSet</td><td class="l">選出 n 的所有質因數</td><td class="l">{"type":"primeSet","n":60}</td></tr>
+   <tr><td class="l">isFactor</td><td class="l">選出是（或不是）某數的因數</td><td class="l">{"type":"isFactor","of":"2^3×3^2×5","want":true}</td></tr>
+   <tr><td class="l">isPrime</td><td class="l">選出質數（或合數）</td><td class="l">{"type":"isPrime","want":true}</td></tr>
+   <tr><td class="l">manual</td><td class="l">概念題、圖形題等無法自動驗算，標「需人工確認」</td><td class="l">{"type":"manual"}</td></tr></table>
+  <p class="muted small">算式寫法：2^3×3^2（^ 是次方，× 或 * 都可以）。其他單元需要新的驗算題型時，再擴充驗算器。</p></div>`;
+}
+
+// ============================================================
+//  教師：即時儀表板
+// ============================================================
+let L = { code: null, session: null, bank: null, resp: [], students: [], unsubs: [], veil: false, timer: null, misOpen: null, prevAns: new Set() };
+function stopLive() { L.unsubs.forEach(u => u()); L.unsubs = []; clearInterval(L.timer); L.timer = null; }
+function openLive(code, showQR) {
+  stopLive();
+  L.code = code; L.bank = ls.get('fa-tbank:' + code, null); L.resp = []; L.students = []; L.misOpen = null; L.prevAns = new Set();
+  show('v-live');
+  $('l-sim').hidden = store.mode !== 'demo';
+  L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } renderLive(); }));
+  L.unsubs.push(store.watchResponses(code, r => { L.resp = r; renderLive(); }));
+  L.unsubs.push(store.watchStudents(code, s => { L.students = s; renderLive(); }));
+  L.timer = setInterval(updTimer, 1000);
+  if (showQR) setTimeout(openQR, 300);
+  ls.set('fa-teacher-last', code);
+}
+function stuURL() { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('role', 'student'); u.searchParams.set('code', L.code); if (store.mode === 'demo') u.searchParams.set('demo', '1'); return u.toString(); }
+function openQR() {
+  $('qr-modal').hidden = false; $('qr-code').textContent = L.code; $('qr-url').textContent = stuURL(); $('qr').innerHTML = '';
+  try { new QRCode($('qr'), { text: stuURL(), width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M }); } catch (e) { $('qr').textContent = '（QR Code 需要網路載入）'; }
+}
+$('l-code').onclick = openQR; $('qr-close').onclick = () => $('qr-modal').hidden = true;
+function updTimer() { const s = L.session; if (!s || s.phase !== 'open' || !s.openedAt) return; const t = Math.max(0, Math.floor((Date.now() - (s.openedAt.toMillis ? s.openedAt.toMillis() : s.openedAt)) / 1000)); $('l-timer').textContent = '⏱ ' + fmtTime(t); }
+function fullItem(id) { return L.bank && L.bank.items.find(i => i.id === id); }
+function latest(itemId, round) { const m = {}; L.resp.filter(r => r.itemId === itemId && r.round === round).forEach(r => m[r.seat] = r); return m; }
+function finalAns(itemId) { const r1 = latest(itemId, 1), r2 = latest(itemId, 2); return { ...r1, ...r2 }; }
+
+function renderLive() {
+  const s = L.session; if (!s || !L.bank) { if (s && !L.bank) $('l-stem').textContent = '這台電腦沒有這個場次的完整題庫（請在建立場次的電腦開啟）。'; return; }
+  const it = fullItem(s.curItemId); const mm = misMapOf(L.bank);
+  const idx = s.order.indexOf(s.curItemId);
+  $('l-code').textContent = s.code; $('l-class').textContent = `${s.label}・${s.size} 人`;
+  $('l-phase').className = 'phase ' + (s.phase || ''); $('l-phase').textContent = { wait: '待開題', open: '作答中', locked: '已鎖題', reveal: '已公布', ended: '已結束' }[s.phase] + (s.round === 2 ? '・第二輪' : '・第一輪');
+  $('l-qno').textContent = `第 ${idx + 1} / ${s.order.length} 題`;
+  $('l-prev').disabled = idx <= 0; $('l-next').disabled = idx >= s.order.length - 1;
+  $('l-open').disabled = s.phase === 'open'; $('l-lock').disabled = s.phase !== 'open';
+  $('l-r2').disabled = !(s.round === 1 && (s.phase === 'locked'));
+  $('l-reveal').disabled = s.phase === 'reveal' || s.phase === 'wait';
+  if (s.phase !== 'open') $('l-timer').textContent = '⏱ —';
+  const veiled = L.veil && s.phase !== 'reveal';
+  $('l-veil').textContent = L.veil ? '🙈 投影保護：開' : '🙈 投影保護：關';
+  $('veil1').hidden = $('veil2').hidden = !veiled;
+
+  const cur = latest(it.id, s.round); const r1 = latest(it.id, 1);
+  const answers = Object.values(cur); const n = answers.length;
+  const joined = new Set(L.students.map(x => +x.seat));
+  $('l-count').textContent = `已加入 ${joined.size}・本輪已答 ${n}`;
+  $('l-stem').innerHTML = M(it.stem);
+  $('l-optn').textContent = s.round === 2 ? '（實心＝第二輪，虛線＝第一輪位置）' : '';
+  const showKey = !veiled;
+  // 選項分布
+  const max = Math.max(1, n);
+  $('l-bars').innerHTML = it.options.map(o => {
+    const c = answers.filter(a => a.choice === o.key).length;
+    const c1 = Object.values(r1).filter(a => a.choice === o.key).length; const n1 = Object.keys(r1).length || 1;
+    const right = o.key === it.answer && showKey;
+    const mis = o.mis && showKey && mm[o.mis] ? `<span class="mis-code" style="background:#fff">${esc(o.mis)} ${esc(mm[o.mis].name)}</span>` : '';
+    return `<div class="bar-row ${right ? 'right' : ''}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span>
+      <div class="bar-track"><div class="bar-fill ${s.round === 2 ? 'r2' : ''}" style="width:${c / max * 100}%;background:${OPT_COLOR(o.key)}"></div>
+      ${s.round === 2 ? `<div class="bar-ghost" style="left:${c1 / n1 * 100}%"></div>` : ''}
+      <div class="bar-txt">${M(o.text)}${right ? ' ✓' : ''} ${mis}</div></div>
+      <span class="cnt">${c}${n ? `<span class="small muted" style="font-family:var(--sans)"> ${Math.round(c / n * 100)}%</span>` : ''}</span></div>`;
+  }).join('');
+  // 建議
+  const correct = answers.filter(a => a.choice === it.answer).length; const rate = n ? correct / n : 0;
+  const sg = $('l-suggest');
+  if (n >= 3 && s.phase !== 'wait' && showKey) {
+    sg.hidden = false;
+    sg.textContent = s.round === 1
+      ? (rate >= .7 ? `答對 ${Math.round(rate * 100)}%：可以直接公布，下一題` : rate >= .3 ? `答對 ${Math.round(rate * 100)}%：建議同儕討論後第二輪` : `答對 ${Math.round(rate * 100)}%：建議老師直接講解`)
+      : `第二輪答對 ${Math.round(rate * 100)}%（第一輪 ${Math.round((Object.values(r1).filter(a => a.choice === it.answer).length / (Object.keys(r1).length || 1)) * 100)}%）`;
+  } else sg.hidden = true;
+  // 兩輪轉變
+  if (s.round === 2 && showKey) {
+    const t = { wr: 0, rr: 0, ww: 0, rw: 0 };
+    Object.values(cur).forEach(a => { const p = r1[a.seat]; if (!p) return; const k = (p.choice === it.answer ? 'r' : 'w') + (a.choice === it.answer ? 'r' : 'w'); t[k]++; });
+    $('l-trans').innerHTML = `<span style="background:var(--qing-l)">錯→對 ${t.wr}</span><span>對→對 ${t.rr}</span><span>錯→錯 ${t.ww}</span><span style="background:var(--zhu-l)">對→錯 ${t.rw}</span>`;
+  } else $('l-trans').innerHTML = '';
+  // 信心 × 對錯
+  const q = { ok: [], luck: [], learn: [], stuck: [] };
+  answers.forEach(a => { const right = a.choice === it.answer, sure = a.conf === 'high'; q[right ? (sure ? 'ok' : 'luck') : (sure ? 'stuck' : 'learn')].push(a.seat); });
+  $('l-quadn').textContent = n ? `本輪 ${n} 人` : '';
+  $('l-quad').innerHTML = `<div class="q-ok">很確定・答對<b>${q.ok.length}</b></div><div class="q-luck">不確定・答對<b>${q.luck.length}</b></div>
+    <div class="q-learn">不確定・答錯<b>${q.learn.length}</b></div><div class="q-stuck" title="${q.stuck.sort((a, b) => a - b).join('、')}">很確定・答錯（頑固迷思）<b>${q.stuck.length}</b></div>
+    ${q.stuck.length && showKey ? `<div style="grid-column:1/3;background:#fff;font-weight:500">很確定卻答錯：${q.stuck.sort((a, b) => a - b).map(x => x + ' 號').join('、')}</div>` : ''}`;
+  // 迷思分布（本題）
+  const mc = {};
+  answers.forEach(a => { const o = it.options.find(x => x.key === a.choice); if (o && o.mis) { (mc[o.mis] = mc[o.mis] || { seats: [], sure: 0 }).seats.push(a.seat); if (a.conf === 'high') mc[o.mis].sure++; } });
+  const misList = [...new Set(it.options.filter(o => o.mis).map(o => o.mis))];
+  const mmax = Math.max(1, ...Object.values(mc).map(x => x.seats.length));
+  $('l-mis').innerHTML = misList.map(code => {
+    const x = mc[code] || { seats: [], sure: 0 }; const m = mm[code] || { name: '?' };
+    return `<div class="mis-row" data-m="${esc(code)}"><div><div class="t"><span class="mis-code">${esc(code)}</span>${esc(m.name)}</div>
+      <div class="mis-track"><div class="mis-fill" style="width:${x.seats.length / mmax * 100}%"></div><div class="mis-fill sure" style="width:${x.sure / mmax * 100}%"></div></div>
+      ${L.misOpen === code ? `<div class="mis-seats">座號：${x.seats.sort((a, b) => a - b).join('、') || '—'}<br>補救：${esc(m.remedy || '')}</div>` : ''}</div>
+      <span class="c">${x.seats.length}</span></div>`;
+  }).join('') + `<div class="small muted">深紅＝其中「很確定」的人數</div>`;
+  $('l-mis').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misOpen = L.misOpen === el.dataset.m ? null : el.dataset.m; renderLive(); });
+  // 座號格
+  const nowAns = new Set(Object.keys(cur).map(Number));
+  let seatsHTML = '';
+  for (let i = 1; i <= s.size; i++) {
+    let cls = 'seat'; const a = cur[i];
+    if (joined.has(i)) cls += ' in';
+    if (a) cls = showKey ? 'seat ' + (a.choice === it.answer ? 'ok' : 'no') + (a.choice !== it.answer && a.conf === 'high' ? ' sure' : '') : 'seat ans';
+    if (a && !L.prevAns.has(i)) cls += ' flash';
+    seatsHTML += `<div class="${cls}" data-seat="${i}">${i}</div>`;
+  }
+  L.prevAns = nowAns;
+  $('l-seats').innerHTML = seatsHTML;
+}
+const upd = patch => store.updateSession(L.code, patch).catch(e => toast('更新失敗：' + (e.message || e.code)));
+const nowTs = () => store.mode === 'cloud' ? store.F.serverTimestamp() : Date.now();
+$('l-open').onclick = () => upd({ phase: 'open', openedAt: nowTs(), reveal: null });
+$('l-lock').onclick = () => upd({ phase: 'locked' });
+$('l-r2').onclick = () => upd({ phase: 'open', round: 2, openedAt: nowTs() });
+$('l-reveal').onclick = () => { const it = fullItem(L.session.curItemId); const fb = {}; it.options.forEach(o => fb[o.key] = o.feedback || ''); upd({ phase: 'reveal', reveal: { itemId: it.id, answer: it.answer, feedback: fb, hint: it.hint || '' } }); };
+function goItem(d) { const s = L.session; const i = s.order.indexOf(s.curItemId) + d; if (i < 0 || i >= s.order.length) return; upd({ curItemId: s.order[i], phase: 'wait', round: 1, reveal: null, openedAt: null }); }
+$('l-prev').onclick = () => goItem(-1); $('l-next').onclick = () => goItem(1);
+$('l-veil').onclick = () => { L.veil = !L.veil; renderLive(); };
+$('l-back').onclick = () => openBankView();
+$('l-sum').onclick = () => openSummary();
+$('l-sim').onclick = () => simulateClass();
+
+// 示範模式：模擬全班依迷思機率作答（資料標記 sim，僅供示範）
+function simulateClass() {
+  const s = L.session; if (s.phase !== 'open') { toast('先按「開放作答」再模擬'); return; }
+  const it = fullItem(s.curItemId); const r1 = latest(it.id, 1);
+  const seed = [...it.id].reduce((a, c) => a + c.charCodeAt(0), 0);
+  let x = seed * 9301 + 49297; const rnd = () => (x = (x * 9301 + 49297) % 233280) / 233280;
+  const wrong = it.options.filter(o => o.key !== it.answer);
+  const pRight = 0.35 + (seed % 30) / 100; const list = [], studs = [];
+  const real = new Set(L.students.filter(x => !x.sim).map(x => +x.seat));
+  for (let seat = 1; seat <= s.size; seat++) {
+    if (real.has(seat)) continue;     // 真的學生不覆蓋
+    if (rnd() < 0.06) continue; // 少數人沒答
+    let choice, conf;
+    if (s.round === 2 && r1[seat]) {
+      const was = r1[seat].choice;
+      choice = was === it.answer ? (rnd() < 0.95 ? it.answer : wrong[0].key) : (rnd() < 0.55 ? it.answer : was);
+    } else {
+      choice = rnd() < pRight ? it.answer : wrong[Math.min(wrong.length - 1, Math.floor(Math.pow(rnd(), 1.6) * wrong.length))].key;
+    }
+    const cr = rnd(); conf = choice === it.answer ? (cr < .55 ? 'high' : cr < .85 ? 'mid' : 'low') : (cr < .3 ? 'high' : cr < .7 ? 'mid' : 'low');
+    list.push({ seat, itemId: it.id, round: s.round, choice, conf, ms: Math.floor(15000 + rnd() * 60000), uid: 'sim', sim: true, at: Date.now() });
+    studs.push({ uid: 'sim-' + seat, seat, sim: true, joinedAt: Date.now() });
+  }
+  // 逐一送出，看得到長條長出來
+  let i = 0; const step = () => { const chunk = list.slice(i, i + 4); i += 4; store.simulate(L.code, chunk, studs.slice(0, i)); if (i < list.length) setTimeout(step, 120); };
+  step();
+}
+
+// ============================================================
+//  出場摘要
+// ============================================================
+function computeSummary() {
+  const s = L.session, b = L.bank, mm = misMapOf(b);
+  const seats = [...new Set([...L.students.map(x => +x.seat), ...L.resp.map(r => +r.seat)])].sort((a, c) => a - c);
+  const itemsStat = s.order.map(id => {
+    const it = fullItem(id); const a1 = Object.values(latest(id, 1)); const a2 = Object.values(latest(id, 2));
+    const rate = arr => arr.length ? arr.filter(a => a.choice === it.answer).length / arr.length : null;
+    const fin = Object.values(finalAns(id)); const mc = {};
+    fin.forEach(a => { const o = it.options.find(x => x.key === a.choice); if (o && o.mis) mc[o.mis] = (mc[o.mis] || 0) + 1; });
+    const top = Object.entries(mc).sort((x, y) => y[1] - x[1])[0];
+    return { it, n1: a1.length, r1: rate(a1), n2: a2.length, r2: rate(a2), top };
+  });
+  // 每位學生：最後一輪的答案
+  const stu = seats.map(seat => {
+    const row = { seat, cells: [], mis: {}, sure: 0, right: 0, done: 0 };
+    s.order.forEach(id => {
+      const it = fullItem(id); const a = finalAns(id)[seat]; const a1 = latest(id, 1)[seat];
+      if (!a) { row.cells.push(null); return; }
+      row.done++; const ok = a.choice === it.answer; if (ok) row.right++;
+      const o = it.options.find(x => x.key === a.choice);
+      if (!ok && o && o.mis) { row.mis[o.mis] = (row.mis[o.mis] || 0) + 1; if (a.conf === 'high') row.sure++; }
+      row.cells.push({ ok, choice: a.choice, conf: a.conf, r1: a1 ? a1.choice : null });
+    });
+    return row;
+  });
+  // 迷思分組
+  const groups = {};
+  stu.forEach(r => Object.entries(r.mis).forEach(([c, k]) => { (groups[c] = groups[c] || { code: c, seats: [], times: 0 }).seats.push(r.seat); groups[c].times += k; }));
+  const g = Object.values(groups).sort((x, y) => y.seats.length - x.seats.length).map(x => ({ ...x, m: mm[x.code] || { name: '?' } }));
+  return { seats, itemsStat, stu, groups: g };
+}
+function openSummary() {
+  const s = L.session; const R = computeSummary();
+  const pct = v => v == null ? '—' : Math.round(v * 100) + '%';
+  const avg1 = R.itemsStat.filter(x => x.r1 != null); const a1 = avg1.length ? avg1.reduce((t, x) => t + x.r1, 0) / avg1.length : null;
+  const finRates = R.itemsStat.map(x => x.r2 != null ? x.r2 : x.r1).filter(v => v != null); const af = finRates.length ? finRates.reduce((t, v) => t + v, 0) / finRates.length : null;
+  const stuck = R.stu.filter(r => r.sure > 0).length;
+  show('v-sum'); stopLive();
+  $('v-sum').innerHTML = `<div class="row" style="justify-content:space-between"><h2 style="font-size:30px">本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2>
+    <div class="row" style="gap:8px"><button class="btn sm" id="u-csv">匯出學生 CSV</button><button class="btn sm" id="u-csv2">匯出作答明細 CSV</button>
+    <button class="btn sm" id="u-print">列印</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
+    <div class="stat-row"><div class="stat"><b>${R.seats.length}</b><span>參與人數</span></div><div class="stat"><b>${s.order.length}</b><span>題數</span></div>
+      <div class="stat"><b>${pct(a1)}</b><span>第一輪平均答對率</span></div><div class="stat"><b>${pct(af)}</b><span>最後一輪平均答對率</span></div>
+      <div class="stat"><b style="color:var(--zhu)">${stuck}</b><span>有「很確定卻答錯」的學生</span></div></div>
+    <div class="sum-grid">
+      <div class="col" style="min-height:0">
+        <h3 style="font-size:20px">依迷思分組補救</h3>
+        <div class="col scroll" style="gap:10px;flex:1">${R.groups.map(g => `<div class="grp"><h4><span class="mis-code">${esc(g.code)}</span> ${esc(g.m.name)}　<span class="muted small">${g.seats.length} 人</span></h4>
+          <div class="seatsline">${g.seats.map(x => x + ' 號').join('、')}</div><div class="rem">補救：${esc(g.m.remedy || '')}</div></div>`).join('') || '<div class="muted">沒有學生出現迷思選項。</div>'}</div>
+      </div>
+      <div class="col" style="min-height:0">
+        <h3 style="font-size:20px">各題</h3>
+        <table class="t"><tr><th class="l">題目</th><th>第一輪</th><th>第二輪</th><th class="l">最多人的迷思</th></tr>
+          ${R.itemsStat.map((x, i) => `<tr><td class="l">${i + 1}. ${M(x.it.stem.length > 26 ? x.it.stem.slice(0, 26) + '…' : x.it.stem)}</td><td>${pct(x.r1)}<span class="muted small"> (${x.n1})</span></td>
+          <td>${x.n2 ? pct(x.r2) + `<span class="muted small"> (${x.n2})</span>` : '—'}</td><td class="l small">${x.top ? `<span class="mis-code">${esc(x.top[0])}</span> ${x.top[1]} 人` : '—'}</td></tr>`).join('')}</table>
+        <h3 style="font-size:20px;margin-top:6px">每位學生（最後一輪）</h3>
+        <div class="scroll" style="flex:1"><table class="t"><tr><th>座號</th>${s.order.map((_, i) => `<th>${i + 1}</th>`).join('')}<th>答對</th><th class="l">迷思</th></tr>
+          ${R.stu.map(r => `<tr><td><b>${r.seat}</b></td>${r.cells.map(c => `<td>${c == null ? '<span class="muted">·</span>' : c.ok ? '<span style="color:var(--qing)">○</span>' : `<span style="color:var(--zhu);font-weight:700">${esc(c.choice)}${c.conf === 'high' ? '!' : ''}</span>`}</td>`).join('')}
+          <td>${r.right}/${r.done}</td><td class="l small">${Object.keys(r.mis).join('、')}</td></tr>`).join('')}</table></div>
+        <div class="small muted">○＝答對；字母＝選錯的選項；!＝很確定卻答錯</div>
+      </div></div>`;
+  $('u-back').onclick = () => openLive(L.code);
+  $('u-print').onclick = () => window.print();
+  $('u-csv').onclick = () => {
+    const head = ['座號', ...s.order.map((_, i) => `第${i + 1}題`), '答對題數', '作答題數', '迷思代碼', '很確定卻答錯次數'];
+    const rows = R.stu.map(r => [r.seat, ...r.cells.map(c => c == null ? '' : c.ok ? '○' : c.choice), r.right, r.done, Object.keys(r.mis).join(' '), r.sure]);
+    csv(`${s.label}_${s.code}_學生.csv`, [head, ...rows]); L.exported = true;
+  };
+  $('u-csv2').onclick = () => {
+    const mm = misMapOf(L.bank);
+    const head = ['座號', '題號', '題目', '輪次', '選項', '對錯', '迷思代碼', '迷思名稱', '信心', '作答秒數'];
+    const rows = [...L.resp].sort((a, c) => a.seat - c.seat || s.order.indexOf(a.itemId) - s.order.indexOf(c.itemId) || a.round - c.round).map(r => {
+      const it = fullItem(r.itemId); const o = it.options.find(x => x.key === r.choice);
+      return [r.seat, s.order.indexOf(r.itemId) + 1, it.stem.replace(/\^/g, '^'), r.round, r.choice, r.choice === it.answer ? '對' : '錯', o && o.mis || '', o && o.mis && mm[o.mis] ? mm[o.mis].name : '', CONF[r.conf] || '', Math.round((r.ms || 0) / 1000)];
+    });
+    csv(`${s.label}_${s.code}_作答明細.csv`, [head, ...rows]); L.exported = true;
+  };
+  $('u-end').onclick = async () => {
+    if (!L.exported && !confirm('還沒有匯出 CSV。結束後資料會從雲端刪除，確定要結束嗎？')) return;
+    if (L.exported && !confirm('結束場次並刪除雲端作答資料？')) return;
+    await store.endSession(L.code, true); ls.del('fa-tbank:' + L.code); toast('場次已結束'); openBankView();
+  };
+}
+function csv(name, rows) { const t = '﻿' + rows.map(r => r.map(v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }).join(',')).join('\r\n'); download(name, t, 'text/csv'); }
+
+// ============================================================
+//  路線 B：AI 生題（Gemini，老師自己的 key，只存在這台電腦）
+// ============================================================
+const GEN_SCHEMA_DOC = `輸出一個 JSON 物件（不要 Markdown、不要說明文字），格式：
+{
+ "schema":"fa-bank/1","title":"…","unit":{"grade":"七上","code":"2-1","name":"…","curriculum":["N-7-2 …"]},
+ "source":"Gemini 生成",
+ "misconceptions":[{"code":"M01","name":"迷思名稱（12字內）","desc":"學生怎麼想","example":"典型錯誤例子","diag":"(選填，只用於 factorize 題：has1|composite|notCombined|order|wrongValue)","remedy":"給老師的一句補救做法","source":"依據"}],
+ "items":[{"id":"B01","bloom":"記憶|理解|應用|分析","lc":"課綱學習內容代碼",
+   "stem":"題幹","options":[{"key":"A","text":"選項","mis":"M01 或 null（正解填 null）","feedback":"學生選這個後看到的一句回饋"}],
+   "answer":"正解代號","check":{…驗算設定…},"hint":"提示"}]
+}
+check（驗算設定）只能用下列其中一種，系統會用程式重算正解，算不出唯一正解的題目會被擋下：
+- {"type":"factorize","n":72}：選出 n 的標準分解式（只有一個選項是標準分解式）
+- {"type":"value","expr":"2^3×3^2"}：選項是數值，正解等於算式的值
+- {"type":"value","fn":"distinctPrimes|primeFactorCount|divisorCount","n":360}：相異質因數個數／含重複的質因數個數／正因數個數
+- {"type":"primeSet","n":60}：選項寫成 {2, 3, 5}，選出 n 的所有質因數
+- {"type":"isFactor","of":"2^3×3^2×5","want":true}：選項是數或乘積式，只有一個是（want:false 時只有一個不是）因數
+- {"type":"isPrime","want":true}：選項是整數，只有一個是質數
+- {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
+算式寫法：次方用 ^（2^3），乘號用 ×。不要用 LaTeX。`;
+function genPrompt(unit, note, count) {
+  return `你是台灣國中數學老師的命題助手。請為「${unit}」設計課堂「形成性檢核」用的關鍵題（hinge questions）題庫。
+要求：
+1. 先列出這個單元 8～14 個常見迷思概念（依 108 課綱與台灣三版本教科書的常見錯誤），用繁體中文與台灣用語。
+2. 出 ${count} 題單選題，每題 3～4 個選項。每個錯誤選項都要對應一個迷思代碼：學生會選它，正是因為有那個迷思。不要放沒有診斷意義的亂猜選項。
+3. 一題只考一個重點，題幹短，學生 1～2 分鐘內能答。認知層次要有記憶、理解、應用、分析。
+4. 每題必須有唯一正解，並附 check 讓程式重算。
+5. 每個選項附一句回饋（學生看的），每個迷思附一句補救做法（老師看的）。
+${note ? '老師補充：' + note + '\n' : ''}
+${GEN_SCHEMA_DOC}`;
+}
+function renderGenPane() {
+  const g = ls.get('fa-gen-form', {});
+  const key = ls.get('fa-gemini-key', '');
+  $('tp-gen').innerHTML = `<div class="gen-form card scroll">
+      <h3 style="font-size:22px">輸入單元，AI 生題</h3>
+      <label class="fl">單元<input type="text" id="g-unit" value="${esc(g.unit || '七上 2-1 質因數分解、標準分解式')}"></label>
+      <label class="fl">補充說明（選填：重點、要避開的題型、班級程度）<textarea id="g-note">${esc(g.note ?? '著重標準分解式的寫法與讀法、短除法沒做完、用標準分解式判斷因數。')}</textarea></label>
+      <div class="row"><label class="fl" style="width:120px">題數<input type="number" id="g-n" value="${g.n || 9}" min="3" max="15"></label>
+        <label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(g.model || 'gemini-2.5-flash')}"></label></div>
+      <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
+      <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label>
+      <div class="keynote">🔐 key 只存在這台電腦的瀏覽器，直接送到 Google，不會寫進題庫、不會傳給學生。學生端完全不需要 AI。<br>免費額度的 API 資料可能被 Google 用於改進產品，題目內容不要放學生個資。</div>
+      <button class="btn zhu big" id="g-go">生成題庫</button>
+      <div id="g-status" class="small"></div>
+    </div>
+    <div class="col" style="flex:1;min-height:0" id="g-result"><div class="card muted" style="line-height:1.8">生成後，這裡會顯示每一題的<b>自動驗算</b>結果：<br>✓ 程式重算出唯一正解，且和 AI 標的相同　✗ 正解錯、多個正解或格式錯　⚠ 概念題需人工確認<br>沒通過的題目可以按「請 AI 修正未通過的題目」，把驗算訊息送回去重寫。</div></div>`;
+  $('g-go').onclick = () => runGen(false);
+  if (T.genBank) showGenResult();
+}
+async function callGemini(prompt) {
+  const key = $('g-key').value.trim(); const model = $('g-model').value.trim() || 'gemini-2.5-flash';
+  if (!key) throw new Error('請先填 Gemini API key');
+  if ($('g-remember').checked) ls.set('fa-gemini-key', key); else ls.del('fa-gemini-key');
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json', temperature: 0.6 } })
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + res.status));
+  const text = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+  if (!text) throw new Error('AI 沒有回傳內容' + (j.promptFeedback ? '（' + JSON.stringify(j.promptFeedback) + '）' : ''));
+  return text;
+}
+function parseBankJSON(text) {
+  let t = text.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
+  const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0) throw new Error('回傳的不是 JSON');
+  return JSON.parse(t.slice(a, b + 1));
+}
+function normalizeBank(b, unit) {
+  b.schema = 'fa-bank/1'; b.route = 'B';
+  b.id = 'B-' + unit.replace(/\s+/g, '') + '-' + new Date().toISOString().slice(5, 16).replace(/[-T:]/g, '');
+  b.title = (b.title || unit) + '（路線 B）';
+  b.source = `Gemini（${$('g-model').value.trim()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
+  b.misconceptions = b.misconceptions || []; b.items = (b.items || []).map((it, i) => ({ ...it, id: it.id || `B${String(i + 1).padStart(2, '0')}`, options: (it.options || []).map(o => ({ ...o, mis: o.mis === 'null' ? null : (o.mis || null) })) }));
+  return b;
+}
+async function runGen(fixOnly) {
+  const unit = $('g-unit').value.trim(), note = $('g-note').value.trim(), n = parseInt($('g-n').value, 10) || 9;
+  ls.set('fa-gen-form', { unit, note, n, model: $('g-model').value.trim() });
+  const st = $('g-status'); const btns = [$('g-go'), $('g-fix')].filter(Boolean); btns.forEach(b => b.disabled = true);
+  const t0 = Date.now();
+  st.innerHTML = `<span class="spinner"></span> ${fixOnly ? 'AI 修正中' : 'AI 生題中'}…（約 20～60 秒）`;
+  try {
+    let prompt;
+    if (fixOnly) {
+      const vr = V.verifyBank(T.genBank).results;
+      const bad = T.genBank.items.filter(it => vr[it.id].status === 'fail');
+      prompt = `下面是你先前產生的題庫中，沒有通過程式驗算的題目與驗算訊息。請修正這些題目（可改選項、正解或 check），只回傳修正後的 items 陣列包在 {"items":[…]} 裡，id 保持不變，迷思代碼只能用題庫中已有的：${T.genBank.misconceptions.map(m => m.code + ' ' + m.name).join('；')}。\n\n` +
+        bad.map(it => JSON.stringify(it) + '\n驗算訊息：' + vr[it.id].msgs.join('；')).join('\n\n') + '\n\n' + GEN_SCHEMA_DOC;
+      const fixed = parseBankJSON(await callGemini(prompt)).items || [];
+      fixed.forEach(f => { const i = T.genBank.items.findIndex(x => x.id === f.id); if (i >= 0) T.genBank.items[i] = { ...f, options: (f.options || []).map(o => ({ ...o, mis: o.mis || null })) }; });
+      T.genBank.fixRounds = (T.genBank.fixRounds || 0) + 1;
+    } else {
+      prompt = genPrompt(unit, note, n);
+      T.genBank = normalizeBank(parseBankJSON(await callGemini(prompt)), unit);
+      T.genBank.genSeconds = Math.round((Date.now() - t0) / 1000);
+    }
+    const s = V.verifyBank(T.genBank).summary;
+    st.innerHTML = `完成（${Math.round((Date.now() - t0) / 1000)} 秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過、${s.manual} 需人工`;
+    showGenResult();
+  } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">失敗：${esc(e.message)}</span>`; console.error(e); }
+  finally { btns.forEach(b => b.disabled = false); }
+}
+function showGenResult() {
+  const b = T.genBank; const vr = V.verifyBank(b).results; const s = V.verifyBank(b).summary;
+  $('g-result').innerHTML = `<div class="row" style="justify-content:space-between"><div><h3 style="font-size:21px">${esc(b.title)}</h3>
+      <div class="small muted">${b.items.length} 題・${b.misconceptions.length} 個迷思・驗算 ${s.pass}✓ ${s.fail}✗ ${s.manual}⚠${b.fixRounds ? `・AI 修正 ${b.fixRounds} 次` : ''}</div></div>
+      <div class="row" style="gap:8px">${s.fail ? '<button class="btn sm" id="g-fix">請 AI 修正未通過的題目</button>' : ''}<button class="btn sm qing" id="g-save">存入題庫</button></div></div>
+    <details class="card small" style="padding:8px 14px"><summary style="cursor:pointer;font-weight:700">迷思表（${b.misconceptions.length}）</summary>
+      ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${esc(m.name)}</b>　${esc(m.example || '')}　<span class="muted">補救：${esc(m.remedy || '')}</span></div>`).join('')}</details>
+    <div class="items scroll">${renderItemCards(b, vr, {}, false)}</div>`;
+  const fx = $('g-fix'); if (fx) fx.onclick = () => runGen(true);
+  $('g-save').onclick = () => { Banks.save(JSON.parse(JSON.stringify(b))); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
+}
+
+// ---------- 路線比較 ----------
+function bankStats(b) {
+  const vb = V.verifyBank(b); const items = b.items || []; const mis = b.misconceptions || [];
+  const wrongOpts = items.flatMap(it => it.options.filter(o => o.key !== it.answer));
+  const used = new Set(wrongOpts.map(o => o.mis).filter(Boolean));
+  const bloom = {}; items.forEach(it => bloom[it.bloom || '未標'] = (bloom[it.bloom || '未標'] || 0) + 1);
+  const types = {}; items.forEach(it => { const t = (it.check && it.check.type) || 'manual'; types[t] = (types[t] || 0) + 1; });
+  const diagHit = wrongOpts.length ? wrongOpts.filter(o => o.mis).length / wrongOpts.length : 0;
+  // 同一題的誘答是否對應到不同迷思（診斷力）
+  const distinct = items.length ? items.reduce((t, it) => { const ms = it.options.filter(o => o.key !== it.answer).map(o => o.mis).filter(Boolean); return t + (ms.length ? new Set(ms).size / ms.length : 0); }, 0) / items.length : 0;
+  return {
+    items: items.length, mis: mis.length, used: used.size, unusedList: mis.filter(m => !used.has(m.code)).map(m => m.code),
+    pass: vb.summary.pass, fail: vb.summary.fail, manual: vb.summary.manual,
+    diagHit, distinct, remedy: mis.filter(m => m.remedy).length, src: mis.filter(m => m.source && !/gemini|AI/i.test(m.source)).length,
+    feedback: wrongOpts.filter(o => o.feedback).length, wrong: wrongOpts.length, bloom, types,
+    avgOpt: items.length ? items.reduce((t, it) => t + it.options.length, 0) / items.length : 0
+  };
+}
+function renderCmpPane() {
+  const banks = Banks.list();
+  const A = banks.find(b => b.route !== 'B'); const Bs = banks.filter(b => b.route === 'B');
+  const selB = T.cmpB && Bs.find(b => b.id === T.cmpB) ? T.cmpB : (T.genBank && T.genBank.id) || (Bs[0] && Bs[0].id);
+  const B = Bs.find(b => b.id === selB) || (T.genBank && T.genBank.id === selB ? T.genBank : null);
+  if (!A || !B) { $('tp-cmp').innerHTML = `<div class="card" style="flex:1;line-height:1.8">還沒有可以比較的路線 B 題庫。先到「🤖 AI 生題」產生一份並存入題庫，再回來比較。<br><span class="muted">路線 A 參照題庫：${A ? esc(A.title) : '無'}</span></div>`; return; }
+  const a = bankStats(A), b = bankStats(B);
+  const pc = v => Math.round(v * 100) + '%';
+  const row = (name, va, vb, fa, fb, better) => { const ba = better === 'a', bb = better === 'b'; return `<tr><td class="l">${name}</td><td class="${ba ? 'better' : ''}">${fa ?? va}</td><td class="${bb ? 'better' : ''}">${fb ?? vb}</td></tr>`; };
+  const hi = (x, y) => x > y ? 'a' : y > x ? 'b' : '';
+  const lo = (x, y) => x < y ? 'a' : y < x ? 'b' : '';
+  const dist = o => Object.entries(o).map(([k, v]) => `${k} ${v}`).join('、');
+  $('tp-cmp').innerHTML = `<div class="col" style="flex:1;min-height:0">
+    <div class="row"><b>比較：</b><span class="rtag A">A</span>${esc(A.title)}　vs　<select id="cmp-b">${Bs.map(x => `<option value="${esc(x.id)}" ${x.id === selB ? 'selected' : ''}>${esc(x.title)}・${esc(x.id)}</option>`).join('')}</select></div>
+    <div class="row" style="gap:18px;align-items:flex-start;flex:1;min-height:0">
+      <div class="card scroll" style="flex:1.1;max-height:100%"><table class="t cmp"><tr><th class="l">指標（程式可計算的部分）</th><th>路線 A</th><th>路線 B</th></tr>
+        ${row('題數', a.items, b.items)}
+        ${row('迷思數', a.mis, b.mis)}
+        ${row('迷思有被誘答使用', a.used, b.used, `${a.used}/${a.mis}`, `${b.used}/${b.mis}`, hi(a.used / (a.mis || 1), b.used / (b.mis || 1)))}
+        ${row('自動驗算通過', a.pass, b.pass, `${a.pass}/${a.items}`, `${b.pass}/${b.items}`, hi(a.pass / (a.items || 1), b.pass / (b.items || 1)))}
+        ${row('驗算未通過', a.fail, b.fail, null, null, lo(a.fail, b.fail))}
+        ${row('需人工確認', a.manual, b.manual, null, null, lo(a.manual, b.manual))}
+        ${row('誘答選項有標迷思', a.diagHit, b.diagHit, pc(a.diagHit), pc(b.diagHit), hi(a.diagHit, b.diagHit))}
+        ${row('同題誘答對應不同迷思', a.distinct, b.distinct, pc(a.distinct), pc(b.distinct), hi(a.distinct, b.distinct))}
+        ${row('誘答有學生回饋', a.feedback, b.feedback, `${a.feedback}/${a.wrong}`, `${b.feedback}/${b.wrong}`)}
+        ${row('迷思有補救建議', a.remedy, b.remedy, `${a.remedy}/${a.mis}`, `${b.remedy}/${b.mis}`)}
+        ${row('迷思有教科書／文獻出處', a.src, b.src, `${a.src}/${a.mis}`, `${b.src}/${b.mis}`, hi(a.src / (a.mis || 1), b.src / (b.mis || 1)))}
+        ${row('平均選項數', a.avgOpt, b.avgOpt, a.avgOpt.toFixed(1), b.avgOpt.toFixed(1))}
+        ${row('Bloom 分布', 0, 0, dist(a.bloom), dist(b.bloom))}
+        ${row('驗算題型', 0, 0, dist(a.types), dist(b.types))}
+        ${B.genSeconds ? row('產生時間', 0, 0, '對話中產生', `${B.genSeconds} 秒${B.fixRounds ? `＋修正 ${B.fixRounds} 次` : ''}`) : ''}
+      </table><p class="small muted" style="margin:8px 0 0">粗綠字＝這一項較好。這些只比「格式與驗算」；題目有沒有打中學生真正的迷思、用語是否合乎台灣教材，要老師看題判斷，上課後再用作答資料驗證。</p></div>
+      <div class="card scroll" style="flex:1;max-height:100%"><h3 style="font-size:18px;margin-bottom:6px">迷思對照</h3>
+        <table class="t small"><tr><th class="l">路線 A 迷思</th><th>題數</th><th class="l">路線 B 迷思</th><th>題數</th></tr>
+        ${Array.from({ length: Math.max(A.misconceptions.length, B.misconceptions.length) }, (_, i) => {
+          const ma = A.misconceptions[i], mb = B.misconceptions[i];
+          const cnt = (bk, c) => c ? bk.items.filter(it => it.options.some(o => o.mis === c)).length : '';
+          return `<tr><td class="l">${ma ? `<span class="mis-code">${esc(ma.code)}</span> ${esc(ma.name)}` : ''}</td><td>${ma ? cnt(A, ma.code) : ''}</td>
+            <td class="l">${mb ? `<span class="mis-code">${esc(mb.code)}</span> ${esc(mb.name)}` : ''}</td><td>${mb ? cnt(B, mb.code) : ''}</td></tr>`;
+        }).join('')}</table></div>
+    </div></div>`;
+  $('cmp-b').onchange = e => { T.cmpB = e.target.value; renderCmpPane(); };
+}
+
+// ============================================================
+//  啟動
+// ============================================================
+(async function boot() {
+  const role = params.get('role');
+  const saved = ss.get('fa-stu');
+  if (role === 'student' || params.get('code')) {
+    if (saved && (!params.get('code') || saved.code === params.get('code').toUpperCase())) {
+      try { store = saved.demo ? new LocalStore() : new FireStore(); await store.join(saved.code, saved.seat); startStudent(saved.code, saved.seat); return; }
+      catch (e) { ss.del('fa-stu'); }
+    }
+    openJoin(); return;
+  }
+  if (role === 'teacher') { openTeacherLogin(); return; }
+  show('v-home');
+})();
+window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, Banks, V };
+
+</script>
+</body>
+</html>

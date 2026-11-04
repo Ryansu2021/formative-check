@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>課堂形成性檢核</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3ead7;--card:#fbf6ea;--ink:#2a2420;--ink2:#5d5248;--zhu:#b5432f;--dai:#3c587a;--huang:#b98a1e}
+body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px 16px;box-sizing:border-box}
+h1{font-family:'Noto Serif TC',serif;font-size:clamp(32px,6vw,54px);letter-spacing:4px;margin:0;text-align:center}
+p{color:var(--ink2);font-size:17px;text-align:center;max-width:760px;line-height:1.7;margin:0}
+.cards{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+a.c{width:min(380px,90vw);border:2.5px solid var(--ink);border-radius:18px;background:var(--card);box-shadow:5px 5px 0 var(--ink);padding:24px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:8px}
+a.c b{font-family:'Noto Serif TC',serif;font-size:26px}a.c span{color:var(--ink2);line-height:1.6}
+.t{display:inline-block;color:#fff;border-radius:999px;padding:2px 12px;font-size:14px;font-weight:700;width:max-content}
+.by{font-family:'Noto Serif TC',serif;color:#8c7f70;font-size:13px}
+</style></head><body>
+<h1>課堂形成性檢核</h1>
+<p>兩輪作答＋信心程度，教師儀表板即時顯示迷思分布。兩條路線是同一套系統，差別在題庫從哪裡來。</p>
+<div class="cards">
+<a class="c" href="route-a.html"><span class="t" style="background:var(--dai)">路線 A</span><b>Claude 備課端產題庫</b><span>依三版本教科書知識卡產生迷思表與關鍵題，匯入後使用。內建七上 2-1 質因數分解 9 題。</span></a>
+<a class="c" href="route-b.html"><span class="t" style="background:var(--huang)">路線 B</span><b>系統內建 AI 生題</b><span>教師端輸入單元，用自己的 Gemini key 生題，程式自動驗算、老師審題後使用。</span></a>
+</div>
+<p style="font-size:15px">學生：掃老師投影的 QR Code，或開路線網址 → 學生作答 → 輸入代碼與座號。</p>
+<div class="by">蘇恭弘。數學王子。台南市忠孝國中製作</div>
+</body></html>
