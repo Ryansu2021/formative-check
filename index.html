@@ -1,29 +1,543 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>課堂形成性檢核</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;800;900&display=swap" rel="stylesheet">
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>國中數學課堂形成性評量入口</title>
 <style>
-:root{--bg:#f3f8fb;--card:#fff;--ink:#18324a;--ink2:#4f6679;--ink3:#8aa0b2;--line:#e2ecf3;--k:#2f7fd8;--s:#12a37f;--c:#e0901c;--v:#7a6ad8;--vbg:#efecfc}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(1200px 600px at 85% -10%,#dff1ff 0,transparent 60%),radial-gradient(900px 500px at -10% 110%,#e0f7ee 0,transparent 55%),var(--bg);background-attachment:fixed;
- color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:24px 16px}
-h1{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:3px;margin:0;text-align:center}
-p{color:var(--ink2);font-size:17px;text-align:center;max-width:760px;line-height:1.7;margin:0}
-.cards{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
-a.c{width:min(380px,92vw);border-radius:20px;background:var(--card);box-shadow:0 6px 18px rgba(24,50,74,.06);border-top:7px solid var(--k);padding:22px 24px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:8px;transition:transform .15s,box-shadow .15s}
-a.c:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(24,50,74,.12)}
-a.c.b{border-top-color:var(--c)}
-a.c b{font-size:24px;font-weight:800}a.c span{color:var(--ink2);line-height:1.6}
-a.c span.t{display:inline-block;color:#fff;border-radius:999px;padding:2px 12px;font-size:14px;font-weight:700;width:max-content;background:var(--k)}
-a.c.b span.t{background:var(--c)}
-.by{color:var(--ink3);font-size:13px}
-</style></head><body>
-<h1>課堂形成性檢核</h1>
-<p>第一場整卷作答 → 討論 → 第二場平行題，教師儀表板即時顯示迷思分布。兩條路線是同一套系統，差別在題庫從哪裡來。</p>
-<div class="cards">
-<a class="c" href="route-a.html"><span class="t">路線 A</span><b>Claude 備課端產題庫</b><span>依三版本教科書知識卡產生迷思表與平行題組，匯入後使用。內建七上 2-1 質因數分解 9 組平行題。</span></a>
-<a class="c b" href="route-b.html"><span class="t">路線 B</span><b>系統內建 AI 生題</b><span>教師端輸入單元，用自己的 Gemini key 生平行題，程式自動驗算、老師審題後使用。</span></a>
-</div>
-<p style="font-size:15px">學生：掃老師投影的 QR Code，或開路線網址 → 學生作答 → 輸入代碼與座號。</p>
-<div class="by">蘇恭弘。數學王子。台南市忠孝國中製作</div>
-</body></html>
+
+:root{
+  --bg:#f3f8fb;--card:#fff;--ink:#18324a;--ink2:#4f6679;--ink3:#8aa0b2;--line:#e2ecf3;
+  --k:#2f7fd8;--kbg:#e8f2fd;   /* 康軒 */
+  --s:#12a37f;--sbg:#e3f6ef;   /* 南一 */
+  --c:#e0901c;--cbg:#fff3df;   /* 翰林 */
+  --v:#7a6ad8;--vbg:#efecfc;
+  --g7:#0f9fa6;--g7bg:#dff5f6;   /* 七年級 */
+  --g8:#ee6a58;--g8bg:#fde8e4;   /* 八年級 */
+  --g9:#7a6ad8;--g9bg:#ece9fb;   /* 九年級 */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 600px at 85% -10%,#dff1ff 0,transparent 60%),radial-gradient(900px 500px at -10% 110%,#e0f7ee 0,transparent 55%),var(--bg);background-attachment:fixed;
+ color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.65;font-size:16px;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--v);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1280px;margin:auto;padding:0 24px}
+
+/* ---------- 頂部列 ---------- */
+.top{position:sticky;top:0;z-index:30;background:rgba(243,248,251,.92);backdrop-filter:blur(8px);border-bottom:2px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px 22px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.01em;cursor:pointer;white-space:nowrap}
+.brand i{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--g7),var(--v));display:grid;place-items:center;color:#fff;font-style:normal;font-size:19px;font-weight:800}
+.crumb{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink2);font-weight:600;flex-wrap:wrap}
+.crumb a{padding:2px 10px;border-radius:999px}
+.crumb a:hover{background:#e6eff6}
+.crumb .sep{color:var(--ink3)}
+.crumb b{color:var(--ink)}
+.search{margin-left:auto;position:relative;flex:0 1 340px;min-width:200px}
+.search input{width:100%;font:inherit;font-size:15.5px;padding:9px 16px 9px 40px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+.search input:focus{border-color:var(--v);outline:none;box-shadow:0 0 0 4px rgba(122,106,216,.15)}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--ink3);fill:none;stroke-width:2.2;stroke-linecap:round}
+
+h1{font-size:30px;line-height:1.25;font-weight:800;letter-spacing:.01em}
+.tomorrow{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:999px;background:linear-gradient(135deg,#e2584a,#7a6ad8);color:#fff;font-weight:800;font-size:15px;white-space:nowrap;box-shadow:0 4px 12px rgba(122,106,216,.25)}
+.tomorrow:hover{filter:brightness(1.07)}
+.tomorrow + .search{margin-left:0}
+/* ---------- 首頁：單一畫面，隨視窗縮放，不出現捲軸 ---------- */
+body.fit{height:100vh;height:100dvh;overflow:hidden}
+body.fit .wrap.page{max-width:1680px;height:calc(100vh - var(--topH,60px));height:calc(100dvh - var(--topH,60px));display:flex;flex-direction:column}
+body.fit main{flex:1;min-height:0}
+body.fit footer{display:none}
+.home{height:100%;display:flex;flex-direction:column;gap:.9em;padding:1.1em 0 1.3em;font-size:var(--u,16px);min-height:0}
+.hero{flex:none;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:.6em 2em}
+.kick{font-size:.9em;color:var(--ink3);font-weight:700;letter-spacing:.08em}
+.hero h1{font-size:2.4em;line-height:1.2;font-weight:800;letter-spacing:.01em;margin-top:.05em}
+.lead{color:var(--ink2);font-size:1.02em;margin-top:.3em;max-width:30em;line-height:1.55}
+.stats{display:flex;gap:.7em;flex-wrap:wrap}
+.stat{background:var(--card);border-radius:1em;padding:.5em 1.1em;box-shadow:0 4px 14px rgba(24,50,74,.06);display:flex;align-items:baseline;gap:.5em}
+.stat b{font-size:1.8em;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.stat span{font-size:.9em;color:var(--ink2);font-weight:600}
+.legend{flex:none;display:flex;gap:.4em 1em;flex-wrap:wrap;align-items:center;font-size:.88em;color:var(--ink2);font-weight:600}
+.vchip{display:inline-flex;align-items:center;gap:.4em;padding:.05em .75em;border-radius:999px;font-size:.85em;font-weight:800;color:var(--t);background:var(--tb)}
+.vchip i{width:8px;height:8px;border-radius:50%;background:var(--t)}
+.legend .vchip{font-size:1em}
+.kx{--t:var(--k);--tb:var(--kbg)}.ny{--t:var(--s);--tb:var(--sbg)}.hl{--t:var(--c);--tb:var(--cbg)}
+
+/* ---------- 年級圖卡 ---------- */
+.grades{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4em}
+.g7{--gc:var(--g7);--gb:var(--g7bg)}.g8{--gc:var(--g8);--gb:var(--g8bg)}.g9{--gc:var(--g9);--gb:var(--g9bg)}
+.gcard{position:relative;overflow:hidden;min-height:0;background:var(--card);border-radius:1.6em;padding:1.3em 1.5em 1.2em;box-shadow:0 8px 26px rgba(24,50,74,.08);border-top:.5em solid var(--gc);display:flex;flex-direction:column;gap:.7em;transition:transform .18s,box-shadow .18s;cursor:pointer}
+.gcard:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(24,50,74,.13)}
+.gcard .mark{position:absolute;right:.15em;top:-.1em;font-size:6.5em;font-weight:800;line-height:1;color:var(--gb);pointer-events:none;user-select:none}
+.gcard h2{position:relative;font-size:2em;font-weight:800;line-height:1.2}
+.gcard h2 small{display:block;font-size:.42em;color:var(--ink3);font-weight:700;letter-spacing:.08em}
+.gcard ul{position:relative;list-style:none;display:flex;flex-direction:column;gap:.3em;font-size:.98em;color:var(--ink2);flex:1;min-height:0;justify-content:center;line-height:1.5}
+.gcard li{display:flex;gap:.55em;align-items:baseline}
+.gcard li b{flex:none;min-width:2.8em;font-size:.82em;color:var(--gc);background:var(--gb);border-radius:999px;padding:0 .5em;text-align:center;font-weight:800}
+.gcard li.none{color:var(--ink3)}
+.bar{position:relative;flex:none;height:.65em;border-radius:99px;background:var(--gb);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--gc)}
+.gmeta{position:relative;flex:none;display:flex;justify-content:space-between;font-size:.95em;font-weight:700;color:var(--ink2)}
+.gmeta b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sems{position:relative;flex:none;display:flex;gap:.7em}
+.sems a{flex:1;text-align:center;padding:.5em .6em;border-radius:.9em;font-weight:800;font-size:1.02em;line-height:1.3;background:var(--gb);color:var(--gc);transition:background .15s,color .15s}
+.sems a:hover{background:var(--gc);color:#fff}
+.sems a small{display:block;font-size:.8em;font-weight:600;opacity:.85}
+@media(max-width:820px){
+  .grades{grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(0,1fr);gap:.8em}
+  .lead{display:none}
+  .gcard{padding:.8em 1em .8em;gap:.4em}
+  .gcard h2{font-size:1.6em}.gcard .mark{font-size:5em}
+  .hero h1{font-size:1.9em}
+}
+@media(max-height:560px){.lead{display:none}}
+
+/* ---------- 年級頁：章節並排成欄，單一畫面、隨視窗縮放 ---------- */
+.gpage{font-size:var(--u,16px);padding:1.1em 0 1.4em;display:flex;flex-direction:column;gap:.8em;min-height:0}
+body.fit .gpage{height:100%;padding:.9em 0 1.1em}
+.ghead{flex:none;display:flex;align-items:center;gap:.6em 1.6em;flex-wrap:wrap}
+.ghead .big{font-size:3.4em;font-weight:800;line-height:1;color:var(--gc)}
+.ghead h1{font-size:1.9em;margin:0;line-height:1.2}
+.ghead .kick{font-size:.88em}
+.ctrl{margin-left:auto;display:flex;align-items:center;gap:.6em 1.2em;flex-wrap:wrap}
+.seg{display:inline-flex;background:#e6eff6;border-radius:999px;padding:.3em;gap:.25em}
+.seg a{padding:.4em 1.4em;border-radius:999px;font-weight:800;font-size:1.05em;color:var(--ink2)}
+.seg a.on{background:var(--gc);color:#fff;box-shadow:0 3px 10px rgba(24,50,74,.18)}
+.seg a:not(.on):hover{background:#fff}
+.filt{display:inline-flex;gap:.4em;flex-wrap:wrap}
+.filt button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:.15em .9em;font-weight:700;font-size:.92em;color:var(--ink2);cursor:pointer}
+.filt button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chk{display:inline-flex;gap:.45em;align-items:center;font-size:.92em;color:var(--ink2);font-weight:600;cursor:pointer}
+.chk input{width:1.1em;height:1.1em;accent-color:var(--v);cursor:pointer}
+
+.chaps{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:1em;align-items:stretch}
+.chap{background:var(--card);border-radius:1.4em;box-shadow:0 6px 20px rgba(24,50,74,.06);overflow:hidden;display:flex;flex-direction:column;min-height:0;min-width:0}
+.chap-h{flex:none;display:flex;align-items:center;gap:.6em;padding:.7em 1em;background:linear-gradient(90deg,var(--gb),#fff 85%);border-left:.4em solid var(--gc)}
+.chap .no{display:flex;align-items:baseline;gap:.15em;font-size:.9em;font-weight:800;color:var(--gc);white-space:nowrap}
+.chap .no b{font-size:2em;line-height:1}
+.chap h3{font-size:1.3em;font-weight:800;line-height:1.3;flex:1;min-width:0}
+.chap .prog{font-size:.85em;font-weight:800;color:var(--ink2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cbody{flex:1;min-height:0;padding:.8em .8em .9em;display:flex;flex-direction:column;gap:.7em;overflow:hidden}
+.chap.wide{grid-column:span 2}.chap.wide .cbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:min-content;align-content:start}
+.cextra{display:flex;gap:.5em;flex-wrap:wrap}
+
+.sec{flex:none;background:#fff;border:2px solid var(--line);border-radius:1.1em;padding:.75em .9em .8em;display:flex;flex-direction:column;gap:.5em;position:relative;transition:border-color .15s,box-shadow .15s;min-width:0}
+.sec.ready{border-color:#cfe0ee;box-shadow:0 4px 14px rgba(24,50,74,.06)}
+.sec.ready:hover{border-color:var(--gc);box-shadow:0 8px 22px rgba(24,50,74,.12)}
+.sec.wait{background:#fafcfd;border-style:dashed;border-color:#d3e0ea}
+.sec{container-type:inline-size}
+.sh{display:flex;align-items:flex-start;gap:.6em}
+@container (max-width:310px){.sh{flex-wrap:wrap;row-gap:.25em}.sh .st{order:3;flex:1 1 100%}.sh .badge{margin-left:auto}}
+.sn{flex:none;font-weight:800;font-size:.9em;padding:.1em .7em;border-radius:999px;background:var(--gc);color:#fff;margin-top:.15em;font-variant-numeric:tabular-nums}
+.wait .sn{background:#c5d3de}
+.st{font-size:1.15em;font-weight:800;line-height:1.35;flex:1;min-width:0}
+.wait .st{color:var(--ink2)}
+.badge{flex:none;font-size:.78em;font-weight:800;border-radius:999px;padding:.05em .7em;margin-top:.2em}
+.badge.ok{background:#e1f6ec;color:#0c7d5c}
+.badge.no{background:#eef2f6;color:#7b8fa0}
+.names{display:flex;flex-wrap:wrap;gap:.3em .4em}
+.names .vchip{font-weight:700;font-size:.82em}
+.names .same{font-size:.82em;color:var(--ink3);font-weight:600}
+.note{font-size:.9em;color:var(--ink2)}
+.acts{display:flex;flex-wrap:wrap;gap:.5em;margin-top:auto}
+.pb{display:inline-flex;align-items:center;gap:.45em;padding:.4em .9em;border-radius:.8em;font-weight:800;font-size:.95em;color:#fff;background:var(--pt);transition:transform .12s,filter .12s;cursor:pointer;border:0}
+.pb:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.pb svg{width:1em;height:1em;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.pb.soon{background:transparent;color:var(--ink3);border:2px dashed #cbd8e2;cursor:default;padding:.25em .8em;font-weight:700;font-size:.88em}
+.pb.soon:hover{transform:none;filter:none}
+.pb.mini{padding:.2em .8em;font-size:.9em;border-radius:999px}
+
+.empty{background:var(--card);border-radius:24px;padding:40px 30px;margin:24px 0;text-align:center;border:3px dashed #cbd8e2;color:var(--ink2)}
+.empty h3{font-size:22px;color:var(--ink);margin-bottom:6px}
+.empty p{max-width:640px;margin:6px auto 0;font-size:16px}
+.empty code{background:#eef5fa;border-radius:6px;padding:1px 7px;font-size:14px}
+.gpage .empty{flex:1;margin:0;display:flex;flex-direction:column;justify-content:center;font-size:1em}
+.gpage .empty h3{font-size:1.4em}.gpage .empty p{font-size:1em}
+@media(max-width:719px){
+  .chaps{grid-template-columns:minmax(0,1fr)}
+  .ctrl{margin-left:0}
+  .ghead .big{font-size:2.8em}
+  .cbody{overflow:visible}
+  .chap.wide{grid-column:auto}.chap.wide .cbody{display:flex}
+}
+
+/* ---------- 搜尋結果 ---------- */
+.rh{padding:26px 0 4px}
+.rh h1{font-size:28px}
+.rcrumb{font-size:13.5px;font-weight:800;color:var(--gc);letter-spacing:.04em}
+.rlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin:16px 0 40px}
+
+footer{margin:34px 0 40px;color:var(--ink3);font-size:13.5px;line-height:1.8}
+footer b{color:var(--ink2)}
+@media(max-width:700px){
+  .wrap{padding:0 16px}
+  h1{font-size:28px}
+  .search{flex:1 1 100%;margin-left:0;order:3}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ---------- 評量入口：沿用備課入口版型，以下為增補 ---------- */
+.brand i{background:linear-gradient(135deg,#e2584a,var(--v))}
+.tomorrow.alt{background:linear-gradient(135deg,var(--g7),var(--k))}
+.tomorrow.alt + .tomorrow{margin-left:0}
+.badge.mk{background:#fff3df;color:#a8650a}
+.sec.mk{background:#fffdf8;border-style:dashed;border-color:#f3d6a6}
+.mk .sn{background:#e8b65a}
+.fa-info{display:flex;flex-wrap:wrap;gap:.3em .5em;font-size:.86em}
+.fa-info b{background:var(--vbg);color:var(--v);border-radius:999px;padding:0 .7em;font-weight:800}
+.fa-mis{font-size:.86em;color:var(--ink2);line-height:1.5}
+.fa-mis i{font-style:normal;color:#c4473c;font-weight:700}
+.flow{flex:none;display:flex;flex-wrap:wrap;gap:.35em .5em;align-items:center;font-size:.86em;font-weight:700;color:var(--ink2)}
+.flow span{background:#fff;border-radius:999px;padding:.15em .8em;box-shadow:0 2px 8px rgba(24,50,74,.06)}
+.flow em{font-style:normal;color:var(--ink3)}
+.loading{color:var(--ink3);font-size:.85em;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <div class="brand" id="brand" tabindex="0" role="link" aria-label="回到首頁"><i>✓</i><span id="brandTx">國中數學課堂形成性評量</span></div>
+  <nav class="crumb" id="crumb" aria-label="目前位置"></nav>
+  <a class="tomorrow alt" id="toPrep" href="../../115-教科書/index.html" title="回到國中數學備課入口（只在這台電腦上有效）">∑ 備課入口</a>
+  <a class="tomorrow alt" id="toGen" href="https://ryansu2021.github.io/formative-check/route-b.html?role=teacher" target="_blank" rel="noopener" title="路線 B：輸入單元，用自己的 Gemini key 生平行題，程式自動驗算">🤖 AI 生題</a>
+  <a class="tomorrow" id="toConsole" href="https://ryansu2021.github.io/formative-check/route-a.html?role=teacher" target="_blank" rel="noopener" title="開啟教師控台：選題庫、建立場次、即時看迷思分布">▶ 教師控台</a>
+  <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="搜尋單元：分數、2-3、七上…" autocomplete="off" aria-label="搜尋單元"></label>
+</div></div>
+
+<div class="wrap page"><main id="app"></main>
+<footer id="foot"></footer></div>
+
+<!--
+=====================================================================
+【資料區】
+  章節架構照抄「國中數學備課入口」（115-教科書/index.html）的 PORTAL；那邊改了章節，這裡也要同步。
+  哪一節有題庫不用手寫：頁面會到線上 banks/<單元>.json 檢查（例：banks/七上2-1.json），有就亮起。
+  making：正在製作題庫的小節（還沒有題庫時顯示「製作中」）。
+=====================================================================
+-->
+<script>
+const FA = {
+  title: '國中數學課堂形成性評量',
+  year: '115',
+  updated: '2026-11-04',
+  online: 'https://ryansu2021.github.io/formative-check/',
+  making: [],
+  versions: { kx:'康軒', ny:'南一', hl:'翰林' },
+  grades: [
+    /* ======================= 七年級 ======================= */
+    { id:7, name:'七年級', semesters:[
+      { id:'up', name:'上學期', chapters:[
+        { no:1, title:'整數的運算', sections:[
+          { no:'1-1', title:'負數與數線', names:{kx:'負數與數線', ny:'數與數線', hl:'正數與負數'}},
+          { no:'1-2', title:'整數的加減', names:{kx:'整數的加減', ny:'整數的加減運算', hl:'正負數的加減'}},
+          { no:'1-3', title:'整數的乘除與四則運算', names:{kx:'整數的乘除與四則運算', ny:'整數的乘除運算', hl:'正負數的乘除'}},
+          { no:'1-4', title:'指數記法與科學記號', names:{kx:'指數記法與科學記號', ny:'指數記法與科學記號', hl:'指數記法與科學記號'}}
+        ]},
+        { no:2, title:'分數的運算', sections:[
+          { no:'2-1', title:'因數與倍數', names:{kx:'因數與倍數', ny:'質因數分解', hl:'質因數分解'}},
+          { no:'2-2', title:'最大公因數與最小公倍數', names:{kx:'最大公因數與最小公倍數', ny:'公因數與公倍數', hl:'最大公因數與最小公倍數'}},
+          { no:'2-3', title:'分數的四則運算', names:{kx:'分數的四則運算', ny:'分數的四則運算', hl:'分數的四則運算'}},
+          { no:'2-4', title:'指數律', names:{kx:'指數律', ny:'指數律', hl:'指數律'}}
+        ]},
+        { no:3, title:'一元一次方程式', sections:[
+          { no:'3-1', title:'代數式的化簡', names:{kx:'代數式的化簡', ny:'以符號列式與運算', hl:'式子的運算'}},
+          { no:'3-2', title:'一元一次方程式', names:{kx:'一元一次方程式', ny:'一元一次方程式的列式與求解', hl:'解一元一次方程式'}},
+          { no:'3-3', title:'應用問題'}
+        ]}
+      ]},
+      { id:'down', name:'下學期', chapters:[
+        { no:1, title:'二元一次聯立方程式', sections:[
+          { no:'1-1', title:'二元一次方程式'},
+          { no:'1-2', title:'解二元一次聯立方程式'},
+          { no:'1-3', title:'應用問題', names:{kx:'應用問題', ny:'二元一次聯立方程式的應用', hl:'應用問題'}}
+        ]},
+        { no:2, title:'平面直角坐標系', sections:[
+          { no:'2-1', title:'直角坐標平面'},
+          { no:'2-2', title:'二元一次方程式的圖形'}
+        ]},
+        { no:3, title:'比例', sections:[
+          { no:'3-1', title:'比例式'},
+          { no:'3-2', title:'正比與反比'}
+        ]},
+        { no:4, title:'一元一次不等式', sections:[
+          { no:'4-1', title:'認識一元一次不等式', names:{kx:'認識一元一次不等式', ny:'一元一次不等式及其解', hl:'一元一次不等式的解及圖示'}},
+          { no:'4-2', title:'解一元一次不等式', names:{kx:'解一元一次不等式', ny:'解一元一次不等式及其應用', hl:'解一元一次不等式及其應用'}}
+        ]},
+        { no:5, title:'統計圖表與資料分析', sections:[
+          { no:'5-1', title:'統計圖表與資料分析', names:{kx:'統計圖表與資料分析', ny:'統計圖表與平均數、中位數、眾數', hl:'統計圖表與統計數據'}}
+        ]},
+        { no:6, title:'線對稱與三視圖', sections:[
+          { no:'6-1', title:'垂直、線對稱與三視圖', names:{kx:'垂直、線對稱與三視圖', ny:'幾何圖形、線對稱與三視圖', hl:'簡單圖形、垂直與平分、線對稱、三視圖'}}
+        ]}
+      ]}
+    ]},
+
+    /* ======================= 八年級 ======================= */
+    { id:8, name:'八年級', semesters:[
+      { id:'up', name:'上學期', chapters:[
+        { no:1, title:'乘法公式與多項式', sections:[
+          { no:'1-1', title:'乘法公式'},
+          { no:'1-2', title:'多項式與其加減運算'},
+          { no:'1-3', title:'多項式的乘除運算'}
+        ]},
+        { no:2, title:'平方根與畢氏定理', sections:[
+          { no:'2-1', title:'平方根與近似值'},
+          { no:'2-2', title:'根式的運算'},
+          { no:'2-3', title:'畢氏定理'}
+        ]},
+        { no:3, title:'因式分解', sections:[
+          { no:'3-1', title:'利用提公因式與乘法公式做因式分解'},
+          { no:'3-2', title:'利用十字交乘法做因式分解'}
+        ]},
+        { no:4, title:'一元二次方程式', sections:[
+          { no:'4-1', title:'因式分解解一元二次方程式'},
+          { no:'4-2', title:'配方法與公式解'},
+          { no:'4-3', title:'應用問題'}
+        ]},
+        { no:5, title:'統計資料處理', sections:[
+          { no:'5-1', title:'資料整理與統計圖表'}
+        ]}
+      ]},
+      { id:'down', name:'下學期', chapters:[
+        { no:1, title:'數列與級數', sections:[
+          { no:'1-1', title:'等差數列', names:{kx:'等差數列', ny:'等差數列', hl:'認識數列與等差數列'}},
+          { no:'1-2', title:'等差級數'},
+          { no:'1-3', title:'等比數列'}
+        ]},
+        { no:2, title:'函數及其圖形', sections:[
+          { no:'2-1', title:'函數與函數圖形', names:{kx:'函數與函數圖形', ny:'一次函數及函數圖形與應用', hl:'線型函數與其圖形'}}
+        ]},
+        { no:3, title:'三角形的性質與尺規作圖', sections:[
+          { no:'3-1', title:'內角與外角', names:{kx:'三角形與多邊形的內角與外角', ny:'內角與外角', hl:'內角與外角'}},
+          { no:'3-2', title:'尺規作圖', names:{kx:'尺規作圖', ny:'基本尺規作圖', hl:'基本的尺規作圖'}},
+          { no:'3-3', title:'三角形的全等性質', names:{kx:'三角形的全等性質', ny:'三角形全等', hl:'三角形的全等性質'}},
+          { no:'3-4', title:'中垂線與角平分線的性質', names:{kx:'中垂線與角平分線的性質', ny:'全等三角形的應用', hl:'中垂線與角平分線性質'}},
+          { no:'3-5', title:'三角形的邊角關係'}
+        ]},
+        { no:4, title:'平行與四邊形', sections:[
+          { no:'4-1', title:'平行線與截角性質', names:{kx:'平行', ny:'平行線', hl:'平行線與截角性質'}},
+          { no:'4-2', title:'平行四邊形'},
+          { no:'4-3', title:'特殊四邊形', names:{kx:'特殊四邊形的性質', ny:'特殊的四邊形', hl:'特殊四邊形'}}
+        ]}
+      ]}
+    ]},
+
+    /* ======================= 九年級 ======================= */
+    { id:9, name:'九年級', semesters:[
+      { id:'up', name:'上學期', chapters:[
+        { no:1, title:'相似形', sections:[
+          { no:'1-1', title:'連比例'},
+          { no:'1-2', title:'比例線段'},
+          { no:'1-3', title:'縮放與相似'},
+          { no:'1-4', title:'相似三角形的應用'}
+        ]},
+        { no:2, title:'圓', sections:[
+          { no:'2-1', title:'點、直線與圓之間的位置關係'},
+          { no:'2-2', title:'圓心角、圓周角與弧的關係'}
+        ]},
+        { no:3, title:'幾何與證明', sections:[
+          { no:'3-1', title:'證明與推理'},
+          { no:'3-2', title:'三角形的外心、內心與重心'}
+        ]}
+      ]},
+      { id:'down', name:'下學期', chapters:[
+        { no:1, title:'二次函數', sections:[
+          { no:'1-1', title:'二次函數的圖形', names:{kx:'二次函數的圖形與最大值、最小值', ny:'二次函數及其圖形', hl:'基本二次函數圖形'}},
+          { no:'1-2', title:'二次函數的最大值或最小值', names:{kx:'（併於 1-1）', ny:'二次函數的最大值或最小值', hl:'二次函數圖形與最大值、最小值'}}
+        ]},
+        { no:2, title:'統計與機率', sections:[
+          { no:'2-1', title:'資料的分析', names:{kx:'資料的分析', ny:'統計數據的分布', hl:'四分位數與盒狀圖'}},
+          { no:'2-2', title:'機率'}
+        ]},
+        { no:3, title:'立體幾何圖形', sections:[
+          { no:'3-1', title:'空間中的線、平面與形體', names:{kx:'空間中的線、平面與形體', ny:'柱體、錐體、空間中的線與平面', hl:'角柱與圓柱'}},
+          { no:'3-2', title:'角錐與圓錐', names:{kx:'（併於 3-1）', ny:'（併於 3-1）', hl:'角錐與圓錐'}}
+        ]}
+      ]}
+    ]}
+  ]
+};
+
+/* =====================================================================
+   引擎（版型沿用備課入口）
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const NUM = {7:'七',8:'八',9:'九'};
+const LOCAL = location.protocol === 'file:';
+const IC = { open:'<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>' };
+const BANK = {};          // 單元 → 題庫摘要（線上檢查得到）
+let CHECKED = false;
+
+const semShort = (g, sm) => NUM[g.id] + (sm.id === 'up' ? '上' : '下');
+const unitOf = (g, sm, sec) => semShort(g, sm) + sec.no;
+function allSections(){
+  const rows = [];
+  FA.grades.forEach(g => g.semesters.forEach(sm => sm.chapters.forEach(ch => ch.sections.forEach(sec =>
+    rows.push({ g, sm, ch, sec, u: unitOf(g, sm, sec) })))));
+  return rows;
+}
+const stateOf = u => BANK[u] ? 'ready' : FA.making.includes(u) ? 'mk' : 'wait';
+function count(filterFn){
+  const rows = allSections().filter(filterFn || (() => true));
+  return { total: rows.length, ready: rows.filter(r => BANK[r.u]).length, mk: rows.filter(r => stateOf(r.u) === 'mk').length };
+}
+
+/* ---- 線上題庫檢查 ---- */
+function summarize(b){
+  const pairs = new Set((b.items || []).map(it => it.pair || it.id)).size;
+  const use = {}; (b.items || []).forEach(it => it.options.forEach(o => { if (o.mis) use[o.mis] = (use[o.mis] || 0) + 1; }));
+  const mm = {}; (b.misconceptions || []).forEach(m => mm[m.code] = m.name);
+  const top = Object.entries(use).sort((a, c) => c[1] - a[1]).slice(0, 3).map(([c]) => mm[c]).filter(Boolean);
+  return { pairs, items: (b.items || []).length, mis: (b.misconceptions || []).length, top };
+}
+async function checkBanks(){
+  const rows = allSections();
+  await Promise.all(rows.map(async r => {
+    try { const res = await fetch(FA.online + 'banks/' + encodeURIComponent(r.u) + '.json', { cache: 'no-cache' });
+      if (res.ok) BANK[r.u] = summarize(await res.json()); } catch (e) {}
+  }));
+  CHECKED = true; route();
+}
+
+/* ---- 小元件 ---- */
+function namesHtml(sec){
+  const n = sec.names; if (!n) return '';
+  const keys = Object.keys(FA.versions).filter(k => n[k]);
+  if (!keys.length) return '';
+  if (keys.length === 3 && new Set(keys.map(k => n[k])).size === 1) return `<div class="names"><span class="same">三版本單元名稱相同</span></div>`;
+  return `<div class="names">${keys.map(k => `<span class="vchip ${k}"><i></i>${esc(FA.versions[k])}・${esc(n[k])}</span>`).join('')}</div>`;
+}
+const btn = (href, label, color, tip, ext) => `<a class="pb" style="--pt:${color}" href="${esc(href)}" target="_blank" rel="noopener" title="${esc(tip || label)}">${esc(label)}${IC.open}</a>`;
+function secCard(r, withCrumb){
+  const { sec, u } = r; const st = stateOf(u); const b = BANK[u];
+  const crumb = withCrumb ? `<div class="rcrumb">${esc(semShort(r.g, r.sm))}　第 ${esc(r.ch.no)} 章 ${esc(r.ch.title)}</div>` : '';
+  const badge = st === 'ready' ? '<span class="badge ok">已有題庫</span>' : st === 'mk' ? '<span class="badge mk">製作中</span>' : `<span class="badge no">${CHECKED ? '尚未建立' : '檢查中'}</span>`;
+  let body = '', acts = '';
+  if (b) {
+    body = `<div class="fa-info"><b>${b.pairs} 組平行題</b><b>${b.mis} 個迷思</b></div>${b.top.length ? `<div class="fa-mis">評量的迷思：${b.top.map(x => `<i>${esc(x)}</i>`).join('、')}${b.mis > b.top.length ? ' 等' : ''}</div>` : ''}`;
+    acts = btn(FA.online + 'route-a.html?role=teacher&unit=' + encodeURIComponent(u), '開啟課堂評量', '#7a6ad8', '開啟教師控台並選好這一節的題庫')
+      + (LOCAL ? btn(`../../115-教科書/${u}_三版本教科書比較.html#9`, '題組與迷思表', '#2f7fd8', '比較頁的「形成性評量」分頁（只在這台電腦上有效）') : '')
+      + btn(FA.online + 'banks/' + encodeURIComponent(u) + '.json', '題庫 JSON', '#12a37f', '下載這一節的題庫');
+  } else acts = `<span class="pb soon">${st === 'mk' ? '題庫製作中' : '題庫尚未建立'}</span>`;
+  return `<article class="sec ${st === 'ready' ? 'ready' : st === 'mk' ? 'mk' : 'wait'}" data-no="${esc(sec.no)}">
+    ${crumb}
+    <div class="sh"><span class="sn">${esc(sec.no)}</span><h4 class="st">${esc(sec.title)}</h4>${badge}</div>
+    ${namesHtml(sec)}${body}
+    <div class="acts">${acts}</div>
+  </article>`;
+}
+
+/* ---- 首頁 ---- */
+function viewHome(){
+  const all = count();
+  const cards = FA.grades.map(g => {
+    const c = count(r => r.g === g);
+    const pct = c.total ? Math.round(c.ready / c.total * 100) : 0;
+    const chapList = g.semesters.map(sm => sm.chapters.length
+      ? `<li><b>${sm.id==='up'?'上':'下'}</b><span>${sm.chapters.map(ch => esc(ch.title)).join('・')}</span></li>`
+      : `<li class="none"><b>${sm.id==='up'?'上':'下'}</b>章節待建立</li>`).join('');
+    const sems = g.semesters.map(sm => { const sc = count(r => r.g === g && r.sm === sm);
+      return `<a href="#/g${g.id}/${sm.id}" onclick="event.stopPropagation()">${esc(sm.name)}<small>${sc.ready} / ${sc.total} 小節${sc.mk ? `・製作中 ${sc.mk}` : ''}</small></a>`; }).join('');
+    return `<article class="gcard g${g.id}" tabindex="0" role="link" data-go="#/g${g.id}/${g.semesters[0].id}" aria-label="${esc(g.name)}">
+      <div class="mark">${NUM[g.id]}</div>
+      <h2><small>GRADE ${g.id}</small>${esc(g.name)}</h2>
+      <ul>${chapList}</ul>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="gmeta"><span>題庫完成度</span><b>${c.ready} / ${c.total} 小節</b></div>
+      <div class="sems">${sems}</div>
+    </article>`;
+  }).join('');
+  return `<div class="home"><section class="hero">
+      <div><div class="kick">${esc(FA.year)} 學年度　·　課堂形成性評量</div>
+      <h1>${esc(FA.title)}</h1>
+      <p class="lead">選擇年級 → 選學期 → 找到這一節，開啟課堂評量。題庫依三版本教科書知識卡產生、答案經程式驗算；有題庫的小節會自動亮起。</p></div>
+      <div class="stats">
+        <div class="stat"><b>${CHECKED ? all.ready : '…'}</b><span>個小節已有題庫</span></div>
+        <div class="stat"><b>${all.mk}</b><span>個小節製作中</span></div>
+        <div class="stat"><b>${all.total}</b><span>個小節已列入</span></div>
+      </div>
+    </section>
+    <div class="flow"><span>① 第一場：學生整卷作答＋勾信心</span><em>→</em><span>② 依迷思分布帶討論</span><em>→</em><span>③ 第二場：平行題（可省略）</span><em>→</em><span>④ 出場摘要：誰還需要補救</span></div>
+    <section class="grades">${cards}</section></div>`;
+}
+
+/* ---- 年級＋學期 ---- */
+let FILTER = 'all';
+function viewGrade(g, sm){
+  const sc = count(r => r.g === g && r.sm === sm);
+  const seg = g.semesters.map(s => `<a href="#/g${g.id}/${s.id}" class="${s===sm?'on':''}">${esc(s.name)}</a>`).join('');
+  const rows = allSections().filter(r => r.g === g && r.sm === sm);
+  const body = `<div class="chaps" style="--n:${sm.chapters.reduce((a,c)=>a+(c.sections.length>=4?2:1),0)}">` + sm.chapters.map(ch => {
+    const rs = rows.filter(r => r.ch === ch);
+    const secs = rs.filter(r => FILTER === 'all' || (FILTER === 'ready' ? !!BANK[r.u] : !BANK[r.u]));
+    const done = rs.filter(r => BANK[r.u]).length;
+    return `<section class="chap${ch.sections.length>=4?' wide':''}">
+      <div class="chap-h"><div class="no">第<b>${esc(ch.no)}</b>章</div><h3>${esc(ch.title)}</h3><span class="prog">${done} / ${ch.sections.length}</span></div>
+      <div class="cbody">${secs.length ? secs.map(r => secCard(r)).join('') : `<div class="note">此篩選條件下沒有小節。</div>`}</div></section>`;
+  }).join('') + `</div>`;
+  const flt = [['all','全部'],['ready','已有題庫'],['wait','尚未建立']].map(([k,t]) => `<button data-f="${k}" class="${FILTER===k?'on':''}">${t}</button>`).join('');
+  return `<section class="gpage g${g.id}">
+    <div class="ghead"><div class="big">${NUM[g.id]}${sm.id==='up'?'上':'下'}</div>
+      <div><div class="kick">${esc(g.name)}　${esc(sm.name)}</div><h1>${sm.chapters.length} 章　${sc.total} 小節　·　${CHECKED ? sc.ready : '…'} 節有題庫</h1></div>
+      <div class="ctrl"><div class="filt">${flt}</div><div class="seg" role="tablist">${seg}</div></div></div>
+    ${body}</section>`;
+}
+
+/* ---- 搜尋 ---- */
+function viewSearch(q){
+  const key = q.toLowerCase().replace(/\s+/g,'');
+  const rows = allSections().filter(r => [r.sec.no, r.sec.title, r.ch.title, semShort(r.g, r.sm), r.g.name, r.sm.name, r.u, ...Object.values(r.sec.names||{})]
+    .join('').toLowerCase().replace(/\s+/g,'').includes(key));
+  return `<section class="rh"><div class="kick">搜尋結果</div><h1>「${esc(q)}」　${rows.length} 個小節</h1></section>
+    ${rows.length ? `<div class="rlist">${rows.map(r => `<div class="g${r.g.id}">${secCard(r, true)}</div>`).join('')}</div>`
+      : `<div class="empty"><h3>找不到符合的單元</h3><p>試試章名、小節編號（如 2-3）、年級學期（如 七上）或關鍵字。</p></div>`}`;
+}
+
+/* ---- 自動縮放（同備課入口） ---- */
+function applyFit(){
+  const home = document.querySelector('.home'), gp = document.querySelector('.gpage');
+  const on = !!home || (!!gp && innerWidth >= 720);
+  document.body.classList.toggle('fit', on);
+  const top = document.querySelector('.top');
+  if (top) document.documentElement.style.setProperty('--topH', top.offsetHeight + 'px');
+  const root = home || gp; if (!root) return;
+  if (!on){ root.style.removeProperty('--u'); return; }
+  let u = home ? Math.max(10, Math.min(20, innerWidth / 62, innerHeight / 40)) : Math.max(10, Math.min(20, innerWidth / 58, innerHeight / 36));
+  root.style.setProperty('--u', u + 'px');
+  const bad = el => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+  const over = () => bad(root) || [...root.querySelectorAll('.gcard,.cbody,.sec')].some(bad);
+  let n = 0; while (over() && u > 6 && n++ < 80){ u -= .5; root.style.setProperty('--u', u + 'px'); }
+}
+window.addEventListener('resize', applyFit);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(applyFit);
+
+/* ---- 路由 ---- */
+const crumbHtml = parts => parts.map((p,i) => i === parts.length - 1 ? `<b>${esc(p.t)}</b>` : `<a href="${p.h}">${esc(p.t)}</a><span class="sep">›</span>`).join('');
+function route(){
+  const h = location.hash.replace(/^#\/?/, ''); const [a, b] = h.split('/');
+  const app = $('#app'); let crumb = []; const q = $('#q').value.trim();
+  if (q){ app.innerHTML = viewSearch(q); crumb = [{t:'首頁',h:'#/'},{t:'搜尋'}]; }
+  else { const g = a && a.startsWith('g') ? FA.grades.find(x => 'g'+x.id === a) : null;
+    if (g){ const sm = g.semesters.find(s => s.id === b) || g.semesters[0]; app.innerHTML = viewGrade(g, sm);
+      crumb = [{t:'首頁',h:'#/'},{t:g.name,h:'#/g'+g.id+'/'+g.semesters[0].id},{t:sm.name}]; document.title = `${g.name}${sm.name}｜${FA.title}`; }
+    else { app.innerHTML = viewHome(); document.title = FA.title + '入口'; } }
+  $('#crumb').innerHTML = crumbHtml(crumb); bind(); applyFit();
+}
+function bind(){
+  document.querySelectorAll('[data-go]').forEach(el => { el.onclick = () => { location.hash = el.dataset.go; };
+    el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = el.dataset.go; } }; });
+  document.querySelectorAll('.filt button').forEach(b => b.onclick = () => { FILTER = b.dataset.f; route(); });
+}
+$('#brand').onclick = () => { $('#q').value = ''; location.hash = '#/'; route(); window.scrollTo(0,0); };
+$('#brand').onkeydown = e => { if (e.key === 'Enter') $('#brand').click(); };
+$('#q').addEventListener('input', route);
+window.addEventListener('hashchange', () => { if ($('#q').value) $('#q').value = ''; route(); window.scrollTo(0,0); });
+if (!LOCAL) $('#toPrep').remove();
+$('#foot').innerHTML = `<b>${esc(FA.title)}</b>　資料更新：${esc(FA.updated)}　·　蘇恭弘。數學王子。台南市忠孝國中製作<br>
+  題庫狀態即時讀取線上 banks/ 資料夾；「題組與迷思表」連到本機的三版本比較網頁，只在這台電腦上顯示。`;
+route(); checkBanks();
+</script>
+</body>
+</html>

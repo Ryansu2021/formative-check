@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>課堂形成性檢核・路線A</title>
+<title>課堂形成性評量・路線A</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -371,7 +371,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 <body>
 <div id="stage">
   <header class="top">
-    <div class="brand"><span class="seal">檢</span>課堂形成性檢核 <span class="route-tag" id="route-tag"></span></div>
+    <div class="brand"><span class="seal">評</span>課堂形成性評量 <span class="route-tag" id="route-tag"></span></div>
     <div class="sp"></div>
     <span class="chip" id="mode-chip"><span class="dot" id="mode-dot"></span><span id="mode-txt">未連線</span></span>
     <button class="btn sm ghost" id="btn-home" hidden>⌂ 首頁</button>
@@ -379,7 +379,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   <main>
     <!-- 首頁 -->
     <section class="view" id="v-home">
-      <h1>課堂形成性檢核</h1>
+      <h1>課堂形成性評量</h1>
       <div class="sub" id="home-sub"></div>
       <div class="home-choice">
         <div class="home-card" id="go-stu"><div class="ic">✍️</div><b>學生作答</b><span>輸入課堂代碼與座號</span></div>
@@ -913,7 +913,7 @@ const FIREBASE_CONFIG = {
 const TEACHER_EMAILS = ["ghsghs1@gmail.com"];
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v2.7（2026-11-04）';
+const APP_VERSION = 'v2.8（2026-11-04）';
 
 // ---------- 小工具 ----------
 const $ = id => document.getElementById(id);
@@ -1244,7 +1244,7 @@ async function pickUnitBank() {
   let b = Banks.list().find(x => unitKey(x) === want);
   if (!b) { try { const r = await fetch(`banks/${encodeURIComponent(want)}.json`, { cache: 'no-cache' }); if (r.ok) { b = await r.json(); b.id = b.id || 'U-' + want; Banks.save(b); } } catch (e) { console.warn(e); } }
   if (b) { T.bankId = b.id; T.tab = 'bank'; toast(`已選好 ${want} 的題庫`); }
-  else toast(`${want} 還沒有形成性檢核題庫`, 3500);
+  else toast(`${want} 還沒有形成性評量題庫`, 3500);
 }
 async function openBankView() {
   show('v-tbank'); stopLive();
@@ -1322,7 +1322,7 @@ function renderItemCards(b, vr, picked, withPick, withSet) {
 function updatePicked() {
   const b = Banks.get(T.bankId); if (!b) return;
   const n = bankPairs(b).filter(p => T.picked[b.id][p.pair]).length;
-  $('c-picked').textContent = `已選 ${n} 組（每一場 ${n} 題；形成性檢核建議 4～8 題）`;
+  $('c-picked').textContent = `已選 ${n} 組（每一場 ${n} 題；形成性評量建議 4～8 題）`;
   $('c-go').disabled = n === 0;
 }
 $('b-selall').onclick = () => { const b = Banks.get(T.bankId); const vr = V.verifyBank(b).results; bankPairs(b).forEach(p => T.picked[b.id][p.pair] = [p.A, p.B].filter(Boolean).every(it => vr[it.id].status === 'pass')); renderBankPane(); };
@@ -1363,7 +1363,7 @@ function renderHowto() {
   $('tp-howto').innerHTML = `<div class="card scroll" style="flex:1;line-height:1.85;font-size:17px">
   <h3 style="font-size:24px;margin-bottom:8px">路線 A：在 Claude 產生新單元題庫</h3>
   <ol style="margin:0;padding-left:24px">
-   <li>在 Claude 說：「幫我做 <b>＿＿（年級單元）</b> 的形成性檢核題庫」。Claude 會先讀 115-教科書 的先備知識卡（三版教學順序、迷思清單、教學建議），沒有知識卡才查全文索引。</li>
+   <li>在 Claude 說：「幫我做 <b>＿＿（年級單元）</b> 的形成性評量題庫」。Claude 會先讀 115-教科書 的先備知識卡（三版教學順序、迷思清單、教學建議），沒有知識卡才查全文索引。</li>
    <li>Claude 依 <code>fa-bank/1</code> 格式產出 JSON：迷思表（代碼、名稱、例子、補救建議、出處）＋<b>平行題組</b>：每組一題 A 卷（第一場）、一題 B 卷（第二場），兩題的誘答對應相同迷思、只換數字。</li>
    <li>Claude 先用同一個驗算器跑過（每題重算正解、每組檢查迷思結構一致），全部通過才交給你。</li>
    <li>回到這裡按「匯入 JSON」，看過每組的自動判讀與迷思標註，勾選要用的題組。</li>
@@ -1711,16 +1711,20 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"sci","value":2350000}：選項寫成 a×10^n，只有一個值正確且 1 ≤ a < 10（value 也可以是字串算式，如 "0.00042"）
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
 算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。不要用 LaTeX。`;
-function genPrompt(unit, note, count) {
-  return `你是台灣國中數學老師的命題助手。請為「${unit}」設計課堂「形成性檢核」用的關鍵題（hinge questions）題庫。
+function genPrompt(unit, note, count, fixedMis, exclude) {
+  const misRule = fixedMis && fixedMis.length
+    ? `1. 迷思只能用下面這份清單（老師或教科書知識卡提供），用它的代碼，不可以新增、改名或合併：\n${fixedMis.map(m => `   ${m.code} ${m.name}${m.example ? '（例：' + m.example + '）' : ''}`).join('\n')}\n   回傳的 misconceptions 照抄這份清單即可。清單裡用不到的迷思可以不考。`
+    : `1. 先列出這個單元 8～14 個常見迷思概念，用繁體中文與台灣用語。每個迷思的 source 要寫具體依據（例如哪一版課本的哪一節、課綱條目、研究文獻）；沒有具體依據就寫「AI 推測」，不要寫「教科書常見錯誤」這類籠統說法。`;
+  return `你是台灣國中數學老師的命題助手。請為「${unit}」設計課堂「形成性評量」用的關鍵題（hinge questions）題庫。
 要求：
-1. 先列出這個單元 8～14 個常見迷思概念（依 108 課綱與台灣三版本教科書的常見錯誤），用繁體中文與台灣用語。
-2. 出 ${count} 組「平行題」，每組兩題：A 卷（id 如 P01A、set "A"）用在第一場，B 卷（id 如 P01B、set "B"）用在討論後的第二場；同一組 pair 代號相同。
+${misRule}
+2. 教材範圍：只考台灣三版本（康軒、南一、翰林）學生課本正式教的內容。教師用書、備課用書註明「不必強調」「補充」「延伸」「偏難」的內容不要出。${exclude ? '\n   老師指定不要考：' + exclude : ''}
+3. 出 ${count} 組「平行題」，每組兩題：A 卷（id 如 P01A、set "A"）用在第一場，B 卷（id 如 P01B、set "B"）用在討論後的第二場；同一組 pair 代號相同。
    B 卷要和 A 卷考同一個概念、誘答對應「相同的迷思代碼」，但換數字或情境，讓學生不能只靠記住答案作答；正解的選項代號也要換位置。
    每題 4 個選項（A～D）。每個錯誤選項都要對應一個迷思代碼：學生會選它，正是因為有那個迷思。不要放沒有診斷意義的亂猜選項。
-3. 一題只考一個重點，題幹短，學生 1～2 分鐘內能答。認知層次要有記憶、理解、應用、分析。
-4. 每題必須有唯一正解，並附 check 讓程式重算。
-5. 每個選項附一句回饋（學生看的），每個迷思附一句補救做法（老師看的）。
+4. 一題只考一個重點，題幹短，學生 1～2 分鐘內能答。認知層次要有記憶、理解、應用、分析。
+5. 每題必須有唯一正解，並附 check 讓程式重算。
+6. 每個選項附一句回饋（學生看的），每個迷思附一句補救做法（老師看的）。
 ${note ? '老師補充：' + note + '\n' : ''}
 ${GEN_SCHEMA_DOC}`;
 }
@@ -1730,9 +1734,16 @@ function renderGenPane() {
   $('tp-gen').innerHTML = `<div class="gen-form card scroll">
       <h3 style="font-size:22px">輸入單元，AI 生題</h3>
       <label class="fl">單元<input type="text" id="g-unit" value="${esc(g.unit || '七上 2-1 質因數分解、標準分解式')}"></label>
-      <label class="fl">補充說明（選填：重點、要避開的題型、班級程度）<textarea id="g-note">${esc(g.note ?? '著重標準分解式的寫法與讀法、短除法沒做完、用標準分解式判斷因數。')}</textarea></label>
+      <label class="fl">補充說明（選填：重點、班級程度）<textarea id="g-note" style="height:84px">${esc(g.note ?? '著重標準分解式的寫法與讀法、短除法沒做完、用標準分解式判斷因數。')}</textarea></label>
+      <div class="fl">迷思從哪裡來
+        <label class="row small"><input type="radio" name="g-mis" value="A" ${(g.mis || 'A') === 'A' ? 'checked' : ''}> 沿用路線 A 題庫的迷思表（依知識卡，建議）</label>
+        <label class="row small"><input type="radio" name="g-mis" value="paste" ${g.mis === 'paste' ? 'checked' : ''}> 自己貼上迷思清單（一行一個）</label>
+        <label class="row small"><input type="radio" name="g-mis" value="ai" ${g.mis === 'ai' ? 'checked' : ''}> 由 AI 自己列（出處會標「AI 推測」）</label>
+        <div id="g-misinfo" class="small muted"></div>
+        <textarea id="g-mispaste" style="height:90px" placeholder="例：&#10;M01 把 1 當成質數（12＝1×2²×3）&#10;M02 分解未完全：留下合數就停" ${g.mis === 'paste' ? '' : 'hidden'}>${esc(g.mispaste || '')}</textarea></div>
+      <label class="fl">不要考的內容（選填）<input type="text" id="g-excl" value="${esc(g.excl ?? '')}" placeholder="例：正因數個數公式、正因數和（翰林備課寫不必強調）"></label>
       <div class="row"><label class="fl" style="width:150px">平行題組數<input type="number" id="g-n" value="${g.n || 9}" min="3" max="12"></label>
-        <label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(g.model || 'gemini-2.5-flash')}"></label></div>
+        <label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(g.model && !/^gemini-2\.5-/.test(g.model) ? g.model : 'gemini-3.5-flash')}"></label></div>
       <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
       <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label>
       <div class="keynote">🔐 key 只存在這台電腦的瀏覽器，直接送到 Google，不會寫進題庫、不會傳給學生。學生端完全不需要 AI。<br>免費額度的 API 資料可能被 Google 用於改進產品，題目內容不要放學生個資。</div>
@@ -1741,10 +1752,38 @@ function renderGenPane() {
     </div>
     <div class="col" style="flex:1;min-height:0" id="g-result"><div class="card muted" style="line-height:1.8">生成後，這裡會顯示每一題的<b>自動驗算</b>結果：<br>✓ 程式重算出唯一正解，且和 AI 標的相同　✗ 正解錯、多個正解或格式錯　⚠ 概念題需人工確認<br>沒通過的題目可以按「請 AI 修正未通過的題目」，把驗算訊息送回去重寫。</div></div>`;
   $('g-go').onclick = () => runGen(false);
+  document.querySelectorAll('input[name="g-mis"]').forEach(r => r.onchange = () => { $('g-mispaste').hidden = misMode() !== 'paste'; loadMisInfo(); });
+  $('g-unit').onchange = () => { T.misA = null; loadMisInfo(); };
+  loadMisInfo();
   if (T.genBank) showGenResult();
 }
+const misMode = () => (document.querySelector('input[name="g-mis"]:checked') || {}).value || 'A';
+const unitKeyOf = t => { const m = /([七八九][上下])\s*(\d+-\d+)/.exec(t || ''); return m ? m[1] + m[2] : ''; };
+async function fetchUnitBank(key) {
+  for (const base of ['banks/', 'https://ryansu2021.github.io/formative-check/banks/']) {
+    try { const r = await fetch(base + encodeURIComponent(key) + '.json', { cache: 'no-cache' }); if (r.ok) return await r.json(); } catch (e) { }
+  }
+  const local = Banks.list().find(b => b.route !== 'B' && unitKey(b) === key); return local || null;
+}
+async function loadMisInfo() {
+  const box = $('g-misinfo'); if (!box) return;
+  if (misMode() !== 'A') { box.textContent = misMode() === 'ai' ? '迷思由 AI 自己列，每個迷思的出處會標「AI 推測」，請務必逐條確認。' : '貼上的每一行會變成一個迷思；沒寫代碼的會自動編 M01、M02…'; return; }
+  const key = unitKeyOf($('g-unit').value); if (!key) { box.textContent = '單元請寫成「七上 2-1 …」的格式，才找得到路線 A 題庫。'; return; }
+  box.textContent = `讀取 ${key} 的路線 A 題庫…`;
+  const b = T.misA && T.misA.key === key ? T.misA.bank : await fetchUnitBank(key);
+  T.misA = { key, bank: b };
+  box.innerHTML = b ? `已載入 ${esc(key)} 路線 A 的迷思表：<b>${(b.misconceptions || []).length} 個迷思</b>（${(b.misconceptions || []).slice(0, 4).map(m => esc(m.name)).join('、')}…）`
+    : `<span style="color:var(--zhu)">${esc(key)} 還沒有路線 A 題庫，請改選「自己貼上」或「由 AI 自己列」。</span>`;
+}
+function parseMisPaste(t) {
+  return String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean).map((x, i) => {
+    const m = /^([A-Za-z]{1,4}\d{1,3})[\s　:：、.]+(.+)$/.exec(x); const body = m ? m[2] : x;
+    const ex = /[（(]([^）)]*)[）)]\s*$/.exec(body);
+    return { code: m ? m[1].toUpperCase() : 'M' + String(i + 1).padStart(2, '0'), name: ex ? body.slice(0, ex.index).trim() : body, example: ex ? ex[1] : '', remedy: '', source: '老師提供' };
+  });
+}
 async function callGemini(prompt) {
-  const key = $('g-key').value.trim(); const model = $('g-model').value.trim() || 'gemini-2.5-flash';
+  const key = $('g-key').value.trim(); const model = $('g-model').value.trim() || 'gemini-3.5-flash';
   if (!key) throw new Error('請先填 Gemini API key');
   if ($('g-remember').checked) ls.set('fa-gemini-key', key); else ls.del('fa-gemini-key');
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
@@ -1762,17 +1801,32 @@ function parseBankJSON(text) {
   const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0) throw new Error('回傳的不是 JSON');
   return JSON.parse(t.slice(a, b + 1));
 }
-function normalizeBank(b, unit) {
-  b.schema = 'fa-bank/1'; b.route = 'B';
+function normalizeBank(b, unit, fixedMis, mode) {
+  b.schema = 'fa-bank/1'; b.route = 'B'; b.misMode = mode;
   b.id = 'B-' + unit.replace(/\s+/g, '') + '-' + new Date().toISOString().slice(5, 16).replace(/[-T:]/g, '');
   b.title = (b.title || unit) + '（路線 B）';
   b.source = `Gemini（${$('g-model').value.trim()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
   b.misconceptions = b.misconceptions || []; b.items = (b.items || []).map((it, i) => ({ ...it, id: it.id || `Q${String(i + 1).padStart(2, '0')}`, set: it.set === 'B' ? 'B' : (it.pair ? 'A' : it.set), options: (it.options || []).map(o => ({ ...o, mis: o.mis === 'null' ? null : (o.mis || null) })) }));
+  if (fixedMis && fixedMis.length) {
+    // 迷思表以老師／路線 A 的為準；AI 若仍用了清單外的代碼，另外列出並標明
+    const fixed = JSON.parse(JSON.stringify(fixedMis)); const codes = new Set(fixed.map(m => m.code));
+    const aiMap = {}; b.misconceptions.forEach(m => aiMap[m.code] = m);
+    const extra = [...new Set(b.items.flatMap(it => it.options.map(o => o.mis)).filter(c => c && !codes.has(c)))]
+      .map(c => ({ ...(aiMap[c] || { code: c, name: '（AI 新增）' }), code: c, source: 'AI 新增，不在提供的迷思清單內，請確認' }));
+    b.misconceptions = [...fixed, ...extra];
+  } else {
+    b.misconceptions = b.misconceptions.map(m => ({ ...m, source: /AI 推測/.test(m.source || '') ? m.source : 'AI 推測' + (m.source ? `（AI 自述：${m.source}）` : '') }));
+  }
+  b.source += mode === 'A' ? '；迷思表沿用路線 A（知識卡）' : mode === 'paste' ? '；迷思表由老師貼上' : '；迷思表由 AI 自列（出處為 AI 推測）';
   return b;
 }
 async function runGen(fixOnly) {
   const unit = $('g-unit').value.trim(), note = $('g-note').value.trim(), n = parseInt($('g-n').value, 10) || 9;
-  ls.set('fa-gen-form', { unit, note, n, model: $('g-model').value.trim() });
+  const mode = misMode(), excl = $('g-excl').value.trim(), mispaste = $('g-mispaste').value;
+  ls.set('fa-gen-form', { unit, note, n, model: $('g-model').value.trim(), mis: mode, excl, mispaste });
+  let fixedMis = null;
+  if (!fixOnly && mode === 'A') { await loadMisInfo(); fixedMis = T.misA && T.misA.bank ? T.misA.bank.misconceptions : null; if (!fixedMis) { $('g-status').innerHTML = '<span style="color:var(--zhu);font-weight:700">這一節沒有路線 A 迷思表，請改選迷思來源。</span>'; return; } }
+  if (!fixOnly && mode === 'paste') { fixedMis = parseMisPaste(mispaste); if (!fixedMis.length) { $('g-status').innerHTML = '<span style="color:var(--zhu);font-weight:700">請先貼上迷思清單。</span>'; return; } }
   const st = $('g-status'); const btns = [$('g-go'), $('g-fix')].filter(Boolean); btns.forEach(b => b.disabled = true);
   const t0 = Date.now();
   st.innerHTML = `<span class="spinner"></span> ${fixOnly ? 'AI 修正中' : 'AI 生題中'}…（約 20～60 秒）`;
@@ -1787,8 +1841,8 @@ async function runGen(fixOnly) {
       fixed.forEach(f => { const i = T.genBank.items.findIndex(x => x.id === f.id); if (i >= 0) T.genBank.items[i] = { ...f, options: (f.options || []).map(o => ({ ...o, mis: o.mis || null })) }; });
       T.genBank.fixRounds = (T.genBank.fixRounds || 0) + 1;
     } else {
-      prompt = genPrompt(unit, note, n);
-      T.genBank = normalizeBank(parseBankJSON(await callGemini(prompt)), unit);
+      prompt = genPrompt(unit, note, n, fixedMis, excl);
+      T.genBank = normalizeBank(parseBankJSON(await callGemini(prompt)), unit, fixedMis, mode);
       T.genBank.genSeconds = Math.round((Date.now() - t0) / 1000);
     }
     const s = V.verifyBank(T.genBank).summary;
@@ -1802,8 +1856,8 @@ function showGenResult() {
   $('g-result').innerHTML = `<div class="row" style="justify-content:space-between"><div><h3 style="font-size:21px">${esc(b.title)}</h3>
       <div class="small muted">${b.items.length} 題（${s.pairs} 組平行題，結構一致 ${s.pairOk} 組）・${b.misconceptions.length} 個迷思・驗算 ${s.pass}✓ ${s.fail}✗ ${s.manual}⚠${b.fixRounds ? `・AI 修正 ${b.fixRounds} 次` : ''}</div></div>
       <div class="row" style="gap:8px">${s.fail || s.pairOk < s.pairs ? '<button class="btn sm" id="g-fix">請 AI 修正未通過的題目</button>' : ''}<button class="btn sm qing" id="g-save">存入題庫</button></div></div>
-    <details class="card small" style="padding:8px 14px"><summary style="cursor:pointer;font-weight:700">迷思表（${b.misconceptions.length}）</summary>
-      ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${esc(m.name)}</b>　${esc(m.example || '')}　<span class="muted">補救：${esc(m.remedy || '')}</span></div>`).join('')}</details>
+    <details class="card small" style="padding:8px 14px"><summary style="cursor:pointer;font-weight:700">迷思表（${b.misconceptions.length}）${b.misMode === 'A' ? '・沿用路線 A' : b.misMode === 'paste' ? '・老師貼上' : b.misMode === 'ai' ? '・AI 自列，請逐條確認' : ''}${b.misconceptions.some(m => /AI 新增/.test(m.source || '')) ? `・<span style="color:var(--zhu)">AI 另外新增 ${b.misconceptions.filter(m => /AI 新增/.test(m.source || '')).length} 個</span>` : ''}</summary>
+      ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${esc(m.name)}</b>　${esc(m.example || '')}　<span class="muted">補救：${esc(m.remedy || '')}</span>　<span class="small" style="${/AI/.test(m.source || '') ? 'color:var(--zhu);font-weight:700' : 'color:var(--muted)'}">出處：${esc(m.source || '未寫')}</span></div>`).join('')}</details>
     <div class="items scroll">${renderItemCards(b, vr, {}, false, true)}</div>`;
   const fx = $('g-fix'); if (fx) fx.onclick = () => runGen(true);
   $('g-save').onclick = () => { Banks.save(JSON.parse(JSON.stringify(b))); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
