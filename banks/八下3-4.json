@@ -1,0 +1,714 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-8下3-4-中垂線與角平分線的性質",
+ "title": "八下 3-4 中垂線與角平分線的性質（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "八下",
+  "code": "3-4",
+  "name": "中垂線與角平分線的性質",
+  "curriculum": [
+   "S-8-5 三角形的全等性質：三角形的全等判定（SAS、SSS、ASA、AAS、RHS）；全等符號（≅）。",
+   "S-8-8 三角形的基本性質：等腰三角形兩底角相等；非等腰三角形大角對大邊，大邊對大角；三角形兩邊和大於第三邊；外角等於其內對角和。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/八下3-4.md（三版教學順序、迷思清單、教學建議、會考題）與比較頁迷思表頁碼產題；學習內容條文依康軒 3-4 備課用書所列；題目答案經驗算器重算，P01、P05 為敘述判斷（manual），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "PB01",
+   "name": "性質判別混為一談",
+   "desc": "以為一個性質正著說成立，兩半對調（判別性質）就自動成立，不必另外說明",
+   "example": "「對頂角相等」成立，所以「相等的兩個角是對頂角」也成立",
+   "remedy": "把性質寫成「如果…那麼…」，請學生對調兩半後舉一個例子檢查還對不對，再說明判別性質要另外用全等說一次。",
+   "source": "知識卡迷思：康軒 p.152 重點整理「性質 vs 判別性質」、南一 p.129、131、135「反之…是否一定…？」、翰林 p.151、156「反過來說」（✓／✓／✓）",
+   "card": "把性質與判別性質（逆敘述）當成同一件事，以為正向成立反向就成立",
+   "tiers": [
+    "八下3-4-S1T1"
+   ]
+  },
+  {
+   "code": "PB02",
+   "name": "中垂線角平分線混用",
+   "desc": "把「到線段兩端點等距」和「到角兩邊等距」混在一起，說成在角的中垂線上，或以為角平分線上的點到兩邊上的點等距",
+   "example": "一點到某角的兩邊等距離，所以此點在該角的中垂線上",
+   "remedy": "對照「點到點（端點）」與「點到直線（邊）」：中垂線管兩個端點，角平分線管兩條邊。",
+   "source": "知識卡迷思：康軒 p.152 自我檢核 2、南一學生課本未見、翰林學生課本未見（✓／–／–）",
+   "card": "到角兩邊等距的點，誤說成在「中垂線」上（中垂線與角平分線混用）",
+   "tiers": [
+    "八下3-4-S2T2"
+   ]
+  },
+  {
+   "code": "PB03",
+   "name": "角平分線平分對邊",
+   "desc": "以為角平分線一定把對邊平分，把 D 當成 BC 的中點",
+   "example": "AD 平分 ∠BAC，所以 BD＝CD，△ABD、△ACD 面積相等",
+   "remedy": "請學生畫一個 AB、AC 長度差很多的三角形，作 ∠A 的角平分線，看 D 落在哪裡。",
+   "source": "知識卡迷思：康軒 p.152 自我檢核 3、南一學生課本未見、翰林只在備課用書 p.227 眉批（✓／–／備）",
+   "card": "以為角平分線會平分對邊（AD 平分∠BAC 就以為 BD＝CD）",
+   "tiers": [
+    "八下3-4-S3T1"
+   ]
+  },
+  {
+   "code": "PB04",
+   "name": "斜線段當成距離",
+   "desc": "點到直線的距離取成點和直線上某一點的連線，沒有取垂直線段",
+   "example": "P 到 AC 的距離取成斜的 PF 或 PA",
+   "remedy": "請學生用三角板的直角邊貼著直線滑到 P 再畫線，比較幾條連線哪一條最短。",
+   "source": "知識卡迷思：三版學生課本未見辨正，康軒 p.147、南一 p.130、翰林 p.152 直接用垂直線段表示距離（–／–／–）；會考 112-23 官方說明",
+   "card": "點到直線的距離取成斜線段，沒有取垂直線段（會考 112-23 官方說明）",
+   "tiers": [
+    "八下3-4-S2T1"
+   ]
+  },
+  {
+   "code": "PB05",
+   "name": "交點到所有邊等距",
+   "desc": "以為兩條角平分線的交點到圖形的每一條邊都等距",
+   "example": "四邊形 ABCD 中 ∠A、∠B 的角平分線交於 P，就說 P 到四邊等距",
+   "remedy": "請學生逐條說出：P 在 ∠A 的角平分線上→到哪兩邊等距；在 ∠B 的角平分線上→到哪兩邊等距；CD 有被用到嗎？",
+   "source": "知識卡迷思：三版學生課本未見（–／–／–）；會考 115-22 官方說明（精熟組 43.10% 選 A）",
+   "card": "以為兩條角平分線的交點到所有邊都等距（會考 115-22 官方說明）"
+  },
+  {
+   "code": "PB06",
+   "name": "把要證的當條件",
+   "desc": "說明中垂線判別時，把要證的 AM＝BM 拿來當全等條件（循環論證）",
+   "example": "已知 PA＝PB，作 PM⊥AB，用「AM＝BM、∠PMA＝∠PMB、PM＝PM」以 SAS 說明全等",
+   "remedy": "請學生在每個全等條件旁寫理由（已知、公用邊、作垂線）；寫不出理由、其實是要證的，就不能當條件。",
+   "source": "知識卡迷思：康軒學生課本未見、南一學生課本未見、翰林只在備課用書 p.223 眉批（–／–／備）",
+   "card": "說明中垂線判別時，把要證的 AM＝BM 當成條件（循環論證）",
+   "tiers": [
+    "八下3-4-S1T2"
+   ]
+  },
+  {
+   "code": "PB07",
+   "name": "沒用性質轉換線段",
+   "desc": "沒有想到用中垂線、角平分線或等腰三角形的性質找出等長的線段或相等的角，以為條件不夠",
+   "example": "△ADC 的 DC 沒有給，就說周長求不出來",
+   "remedy": "請學生先在圖上用同樣的記號標出「一樣長」「一樣大」的地方，再看要求的量能不能換成已知的量。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PB08",
+   "name": "端點距離當半段長",
+   "desc": "中垂線上的點到端點的距離，誤用成垂足到端點的半段長",
+   "example": "D 在 BC 的中垂線上，BC＝8，就把 DC 當成 4",
+   "remedy": "在圖上用不同顏色畫出 DC 和 EC，比較兩條線段：一條連到中垂線上的點，一條連到垂足。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PB09",
+   "name": "把頂角當底角",
+   "desc": "等腰三角形中，以為頂角也和底角相等，或把相等的角找錯",
+   "example": "DB＝DC、∠B＝35°，就說 ∠BDC＝35°",
+   "remedy": "先標出相等的兩邊，再指出它們「對面」的兩個角才是相等的底角，夾在兩等邊中間的是頂角。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PB10",
+   "name": "只算到一半",
+   "desc": "中垂線或頂角平分線把角分成兩半後，把其中一半當成整個角來用或當成答案",
+   "example": "中垂線 DE 分出的 ∠BDE＝55°，就當成 ∠BDC＝55°",
+   "remedy": "請學生在圖上把要求的角整個塗色，檢查它是不是被分成兩塊。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PB11",
+   "name": "中垂線套錯端點",
+   "desc": "D 在 BC 的中垂線上，卻把 D 到 A、C（或其他兩點）當成等距，套錯是哪一條線段的中垂線",
+   "example": "D 在 BC 的中垂線上，就寫 DC＝DA",
+   "remedy": "先把「BC 的中垂線」的 B、C 兩點圈起來，再說 D 到「哪兩點」等距。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-8-5",
+   "stem": "下列哪一個敘述或說明是正確的？",
+   "options": [
+    {
+     "key": "A",
+     "text": "因為「對頂角相等」成立，所以「相等的兩個角一定是對頂角」也成立",
+     "mis": "PB01",
+     "feedback": "你把句子兩半對調就當成也對。兩個 60° 的角可以在不同地方，不一定是對頂角；反過來的說法要另外說明。"
+    },
+    {
+     "key": "B",
+     "text": "若一點到某角的兩邊距離相等，則此點在該角的中垂線上",
+     "mis": "PB02",
+     "feedback": "角沒有「兩個端點」，不能作中垂線。到角兩邊等距的點，要看的是角平分線。"
+    },
+    {
+     "key": "C",
+     "text": "若 P 點在 AB 的中垂線上，則 PA＝PB",
+     "mis": null,
+     "feedback": "正確！這是中垂線的性質：中垂線上任一點到線段兩端點等距，可以用 SAS 說明。"
+    },
+    {
+     "key": "D",
+     "text": "已知 PA＝PB，作 PM⊥AB 於 M，可由 AM＝BM、∠PMA＝∠PMB、PM＝PM，以 SAS 得 △PAM≅△PBM",
+     "mis": "PB06",
+     "feedback": "AM＝BM 正是要證的（M 是不是中點），不能拿來當條件。改用 PA＝PB、PM＝PM 和直角，以 RHS 說明。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句都問自己：這是已知的性質，還是把兩半對調了？每個條件的理由是什麼？",
+   "seg": "八下3-4-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-8-5",
+   "stem": "下列哪一個敘述或說明是正確的？",
+   "options": [
+    {
+     "key": "A",
+     "text": "若 P 點在 ∠BAC 的角平分線上，B、C 分別在角的兩邊上，則 PB＝PC",
+     "mis": "PB02",
+     "feedback": "角平分線管的是到兩「邊」（直線）的距離，不是到邊上兩個點的距離；PB、PC 不一定相等。"
+    },
+    {
+     "key": "B",
+     "text": "設 M 為 AB 的中點，PM⊥AB。要說明「P 在 AB 的中垂線上，則 PA＝PB」，可以先由 PA＝PB 得到 △PAM≅△PBM",
+     "mis": "PB06",
+     "feedback": "PA＝PB 是要證的結論，不能拿來當條件。這裡的已知是 AM＝BM 和直角，用 SAS 說明。"
+    },
+    {
+     "key": "C",
+     "text": "因為「全等三角形的對應角相等」，所以「三個角對應相等的兩個三角形一定全等」",
+     "mis": "PB01",
+     "feedback": "你把句子兩半對調就當成也對。大小不同的兩個正三角形，三個角都相等，卻不全等。"
+    },
+    {
+     "key": "D",
+     "text": "若一點到線段 AB 兩端點的距離相等，則此點在 AB 的中垂線上",
+     "mis": null,
+     "feedback": "正確！這是中垂線的判別性質，要另外用全等（RHS 或 SSS）說明，不是由性質自動得到。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "每一句都問自己：這是已知的性質，還是把兩半對調了？每個條件的理由是什麼？",
+   "seg": "八下3-4-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，直線 L 是 BC 的中垂線，L 交 BC 於 E、交 AB 於 D，連接 DC。若 AD＝3、DB＝6、AC＝7、BC＝8，則 △ADC 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "14",
+     "mis": "PB08",
+     "feedback": "你把 DC 當成 EC＝8÷2＝4，算 3＋4＋7。D 在 BC 的中垂線上，相等的是 DC＝DB＝6，不是 DC＝EC。"
+    },
+    {
+     "key": "B",
+     "text": "16",
+     "mis": null,
+     "feedback": "正確！D 在 BC 的中垂線上，DC＝DB＝6，周長＝AD＋DC＋AC＝3＋6＋7＝16。"
+    },
+    {
+     "key": "C",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "DC 沒有直接給，但 D 在 BC 的中垂線上，DC＝DB＝6，就可以求出周長。"
+    },
+    {
+     "key": "D",
+     "text": "13",
+     "mis": "PB11",
+     "feedback": "你把 DC 當成 DA＝3，算 3＋3＋7。D 在 BC 的中垂線上，D 到 B、C 兩點等距，所以 DC＝DB，不是 DC＝DA。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "3+6+7"
+   },
+   "hint": "D 在 BC 的中垂線上，D 到哪兩個點一樣遠？",
+   "seg": "八下3-4-S1",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"137.3,25.0 30.0,145.0 173.1,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"101.6\" y1=\"145.0\" x2=\"101.6\" y2=\"7.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"101.6\" y1=\"65.0\" x2=\"173.1\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"109.6,145.0 109.6,137.0 101.6,137.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"65.8\" y1=\"150.0\" x2=\"65.8\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"137.3\" y1=\"150.0\" x2=\"137.3\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"101.6\" cy=\"65.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"101.6\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"140.8\" y=\"18.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"20.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"183.1\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"112.6\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"89.6\" y=\"61.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"111.6\" y=\"11.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，直線 L 是 BC 的中垂線，L 交 BC 於 E、交 AB 於 D，連接 DC。若 AD＝6、DB＝8、AC＝11、BC＝10，則 △ADC 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "23",
+     "mis": "PB11",
+     "feedback": "你把 DC 當成 DA＝6，算 6＋6＋11。D 在 BC 的中垂線上，D 到 B、C 兩點等距，所以 DC＝DB，不是 DC＝DA。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "DC 沒有直接給，但 D 在 BC 的中垂線上，DC＝DB＝8，就可以求出周長。"
+    },
+    {
+     "key": "C",
+     "text": "22",
+     "mis": "PB08",
+     "feedback": "你把 DC 當成 EC＝10÷2＝5，算 6＋5＋11。D 在 BC 的中垂線上，相等的是 DC＝DB＝8，不是 DC＝EC。"
+    },
+    {
+     "key": "D",
+     "text": "25",
+     "mis": null,
+     "feedback": "正確！D 在 BC 的中垂線上，DC＝DB＝8，周長＝AD＋DC＋AC＝6＋8＋11＝25。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "6+8+11"
+   },
+   "hint": "D 在 BC 的中垂線上，D 到哪兩個點一樣遠？",
+   "seg": "八下3-4-S1",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"126.1,25.0 30.0,145.0 139.8,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"84.9\" y1=\"145.0\" x2=\"84.9\" y2=\"7.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"84.9\" y1=\"76.4\" x2=\"139.8\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"92.9,145.0 92.9,137.0 84.9,137.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"57.5\" y1=\"150.0\" x2=\"57.5\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"112.4\" y1=\"150.0\" x2=\"112.4\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"84.9\" cy=\"76.4\" r=\"2.4\" fill=\"#333\"/><circle cx=\"84.9\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"130.0\" y=\"18.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"20.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"149.8\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"95.9\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"72.9\" y=\"72.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"94.9\" y=\"11.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，直線 L 是 BC 的中垂線，L 交 BC 於 E、交 AB 於 D，連接 DC。若 ∠B＝35°，則 ∠BDC 是多少度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "35°",
+     "mis": "PB09",
+     "feedback": "你以為 ∠BDC 也等於 ∠B。DB＝DC，相等的是它們對面的 ∠B 和 ∠DCB；∠BDC 是頂角。"
+    },
+    {
+     "key": "B",
+     "text": "72.5°",
+     "mis": "PB09",
+     "feedback": "你把 ∠B＝35° 當成頂角，算 (180°−35°)÷2。DB＝DC，35° 是底角，∠DCB 也是 35°，頂角是 ∠BDC。"
+    },
+    {
+     "key": "C",
+     "text": "55°",
+     "mis": "PB10",
+     "feedback": "55° 是 ∠BDE，只是 ∠BDC 的一半。中垂線 DE 把 ∠BDC 分成兩塊，要算整個角。"
+    },
+    {
+     "key": "D",
+     "text": "110°",
+     "mis": null,
+     "feedback": "正確！DB＝DC（中垂線性質），∠DCB＝∠B＝35°，∠BDC＝180°−35°−35°＝110°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "180-2*35"
+   },
+   "hint": "D 在 BC 的中垂線上，△DBC 是什麼三角形？",
+   "seg": "八下3-4-S1",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"201.4,25.0 30.0,145.0 216.0,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"123.0\" y1=\"145.0\" x2=\"123.0\" y2=\"7.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"123.0\" y1=\"79.9\" x2=\"216.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"131.0,145.0 131.0,137.0 123.0,137.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"76.5\" y1=\"150.0\" x2=\"76.5\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"169.5\" y1=\"150.0\" x2=\"169.5\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"123.0\" cy=\"79.9\" r=\"2.4\" fill=\"#333\"/><circle cx=\"123.0\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"207.9\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"20.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"226.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"134.0\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"111.0\" y=\"75.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"133.0\" y=\"11.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"64.0\" y=\"139.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">35°</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，直線 L 是 BC 的中垂線，L 交 BC 於 E、交 AB 於 D，連接 DC。若 ∠B＝40°，則 ∠BDC 是多少度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "100°",
+     "mis": null,
+     "feedback": "正確！DB＝DC（中垂線性質），∠DCB＝∠B＝40°，∠BDC＝180°−40°−40°＝100°。"
+    },
+    {
+     "key": "B",
+     "text": "50°",
+     "mis": "PB10",
+     "feedback": "50° 是 ∠BDE，只是 ∠BDC 的一半。中垂線 DE 把 ∠BDC 分成兩塊，要算整個角。"
+    },
+    {
+     "key": "C",
+     "text": "40°",
+     "mis": "PB09",
+     "feedback": "你以為 ∠BDC 也等於 ∠B。DB＝DC，相等的是它們對面的 ∠B 和 ∠DCB；∠BDC 是頂角。"
+    },
+    {
+     "key": "D",
+     "text": "70°",
+     "mis": "PB09",
+     "feedback": "你把 ∠B＝40° 當成頂角，算 (180°−40°)÷2。DB＝DC，40° 是底角，∠DCB 也是 40°，頂角是 ∠BDC。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "180-2*40"
+   },
+   "hint": "D 在 BC 的中垂線上，△DBC 是什麼三角形？",
+   "seg": "八下3-4-S1",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"173.0,25.0 30.0,145.0 195.9,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"113.0\" y1=\"145.0\" x2=\"113.0\" y2=\"7.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"113.0\" y1=\"75.4\" x2=\"195.9\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"121.0,145.0 121.0,137.0 113.0,137.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"71.5\" y1=\"150.0\" x2=\"71.5\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"154.5\" y1=\"150.0\" x2=\"154.5\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"113.0\" cy=\"75.4\" r=\"2.4\" fill=\"#333\"/><circle cx=\"113.0\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"178.4\" y=\"19.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"20.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"205.9\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"124.0\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"101.0\" y=\"71.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"123.0\" y=\"11.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"64.0\" y=\"139.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">40°</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "記憶",
+   "lc": "S-8-5",
+   "stem": "如圖，P 點在 ∠BAC 的角平分線上，PD⊥AB 於 D，F 在 AC 上（長度單位：公分）。P 點到 AC 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "13 公分",
+     "mis": "PB04",
+     "feedback": "PA 是 P 到 A 點的線段，不是垂直線段。P 到 AC 的距離要取垂直線段。"
+    },
+    {
+     "key": "B",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "圖上沒畫 P 到 AC 的垂直線段，但 P 在角平分線上，到兩邊距離相等，就等於 PD。"
+    },
+    {
+     "key": "C",
+     "text": "7 公分",
+     "mis": "PB04",
+     "feedback": "PF 是斜的，和 AC 不垂直，不是距離。點到直線的距離要取垂直線段。"
+    },
+    {
+     "key": "D",
+     "text": "5 公分",
+     "mis": null,
+     "feedback": "正確！角平分線上任一點到角兩邊等距，P 到 AC 的距離＝PD＝5 公分。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "5"
+   },
+   "hint": "點到直線的距離要取哪一種線段？角平分線上的點到兩邊有什麼關係？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"25.0\" y1=\"148.0\" x2=\"222.6\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"149.9\" y2=\"22.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"196.2\" y2=\"76.7\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"165.3\" y1=\"89.5\" x2=\"165.3\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"165.3\" y1=\"89.5\" x2=\"83.5\" y2=\"89.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"165.3\" y2=\"89.5\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"157.3,148.0 157.3,140.0 165.3,140.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"165.3\" cy=\"89.5\" r=\"2.4\" fill=\"#333\"/><circle cx=\"165.3\" cy=\"148.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"83.5\" cy=\"89.0\" r=\"2.4\" fill=\"#333\"/><text x=\"17.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"218.6\" y=\"164.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"157.9\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"167.3\" y=\"79.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"165.3\" y=\"164.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"74.5\" y=\"83.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"177.3\" y=\"123.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"134.4\" y=\"87.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">7</text><text x=\"99.2\" y=\"134.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">13</text><circle cx=\"50.5\" cy=\"142.9\" r=\"1.6\" fill=\"#333\"/><circle cx=\"46.6\" cy=\"133.5\" r=\"1.6\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "記憶",
+   "lc": "S-8-5",
+   "stem": "如圖，P 點在 ∠BAC 的角平分線上，PD⊥AB 於 D，F 在 AC 上（長度單位：公分）。P 點到 AC 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10 公分",
+     "mis": "PB04",
+     "feedback": "PF 是斜的，和 AC 不垂直，不是距離。點到直線的距離要取垂直線段。"
+    },
+    {
+     "key": "B",
+     "text": "8 公分",
+     "mis": null,
+     "feedback": "正確！角平分線上任一點到角兩邊等距，P 到 AC 的距離＝PD＝8 公分。"
+    },
+    {
+     "key": "C",
+     "text": "17 公分",
+     "mis": "PB04",
+     "feedback": "PA 是 P 到 A 點的線段，不是垂直線段。P 到 AC 的距離要取垂直線段。"
+    },
+    {
+     "key": "D",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "圖上沒畫 P 到 AC 的垂直線段，但 P 在角平分線上，到兩邊距離相等，就等於 PD。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "8"
+   },
+   "hint": "點到直線的距離要取哪一種線段？角平分線上的點到兩邊有什麼關係？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"25.0\" y1=\"148.0\" x2=\"222.6\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"109.5\" y2=\"22.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"188.6\" y2=\"60.7\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"159.1\" y1=\"76.5\" x2=\"159.1\" y2=\"148.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"159.1\" y1=\"76.5\" x2=\"69.8\" y2=\"81.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25.0\" y1=\"148.0\" x2=\"159.1\" y2=\"76.5\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"151.1,148.0 151.1,140.0 159.1,140.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"159.1\" cy=\"76.5\" r=\"2.4\" fill=\"#333\"/><circle cx=\"159.1\" cy=\"148.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"69.8\" cy=\"81.2\" r=\"2.4\" fill=\"#333\"/><text x=\"17.0\" y=\"154.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"218.6\" y=\"164.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"117.5\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"161.1\" y=\"66.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"159.1\" y=\"164.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"60.8\" y=\"75.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"171.1\" y=\"117.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"124.5\" y=\"76.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">10</text><text x=\"96.1\" y=\"128.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">17</text><circle cx=\"50.2\" cy=\"141.7\" r=\"1.6\" fill=\"#333\"/><circle cx=\"44.3\" cy=\"130.6\" r=\"1.6\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-5",
+   "stem": "如圖，四邊形 ABCD 中，∠A、∠B 的角平分線交於四邊形內部的 P 點。下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "P 到 AB、BC、CD、DA 四邊的距離都相等",
+     "mis": "PB05",
+     "feedback": "P 在 ∠A、∠B 的角平分線上，只能推出到 AD、AB、BC 等距；CD 沒有用到，不一定一樣遠。"
+    },
+    {
+     "key": "B",
+     "text": "P 到 AD、AB、BC 三邊的距離相等",
+     "mis": null,
+     "feedback": "正確！P 在 ∠A 的角平分線上，到 AD、AB 等距；在 ∠B 的角平分線上，到 AB、BC 等距，所以三邊等距。"
+    },
+    {
+     "key": "C",
+     "text": "P 在 AB 的中垂線上，所以 PA＝PB",
+     "mis": "PB02",
+     "feedback": "角平分線管的是到兩「邊」的距離，不是到 A、B 兩個端點的距離；PA、PB 不一定相等。"
+    },
+    {
+     "key": "D",
+     "text": "P 到 AB 的距離就是 PA 的長",
+     "mis": "PB04",
+     "feedback": "PA 是 P 到 A 點的線段，不一定和 AB 垂直。P 到 AB 的距離要取垂直線段。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "P 在哪兩條角平分線上？每一條各管哪兩邊？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"40.0,130.0 215.0,140.0 190.0,40.0 70.0,30.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"40.0\" y1=\"130.0\" x2=\"128.2\" y2=\"68.2\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"215.0\" y1=\"140.0\" x2=\"128.2\" y2=\"68.2\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"128.2\" cy=\"68.2\" r=\"2.4\" fill=\"#333\"/><text x=\"128.2\" y=\"60.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"29.3\" y=\"140.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"225.1\" y=\"151.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"199.7\" y=\"37.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"61.2\" y=\"26.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-5",
+   "stem": "如圖，四邊形 ABCD 中，∠B、∠C 的角平分線交於四邊形內部的 P 點。下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "P 在 BC 的中垂線上，所以 PB＝PC",
+     "mis": "PB02",
+     "feedback": "角平分線管的是到兩「邊」的距離，不是到 B、C 兩個端點的距離；PB、PC 不一定相等。"
+    },
+    {
+     "key": "B",
+     "text": "P 到 BC 的距離就是 PB 的長",
+     "mis": "PB04",
+     "feedback": "PB 是 P 到 B 點的線段，不一定和 BC 垂直。P 到 BC 的距離要取垂直線段。"
+    },
+    {
+     "key": "C",
+     "text": "P 到 AB、BC、CD 三邊的距離相等",
+     "mis": null,
+     "feedback": "正確！P 在 ∠B 的角平分線上，到 AB、BC 等距；在 ∠C 的角平分線上，到 BC、CD 等距，所以三邊等距。"
+    },
+    {
+     "key": "D",
+     "text": "P 到 AB、BC、CD、DA 四邊的距離都相等",
+     "mis": "PB05",
+     "feedback": "P 在 ∠B、∠C 的角平分線上，只能推出到 AB、BC、CD 等距；DA 沒有用到，不一定一樣遠。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "P 在哪兩條角平分線上？每一條各管哪兩邊？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 260 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"30.0,110.0 110.0,150.0 225.0,95.0 120.0,25.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"110.0\" y1=\"150.0\" x2=\"110.6\" y2=\"86.9\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"225.0\" y1=\"95.0\" x2=\"110.6\" y2=\"86.9\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"110.6\" cy=\"86.9\" r=\"2.4\" fill=\"#333\"/><text x=\"110.6\" y=\"78.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"18.2\" y=\"116.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"107.6\" y=\"166.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"237.0\" y=\"100.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"119.8\" y=\"18.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，AD 平分 ∠BAC，交 BC 於 D，DE⊥AB 於 E，F 在 AC 上。若 AB＝10、AC＝6、DE＝3、DF＝4，則 △ABC 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "27",
+     "mis": "PB04",
+     "feedback": "你把斜的 DF＝4 當成 △ADC 的高。DF 和 AC 不垂直；D 到 AC 的距離要用角平分線性質，也是 3。"
+    },
+    {
+     "key": "B",
+     "text": "30",
+     "mis": "PB03",
+     "feedback": "你以為 BD＝CD，兩塊面積一樣，算成 2×15。角平分線不一定平分對邊，△ADC 要用底 AC＝6、高 3 另外算。"
+    },
+    {
+     "key": "C",
+     "text": "24",
+     "mis": null,
+     "feedback": "正確！D 到 AB、AC 的距離都是 3，面積＝10×3÷2＋6×3÷2＝15＋9＝24。"
+    },
+    {
+     "key": "D",
+     "text": "15",
+     "mis": "PB07",
+     "feedback": "15 只是 △ABD。D 在角平分線上，到 AC 的距離也是 3，△ADC 的面積 6×3÷2 也要加上。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "10*3/2+6*3/2"
+   },
+   "hint": "D 在 ∠BAC 的角平分線上，D 到 AC 的距離是多少？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 240 220\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"112.5,20.0 25.0,195.0 165.0,125.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"112.5\" y1=\"20.0\" x2=\"112.5\" y2=\"151.2\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"112.5\" y1=\"151.2\" x2=\"60.0\" y2=\"125.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"112.5\" y1=\"151.2\" x2=\"141.8\" y2=\"78.7\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"63.1,118.7 69.4,121.9 66.3,128.1\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"112.5\" cy=\"151.2\" r=\"2.4\" fill=\"#333\"/><circle cx=\"60.0\" cy=\"125.0\" r=\"2.4\" fill=\"#333\"/><circle cx=\"141.8\" cy=\"78.7\" r=\"2.4\" fill=\"#333\"/><text x=\"112.5\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"17.0\" y=\"207.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"173.0\" y=\"137.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"112.5\" y=\"166.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"51.1\" y=\"125.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"145.6\" y=\"74.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"93.2\" y=\"150.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"137.2\" y=\"119.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><circle cx=\"109.1\" cy=\"34.6\" r=\"1.6\" fill=\"#333\"/><circle cx=\"115.9\" cy=\"34.6\" r=\"1.6\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-8-5",
+   "stem": "如圖，△ABC 中，AD 平分 ∠BAC，交 BC 於 D，DE⊥AB 於 E，F 在 AC 上。若 AB＝10、AC＝8、DE＝4、DF＝6，則 △ABC 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "36",
+     "mis": null,
+     "feedback": "正確！D 到 AB、AC 的距離都是 4，面積＝10×4÷2＋8×4÷2＝20＋16＝36。"
+    },
+    {
+     "key": "B",
+     "text": "20",
+     "mis": "PB07",
+     "feedback": "20 只是 △ABD。D 在角平分線上，到 AC 的距離也是 4，△ADC 的面積 8×4÷2 也要加上。"
+    },
+    {
+     "key": "C",
+     "text": "44",
+     "mis": "PB04",
+     "feedback": "你把斜的 DF＝6 當成 △ADC 的高。DF 和 AC 不垂直；D 到 AC 的距離要用角平分線性質，也是 4。"
+    },
+    {
+     "key": "D",
+     "text": "40",
+     "mis": "PB03",
+     "feedback": "你以為 BD＝CD，兩塊面積一樣，算成 2×20。角平分線不一定平分對邊，△ADC 要用底 AC＝8、高 4 另外算。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "10*4/2+8*4/2"
+   },
+   "hint": "D 在 ∠BAC 的角平分線上，D 到 AC 的距離是多少？",
+   "seg": "八下3-4-S2",
+   "fig": "<svg viewBox=\"0 0 240 220\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"130.6,20.0 25.0,188.4 215.0,154.7\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"130.6\" y1=\"20.0\" x2=\"130.6\" y2=\"169.7\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"130.6\" y1=\"169.7\" x2=\"63.2\" y2=\"127.5\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"130.6\" y1=\"169.7\" x2=\"150.7\" y2=\"52.2\" stroke=\"#333\" stroke-width=\"1.6\"/><polyline points=\"66.9,121.5 72.8,125.3 69.1,131.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"130.6\" cy=\"169.7\" r=\"2.4\" fill=\"#333\"/><circle cx=\"63.2\" cy=\"127.5\" r=\"2.4\" fill=\"#333\"/><circle cx=\"150.7\" cy=\"52.2\" r=\"2.4\" fill=\"#333\"/><text x=\"130.6\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"17.0\" y=\"200.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"223.0\" y=\"166.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"130.6\" y=\"184.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"54.7\" y=\"127.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"152.4\" y=\"47.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"103.9\" y=\"160.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"150.6\" y=\"114.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><circle cx=\"126.4\" cy=\"34.4\" r=\"1.6\" fill=\"#333\"/><circle cx=\"134.7\" cy=\"34.4\" r=\"1.6\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-8-8",
+   "stem": "如圖，△ABC 中，AB＝AC，D 是 BC 的中點，連接 AD。若 ∠BAD＝25°，則 ∠C 是多少度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "D 是底邊中點，等腰三角形底邊上的中線也是頂角平分線（可用 SSS 說明），所以 ∠CAD＝∠BAD＝25°。"
+    },
+    {
+     "key": "B",
+     "text": "50°",
+     "mis": "PB09",
+     "feedback": "50° 是頂角 ∠BAC。等腰三角形相等的是兩個底角，∠C＝(180°−50°)÷2。"
+    },
+    {
+     "key": "C",
+     "text": "77.5°",
+     "mis": "PB10",
+     "feedback": "你把 25° 當成整個頂角，算 (180°−25°)÷2。AD 把頂角分成兩半，∠BAC＝2×25°＝50°。"
+    },
+    {
+     "key": "D",
+     "text": "65°",
+     "mis": null,
+     "feedback": "正確！△ABD≅△ACD（SSS），∠BAC＝50°，∠C＝(180°−50°)÷2＝65°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "(180-2*25)/2"
+   },
+   "hint": "AD 把 ∠BAC 分成哪兩個角？它們相等嗎？",
+   "seg": "八下3-4-S3",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,20.0 61.7,145.0 178.3,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"120.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"88.9\" y1=\"150.0\" x2=\"88.9\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"92.9\" y1=\"150.0\" x2=\"92.9\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"147.1\" y1=\"150.0\" x2=\"147.1\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"151.1\" y1=\"150.0\" x2=\"151.1\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"86.3\" y1=\"80.4\" x2=\"95.4\" y2=\"84.6\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"144.6\" y1=\"84.6\" x2=\"153.7\" y2=\"80.4\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"120.0\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"120.0\" y=\"15.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"52.7\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"187.3\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120.0\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"109.0\" y=\"72.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">25°</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-8-8",
+   "stem": "如圖，△ABC 中，AB＝AC，D 是 BC 的中點，連接 AD。若 ∠CAD＝20°，則 ∠B 是多少度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "40°",
+     "mis": "PB09",
+     "feedback": "40° 是頂角 ∠BAC。等腰三角形相等的是兩個底角，∠B＝(180°−40°)÷2。"
+    },
+    {
+     "key": "B",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！△ABD≅△ACD（SSS），∠BAC＝40°，∠B＝(180°−40°)÷2＝70°。"
+    },
+    {
+     "key": "C",
+     "text": "無法求出",
+     "mis": "PB07",
+     "feedback": "D 是底邊中點，等腰三角形底邊上的中線也是頂角平分線（可用 SSS 說明），所以 ∠BAD＝∠CAD＝20°。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": "PB10",
+     "feedback": "你把 20° 當成整個頂角，算 (180°−20°)÷2。AD 把頂角分成兩半，∠BAC＝2×20°＝40°。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "(180-2*20)/2"
+   },
+   "hint": "AD 把 ∠BAC 分成哪兩個角？它們相等嗎？",
+   "seg": "八下3-4-S3",
+   "fig": "<svg viewBox=\"0 0 240 170\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,20.0 74.5,145.0 165.5,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"120.0\" y1=\"20.0\" x2=\"120.0\" y2=\"145.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"95.3\" y1=\"150.0\" x2=\"95.3\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"99.3\" y1=\"150.0\" x2=\"99.3\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"140.7\" y1=\"150.0\" x2=\"140.7\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"144.7\" y1=\"150.0\" x2=\"144.7\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"92.6\" y1=\"80.8\" x2=\"102.0\" y2=\"84.2\" stroke=\"#333\" stroke-width=\"1.2\"/><line x1=\"138.0\" y1=\"84.2\" x2=\"147.4\" y2=\"80.8\" stroke=\"#333\" stroke-width=\"1.2\"/><circle cx=\"120.0\" cy=\"145.0\" r=\"2.4\" fill=\"#333\"/><text x=\"120.0\" y=\"15.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"65.5\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"174.5\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"120.0\" y=\"161.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"131.0\" y=\"72.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">20°</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P07）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形",
+ "updated": "2026-11-05T01:42"
+}

@@ -1,0 +1,830 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上1-4-相似三角形的應用",
+ "title": "九上 1-4 相似三角形的應用（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "1-4",
+  "name": "相似三角形的應用",
+  "curriculum": [
+   "S-9-2 三角形的相似性質：三角形的相似判定（AA、SAS、SSS）；對應邊長之比＝對應高之比；對應面積之比＝對應邊長平方之比；利用三角形相似的概念解應用問題；相似符號（～）。",
+   "S-9-4 相似直角三角形邊長比值的不變性：直角三角形中某一銳角的角度決定邊長比值，該比值為不變量，不因相似直角三角形的大小而改變；三內角為 30°、60°、90° 其邊長比記錄為「1：√3：2」；三內角為 45°、45°、90° 其邊長比記錄為「1：1：√2」。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上1-4.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；鏡子題依翰林 1-4 自我評量（全文索引），標為進階選用；題目答案經驗算器重算，P02、P08 為敘述判斷（manual），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "SU01",
+   "name": "面積比當成邊長比",
+   "desc": "以為相似三角形的面積比就等於對應邊長比，不用平方",
+   "example": "邊長比 1：3，以為面積比也是 1：3",
+   "remedy": "請學生把底和高都標成同一個比，用 ½×底×高 算一次，看出比要乘兩次。",
+   "source": "知識卡迷思：康軒 p.66 說明框、p.77 自我檢核1；南一 p.61 例1；翰林 p.65 例2（✓／✓／✓）",
+   "card": "邊長比與面積比混淆：把面積比當成邊長比，或高的比與面積比不分",
+   "tiers": [
+    "九上1-4-S1T1"
+   ]
+  },
+  {
+   "code": "SU02",
+   "name": "長度的比也平方",
+   "desc": "知道面積要平方後，把對應高、周長、邊長的比也一起平方",
+   "example": "中點三角形周長以為是原來的 1/4",
+   "remedy": "做三欄表：邊長比｜高、周長的比｜面積比，請學生說出哪一欄才平方、為什麼。",
+   "source": "知識卡迷思：康軒 p.77 自我檢核1；南一 p.61 例1；翰林 p.65 例2，翰林備課 p.134 列「邊長比 5：7 誤認高的比 25：49」（✓／✓／✓）",
+   "card": "邊長比與面積比混淆：把面積比當成邊長比，或高的比與面積比不分",
+   "tiers": [
+    "九上1-4-S1T1"
+   ]
+  },
+  {
+   "code": "SU03",
+   "name": "對應邊配錯",
+   "desc": "用不對應的兩條線段相比，例如拿 AD：DB 當成 △ADE 與 △ABC 的邊長比",
+   "example": "AD＝1、DB＝2，以為兩三角形邊長比 1：2",
+   "remedy": "先寫出對應頂點，同色標出每組對應邊，只拿同色的兩邊相比。",
+   "source": "知識卡迷思：康軒 p.79 挑錯題、南一 p.62 例2 邊欄、翰林只在備課用書 p.317 迷思逃脫（✓／✓／備）",
+   "card": "對應邊（或對應高）配錯：用不對應的線段比去算面積比或邊長",
+   "tiers": [
+    "九上1-4-S1T2"
+   ]
+  },
+  {
+   "code": "SU04",
+   "name": "中點三角形面積當一半",
+   "desc": "兩邊中點連成的 △ADE（或三邊中點三角形），邊長、周長是一半，就以為面積也是一半",
+   "example": "△ABC 面積 48，D、E 是 AB、AC 中點，以為 △ADE 面積 24",
+   "remedy": "請學生把 △ABC 用三條中點連線切成 4 個全等小三角形，數一數 △ADE 佔幾塊。",
+   "source": "知識卡迷思（此列原為三邊中點三角形）：康軒 p.68 說明框、p.77 自我檢核2；南一未見；翰林 p.79 自評1 為兩邊中點 △ADE，迷思只在備課用書 p.317（✓／–／備）",
+   "card": "三邊中點三角形的面積當成原三角形的 1/2（與周長 1/2 混淆）"
+  },
+  {
+   "code": "SU05",
+   "name": "對邊鄰邊斜邊認錯",
+   "desc": "沒有先圈出要看的銳角和直角，就認定哪一邊是對邊、鄰邊或斜邊",
+   "example": "把直角旁的股當成斜邊，或把 30° 角的鄰邊當成短股",
+   "remedy": "先圈銳角：斜邊＝直角對面，對邊＝這個角對面，鄰邊＝夾這個角的股。",
+   "source": "知識卡迷思：康軒 p.70、p.77 自我檢核3；南一 p.70、p.78 自評5；翰林 p.73 看板框、p.76 隨堂（✓／✓／✓）",
+   "card": "對邊、鄰邊、斜邊認錯（直角不在 C 時）而把 sin、cos、tan 搞反",
+   "tiers": [
+    "九上1-4-S3T2"
+   ]
+  },
+  {
+   "code": "SU06",
+   "name": "30-60-90 記成1:2:√3",
+   "desc": "以為 √3 比 2 大，或照角度順序排，把短股：長股：斜邊記成 1：2：√3",
+   "example": "短股 4，以為斜邊是 4√3",
+   "remedy": "用「最短邊對最小角、斜邊最長」檢查，再用畢氏定理驗算 1²＋(√3)²＝2²。",
+   "source": "知識卡迷思：康軒 p.77 自我檢核4；南一未見；翰林只在備課用書 p.126、p.134（✓／–／備）",
+   "card": "特殊角邊長比記錯：30°-60°-90° 寫成 1：2：√3",
+   "tiers": [
+    "九上1-4-S3T1"
+   ]
+  },
+  {
+   "code": "SU07",
+   "name": "斜坡長當水平距離",
+   "desc": "坡度＝高度差÷水平距離，卻拿沿斜坡走的長度去除或去乘",
+   "example": "坡度 10% 沿斜坡走 100 公尺，以為升高 10 公尺",
+   "remedy": "在圖上分三色標出水平距離、斜坡長、高度差，再寫坡度的定義。",
+   "source": "知識卡迷思：康軒未見；南一 p.78 錯誤診療；翰林 p.77 例10 圖上分標三種長度（–／✓／✓）",
+   "card": "坡度與角度、距離混淆：把坡度百分比當角度，或把斜坡長當水平距離"
+  },
+  {
+   "code": "SU08",
+   "name": "坡度百分比當角度",
+   "desc": "把坡度 10% 當成斜坡和地面夾 10°",
+   "example": "坡度 12%，以為坡角是 12°",
+   "remedy": "讓學生用計算機比較 tan 10° 和 0.1，說明坡度是比值不是角度。",
+   "source": "知識卡迷思：康軒未見；南一課本沒有處理「百分比當角度」（p.73 邊欄只說明坡度常用百分率或分數表示，此列的 ✓ 來自斜坡長的辨正）；翰林 p.77 例10，備課用書 p.134 列「把坡度百分比 10% 當成 10°」（–／✓／✓）",
+   "card": "坡度與角度、距離混淆：把坡度百分比當角度，或把斜坡長當水平距離"
+  },
+  {
+   "code": "SU09",
+   "name": "沒處理眼睛高度",
+   "desc": "視線測量題算出眼睛以上那一段就當答案，或把眼睛當成貼在地面",
+   "example": "算出 AH＝4 公尺，忘了加眼睛離地 1.5 公尺",
+   "remedy": "請學生在圖上畫出眼睛高度的水平線，標出算出來的是哪一段。",
+   "source": "知識卡迷思：南一 p.63 例3、翰林 p.68 例5，翰林備課 p.124 列「算出 AH 後忘記加上眼睛離地高度」（✓／✓／✓ 為「單位、眼高、對應」整列的標記）",
+   "card": "測量題：單位未統一、漏加眼高、相似三角形對應錯",
+   "tiers": [
+    "九上1-4-S2T2"
+   ]
+  },
+  {
+   "code": "SU10",
+   "name": "單位沒有統一",
+   "desc": "公分和公尺混在同一個比例式裡直接算",
+   "example": "身高 1.6 公尺、影長 80 公分，列成 1.6：80",
+   "remedy": "列比例式前先圈出每個數的單位，全部換成公尺再算。",
+   "source": "知識卡迷思：康軒 p.63 例1；南一、翰林課本測量題沒有單位換算（此列的 ✓ 來自眼高、對應的處理）（✓／✓／✓）",
+   "card": "測量題：單位未統一、漏加眼高、相似三角形對應錯",
+   "tiers": [
+    "九上1-4-S2T2"
+   ]
+  },
+  {
+   "code": "SU11",
+   "name": "測量比例式對應錯",
+   "desc": "比例式的兩邊沒有對到同一個三角形的同一種量，例如高對影長的前後次序顛倒，或用了不對應的線段",
+   "example": "1.6：0.8＝6：x（把樹影放到高的位置）",
+   "remedy": "比例式寫成「小三角形的高：小三角形的底＝大三角形的高：大三角形的底」，逐項指出在圖上哪裡。",
+   "source": "知識卡迷思：康軒 p.63 例1、南一 p.64 例4、翰林 p.68 例5（✓／✓／✓）",
+   "card": "測量題：單位未統一、漏加眼高、相似三角形對應錯",
+   "tiers": [
+    "九上1-4-S2T2"
+   ]
+  },
+  {
+   "code": "SU13",
+   "name": "求出大三角形就停",
+   "desc": "題目要的是梯形（大三角形扣掉小三角形）的面積，算出大三角形面積就當答案",
+   "example": "△ABC＝36，就答四邊形 DBCE＝36",
+   "remedy": "請學生先把所求的區域塗色，寫出「所求＝大－小」再算。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SU14",
+   "name": "用加減代替比例",
+   "desc": "以為相似圖形的長度是「多幾就多幾」，或以為大小改變比值也會跟著變",
+   "example": "人高 1.6 公尺影長 0.8 公尺，樹影 6 公尺，以為樹高 1.6＋(6−0.8)＝6.8 公尺",
+   "remedy": "請學生用「幾倍」說：樹影是人影的幾倍？樹高就是人高的幾倍。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D、E 分別在 AB、AC 上，DE//BC，AD＝1、DB＝2。若 △ADE 面積是 4，則四邊形 DBCE 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "36",
+     "mis": "SU13",
+     "feedback": "你算出的 36 是整個 △ABC。四邊形 DBCE 是 △ABC 扣掉 △ADE，36−4＝32。"
+    },
+    {
+     "key": "B",
+     "text": "12",
+     "mis": "SU03",
+     "feedback": "你用 AD：DB＝1：2 當邊長比，得 △ABC＝16。AD 的對應邊是 AB＝3，邊長比是 1：3。"
+    },
+    {
+     "key": "C",
+     "text": "8",
+     "mis": "SU01",
+     "feedback": "你把面積比當成邊長比 1：3，得 △ABC＝12。面積比要平方，是 1：9。"
+    },
+    {
+     "key": "D",
+     "text": "32",
+     "mis": null,
+     "feedback": "正確！△ADE～△ABC，邊長比 AD：AB＝1：3，面積比 1：9，△ABC＝36，36−4＝32。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "4×9−4"
+   },
+   "hint": "AD 的對應邊是 DB 還是 AB？所求是哪一塊？",
+   "seg": "九上1-4-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120,15 25,145 215,145\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"88.3\" y1=\"58.3\" x2=\"151.7\" y2=\"58.3\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"120\" y=\"11\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"16\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"78.3\" y=\"62.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"161.7\" y=\"62.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"92.2\" y=\"36.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">1</text><text x=\"44.7\" y=\"101.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text></svg>"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D、E 分別在 AB、AC 上，DE//BC，AD＝2、DB＝3。若 △ADE 面積是 8，則四邊形 DBCE 的面積是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "12",
+     "mis": "SU01",
+     "feedback": "你把面積比當成邊長比 2：5，得 △ABC＝20。面積比要平方，是 4：25。"
+    },
+    {
+     "key": "B",
+     "text": "42",
+     "mis": null,
+     "feedback": "正確！△ADE～△ABC，邊長比 AD：AB＝2：5，面積比 4：25，△ABC＝50，50−8＝42。"
+    },
+    {
+     "key": "C",
+     "text": "10",
+     "mis": "SU03",
+     "feedback": "你用 AD：DB＝2：3 當邊長比，得 △ABC＝18。AD 的對應邊是 AB＝5，邊長比是 2：5。"
+    },
+    {
+     "key": "D",
+     "text": "50",
+     "mis": "SU13",
+     "feedback": "你算出的 50 是整個 △ABC。四邊形 DBCE 是 △ABC 扣掉 △ADE，50−8＝42。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "8×25/4−8"
+   },
+   "hint": "AD 的對應邊是 DB 還是 AB？所求是哪一塊？",
+   "seg": "九上1-4-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120,15 25,145 215,145\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"82.0\" y1=\"67.0\" x2=\"158.0\" y2=\"67.0\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"120\" y=\"11\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"16\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"72.0\" y=\"71.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"168.0\" y=\"71.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"89.0\" y=\"41.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"41.5\" y=\"106.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text></svg>"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-2",
+   "stem": "如圖，D、E 分別是 △ABC 兩邊 AB、AC 的中點。下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "△ADE 的面積是 △ABC 的 1/2",
+     "mis": "SU04",
+     "feedback": "邊長、周長是一半，面積卻不是。邊長比 1：2，面積比要平方，是 1：4。"
+    },
+    {
+     "key": "B",
+     "text": "△ADE 的周長是 △ABC 的 1/4",
+     "mis": "SU02",
+     "feedback": "你把周長的比也平方了。邊長比是 1：2，周長比也是 1：2，只有面積比才是 1：4。"
+    },
+    {
+     "key": "C",
+     "text": "△ADE 的面積是 △ABC 的 1/4",
+     "mis": null,
+     "feedback": "正確！AD：AB＝AE：AC＝1：2，夾角 ∠A 共用，兩三角形 SAS 相似，邊長比 1：2，面積比 1：4。"
+    },
+    {
+     "key": "D",
+     "text": "DE 的長是 AB 的一半",
+     "mis": "SU03",
+     "feedback": "DE 平行的是 BC，DE 的對應邊是 BC，DE＝BC 的一半；只有在 AB＝BC 時才剛好是 AB 的一半。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "DE 平行哪一邊？△ADE 和 △ABC 的邊長比是多少？面積比呢？",
+   "seg": "九上1-4-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"110,15 25,145 215,145\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"67.5\" y1=\"80.0\" x2=\"162.5\" y2=\"80.0\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"110\" y=\"11\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"16\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"56.5\" y=\"84.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"173.5\" y=\"84.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "理解",
+   "lc": "S-9-2",
+   "stem": "如圖，D、E 分別是 △ABC 兩邊 AB、AC 的中點，△ABC 的周長 24、面積 48。下列哪一個敘述一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "DE 的長是 AC 的一半",
+     "mis": "SU03",
+     "feedback": "DE 平行的是 BC，DE 的對應邊是 BC，DE＝BC 的一半；只有在 AC＝BC 時才剛好是 AC 的一半。"
+    },
+    {
+     "key": "B",
+     "text": "△ADE 的面積是 12",
+     "mis": null,
+     "feedback": "正確！兩三角形 SAS 相似，邊長比 1：2，面積比 1：4，48÷4＝12。"
+    },
+    {
+     "key": "C",
+     "text": "△ADE 的周長是 6",
+     "mis": "SU02",
+     "feedback": "你把周長的比也平方了。邊長比 1：2，周長比也是 1：2，周長是 12。"
+    },
+    {
+     "key": "D",
+     "text": "△ADE 的面積是 24",
+     "mis": "SU04",
+     "feedback": "邊長、周長是一半，面積卻不是。邊長比 1：2，面積比要平方，是 1：4，48÷4＝12。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "DE 平行哪一邊？△ADE 和 △ABC 的邊長比是多少？面積比呢？",
+   "seg": "九上1-4-S1",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"110,15 25,145 215,145\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><line x1=\"67.5\" y1=\"80.0\" x2=\"162.5\" y2=\"80.0\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"110\" y=\"11\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"16\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225\" y=\"152\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"56.5\" y=\"84.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"173.5\" y=\"84.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "同一時刻，身高 1.6 公尺的小明影長 80 公分，旁邊一棵樹的影長 6 公尺。樹高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "0.12 公尺",
+     "mis": "SU10",
+     "feedback": "你把 1.6 公尺和 80 公分直接列成 1.6：80。先把 80 公分換成 0.8 公尺。"
+    },
+    {
+     "key": "B",
+     "text": "3 公尺",
+     "mis": "SU11",
+     "feedback": "你列成 1.6：0.8＝6：x，把樹影放到「高」的位置。要寫成 人高：人影＝樹高：樹影。"
+    },
+    {
+     "key": "C",
+     "text": "12 公尺",
+     "mis": null,
+     "feedback": "正確！陽光平行，兩個三角形 AA 相似，1.6：0.8＝x：6，x＝12。"
+    },
+    {
+     "key": "D",
+     "text": "6.8 公尺",
+     "mis": "SU14",
+     "feedback": "你用「樹影比人影多 5.2 公尺，樹就比人高 5.2 公尺」去想。樹影是人影的 7.5 倍，樹高也是人高的 7.5 倍。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "1.6：0.8＝x：6"
+   },
+   "hint": "先統一單位，再寫：人高：人影＝樹高：樹影。",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"230\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"40\" y1=\"140\" x2=\"40\" y2=\"105\" stroke=\"#333\" stroke-width=\"2.2\"/><line x1=\"40\" y1=\"105\" x2=\"75\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"40\" cy=\"100\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"130\" y1=\"140\" x2=\"130\" y2=\"25\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"130\" y1=\"25\" x2=\"225\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><ellipse cx=\"130\" cy=\"30\" rx=\"16\" ry=\"14\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"22\" y=\"125\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">1.6 m</text><text x=\"58\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">80 cm</text><text x=\"178\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6 m</text><text x=\"150\" y=\"90\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">樹</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "同一時刻，身高 1.5 公尺的小華影長 60 公分，旁邊一根旗桿的影長 4 公尺。旗桿高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10 公尺",
+     "mis": null,
+     "feedback": "正確！陽光平行，兩個三角形 AA 相似，1.5：0.6＝x：4，x＝10。"
+    },
+    {
+     "key": "B",
+     "text": "4.9 公尺",
+     "mis": "SU14",
+     "feedback": "你用「旗桿影比人影多 3.4 公尺，旗桿就比人高 3.4 公尺」去想。旗桿影是人影的幾倍，旗桿高就是人高的幾倍。"
+    },
+    {
+     "key": "C",
+     "text": "0.1 公尺",
+     "mis": "SU10",
+     "feedback": "你把 1.5 公尺和 60 公分直接列成 1.5：60。先把 60 公分換成 0.6 公尺。"
+    },
+    {
+     "key": "D",
+     "text": "1.6 公尺",
+     "mis": "SU11",
+     "feedback": "你列成 1.5：0.6＝4：x，把旗桿影放到「高」的位置。要寫成 人高：人影＝旗桿高：旗桿影。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "1.5：0.6＝x：4"
+   },
+   "hint": "先統一單位，再寫：人高：人影＝旗桿高：旗桿影。",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"230\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"40\" y1=\"140\" x2=\"40\" y2=\"105\" stroke=\"#333\" stroke-width=\"2.2\"/><line x1=\"40\" y1=\"105\" x2=\"75\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><circle cx=\"40\" cy=\"100\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"130\" y1=\"140\" x2=\"130\" y2=\"25\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"130\" y1=\"25\" x2=\"225\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><ellipse cx=\"130\" cy=\"30\" rx=\"16\" ry=\"14\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"22\" y=\"125\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">1.5 m</text><text x=\"58\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">60 cm</text><text x=\"178\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">4 m</text><text x=\"150\" y=\"90\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">旗桿</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，小安眼睛離地 1.5 公尺，在離他 2 公尺處立一根 2.5 公尺高的竹竿，竹竿離樹 6 公尺。他看到竹竿頂端和樹梢剛好重疊。樹高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4 公尺",
+     "mis": "SU09",
+     "feedback": "你算出的 4 公尺是眼睛水平線以上的那一段，還要加上眼睛離地 1.5 公尺。"
+    },
+    {
+     "key": "B",
+     "text": "4.5 公尺",
+     "mis": "SU11",
+     "feedback": "你用 2：6＝1：x，把「人到竿」對到「竿到樹」。兩個三角形共用眼睛這個頂點，要用 2：(2＋6)。"
+    },
+    {
+     "key": "C",
+     "text": "10 公尺",
+     "mis": "SU09",
+     "feedback": "你用 2：8＝2.5：x，把眼睛當成貼在地上。先畫眼睛高度的水平線，竹竿只算線以上的 1 公尺。"
+    },
+    {
+     "key": "D",
+     "text": "5.5 公尺",
+     "mis": null,
+     "feedback": "正確！從眼睛畫水平線，2：(2＋6)＝(2.5−1.5)：x，x＝4，樹高 4＋1.5＝5.5。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "2：8＝1：(x−1.5)"
+   },
+   "hint": "從眼睛畫一條水平線，相似的是哪兩個三角形？算出來的是哪一段？",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"-35 0 285 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"232\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25\" y1=\"140\" x2=\"25\" y2=\"110\" stroke=\"#333\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"105\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"75\" y1=\"140\" x2=\"75\" y2=\"85\" stroke=\"#333\" stroke-width=\"2.2\"/><line x1=\"220\" y1=\"140\" x2=\"220\" y2=\"20\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"25\" y1=\"105\" x2=\"220\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><text x=\"17\" y=\"128\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">1.5 m</text><text x=\"90\" y=\"115\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">2.5 m</text><text x=\"50\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">2 m</text><text x=\"148\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6 m</text><text x=\"236\" y=\"60\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">樹</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，小芸眼睛離地 1.6 公尺，在離她 3 公尺處立一根 2.4 公尺高的竹竿，竹竿離樹 9 公尺。她看到竹竿頂端和樹梢剛好重疊。樹高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3.2 公尺",
+     "mis": "SU09",
+     "feedback": "你算出的 3.2 公尺是眼睛水平線以上的那一段，還要加上眼睛離地 1.6 公尺。"
+    },
+    {
+     "key": "B",
+     "text": "9.6 公尺",
+     "mis": "SU09",
+     "feedback": "你用 3：12＝2.4：x，把眼睛當成貼在地上。先畫眼睛高度的水平線，竹竿只算線以上的 0.8 公尺。"
+    },
+    {
+     "key": "C",
+     "text": "4.8 公尺",
+     "mis": null,
+     "feedback": "正確！從眼睛畫水平線，3：(3＋9)＝(2.4−1.6)：x，x＝3.2，樹高 3.2＋1.6＝4.8。"
+    },
+    {
+     "key": "D",
+     "text": "4 公尺",
+     "mis": "SU11",
+     "feedback": "你用 3：9＝0.8：x，把「人到竿」對到「竿到樹」。兩個三角形共用眼睛這個頂點，要用 3：(3＋9)。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "3：12＝0.8：(x−1.6)"
+   },
+   "hint": "從眼睛畫一條水平線，相似的是哪兩個三角形？算出來的是哪一段？",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"-35 0 285 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"232\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25\" y1=\"140\" x2=\"25\" y2=\"110\" stroke=\"#333\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"105\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"75\" y1=\"140\" x2=\"75\" y2=\"85\" stroke=\"#333\" stroke-width=\"2.2\"/><line x1=\"220\" y1=\"140\" x2=\"220\" y2=\"20\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"25\" y1=\"105\" x2=\"220\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><text x=\"17\" y=\"128\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">1.6 m</text><text x=\"90\" y=\"115\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">2.4 m</text><text x=\"50\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">3 m</text><text x=\"148\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">9 m</text><text x=\"236\" y=\"60\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">樹</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，地上放一面鏡子，小強從鏡子裡剛好看到樹梢（入射角等於反射角）。他眼睛離地 1.5 公尺，他到鏡子 100 公分，鏡子到樹 6 公尺。樹高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6.5 公尺",
+     "mis": "SU14",
+     "feedback": "你用「樹離鏡子比人多 5 公尺，樹就比眼睛高 5 公尺」去想。樹到鏡子是人到鏡子的 6 倍，樹高也是眼高的 6 倍。"
+    },
+    {
+     "key": "B",
+     "text": "9 公尺",
+     "mis": null,
+     "feedback": "正確！兩個直角三角形 AA 相似，1.5：1＝x：6，x＝9。"
+    },
+    {
+     "key": "C",
+     "text": "0.09 公尺",
+     "mis": "SU10",
+     "feedback": "你把 1.5 公尺和 100 公分直接列成 1.5：100。先把 100 公分換成 1 公尺。"
+    },
+    {
+     "key": "D",
+     "text": "4 公尺",
+     "mis": "SU11",
+     "feedback": "你列成 1.5：1＝6：x，把樹到鏡子的距離放到「高」的位置。要寫成 眼高：人到鏡＝樹高：樹到鏡。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "solve",
+    "eq": "1.5：1＝x：6"
+   },
+   "hint": "鏡子兩邊的兩個直角三角形為什麼相似？哪兩段是對應的？",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"-35 0 285 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"232\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25\" y1=\"140\" x2=\"25\" y2=\"100\" stroke=\"#333\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"95\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"215\" y1=\"140\" x2=\"215\" y2=\"20\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"25\" y1=\"100\" x2=\"70\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"70\" y1=\"140\" x2=\"215\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><rect x=\"62\" y=\"138\" width=\"16\" height=\"4\" fill=\"#ccc\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"17\" y=\"125\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">1.5 m</text><text x=\"47\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">100 cm</text><text x=\"142\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6 m</text><text x=\"70\" y=\"128\" font-size=\"11\" text-anchor=\"middle\" fill=\"#333\">鏡子</text><text x=\"222\" y=\"60\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">樹</text></svg>",
+   "optional": true
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，地上放一面鏡子，小玲從鏡子裡剛好看到樹梢（入射角等於反射角）。她眼睛離地 1.6 公尺，她到鏡子 80 公分，鏡子到樹 5 公尺。樹高是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "0.1 公尺",
+     "mis": "SU10",
+     "feedback": "你把 1.6 公尺和 80 公分直接列成 1.6：80。先把 80 公分換成 0.8 公尺。"
+    },
+    {
+     "key": "B",
+     "text": "2.5 公尺",
+     "mis": "SU11",
+     "feedback": "你列成 1.6：0.8＝5：x，把樹到鏡子的距離放到「高」的位置。要寫成 眼高：人到鏡＝樹高：樹到鏡。"
+    },
+    {
+     "key": "C",
+     "text": "5.8 公尺",
+     "mis": "SU14",
+     "feedback": "你用「樹離鏡子比人多 4.2 公尺，樹就比眼睛高 4.2 公尺」去想。樹到鏡子是人到鏡子的幾倍，樹高就是眼高的幾倍。"
+    },
+    {
+     "key": "D",
+     "text": "10 公尺",
+     "mis": null,
+     "feedback": "正確！兩個直角三角形 AA 相似，1.6：0.8＝x：5，x＝10。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "1.6：0.8＝x：5"
+   },
+   "hint": "鏡子兩邊的兩個直角三角形為什麼相似？哪兩段是對應的？",
+   "seg": "九上1-4-S2",
+   "fig": "<svg viewBox=\"-35 0 285 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"232\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"25\" y1=\"140\" x2=\"25\" y2=\"100\" stroke=\"#333\" stroke-width=\"2.2\"/><circle cx=\"25\" cy=\"95\" r=\"5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"215\" y1=\"140\" x2=\"215\" y2=\"20\" stroke=\"#333\" stroke-width=\"3\"/><line x1=\"25\" y1=\"100\" x2=\"70\" y2=\"140\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"70\" y1=\"140\" x2=\"215\" y2=\"20\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><rect x=\"62\" y=\"138\" width=\"16\" height=\"4\" fill=\"#ccc\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"17\" y=\"125\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">1.6 m</text><text x=\"47\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">80 cm</text><text x=\"142\" y=\"155\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">5 m</text><text x=\"70\" y=\"128\" font-size=\"11\" text-anchor=\"middle\" fill=\"#333\">鏡子</text><text x=\"222\" y=\"60\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">樹</text></svg>",
+   "optional": true
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-4",
+   "stem": "如圖，△ABC 中，∠C＝90°，∠A＝30°，BC＝4。AB 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4√3",
+     "mis": "SU06",
+     "feedback": "你把邊長比記成 1：2：√3。30° 對面的 BC 是短股，比是 短股：長股：斜邊＝1：√3：2，斜邊是 8。"
+    },
+    {
+     "key": "B",
+     "text": "8",
+     "mis": null,
+     "feedback": "正確！BC 是 30° 的對邊（短股），斜邊 AB＝2×4＝8。"
+    },
+    {
+     "key": "C",
+     "text": "2",
+     "mis": "SU05",
+     "feedback": "你把 BC 當成斜邊，取一半當短股。直角在 C，斜邊是 C 對面的 AB；BC 是 30° 的對邊，是短股。"
+    },
+    {
+     "key": "D",
+     "text": "8√3/3",
+     "mis": "SU05",
+     "feedback": "你把 BC 當成長股。BC 在 ∠A（30°）的對面，是最短的一股。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "radValue",
+    "expr": "2×4"
+   },
+   "hint": "先寫出三個角的度數，BC 在哪一個角的對面？",
+   "seg": "九上1-4-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"30,140 30,35 212,140\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"40,140 40,130 30,130\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"20\" y=\"145\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"22\" y=\"32\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"222\" y=\"147\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"178\" y=\"134\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">30°</text><text x=\"14\" y=\"92\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-4",
+   "stem": "如圖，△ABC 中，∠C＝90°，∠B＝60°，BC＝5。AB 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10√3/3",
+     "mis": "SU05",
+     "feedback": "你把 BC 當成長股。∠A＝30°，BC 在 30° 的對面，是最短的一股。"
+    },
+    {
+     "key": "B",
+     "text": "2.5",
+     "mis": "SU05",
+     "feedback": "你把 BC 當成斜邊，取一半當短股。直角在 C，斜邊是 C 對面的 AB；BC 是 30° 的對邊，是短股。"
+    },
+    {
+     "key": "C",
+     "text": "5√3",
+     "mis": "SU06",
+     "feedback": "你把邊長比記成 1：2：√3。BC 是短股，比是 短股：長股：斜邊＝1：√3：2，斜邊是 10。"
+    },
+    {
+     "key": "D",
+     "text": "10",
+     "mis": null,
+     "feedback": "正確！∠A＝30°，BC 是 30° 的對邊（短股），斜邊 AB＝2×5＝10。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "radValue",
+    "expr": "2×5"
+   },
+   "hint": "先算出 ∠A，BC 在哪一個角的對面？",
+   "seg": "九上1-4-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"30,140 30,35 212,140\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"40,140 40,130 30,130\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"20\" y=\"145\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"22\" y=\"32\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"222\" y=\"147\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"48\" y=\"64\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">60°</text><text x=\"14\" y=\"92\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-4",
+   "stem": "如圖，△ABC 與 △DEF 中，∠C＝∠F＝90°，∠A＝∠D。BC＝3、AC＝4、AB＝5，DF＝12。EF 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "16",
+     "mis": "SU03",
+     "feedback": "你用 EF：DF＝AC：BC，把對應邊配反了。∠A＝∠D，BC 對應 EF、AC 對應 DF。"
+    },
+    {
+     "key": "B",
+     "text": "11",
+     "mis": "SU14",
+     "feedback": "你用「DF 比 AC 多 8，EF 也比 BC 多 8」去想。兩個三角形相似，要看「幾倍」：DF 是 AC 的 3 倍。"
+    },
+    {
+     "key": "C",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！兩三角形 AA 相似，∠A 的對邊÷鄰邊不變：3：4＝EF：12，EF＝9。"
+    },
+    {
+     "key": "D",
+     "text": "7.2",
+     "mis": "SU05",
+     "feedback": "你用 BC：AB，把斜邊 AB 當成 ∠A 的鄰邊。∠A 的鄰邊是 AC（夾 ∠A 的股）。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "3：4＝x：12"
+   },
+   "hint": "∠A 的對邊、鄰邊各是哪一條？它們在 △DEF 對應到哪一條？",
+   "seg": "九上1-4-S3",
+   "fig": "<svg viewBox=\"0 0 250 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"25,140 85.0,140 25,95.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"33,140 33,132 25,132\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><polygon points=\"125,140 230.0,140 125,61.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"135,140 135,130 125,130\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"16\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"93.0\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"17\" y=\"93.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"116\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"238.0\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"117\" y=\"59.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"15\" y=\"121.5\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"55.0\" y=\"154\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"65.0\" y=\"115.5\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">5</text><text x=\"177.5\" y=\"154\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">12</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-4",
+   "stem": "如圖，△ABC 與 △DEF 中，∠C＝∠F＝90°，∠A＝∠D。BC＝8、AC＝6、AB＝10，DF＝9。EF 的長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！兩三角形 AA 相似，∠A 的對邊÷鄰邊不變：8：6＝EF：9，EF＝12。"
+    },
+    {
+     "key": "B",
+     "text": "6.75",
+     "mis": "SU03",
+     "feedback": "你用 EF：DF＝AC：BC，把對應邊配反了。∠A＝∠D，BC 對應 EF、AC 對應 DF。"
+    },
+    {
+     "key": "C",
+     "text": "7.2",
+     "mis": "SU05",
+     "feedback": "你用 BC：AB，把斜邊 AB 當成 ∠A 的鄰邊。∠A 的鄰邊是 AC（夾 ∠A 的股）。"
+    },
+    {
+     "key": "D",
+     "text": "11",
+     "mis": "SU14",
+     "feedback": "你用「DF 比 AC 多 3，EF 也比 BC 多 3」去想。兩個三角形相似，要看「幾倍」：DF 是 AC 的 1.5 倍。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "8：6＝x：9"
+   },
+   "hint": "∠A 的對邊、鄰邊各是哪一條？它們在 △DEF 對應到哪一條？",
+   "seg": "九上1-4-S3",
+   "fig": "<svg viewBox=\"0 0 250 160\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"25,140 70.0,140 25,80.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"33,140 33,132 25,132\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><polygon points=\"125,140 203.8,140 125,35.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><polyline points=\"135,140 135,130 125,130\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"16\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"78.0\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"17\" y=\"78.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"116\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"211.8\" y=\"150\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"117\" y=\"33.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"15\" y=\"114.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">8</text><text x=\"47.5\" y=\"154\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"57.5\" y=\"108.0\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">10</text><text x=\"164.4\" y=\"154\" font-size=\"12\" text-anchor=\"middle\" fill=\"#333\">9</text></svg>"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-4",
+   "stem": "坡度＝高度差÷水平距離。關於「坡度 10% 的坡道」，下列哪一個說法正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "斜坡和地面的夾角是 10°",
+     "mis": "SU08",
+     "feedback": "坡度是比值，不是角度。坡度 10% 是「高度差÷水平距離＝0.1」，夾角不是 10°。"
+    },
+    {
+     "key": "B",
+     "text": "沿著斜坡走 100 公尺，就升高 10 公尺",
+     "mis": "SU07",
+     "feedback": "你把斜坡長當成水平距離。坡度要用水平距離去除，沿斜坡走 100 公尺時，水平距離比 100 公尺短。"
+    },
+    {
+     "key": "C",
+     "text": "水平前進 200 公尺升高 20 公尺，所以坡度變成 20%",
+     "mis": "SU14",
+     "feedback": "升高變多，是因為水平距離也變長。20÷200＝0.1，坡度還是 10%：比值不因大小改變。"
+    },
+    {
+     "key": "D",
+     "text": "水平前進 100 公尺，升高 10 公尺",
+     "mis": null,
+     "feedback": "正確！高度差÷水平距離＝10÷100＝10%。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "坡度用哪兩段長度相除？它是比值還是角度？",
+   "seg": "九上1-4-S3"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-4",
+   "stem": "坡度＝高度差÷水平距離。關於「坡度 8% 的坡道」，下列哪一個說法正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "沿著斜坡走 50 公尺，就升高 4 公尺",
+     "mis": "SU07",
+     "feedback": "你把斜坡長當成水平距離。坡度要用水平距離去除，沿斜坡走 50 公尺時，水平距離比 50 公尺短。"
+    },
+    {
+     "key": "B",
+     "text": "水平前進 50 公尺，升高 4 公尺",
+     "mis": null,
+     "feedback": "正確！高度差÷水平距離＝4÷50＝8%。"
+    },
+    {
+     "key": "C",
+     "text": "斜坡和地面的夾角是 8°",
+     "mis": "SU08",
+     "feedback": "坡度是比值，不是角度。坡度 8% 是「高度差÷水平距離＝0.08」，夾角不是 8°。"
+    },
+    {
+     "key": "D",
+     "text": "水平前進 100 公尺升高 8 公尺，所以坡度變成 16%",
+     "mis": "SU14",
+     "feedback": "升高變多，是因為水平距離也變長。8÷100＝0.08，坡度還是 8%：比值不因大小改變。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "坡度用哪兩段長度相除？它是比值還是角度？",
+   "seg": "九上1-4-S3"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或情境",
+ "updated": "2026-11-05T01:42"
+}

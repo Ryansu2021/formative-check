@@ -1,0 +1,809 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上1-2-比例線段",
+ "title": "九上 1-2 比例線段（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "1-2",
+  "name": "比例線段",
+  "curriculum": [
+   "S-9-3 平行線截比例線段：連接三角形兩邊中點的線段必平行於第三邊（其長度等於第三邊的一半）；平行線截比例線段性質；利用截線段成比例判定兩直線平行；平行線截比例線段性質的應用。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上1-2.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；學習內容條文依南一、翰林 3 上備課用書課程架構表；題目答案經驗算器重算，P04、P08 為判斷題（manual）；P07 梯形為進階（康軒、南一有教，翰林 1-2 未見），老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "PS01",
+   "name": "DE：BC 用部分比部分",
+   "desc": "DE//BC 時，以為 DE：BC＝AD：DB，拿部分比部分當成平行線段的比",
+   "example": "AD：DB＝2：3，就說 DE：BC＝2：3（應為 2：5）",
+   "remedy": "把 △ADE 描出來和 △ABC 並排畫，請學生指出和 DE、BC 同位置的另一組邊是 AD 和 AB。",
+   "source": "知識卡迷思：南一 p.26 例3 刻意給 AD:DB＝2:3 而求得 DE:BC＝2:5；康軒未見明文提醒；翰林課本無明文提醒，只在備課用書（拉頁 p.317 迷思逃脫）（–／✓／備）",
+   "card": "把 DE:BC 寫成 AD:DB（部分比部分），應為 AD:AB",
+   "tiers": [
+    "九上1-2-S2T1"
+   ]
+  },
+  {
+   "code": "PS02",
+   "name": "用 DE：BC 判別平行",
+   "desc": "以為 DE：BC＝AD：AB 也能判別 DE//BC（逆敘述不成立）",
+   "example": "AD：AB＝DE：BC＝2：5，就說 DE//BC",
+   "remedy": "以 D 為圓心、DE 為半徑畫弧交 AC 於另一點 E'，讓學生看到 DE'：BC 也一樣，但 DE' 不平行 BC。",
+   "source": "知識卡迷思：康軒 p.28 畫弧反例與「注意喔」、p.35 自我檢核2；南一 p.32 迷思診療；翰林 p.36 探索活動（✓／✓／✓）",
+   "card": "以為 DE:BC＝AD:AB 也能判別 DE//BC（逆敘述不成立）",
+   "tiers": [
+    "九上1-2-S2T2"
+   ]
+  },
+  {
+   "code": "PS03",
+   "name": "截線段比套到平行線段",
+   "desc": "三條平行線（或梯形）中，把截線上線段的比直接當成平行線段之間的比",
+   "example": "AE：EB＝1：2，就說 AD：EF＝1：2",
+   "remedy": "連對角線把圖拆成兩個三角形，各用一次「平行線段的比＝含全長的比」，再相加。",
+   "source": "知識卡迷思：康軒 p.38 挑錯題；南一 p.37 錯誤診療⑵；翰林課本未見（✓／✓／–）",
+   "card": "三條平行線：把截線段的比用到平行線段上（如 BE:CF）",
+   "tiers": [
+    "九上1-2-S3T2"
+   ]
+  },
+  {
+   "code": "PS04",
+   "name": "比例式對應順序錯置",
+   "desc": "列比例式時對應的線段放錯位置，例如上段配下段",
+   "example": "AD：DB＝EC：AE，或用 DB：AB 去求 AE",
+   "remedy": "用同一色標「上段」AD、AE，另一色標「下段」DB、EC，同色放同一位置，算完檢查長短合不合理。",
+   "source": "知識卡迷思：三版都未見針對對應順序的提醒，只以分色弧線標示對應線段（康軒 p.23、34；南一 p.23–26、34；翰林 p.27、35）（–／–／–）",
+   "card": "比例式對應順序寫反或上下錯置（如 AD:DB＝EC:AE）",
+   "tiers": [
+    "九上1-2-S1T2"
+   ]
+  },
+  {
+   "code": "PS05",
+   "name": "等高三角形用錯底邊",
+   "desc": "比較兩個三角形面積時，找不到共同的高，或拿不在同一直線上的邊當底",
+   "example": "△ABD 和 △ADC 面積比寫成 BD：BC",
+   "remedy": "請學生從 A 作 BC 的垂線，說出它是哪兩個三角形的高，再指出各自的底是哪一段。",
+   "source": "知識卡迷思：康軒 p.21 例1、p.35 自我檢核1；南一 p.22 探索活動；翰林 p.23 示範圖、p.24 例1（✓／✓／✓）",
+   "card": "等高三角形面積比：找不到共同的高（高在形外）、用錯底邊",
+   "tiers": [
+    "九上1-2-S1T1"
+   ]
+  },
+  {
+   "code": "PS06",
+   "name": "中點連線一半弄反",
+   "desc": "中點連線長度關係弄反（BC＝½DE），或只記一半忘了平行",
+   "example": "DE＝7，就說 BC＝3.5",
+   "remedy": "請學生先用 AD：AB＝1：2 列出 DE：BC，再看圖上哪一條比較短，把「平行」和「一半」寫在同一行。",
+   "source": "知識卡迷思：康軒 p.35 自我檢核3；南一、翰林課本未見針對性處理（✓／–／–）",
+   "card": "中點連線：長度關係弄反（BC＝½DE）或只記一半忘了平行",
+   "tiers": [
+    "九上1-2-S3T1"
+   ]
+  },
+  {
+   "code": "PS07",
+   "name": "梯形 EF 取上下底平均",
+   "desc": "梯形中與兩底平行的線段 EF，不管比是多少都當成上下底的平均",
+   "example": "AE：EB＝1：2、AD＝4、BC＝10，就說 EF＝7",
+   "remedy": "提醒「平均」只在 E、F 是兩腰中點（1：1）時成立；其他比要連對角線拆成兩個三角形來算。",
+   "source": "知識卡迷思：三版課本未見明文提醒；康軒 p.32 例5、南一 p.30 例6 的比都不是 1:1，但未對照平均（–／–／–）",
+   "card": "梯形中平行線段 EF：直接當成上下底的平均（比不是 1:1）",
+   "tiers": [
+    "九上1-2-S3T2"
+   ]
+  },
+  {
+   "code": "PS08",
+   "name": "分割時部分比當全長比",
+   "desc": "尺規分割線段時，把 AC：CB 和 AC：AB 混淆，等分數取錯",
+   "example": "要 AC：CB＝2：3，卻只截 3 等分取第 2 點（得到 AC：AB＝2：3）",
+   "remedy": "先問「全長是幾份」：AC：CB＝2：3 時全長是 5 份，所以截 5 等分取第 2 點。",
+   "source": "知識卡迷思：康軒 p.33 例6、p.38 自評6；南一 p.28 例4、p.35 自評2；翰林 p.41 自評4（✓／✓／✓）",
+   "card": "尺規分割：AC:CB 與 AC:AB 混淆，取錯等分點"
+  },
+  {
+   "code": "PS09",
+   "name": "用相差代替比",
+   "desc": "用加減的「差」代替比的關係（加法思維），例如上段多 2、下段也多 2",
+   "example": "AD＝4、DB＝6、AE＝6，就說 EC＝8",
+   "remedy": "請學生把比化成「幾倍」來說：DB 是 AD 的 1.5 倍，所以 EC 也要是 AE 的 1.5 倍。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PS10",
+   "name": "部分與全長混用",
+   "desc": "同一個比例式裡，一邊用部分比部分、另一邊用部分比全長",
+   "example": "AD：AB＝AE：EC",
+   "remedy": "列式前先決定「兩邊都用上段：下段」或「兩邊都用上段：全長」，寫完逐項對照。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "PS11",
+   "name": "沒有平行也套比例",
+   "desc": "沒有確認（或沒有作出）平行線，就直接套用平行線截比例線段",
+   "example": "分割線段時過等分點作 AB 的垂線，以為也能截出相同的比",
+   "remedy": "問學生「這個比例式是靠哪兩條線平行才成立的？」找不到平行線就不能用。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D 在 BC 上，BD＝3、DC＝5。若 △ABD 的面積是 12 平方公分，則 △ADC 的面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "14",
+     "mis": "PS09",
+     "feedback": "你以為 DC 比 BD 多 2，面積也多 2。等高時面積和底邊成「倍數」關係：DC 是 BD 的 5/3 倍，面積也是 5/3 倍。"
+    },
+    {
+     "key": "B",
+     "text": "20",
+     "mis": null,
+     "feedback": "正確！兩個三角形等高，面積比＝BD：DC＝3：5，12×5/3＝20。"
+    },
+    {
+     "key": "C",
+     "text": "32",
+     "mis": "PS05",
+     "feedback": "你把 △ADC 的底當成 BC＝8，算出 12×8/3＝32，那是 △ABC 的面積。△ADC 的底是 DC＝5。"
+    },
+    {
+     "key": "D",
+     "text": "7.2",
+     "mis": "PS04",
+     "feedback": "你把比例寫反成 △ABD：△ADC＝5：3，算出 12×3/5＝7.2。BD＝3 對 △ABD，DC＝5 對 △ADC，要放在同一位置。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "12×5/3"
+   },
+   "hint": "△ABD 和 △ADC 共用從 A 到 BC 的同一條高，面積比就是底邊比。",
+   "seg": "九上1-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"75.0\" y1=\"18.0\" x2=\"20.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"75.0\" y1=\"18.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"140.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"75.0\" y1=\"18.0\" x2=\"95.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"75.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"11.0\" y=\"146.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"229.0\" y=\"146.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"95.0\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><circle cx=\"95.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"57.5\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"157.5\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "理解",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D 在 BC 上，BD＝2、DC＝5。若 △ABD 的面積是 8 平方公分，則 △ADC 的面積是多少平方公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3.2",
+     "mis": "PS04",
+     "feedback": "你把比例寫反成 △ABD：△ADC＝5：2，算出 8×2/5＝3.2。BD＝2 對 △ABD，DC＝5 對 △ADC，要放在同一位置。"
+    },
+    {
+     "key": "B",
+     "text": "28",
+     "mis": "PS05",
+     "feedback": "你把 △ADC 的底當成 BC＝7，算出 8×7/2＝28，那是 △ABC 的面積。△ADC 的底是 DC＝5。"
+    },
+    {
+     "key": "C",
+     "text": "11",
+     "mis": "PS09",
+     "feedback": "你以為 DC 比 BD 多 3，面積也多 3。等高時面積和底邊成「倍數」關係：DC 是 BD 的 5/2 倍，面積也是 5/2 倍。"
+    },
+    {
+     "key": "D",
+     "text": "20",
+     "mis": null,
+     "feedback": "正確！兩個三角形等高，面積比＝BD：DC＝2：5，8×5/2＝20。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "8×5/2"
+   },
+   "hint": "△ABD 和 △ADC 共用從 A 到 BC 的同一條高，面積比就是底邊比。",
+   "seg": "九上1-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"75.0\" y1=\"18.0\" x2=\"20.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"75.0\" y1=\"18.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"140.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"75.0\" y1=\"18.0\" x2=\"77.1\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"75.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"11.0\" y=\"146.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"229.0\" y=\"146.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"77.1\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><circle cx=\"77.1\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"48.6\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"148.6\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">5</text></svg>"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別在 AB、AC 上，DE//BC。若 AD＝4、DB＝6、AE＝6，則 EC＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "PS09",
+     "feedback": "你看 DB 比 AD 多 2，就讓 EC 比 AE 也多 2。比例線段是「倍數」關係：DB 是 AD 的 1.5 倍，EC 也要是 AE 的 1.5 倍。"
+    },
+    {
+     "key": "B",
+     "text": "15",
+     "mis": "PS10",
+     "feedback": "你列成 AD：AB＝AE：EC（4：10＝6：EC），一邊用全長、一邊用部分。兩邊要都用「上段：下段」。"
+    },
+    {
+     "key": "C",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！AD：DB＝AE：EC，4：6＝6：EC，4EC＝36，EC＝9。"
+    },
+    {
+     "key": "D",
+     "text": "4",
+     "mis": "PS04",
+     "feedback": "你列成 AD：DB＝EC：AE（4：6＝EC：6），對應位置放反了。AD、AE 都是上段，要放在同一位置。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "4：6＝6：x"
+   },
+   "hint": "DE//BC 時 AD：DB＝AE：EC，上段配上段、下段配下段。",
+   "seg": "九上1-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"82.0\" y1=\"67.6\" x2=\"158.0\" y2=\"67.6\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"71.0\" y=\"71.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"169.0\" y=\"71.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"82.0\" cy=\"67.6\" r=\"2.5\" fill=\"#333\"/><circle cx=\"158.0\" cy=\"67.6\" r=\"2.5\" fill=\"#333\"/><text x=\"89.0\" y=\"44.8\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">4</text><text x=\"41.5\" y=\"106.8\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">6</text><text x=\"151.0\" y=\"44.8\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別在 AB、AC 上，DE//BC。若 AD＝3、DB＝6、AE＝4，則 EC＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": null,
+     "feedback": "正確！AD：DB＝AE：EC，3：6＝4：EC，3EC＝24，EC＝8。"
+    },
+    {
+     "key": "B",
+     "text": "2",
+     "mis": "PS04",
+     "feedback": "你列成 AD：DB＝EC：AE（3：6＝EC：4），對應位置放反了。AD、AE 都是上段，要放在同一位置。"
+    },
+    {
+     "key": "C",
+     "text": "12",
+     "mis": "PS10",
+     "feedback": "你列成 AD：AB＝AE：EC（3：9＝4：EC），一邊用全長、一邊用部分。兩邊要都用「上段：下段」。"
+    },
+    {
+     "key": "D",
+     "text": "7",
+     "mis": "PS09",
+     "feedback": "你看 DB 比 AD 多 3，就讓 EC 比 AE 也多 3。比例線段是「倍數」關係：DB 是 AD 的 2 倍，EC 也要是 AE 的 2 倍。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "3：6＝4：x"
+   },
+   "hint": "DE//BC 時 AD：DB＝AE：EC，上段配上段、下段配下段。",
+   "seg": "九上1-2-S1",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"88.3\" y1=\"59.3\" x2=\"151.7\" y2=\"59.3\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"77.3\" y=\"63.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"162.7\" y=\"63.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"88.3\" cy=\"59.3\" r=\"2.5\" fill=\"#333\"/><circle cx=\"151.7\" cy=\"59.3\" r=\"2.5\" fill=\"#333\"/><text x=\"92.2\" y=\"40.7\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">3</text><text x=\"44.7\" y=\"102.7\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">6</text><text x=\"147.8\" y=\"40.7\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">4</text></svg>"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別在 AB、AC 上，DE//BC。若 AD＝6、DB＝3、BC＝12，則 DE＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4",
+     "mis": "PS04",
+     "feedback": "你用 DE：BC＝DB：AB＝3：9，對應錯了。DE 在小三角形 △ADE 裡，要配小三角形的邊 AD。"
+    },
+    {
+     "key": "B",
+     "text": "24",
+     "mis": "PS01",
+     "feedback": "你用 DE：BC＝AD：DB＝6：3，算出 24，比 BC 還長。和 DE、BC 同位置的是 AD 和 AB（全長 9），不是 DB。"
+    },
+    {
+     "key": "C",
+     "text": "9",
+     "mis": "PS09",
+     "feedback": "你以為 DE 比 BC 短的量就是 DB，算 12−3＝9。比例線段要用「倍數」：AD 是 AB 的 2/3，DE 也是 BC 的 2/3。"
+    },
+    {
+     "key": "D",
+     "text": "8",
+     "mis": null,
+     "feedback": "正確！DE：BC＝AD：AB＝6：9，DE：12＝6：9，DE＝8。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "x：12＝6：9"
+   },
+   "hint": "把 △ADE 和 △ABC 分開畫：DE：BC 要配含全長的 AD：AB。",
+   "seg": "九上1-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"56.7\" y1=\"100.7\" x2=\"183.3\" y2=\"100.7\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"45.7\" y=\"104.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"194.3\" y=\"104.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"56.7\" cy=\"100.7\" r=\"2.5\" fill=\"#333\"/><circle cx=\"183.3\" cy=\"100.7\" r=\"2.5\" fill=\"#333\"/><text x=\"76.3\" y=\"61.3\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">6</text><text x=\"28.8\" y=\"123.3\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">3</text><text x=\"120.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">12</text></svg>"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別在 AB、AC 上，DE//BC。若 AD＝5、DB＝10、BC＝18，則 DE＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "PS09",
+     "feedback": "你以為 DE 比 BC 短的量就是 DB，算 18−10＝8。比例線段要用「倍數」：AD 是 AB 的 1/3，DE 也是 BC 的 1/3。"
+    },
+    {
+     "key": "B",
+     "text": "6",
+     "mis": null,
+     "feedback": "正確！DE：BC＝AD：AB＝5：15，DE：18＝5：15，DE＝6。"
+    },
+    {
+     "key": "C",
+     "text": "9",
+     "mis": "PS01",
+     "feedback": "你用 DE：BC＝AD：DB＝5：10，算出 9。和 DE、BC 同位置的是 AD 和 AB（全長 15），不是 DB。"
+    },
+    {
+     "key": "D",
+     "text": "12",
+     "mis": "PS04",
+     "feedback": "你用 DE：BC＝DB：AB＝10：15，對應錯了。DE 在小三角形 △ADE 裡，要配小三角形的邊 AD。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "solve",
+    "eq": "x：18＝5：15"
+   },
+   "hint": "把 △ADE 和 △ABC 分開畫：DE：BC 要配含全長的 AD：AB。",
+   "seg": "九上1-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"88.3\" y1=\"59.3\" x2=\"151.7\" y2=\"59.3\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"77.3\" y=\"63.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"162.7\" y=\"63.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"88.3\" cy=\"59.3\" r=\"2.5\" fill=\"#333\"/><circle cx=\"151.7\" cy=\"59.3\" r=\"2.5\" fill=\"#333\"/><text x=\"92.2\" y=\"40.7\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">5</text><text x=\"44.7\" y=\"102.7\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">10</text><text x=\"120.0\" y=\"158.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">18</text></svg>"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D 在 AB 上、E 在 AC 上。下列哪一組數據，一定可以判斷 DE//BC？",
+   "options": [
+    {
+     "key": "A",
+     "text": "AD＝4、DB＝6、AE＝6、EC＝9",
+     "mis": null,
+     "feedback": "正確！AD：DB＝4：6＝2：3，AE：EC＝6：9＝2：3，兩邊被截成相同的比，所以 DE//BC。"
+    },
+    {
+     "key": "B",
+     "text": "AD＝4、DB＝6、AE＝6、EC＝8",
+     "mis": "PS09",
+     "feedback": "你看兩邊都是「下段比上段多 2」。但 4：6 和 6：8 不相等，相差一樣不代表比一樣，不能判斷平行。"
+    },
+    {
+     "key": "C",
+     "text": "AD＝4、AB＝10、DE＝6、BC＝15",
+     "mis": "PS02",
+     "feedback": "AD：AB＝DE：BC＝2：5 不能判別平行：以 D 為圓心畫弧，AC 上可能有兩個點都讓這個比成立，卻只有一個會平行。"
+    },
+    {
+     "key": "D",
+     "text": "AD＝4、AB＝10、AE＝6、EC＝15",
+     "mis": "PS10",
+     "feedback": "4：10＝6：15 是 AD：AB＝AE：EC，一邊用全長、一邊用部分。換成 AD：DB＝4：6，AE：EC＝6：15，不相等，不平行。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "判別平行要用兩邊被截出的線段的比：AD：DB＝AE：EC；DE：BC 不行。",
+   "seg": "九上1-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"80.1\" y1=\"70.1\" x2=\"156.1\" y2=\"65.1\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"69.1\" y=\"74.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"167.1\" y=\"69.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"80.1\" cy=\"70.1\" r=\"2.5\" fill=\"#333\"/><circle cx=\"156.1\" cy=\"65.1\" r=\"2.5\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "分析",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D 在 AB 上、E 在 AC 上。下列哪一組數據，一定可以判斷 DE//BC？",
+   "options": [
+    {
+     "key": "A",
+     "text": "AD＝6、AB＝9、DE＝8、BC＝12",
+     "mis": "PS02",
+     "feedback": "AD：AB＝DE：BC＝2：3 不能判別平行：以 D 為圓心畫弧，AC 上可能有兩個點都讓這個比成立，卻只有一個會平行。"
+    },
+    {
+     "key": "B",
+     "text": "AD＝6、AB＝9、AE＝8、EC＝12",
+     "mis": "PS10",
+     "feedback": "6：9＝8：12 是 AD：AB＝AE：EC，一邊用全長、一邊用部分。換成 AD：DB＝6：3，AE：EC＝8：12，不相等，不平行。"
+    },
+    {
+     "key": "C",
+     "text": "AD＝6、DB＝3、AE＝8、EC＝4",
+     "mis": null,
+     "feedback": "正確！AD：DB＝6：3＝2：1，AE：EC＝8：4＝2：1，兩邊被截成相同的比，所以 DE//BC。"
+    },
+    {
+     "key": "D",
+     "text": "AD＝6、DB＝3、AE＝5、EC＝2",
+     "mis": "PS09",
+     "feedback": "你看兩邊都是「上段比下段多 3」。但 6：3 和 5：2 不相等，相差一樣不代表比一樣，不能判斷平行。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "判別平行要用兩邊被截出的線段的比：AD：DB＝AE：EC；DE：BC 不行。",
+   "seg": "九上1-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"80.1\" y1=\"70.1\" x2=\"156.1\" y2=\"65.1\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"69.1\" y=\"74.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"167.1\" y=\"69.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"80.1\" cy=\"70.1\" r=\"2.5\" fill=\"#333\"/><circle cx=\"156.1\" cy=\"65.1\" r=\"2.5\" fill=\"#333\"/></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別是 AB、AC 的中點。若 AB＝10、AC＝12、BC＝14，則 △ADE 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "39",
+     "mis": "PS06",
+     "feedback": "你把 DE 算成 BC 的 2 倍（28）。中點連線比第三邊短：DE＝½BC＝7。"
+    },
+    {
+     "key": "B",
+     "text": "18",
+     "mis": null,
+     "feedback": "正確！AD＝5、AE＝6、DE＝½BC＝7，周長 5＋6＋7＝18。"
+    },
+    {
+     "key": "C",
+     "text": "29",
+     "mis": "PS10",
+     "feedback": "你 DE 用了一半（7），AD、AE 卻用全長 AB＝10、AC＝12，部分和全長混在一起。△ADE 的邊是 AD＝5、AE＝6。"
+    },
+    {
+     "key": "D",
+     "text": "25",
+     "mis": "PS01",
+     "feedback": "你用 DE：BC＝AD：DB＝1：1，得 DE＝14。和 DE、BC 同位置的是 AD 和 AB（1：2），DE＝7。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "10/2＋12/2＋14/2"
+   },
+   "hint": "中點連線：DE//BC，而且 DE＝½BC。先找 DE，再加 AD、AE。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"72.5\" y1=\"80.0\" x2=\"167.5\" y2=\"80.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"61.5\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"178.5\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"72.5\" cy=\"80.0\" r=\"2.5\" fill=\"#333\"/><circle cx=\"167.5\" cy=\"80.0\" r=\"2.5\" fill=\"#333\"/><line x1=\"100.2\" y1=\"52.0\" x2=\"92.3\" y2=\"46.0\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"52.7\" y1=\"114.0\" x2=\"44.8\" y2=\"108.0\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"146.8\" y1=\"44.8\" x2=\"138.9\" y2=\"50.9\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"148.6\" y1=\"47.1\" x2=\"140.7\" y2=\"53.2\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"194.3\" y1=\"106.8\" x2=\"186.4\" y2=\"112.9\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"196.1\" y1=\"109.1\" x2=\"188.2\" y2=\"115.2\" stroke=\"#333\" stroke-width=\"1.5\"/></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "△ABC 中，D、E 分別是 AB、AC 的中點。若 AB＝12、AC＝14、BC＝16，則 △ADE 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "29",
+     "mis": "PS01",
+     "feedback": "你用 DE：BC＝AD：DB＝1：1，得 DE＝16。和 DE、BC 同位置的是 AD 和 AB（1：2），DE＝8。"
+    },
+    {
+     "key": "B",
+     "text": "34",
+     "mis": "PS10",
+     "feedback": "你 DE 用了一半（8），AD、AE 卻用全長 AB＝12、AC＝14，部分和全長混在一起。△ADE 的邊是 AD＝6、AE＝7。"
+    },
+    {
+     "key": "C",
+     "text": "45",
+     "mis": "PS06",
+     "feedback": "你把 DE 算成 BC 的 2 倍（32）。中點連線比第三邊短：DE＝½BC＝8。"
+    },
+    {
+     "key": "D",
+     "text": "21",
+     "mis": null,
+     "feedback": "正確！AD＝6、AE＝7、DE＝½BC＝8，周長 6＋7＋8＝21。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "12/2＋14/2＋16/2"
+   },
+   "hint": "中點連線：DE//BC，而且 DE＝½BC。先找 DE，再加 AD、AE。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"120.0\" y1=\"18.0\" x2=\"25.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"120.0\" y1=\"18.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"25.0\" y1=\"142.0\" x2=\"215.0\" y2=\"142.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"72.5\" y1=\"80.0\" x2=\"167.5\" y2=\"80.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120.0\" y=\"14.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"15.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.0\" y=\"148.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"61.5\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"178.5\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"72.5\" cy=\"80.0\" r=\"2.5\" fill=\"#333\"/><circle cx=\"167.5\" cy=\"80.0\" r=\"2.5\" fill=\"#333\"/><line x1=\"100.2\" y1=\"52.0\" x2=\"92.3\" y2=\"46.0\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"52.7\" y1=\"114.0\" x2=\"44.8\" y2=\"108.0\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"146.8\" y1=\"44.8\" x2=\"138.9\" y2=\"50.9\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"148.6\" y1=\"47.1\" x2=\"140.7\" y2=\"53.2\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"194.3\" y1=\"106.8\" x2=\"186.4\" y2=\"112.9\" stroke=\"#333\" stroke-width=\"1.5\"/><line x1=\"196.1\" y1=\"109.1\" x2=\"188.2\" y2=\"115.2\" stroke=\"#333\" stroke-width=\"1.5\"/></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "如圖，L₁//L₂//L₃，兩條直線分別交 L₁、L₂、L₃ 於 A、B、C 與 D、E、F。若 AB＝4、BC＝6、DE＝6，則 EF＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "PS09",
+     "feedback": "你看 BC 比 AB 多 2，就讓 EF 比 DE 也多 2。要用「倍數」：BC 是 AB 的 1.5 倍，EF 也要是 DE 的 1.5 倍。"
+    },
+    {
+     "key": "B",
+     "text": "4",
+     "mis": "PS04",
+     "feedback": "你列成 AB：BC＝EF：DE，對應位置放反了。AB 和 DE 都夾在 L₁、L₂ 之間，要放在同一位置。"
+    },
+    {
+     "key": "C",
+     "text": "15",
+     "mis": "PS10",
+     "feedback": "你列成 AB：AC＝DE：EF（4：10＝6：EF），一邊用全長、一邊用部分。兩邊要都用「上段：下段」。"
+    },
+    {
+     "key": "D",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！AB：BC＝DE：EF，4：6＝6：EF，EF＝9。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "4：6＝6：x"
+   },
+   "hint": "L₁//L₂//L₃ 時 AB：BC＝DE：EF，兩條截線上「上段：下段」對應。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"28.0\" x2=\"215.0\" y2=\"28.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"33.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₁</text><line x1=\"15.0\" y1=\"68.0\" x2=\"215.0\" y2=\"68.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"73.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₂</text><line x1=\"15.0\" y1=\"128.0\" x2=\"215.0\" y2=\"128.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"133.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₃</text><line x1=\"46.4\" y1=\"16.0\" x2=\"83.6\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"123.4\" y1=\"16.0\" x2=\"191.6\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><circle cx=\"50.0\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"38.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"62.0\" cy=\"68.0\" r=\"2.5\" fill=\"#333\"/><text x=\"50.0\" y=\"64.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><circle cx=\"80.0\" cy=\"128.0\" r=\"2.5\" fill=\"#333\"/><text x=\"68.0\" y=\"124.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"130.0\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"142.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><circle cx=\"152.0\" cy=\"68.0\" r=\"2.5\" fill=\"#333\"/><text x=\"164.0\" y=\"64.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"185.0\" cy=\"128.0\" r=\"2.5\" fill=\"#333\"/><text x=\"197.0\" y=\"124.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"48.0\" y=\"53.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">4</text><text x=\"63.0\" y=\"103.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">6</text><text x=\"151.0\" y=\"53.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "應用",
+   "lc": "S-9-3",
+   "stem": "如圖，L₁//L₂//L₃，兩條直線分別交 L₁、L₂、L₃ 於 A、B、C 與 D、E、F。若 AB＝6、BC＝4、DE＝9，則 EF＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6",
+     "mis": null,
+     "feedback": "正確！AB：BC＝DE：EF，6：4＝9：EF，6EF＝36，EF＝6。"
+    },
+    {
+     "key": "B",
+     "text": "7",
+     "mis": "PS09",
+     "feedback": "你看 BC 比 AB 少 2，就讓 EF 比 DE 也少 2。要用「倍數」：BC 是 AB 的 2/3，EF 也要是 DE 的 2/3。"
+    },
+    {
+     "key": "C",
+     "text": "13.5",
+     "mis": "PS04",
+     "feedback": "你列成 AB：BC＝EF：DE，對應位置放反了。AB 和 DE 都夾在 L₁、L₂ 之間，要放在同一位置。"
+    },
+    {
+     "key": "D",
+     "text": "15",
+     "mis": "PS10",
+     "feedback": "你列成 AB：AC＝DE：EF（6：10＝9：EF），一邊用全長、一邊用部分。兩邊要都用「上段：下段」。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "6：4＝9：x"
+   },
+   "hint": "L₁//L₂//L₃ 時 AB：BC＝DE：EF，兩條截線上「上段：下段」對應。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"28.0\" x2=\"215.0\" y2=\"28.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"33.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₁</text><line x1=\"15.0\" y1=\"88.0\" x2=\"215.0\" y2=\"88.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"93.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₂</text><line x1=\"15.0\" y1=\"128.0\" x2=\"215.0\" y2=\"128.0\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"219.0\" y=\"133.0\" font-size=\"13\" text-anchor=\"start\" fill=\"#333\">L₃</text><line x1=\"46.4\" y1=\"16.0\" x2=\"83.6\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"123.4\" y1=\"16.0\" x2=\"191.6\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><circle cx=\"50.0\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"38.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><circle cx=\"68.0\" cy=\"88.0\" r=\"2.5\" fill=\"#333\"/><text x=\"56.0\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><circle cx=\"80.0\" cy=\"128.0\" r=\"2.5\" fill=\"#333\"/><text x=\"68.0\" y=\"124.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><circle cx=\"130.0\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"142.0\" y=\"24.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><circle cx=\"163.0\" cy=\"88.0\" r=\"2.5\" fill=\"#333\"/><text x=\"175.0\" y=\"84.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><circle cx=\"185.0\" cy=\"128.0\" r=\"2.5\" fill=\"#333\"/><text x=\"197.0\" y=\"124.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><text x=\"51.0\" y=\"63.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">6</text><text x=\"66.0\" y=\"113.0\" font-size=\"14\" text-anchor=\"end\" fill=\"#333\">4</text><text x=\"156.5\" y=\"63.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">9</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-3",
+   "stem": "梯形 ABCD 中，AD//EF//BC，E 在 AB 上、F 在 CD 上。若 AE：EB＝1：2，AD＝4、BC＝10，則 EF＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "7",
+     "mis": "PS07",
+     "feedback": "你直接取上下底的平均 (4＋10)÷2。只有 E、F 是兩腰中點（1：1）才能這樣算；這裡是 1：2。"
+    },
+    {
+     "key": "B",
+     "text": "8",
+     "mis": "PS03",
+     "feedback": "你把 AE：EB＝1：2 直接當成 AD：EF＝1：2。1：2 是截線上的比，不是平行線段之間的比；要拆成兩個三角形算。"
+    },
+    {
+     "key": "C",
+     "text": "6",
+     "mis": null,
+     "feedback": "正確！連 AC 交 EF 於 G：EG＝10×1/3＝10/3，GF＝4×2/3＝8/3，EF＝10/3＋8/3＝6。"
+    },
+    {
+     "key": "D",
+     "text": "5",
+     "mis": "PS01",
+     "feedback": "你用 EF：BC＝AE：EB＝1：2，拿部分比部分。平行線段的比要配含全長的比，而且要先拆成三角形。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "10×1/3＋4×2/3"
+   },
+   "hint": "連對角線 AC 交 EF 於 G，在 △ABC、△CDA 中各用一次「平行線段的比＝含全長的比」，再把 EG、GF 加起來。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"85.0\" y1=\"25.0\" x2=\"155.0\" y2=\"25.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"155.0\" y1=\"25.0\" x2=\"220.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"220.0\" y1=\"135.0\" x2=\"20.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"135.0\" x2=\"85.0\" y2=\"25.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"63.3\" y1=\"61.7\" x2=\"176.7\" y2=\"61.7\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"79.0\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"161.0\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"11.0\" y=\"141.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"229.0\" y=\"141.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"53.3\" y=\"65.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"186.7\" y=\"65.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><circle cx=\"63.3\" cy=\"61.7\" r=\"2.5\" fill=\"#333\"/><circle cx=\"176.7\" cy=\"61.7\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"18.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"120.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">10</text></svg>",
+   "optional": true
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-3",
+   "stem": "梯形 ABCD 中，AD//EF//BC，E 在 AB 上、F 在 CD 上。若 AE：EB＝1：3，AD＝6、BC＝18，則 EF＝？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！連 AC 交 EF 於 G：EG＝18×1/4＝9/2，GF＝6×3/4＝9/2，EF＝9/2＋9/2＝9。"
+    },
+    {
+     "key": "B",
+     "text": "6",
+     "mis": "PS01",
+     "feedback": "你用 EF：BC＝AE：EB＝1：3，拿部分比部分。平行線段的比要配含全長的比，而且要先拆成三角形。"
+    },
+    {
+     "key": "C",
+     "text": "18",
+     "mis": "PS03",
+     "feedback": "你把 AE：EB＝1：3 直接當成 AD：EF＝1：3。1：3 是截線上的比，不是平行線段之間的比；要拆成兩個三角形算。"
+    },
+    {
+     "key": "D",
+     "text": "12",
+     "mis": "PS07",
+     "feedback": "你直接取上下底的平均 (6＋18)÷2。只有 E、F 是兩腰中點（1：1）才能這樣算；這裡是 1：3。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "18×1/4＋6×3/4"
+   },
+   "hint": "連對角線 AC 交 EF 於 G，在 △ABC、△CDA 中各用一次「平行線段的比＝含全長的比」，再把 EG、GF 加起來。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"85.0\" y1=\"25.0\" x2=\"155.0\" y2=\"25.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"155.0\" y1=\"25.0\" x2=\"220.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"220.0\" y1=\"135.0\" x2=\"20.0\" y2=\"135.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"135.0\" x2=\"85.0\" y2=\"25.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"68.8\" y1=\"52.5\" x2=\"171.2\" y2=\"52.5\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"79.0\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"161.0\" y=\"20.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"11.0\" y=\"141.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"229.0\" y=\"141.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"58.8\" y=\"56.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"181.2\" y=\"56.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">F</text><circle cx=\"68.8\" cy=\"52.5\" r=\"2.5\" fill=\"#333\"/><circle cx=\"171.2\" cy=\"52.5\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"18.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"120.0\" y=\"153.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">18</text></svg>",
+   "optional": true
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-3",
+   "stem": "要用尺規在 AB 上作點 C，使 AC：CB＝2：3。如圖，從 A 畫射線 AP，在 AP 上依序截取等長的點 P1、P2、P3、…。下列哪一種作法正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "截到 P5，連 P5B，過 P3 作 P5B 的平行線交 AB 於 C",
+     "mis": "PS04",
+     "feedback": "這樣得到 AC：CB＝3：2，上下段對調了。靠近 A 的 AC 是 2 份，要過 P2。"
+    },
+    {
+     "key": "B",
+     "text": "截到 P5，連 P5B，過 P2 作 P5B 的平行線交 AB 於 C",
+     "mis": null,
+     "feedback": "正確！全長分成 2＋3＝5 份，AP2：P2P5＝2：3，平行線截比例線段得 AC：CB＝2：3。"
+    },
+    {
+     "key": "C",
+     "text": "截到 P5，連 P5B，過 P2 作 AB 的垂線交 AB 於 C",
+     "mis": "PS11",
+     "feedback": "比例線段要靠平行線才成立，垂線截不出 2：3。要過 P2 作 P5B 的平行線。"
+    },
+    {
+     "key": "D",
+     "text": "截到 P3，連 P3B，過 P2 作 P3B 的平行線交 AB 於 C",
+     "mis": "PS08",
+     "feedback": "這樣得到的是 AC：AB＝2：3（AC：CB＝2：1）。AC：CB＝2：3 時全長是 5 份，要截到 P5。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先算全長是幾份，就截幾等分；再過「上段份數」那一點作連線的平行線。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20.0\" y1=\"140.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"140.0\" x2=\"200.0\" y2=\"20.0\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"16.0\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"222.0\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"205.0\" y=\"18.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">P</text><circle cx=\"47.3\" cy=\"121.8\" r=\"2.5\" fill=\"#333\"/><text x=\"41.3\" y=\"116.8\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P1</text><circle cx=\"74.5\" cy=\"103.6\" r=\"2.5\" fill=\"#333\"/><text x=\"68.5\" y=\"98.6\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P2</text><circle cx=\"101.8\" cy=\"85.5\" r=\"2.5\" fill=\"#333\"/><text x=\"95.8\" y=\"80.5\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P3</text><circle cx=\"129.1\" cy=\"67.3\" r=\"2.5\" fill=\"#333\"/><text x=\"123.1\" y=\"62.3\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P4</text><circle cx=\"156.4\" cy=\"49.1\" r=\"2.5\" fill=\"#333\"/><text x=\"150.4\" y=\"44.1\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P5</text><circle cx=\"183.6\" cy=\"30.9\" r=\"2.5\" fill=\"#333\"/><text x=\"177.6\" y=\"25.9\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P6</text></svg>"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "理解",
+   "lc": "S-9-3",
+   "stem": "要用尺規在 AB 上作點 C，使 AC：CB＝1：3。如圖，從 A 畫射線 AP，在 AP 上依序截取等長的點 P1、P2、P3、…。下列哪一種作法正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "截到 P3，連 P3B，過 P1 作 P3B 的平行線交 AB 於 C",
+     "mis": "PS08",
+     "feedback": "這樣得到的是 AC：AB＝1：3（AC：CB＝1：2）。AC：CB＝1：3 時全長是 4 份，要截到 P4。"
+    },
+    {
+     "key": "B",
+     "text": "截到 P4，連 P4B，過 P1 作 AB 的垂線交 AB 於 C",
+     "mis": "PS11",
+     "feedback": "比例線段要靠平行線才成立，垂線截不出 1：3。要過 P1 作 P4B 的平行線。"
+    },
+    {
+     "key": "C",
+     "text": "截到 P4，連 P4B，過 P3 作 P4B 的平行線交 AB 於 C",
+     "mis": "PS04",
+     "feedback": "這樣得到 AC：CB＝3：1，上下段對調了。靠近 A 的 AC 是 1 份，要過 P1。"
+    },
+    {
+     "key": "D",
+     "text": "截到 P4，連 P4B，過 P1 作 P4B 的平行線交 AB 於 C",
+     "mis": null,
+     "feedback": "正確！全長分成 1＋3＝4 份，AP1：P1P4＝1：3，平行線截比例線段得 AC：CB＝1：3。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先算全長是幾份，就截幾等分；再過「上段份數」那一點作連線的平行線。",
+   "seg": "九上1-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20.0\" y1=\"140.0\" x2=\"220.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"20.0\" y1=\"140.0\" x2=\"200.0\" y2=\"20.0\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"16.0\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"222.0\" y=\"156.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"205.0\" y=\"18.0\" font-size=\"14\" text-anchor=\"start\" fill=\"#333\">P</text><circle cx=\"47.3\" cy=\"121.8\" r=\"2.5\" fill=\"#333\"/><text x=\"41.3\" y=\"116.8\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P1</text><circle cx=\"74.5\" cy=\"103.6\" r=\"2.5\" fill=\"#333\"/><text x=\"68.5\" y=\"98.6\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P2</text><circle cx=\"101.8\" cy=\"85.5\" r=\"2.5\" fill=\"#333\"/><text x=\"95.8\" y=\"80.5\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P3</text><circle cx=\"129.1\" cy=\"67.3\" r=\"2.5\" fill=\"#333\"/><text x=\"123.1\" y=\"62.3\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P4</text><circle cx=\"156.4\" cy=\"49.1\" r=\"2.5\" fill=\"#333\"/><text x=\"150.4\" y=\"44.1\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P5</text><circle cx=\"183.6\" cy=\"30.9\" r=\"2.5\" fill=\"#333\"/><text x=\"177.6\" y=\"25.9\" font-size=\"12\" text-anchor=\"end\" fill=\"#333\">P6</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形；P07 為進階題組（optional）",
+ "updated": "2026-11-05T01:42"
+}

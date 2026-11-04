@@ -1,0 +1,832 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-9上1-3-縮放與相似",
+ "title": "九上 1-3 縮放與相似（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "九上",
+  "code": "1-3",
+  "name": "縮放與相似",
+  "curriculum": [
+   "S-9-1 相似形：平面圖形縮放的意義；多邊形相似的意義；對應角相等；對應邊長成比例",
+   "S-9-2 三角形的相似性質：三角形的相似判定（AA、SAS、SSS）；相似符號（～）"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/九上1-3.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼產題；周長比、面積比屬 1-4（知識卡：1-3 全節沒有相似三角形的面積比），本份不考；題目答案經驗算器重算，老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "SI01",
+   "name": "只看角就判相似",
+   "desc": "多邊形的對應角都相等，就以為一定相似，沒檢查邊",
+   "example": "任意兩個長方形的角都是 90°，所以一定相似",
+   "remedy": "用長方形 3×5 與 6×9 算長邊比、短邊比，讓學生自己看到角相等但邊不成比例。",
+   "source": "知識卡迷思「只看對應角相等就判相似」：康軒 p.49 例3(1)、南一 p.48 例2(1)、翰林 p.50 例3(1)（✓／✓／✓）",
+   "card": "只看對應角相等就判相似（長方形、梯形）",
+   "tiers": [
+    "九上1-3-S2T1"
+   ]
+  },
+  {
+   "code": "SI02",
+   "name": "只看邊就判相似",
+   "desc": "多邊形的對應邊都成比例，就以為一定相似，沒檢查角",
+   "example": "任意兩個菱形四邊都成比例，所以一定相似",
+   "remedy": "畫一個 60° 的菱形和一個正方形對照，邊都成比例但角不相等。",
+   "source": "知識卡迷思「只看對應邊成比例就判相似」：康軒 p.49 例3(2)、南一 p.48 例2(2)、翰林 p.50 例3(2)（✓／✓／✓）",
+   "card": "只看對應邊成比例就判相似（菱形）",
+   "tiers": [
+    "九上1-3-S2T1"
+   ]
+  },
+  {
+   "code": "SI03",
+   "name": "縮放後角度跟著變",
+   "desc": "以為縮放 r 倍時，角的度數也跟著變：乘 r 倍，或以為放大後角被拉尖而變小",
+   "example": "∠A＝45° 放大為 2 倍後變成 90°（或 22.5°）",
+   "remedy": "回到「縮放後的邊和原來的邊平行」，用同位角說明角的度數不變。",
+   "source": "知識卡迷思「縮放後角度跟著變」：康軒 p.59 自我檢核1、南一 p.42 性質框、翰林 p.47 例1（✓／✓／✓）",
+   "card": "縮放後角度跟著變（角度不變）",
+   "tiers": [
+    "九上1-3-S1T1"
+   ]
+  },
+  {
+   "code": "SI04",
+   "name": "一組角相等就相似",
+   "desc": "把 AA 記成一組角相等，以為任意兩個等腰或直角三角形都相似",
+   "example": "兩個直角三角形都有 90°，所以一定相似",
+   "remedy": "請學生畫 30°-60°-90° 與 45°-45°-90° 兩個直角三角形比一比，強調 AA 要兩組角。",
+   "source": "知識卡迷思「一組角相等就相似」：康軒 p.52 動動腦；南一未見；翰林只在備課用書 p.108 會考觀測站、p.115 數問速答(3)（✓／–／備）",
+   "card": "一組角相等就相似（任意等腰、直角三角形）",
+   "tiers": [
+    "九上1-3-S3T1"
+   ]
+  },
+  {
+   "code": "SI05",
+   "name": "把 SSA 當成 SAS",
+   "desc": "相等的角不是兩組成比例的邊所夾的角，也判成 SAS 相似",
+   "example": "∠A＝∠D 且 AB：DE＝BC：EF，就說 SAS 相似",
+   "remedy": "要學生先圈出相等的角，再檢查兩組成比例的邊是不是都從這個角出發；用康軒 p.55 動動腦的反例圖。",
+   "source": "知識卡迷思「SAS 的等角不是夾角（SSA）…」：康軒 p.55 動動腦、p.54 Key point；南一 p.52 性質框「夾此角的兩邊」；翰林只在備課用書 p.112 眉批（✓／✓／備）",
+   "card": "SAS 的等角不是夾角（SSA）、兩組邊成比例（SS）就相似",
+   "tiers": [
+    "九上1-3-S3T2"
+   ]
+  },
+  {
+   "code": "SI06",
+   "name": "兩組邊成比例就相似",
+   "desc": "只有兩組對應邊成比例，沒有夾角或第三邊，就判相似",
+   "example": "AB：DE＝AC：DF，所以兩三角形相似",
+   "remedy": "舉正三角形與等腰直角三角形（康軒 p.56 動動腦），兩組邊成比例但形狀不同。",
+   "source": "知識卡迷思「…兩組邊成比例（SS）就相似」：康軒 p.56 動動腦；南一課文說明 SAS 性質框 p.52，SS 反例只在備課 p.86 教學提醒①；翰林只在備課用書（✓／✓／備）",
+   "card": "SAS 的等角不是夾角（SSA）、兩組邊成比例（SS）就相似",
+   "tiers": [
+    "九上1-3-S3T2"
+   ]
+  },
+  {
+   "code": "SI07",
+   "name": "SSS 沒依大小配對",
+   "desc": "找 SSS 的對應邊時沒有把三邊依大小排，直接拿數字相同或位置相同的邊配對",
+   "example": "三邊 4、6、8 的三角形，另一個相似三角形最短邊 6，就把 6 對 6",
+   "remedy": "兩個三角形的三邊各由小到大排好，最短對最短、最長對最長再比。",
+   "source": "知識卡迷思「找錯對應（SSS 沒依大小排…）」：南一 p.55 例6 由大而小排列、翰林 p.58 例8 由小到大排列；康軒以長短排列找對應邊未明文（✓／✓／✓）",
+   "card": "找錯對應（SSS 沒依大小排、～記號順序、公用角反向對應）",
+   "tiers": [
+    "九上1-3-S3T2"
+   ]
+  },
+  {
+   "code": "SI08",
+   "name": "相似記號對應寫錯",
+   "desc": "沒有照 ～ 記號的頂點順序找對應邊，隨意配對",
+   "example": "ABCD～EFGH，卻把 FG 對到 CD",
+   "remedy": "寫出 A→E、B→F、C→G、D→H，再由頂點對應寫出 AB→EF、BC→FG。",
+   "source": "知識卡迷思「找錯對應（…～記號順序…）」：康軒 p.47、南一 p.46、翰林 p.48 依對應順序書寫的約定（✓／✓／✓）",
+   "card": "找錯對應（SSS 沒依大小排、～記號順序、公用角反向對應）",
+   "tiers": [
+    "九上1-3-S2T2"
+   ]
+  },
+  {
+   "code": "SI09",
+   "name": "公用角反向對應配錯",
+   "desc": "有公用角而另一組等角在不同位置時，仍照同方向配對",
+   "example": "∠ADE＝∠C，卻寫成 △ADE～△ABC",
+   "remedy": "把兩個三角形拆開、轉成同方向畫，先由等角寫出對應頂點再列比例式。",
+   "source": "知識卡迷思「找錯對應（…公用角反向對應）」：康軒 p.53 隨堂、南一 p.53 例5、翰林 p.54 例6（✓／✓／✓）",
+   "card": "找錯對應（SSS 沒依大小排、～記號順序、公用角反向對應）",
+   "tiers": [
+    "九上1-3-S3T2"
+   ]
+  },
+  {
+   "code": "SI10",
+   "name": "把縮放當成加長",
+   "desc": "以為縮放是每個長度都加上同一個量，而不是乘同一個倍數",
+   "example": "OA＝4 放大 3 倍，以為 OA'＝4＋3＝7",
+   "remedy": "讓學生比較「各邊都加 1」與「各邊都乘 2」畫出的兩個長方形，看哪一個形狀不變。",
+   "source": "知識卡教學建議：先比較「各邊都加 1」與「各邊都乘 2」得到的圖形；南一 p.59 錯誤診療小量（長方形各邊內縮 1 單位仍相似，答錯）；其餘依教學經驗"
+  },
+  {
+   "code": "SI11",
+   "name": "縮放倍率量錯起點",
+   "desc": "縮放倍率要從縮放中心量（OA'＝r·OA），學生從原來的點 A 往外量 r 倍",
+   "example": "OA＝4 放大 3 倍，以為 AA'＝12，得 OA'＝16",
+   "remedy": "要學生檢查 OA'：OA 是不是等於倍率，O、A、A' 三點共線、距離都從 O 量起。",
+   "source": "知識卡迷思「縮放概念：…縮放中心位置…」：康軒 p.39 定義對應點與縮放倍率、p.44 表1；南一 p.44 表1、表2；翰林 p.46 圖表（✓／✓／✓）",
+   "card": "縮放概念：只拉長一個方向、縮放中心位置、光源投影",
+   "tiers": [
+    "九上1-3-S1T2"
+   ]
+  },
+  {
+   "code": "SI12",
+   "name": "被截線段比當對應邊比",
+   "desc": "DE//BC 時，用 AD：DB 去對 DE：BC，沒有用整條邊 AB",
+   "example": "AD＝3、DB＝6、DE＝4，列 3：6＝4：BC 得 BC＝8",
+   "remedy": "把 △ADE、△ABC 分開畫，對應邊是 AD 對 AB（整條），不是 AD 對 DB。",
+   "source": "知識卡迷思「平行線截出的圖形與原圖相似、被截線段比當對應邊比…」（✓／✓／✓，三版此列處理的是截出圖形是否相似）；「被截線段比當對應邊比」三版本單元課本未見（康軒、南一欄註明），依教學經驗",
+   "card": "平行線截出的圖形與原圖相似、被截線段比當對應邊比、面積比誤當邊長比"
+  },
+  {
+   "code": "SI13",
+   "name": "相似比方向倒過來",
+   "desc": "知道兩圖形的相似比，但把比例式的前後項放反，乘成了倒數倍",
+   "example": "AB＝6 對 EF＝4，BC＝9，算成 FG＝9×6÷4",
+   "remedy": "先判斷所求的圖形比較大還是比較小，再檢查答案有沒有跟著變大或變小。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SI14",
+   "name": "把 AA′ 當成 OA′",
+   "desc": "把對應點 A′ 到原來點 A 的距離當成 A′ 到縮放中心的距離",
+   "example": "OA＝4 放大為 3 倍，OA′＝12，卻回答 12−4＝8",
+   "remedy": "請學生在圖上標出 O、A、A′，指出題目問的是哪一段，再確認 OA′：OA 等於倍率。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-1",
+   "stem": "以 O 點為縮放中心，將 A 點與 O 點的距離縮放為 3 倍（放大為 3 倍），得到對應點 A'。若 OA＝4 公分，則 OA' 是多少公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "7 公分",
+     "mis": "SI10",
+     "feedback": "你把放大 3 倍當成加長 3 公分：4＋3＝7。縮放是乘倍數，OA'＝3×OA。"
+    },
+    {
+     "key": "B",
+     "text": "12 公分",
+     "mis": null,
+     "feedback": "正確！縮放倍率從縮放中心量起，OA'＝3×4＝12（公分）。"
+    },
+    {
+     "key": "C",
+     "text": "16 公分",
+     "mis": "SI11",
+     "feedback": "你從 A 點再往外量了 3 個 OA（4＋12＝16）。倍率要從 O 量起：OA'＝3×OA。"
+    },
+    {
+     "key": "D",
+     "text": "8 公分",
+     "mis": "SI14",
+     "feedback": "你算的是 AA'（12−4＝8）。題目問的是 OA'，從縮放中心 O 量起：OA'＝3×4＝12。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "4×3"
+   },
+   "hint": "縮放倍率是哪兩段的比？從哪一點量起？",
+   "seg": "九上1-3-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "應用",
+   "lc": "S-9-1",
+   "stem": "以 O 點為縮放中心，將 B 點與 O 點的距離縮放為 2 倍（放大為 2 倍），得到對應點 B'。若 OB＝5 公分，則 OB' 是多少公分？",
+   "options": [
+    {
+     "key": "A",
+     "text": "15 公分",
+     "mis": "SI11",
+     "feedback": "你從 B 點再往外量了 2 個 OB（5＋10＝15）。倍率要從 O 量起：OB'＝2×OB。"
+    },
+    {
+     "key": "B",
+     "text": "5 公分",
+     "mis": "SI14",
+     "feedback": "你算的是 BB'（10−5＝5）。題目問的是 OB'，從縮放中心 O 量起：OB'＝2×5＝10。"
+    },
+    {
+     "key": "C",
+     "text": "7 公分",
+     "mis": "SI10",
+     "feedback": "你把放大 2 倍當成加長 2 公分：5＋2＝7。縮放是乘倍數，OB'＝2×OB。"
+    },
+    {
+     "key": "D",
+     "text": "10 公分",
+     "mis": null,
+     "feedback": "正確！縮放倍率從縮放中心量起，OB'＝2×5＝10（公分）。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "5×2"
+   },
+   "hint": "縮放倍率是哪兩段的比？從哪一點量起？",
+   "seg": "九上1-3-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "記憶",
+   "lc": "S-9-1",
+   "stem": "以 O 點為縮放中心，將 △ABC 各頂點與 O 點的距離縮放為 2 倍（放大為 2 倍），得到 △A'B'C'（A、B、C 的對應點依序是 A'、B'、C'）。若 ∠A＝50°、∠B＝60°，則 ∠C' 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "140°",
+     "mis": "SI03",
+     "feedback": "你以為角也跟著放大 2 倍：70°×2＝140°。縮放後的邊和原來的邊平行，同位角相等，∠C'＝∠C＝70°。"
+    },
+    {
+     "key": "B",
+     "text": "35°",
+     "mis": "SI03",
+     "feedback": "你以為圖形放大後角會變小：70°÷2＝35°。縮放後的邊和原來的邊平行，同位角相等，角度不變。"
+    },
+    {
+     "key": "C",
+     "text": "60°",
+     "mis": "SI08",
+     "feedback": "你把 ∠C' 對到 ∠B 了。C 的對應點是 C'，∠C'＝∠C＝180°−50°−60°＝70°。"
+    },
+    {
+     "key": "D",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！∠C＝180°−50°−60°＝70°，縮放後角度不變，∠C'＝70°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "180−50−60"
+   },
+   "hint": "縮放後，邊的長度變了，角的大小呢？",
+   "seg": "九上1-3-S1"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "記憶",
+   "lc": "S-9-1",
+   "stem": "以 O 點為縮放中心，將 △PQR 各頂點與 O 點的距離縮放為 2 倍（放大為 2 倍），得到 △P'Q'R'（P、Q、R 的對應點依序是 P'、Q'、R'）。若 ∠P＝35°、∠Q＝80°，則 ∠R' 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "65°",
+     "mis": null,
+     "feedback": "正確！∠R＝180°−35°−80°＝65°，縮放後角度不變，∠R'＝65°。"
+    },
+    {
+     "key": "B",
+     "text": "130°",
+     "mis": "SI03",
+     "feedback": "你以為角也跟著放大 2 倍：65°×2＝130°。縮放後的邊和原來的邊平行，同位角相等，∠R'＝∠R＝65°。"
+    },
+    {
+     "key": "C",
+     "text": "80°",
+     "mis": "SI08",
+     "feedback": "你把 ∠R' 對到 ∠Q 了。R 的對應點是 R'，∠R'＝∠R＝180°−35°−80°＝65°。"
+    },
+    {
+     "key": "D",
+     "text": "32.5°",
+     "mis": "SI03",
+     "feedback": "你以為圖形放大後角會變小：65°÷2＝32.5°。縮放後的邊和原來的邊平行，同位角相等，角度不變。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "180−35−80"
+   },
+   "hint": "縮放後，邊的長度變了，角的大小呢？",
+   "seg": "九上1-3-S1"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-1",
+   "stem": "下列哪一組圖形「一定」相似？",
+   "options": [
+    {
+     "key": "A",
+     "text": "任意兩個長方形",
+     "mis": "SI01",
+     "feedback": "你只看到四個角都是 90°。長方形 3×5 和 6×9 的長邊比 5：9、短邊比 3：6 不相等，所以不一定相似。"
+    },
+    {
+     "key": "B",
+     "text": "任意兩個菱形",
+     "mis": "SI02",
+     "feedback": "你只看到四邊都成比例。菱形的角可以是 60°、120°，也可以是 90°，對應角不一定相等。"
+    },
+    {
+     "key": "C",
+     "text": "任意兩個等腰三角形",
+     "mis": "SI04",
+     "feedback": "你只看到都有兩個底角相等。頂角 30° 和頂角 100° 的等腰三角形，角不相等，不相似。"
+    },
+    {
+     "key": "D",
+     "text": "任意兩個正五邊形",
+     "mis": null,
+     "feedback": "正確！正五邊形每個內角都是 108°，五邊都相等，所以對應邊一定成比例，兩個條件都成立。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "相似要「對應角相等」而且「對應邊成比例」，兩個都檢查了嗎？",
+   "seg": "九上1-3-S2"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-9-1",
+   "stem": "下列哪一組圖形「一定」相似？",
+   "options": [
+    {
+     "key": "A",
+     "text": "任意兩個直角三角形",
+     "mis": "SI04",
+     "feedback": "你只看到都有 90°。30°-60°-90° 和 45°-45°-90° 的直角三角形，另外兩個角不相等，不相似。"
+    },
+    {
+     "key": "B",
+     "text": "任意兩個等腰直角三角形",
+     "mis": null,
+     "feedback": "正確！等腰直角三角形的三個角都是 45°、45°、90°，對應角都相等；三邊的比都是 1：1：√2，對應邊也成比例，兩個條件都成立。"
+    },
+    {
+     "key": "C",
+     "text": "任意一個正方形和一個長方形",
+     "mis": "SI01",
+     "feedback": "你只看到四個角都是 90°。正方形邊長 2、長方形 2×5，邊不成比例，不一定相似。"
+    },
+    {
+     "key": "D",
+     "text": "邊長 3 和邊長 5 的兩個菱形",
+     "mis": "SI02",
+     "feedback": "你只看到四邊都成比例（3：5）。菱形的角可以不一樣，對應角不一定相等。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "相似要「對應角相等」而且「對應邊成比例」，兩個都檢查了嗎？",
+   "seg": "九上1-3-S2"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-1",
+   "stem": "已知四邊形 ABCD～四邊形 EFGH（頂點依序對應）。若 AB＝6、BC＝9、CD＝12，EF＝4，則 FG 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "27/2",
+     "mis": "SI13",
+     "feedback": "你算成 9×6÷4，相似比放反了。EFGH 比較小，FG：BC＝EF：AB＝4：6，FG＝9×4÷6。"
+    },
+    {
+     "key": "B",
+     "text": "6",
+     "mis": null,
+     "feedback": "正確！BC 對應 FG，FG：9＝4：6，FG＝6。"
+    },
+    {
+     "key": "C",
+     "text": "7",
+     "mis": "SI10",
+     "feedback": "你看 AB 到 EF 少了 2，就把 BC 也減 2。相似是乘同一個倍數：FG＝9×4/6＝6。"
+    },
+    {
+     "key": "D",
+     "text": "8",
+     "mis": "SI08",
+     "feedback": "你把 FG 對到 CD，算成 12×4÷6。照記號順序 B→F、C→G，FG 對應的是 BC。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "solve",
+    "eq": "x：9＝4：6"
+   },
+   "hint": "先照記號寫出 FG 對應哪一邊，再判斷 EFGH 比較大還是比較小。",
+   "seg": "九上1-3-S2"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-9-1",
+   "stem": "已知四邊形 ABCD～四邊形 PQRS（頂點依序對應）。若 AB＝8、BC＝10、CD＝14，PQ＝12，則 QR 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "21",
+     "mis": "SI08",
+     "feedback": "你把 QR 對到 CD，算成 14×12÷8。照記號順序 B→Q、C→R，QR 對應的是 BC。"
+    },
+    {
+     "key": "B",
+     "text": "14",
+     "mis": "SI10",
+     "feedback": "你看 AB 到 PQ 多了 4，就把 BC 也加 4。相似是乘同一個倍數：QR＝10×12/8＝15。"
+    },
+    {
+     "key": "C",
+     "text": "15",
+     "mis": null,
+     "feedback": "正確！BC 對應 QR，QR：10＝12：8，QR＝15。"
+    },
+    {
+     "key": "D",
+     "text": "20/3",
+     "mis": "SI13",
+     "feedback": "你算成 10×8÷12，相似比放反了。PQRS 比較大，QR：BC＝PQ：AB＝12：8，QR＝10×12÷8。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "solve",
+    "eq": "x：10＝12：8"
+   },
+   "hint": "先照記號寫出 QR 對應哪一邊，再判斷 PQRS 比較大還是比較小。",
+   "seg": "九上1-3-S2"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D 在 AB 上、E 在 AC 上，DE//BC。若 AD＝3、DB＝6、DE＝4，則 BC 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "SI12",
+     "feedback": "你列成 AD：DB＝DE：BC（3：6＝4：BC）。△ADE～△ABC，DE 對應 BC、AD 對應整條 AB（＝9）：3：9＝4：BC。"
+    },
+    {
+     "key": "B",
+     "text": "10",
+     "mis": "SI10",
+     "feedback": "你把 DE 加上 DB：4＋6。相似是乘同一個倍數，AB 是 AD 的 3 倍，BC 也是 DE 的 3 倍。"
+    },
+    {
+     "key": "C",
+     "text": "4/3",
+     "mis": "SI13",
+     "feedback": "你算成 4×3÷9，比例放反了。△ABC 比 △ADE 大，BC 要比 DE 長：BC＝4×9÷3。"
+    },
+    {
+     "key": "D",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！DE//BC，△ADE～△ABC（AA），AD：AB＝DE：BC，3：9＝4：BC，BC＝12。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "3：9＝4：x"
+   },
+   "hint": "△ADE 和 △ABC 的對應邊是哪兩組？AD 對應的是 DB 還是 AB？",
+   "seg": "九上1-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,18.0 30.0,145.0 215.0,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"90.0\" y1=\"60.3\" x2=\"151.7\" y2=\"60.3\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120\" y=\"14\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"22\" y=\"157\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"223\" y=\"157\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"80\" y=\"64\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"162\" y=\"64\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"93\" y=\"39\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text><text x=\"48\" y=\"103\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text><text x=\"121\" y=\"55\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text></svg>"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D 在 AB 上、E 在 AC 上，DE//BC。若 AD＝4、DB＝2、DE＝6，則 BC 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9",
+     "mis": null,
+     "feedback": "正確！DE//BC，△ADE～△ABC（AA），AD：AB＝DE：BC，4：6＝6：BC，BC＝9。"
+    },
+    {
+     "key": "B",
+     "text": "3",
+     "mis": "SI12",
+     "feedback": "你列成 AD：DB＝DE：BC（4：2＝6：BC）。△ADE～△ABC，AD 對應整條 AB（＝6）：4：6＝6：BC。"
+    },
+    {
+     "key": "C",
+     "text": "4",
+     "mis": "SI13",
+     "feedback": "你算成 6×4÷6，比例放反了。△ABC 比 △ADE 大，BC 要比 DE 長：BC＝6×6÷4。"
+    },
+    {
+     "key": "D",
+     "text": "8",
+     "mis": "SI10",
+     "feedback": "你把 DE 加上 DB：6＋2。相似是乘同一個倍數，AB 是 AD 的 3/2 倍，BC 也是 DE 的 3/2 倍。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "4：6＝6：x"
+   },
+   "hint": "△ADE 和 △ABC 的對應邊是哪兩組？AD 對應的是 DB 還是 AB？",
+   "seg": "九上1-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,18.0 30.0,145.0 215.0,145.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"60.0\" y1=\"102.7\" x2=\"183.3\" y2=\"102.7\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120\" y=\"14\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"22\" y=\"157\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"223\" y=\"157\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"50\" y=\"107\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"193\" y=\"107\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"78\" y=\"60\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"33\" y=\"124\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">2</text><text x=\"122\" y=\"98\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "分析",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D 在 AB 上、E 在 AC 上，∠ADE＝∠C。若 AD＝4、AE＝3、AC＝8，則 AB 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "32/3",
+     "mis": "SI09",
+     "feedback": "你寫成 △ADE～△ABC，列 4：AB＝3：8。∠ADE＝∠C，D 對應 C，應是 △ADE～△ACB，AD：AC＝AE：AB。"
+    },
+    {
+     "key": "B",
+     "text": "6",
+     "mis": null,
+     "feedback": "正確！∠A 公用、∠ADE＝∠C，△ADE～△ACB（AA），AD：AC＝AE：AB，4：8＝3：AB，AB＝6。"
+    },
+    {
+     "key": "C",
+     "text": "3/2",
+     "mis": "SI13",
+     "feedback": "你算成 4×3÷8，比例放反了。△ACB 比 △ADE 大，AB 要比 AE 長：AB＝3×8÷4。"
+    },
+    {
+     "key": "D",
+     "text": "7",
+     "mis": "SI10",
+     "feedback": "你看 AD 到 AC 多了 4，就把 AE 也加 4。相似是乘同一個倍數：AC 是 AD 的 2 倍，AB 也是 AE 的 2 倍。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "solve",
+    "eq": "4：8＝3：x"
+   },
+   "hint": "∠ADE＝∠C，所以 D 對應哪一點？把兩個三角形拆開、轉成同方向再配對應邊。",
+   "seg": "九上1-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 175\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,16.0 72.5,118.0 206.0,138.9\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"88.3\" y1=\"84.0\" x2=\"152.3\" y2=\"62.1\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120\" y=\"12\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"64\" y=\"130\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"214\" y=\"151\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"77\" y=\"88\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"163\" y=\"66\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"91\" y=\"50\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"149\" y=\"39\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">3</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "分析",
+   "lc": "S-9-2",
+   "stem": "如圖，△ABC 中，D 在 AB 上、E 在 AC 上，∠AED＝∠B。若 AD＝4、AE＝6、AB＝12，則 AC 是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10",
+     "mis": "SI10",
+     "feedback": "你看 AE 到 AB 多了 6，就把 AD 也加 6。相似是乘同一個倍數：AB 是 AE 的 2 倍，AC 也是 AD 的 2 倍。"
+    },
+    {
+     "key": "B",
+     "text": "2",
+     "mis": "SI13",
+     "feedback": "你算成 4×6÷12，比例放反了。△ABC 比 △AED 大，AC 要比 AD 長：AC＝4×12÷6。"
+    },
+    {
+     "key": "C",
+     "text": "18",
+     "mis": "SI09",
+     "feedback": "你寫成 △ADE～△ABC，列 4：12＝6：AC。∠AED＝∠B，E 對應 B，應是 △AED～△ABC，AE：AB＝AD：AC。"
+    },
+    {
+     "key": "D",
+     "text": "8",
+     "mis": null,
+     "feedback": "正確！∠A 公用、∠AED＝∠B，△AED～△ABC（AA），AE：AB＝AD：AC，6：12＝4：AC，AC＝8。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "6：12＝4：x"
+   },
+   "hint": "∠AED＝∠B，所以 E 對應哪一點？把兩個三角形拆開、轉成同方向再配對應邊。",
+   "seg": "九上1-3-S3",
+   "fig": "<svg viewBox=\"0 0 240 175\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"120.0,16.0 56.6,151.9 177.4,97.9\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.8\"/><line x1=\"98.9\" y1=\"61.3\" x2=\"163.0\" y2=\"77.4\" stroke=\"#333\" stroke-width=\"1.8\"/><text x=\"120\" y=\"12\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"49\" y=\"164\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"185\" y=\"110\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"88\" y=\"65\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">D</text><text x=\"174\" y=\"81\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">E</text><text x=\"96\" y=\"39\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">4</text><text x=\"155\" y=\"47\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">6</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-2",
+   "stem": "△ABC 與 △DEF 中，∠A＝∠D＝30°，AB＝6、BC＝4，DE＝9、EF＝6。下列哪一個判斷正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "由 SAS 相似性質，兩三角形相似",
+     "mis": "SI05",
+     "feedback": "你沒看 ∠A 是不是夾在 AB、BC 中間。∠A 夾的是 AB 和 AC，這是 SSA，不能用 SAS。"
+    },
+    {
+     "key": "B",
+     "text": "由 AA 相似性質，兩三角形相似",
+     "mis": "SI04",
+     "feedback": "你只用到一組角 ∠A＝∠D。AA 要兩組對應角相等，這裡只知道一組。"
+    },
+    {
+     "key": "C",
+     "text": "不一定相似",
+     "mis": null,
+     "feedback": "正確！AB：DE＝BC：EF＝2：3，但 ∠A 不是這兩邊的夾角（夾角是 ∠B），SSA 不能保證相似。"
+    },
+    {
+     "key": "D",
+     "text": "由 SSS 相似性質，兩三角形相似",
+     "mis": "SI06",
+     "feedback": "你看到兩組邊都是 2：3 就當成 SSS。SSS 要三組邊都成比例，AC 和 DF 不知道（BC 比 AB 短，AC 可以有兩種長度）。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "等角有沒有夾在兩組成比例的邊中間？三組邊都知道了嗎？",
+   "seg": "九上1-3-S3"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-9-2",
+   "stem": "△PQR 與 △XYZ 中，∠P＝∠X＝30°，PQ＝10、QR＝6，XY＝15、YZ＝9。下列哪一個判斷正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "不一定相似",
+     "mis": null,
+     "feedback": "正確！PQ：XY＝QR：YZ＝2：3，但 ∠P 不是這兩邊的夾角（夾角是 ∠Q），SSA 不能保證相似。"
+    },
+    {
+     "key": "B",
+     "text": "由 SSS 相似性質，兩三角形相似",
+     "mis": "SI06",
+     "feedback": "你看到兩組邊都是 2：3 就當成 SSS。SSS 要三組邊都成比例，PR 和 XZ 不知道（QR 比 PQ 短，PR 可以有兩種長度）。"
+    },
+    {
+     "key": "C",
+     "text": "由 AA 相似性質，兩三角形相似",
+     "mis": "SI04",
+     "feedback": "你只用到一組角 ∠P＝∠X。AA 要兩組對應角相等，這裡只知道一組。"
+    },
+    {
+     "key": "D",
+     "text": "由 SAS 相似性質，兩三角形相似",
+     "mis": "SI05",
+     "feedback": "你沒看 ∠P 是不是夾在 PQ、QR 中間。∠P 夾的是 PQ 和 PR，這是 SSA，不能用 SAS。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "等角有沒有夾在兩組成比例的邊中間？三組邊都知道了嗎？",
+   "seg": "九上1-3-S3"
+  },
+  {
+   "id": "P08A",
+   "set": "A",
+   "pair": "P08",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "△ABC 的三邊長是 4、6、8。△DEF 與 △ABC 相似，且 △DEF 最短的邊長是 6，則 △DEF 最長的邊長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "12",
+     "mis": null,
+     "feedback": "正確！最短對最短：6：4＝3：2，最長邊＝8×3/2＝12。"
+    },
+    {
+     "key": "B",
+     "text": "8",
+     "mis": "SI07",
+     "feedback": "你把 △DEF 的 6 對到 △ABC 的 6。對應邊要依大小配：最短的 6 對最短的 4。"
+    },
+    {
+     "key": "C",
+     "text": "10",
+     "mis": "SI10",
+     "feedback": "你看最短邊多了 2（4→6），就把最長邊也加 2。相似是乘同一個倍數 3/2。"
+    },
+    {
+     "key": "D",
+     "text": "16/3",
+     "mis": "SI13",
+     "feedback": "你算成 8×4÷6，比例放反了。△DEF 比較大，最長邊要比 8 長：8×6÷4。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "solve",
+    "eq": "6：4＝x：8"
+   },
+   "hint": "兩個三角形的三邊各由小到大排好，最短對最短、最長對最長。",
+   "seg": "九上1-3-S3"
+  },
+  {
+   "id": "P08B",
+   "set": "B",
+   "pair": "P08",
+   "bloom": "應用",
+   "lc": "S-9-2",
+   "stem": "△ABC 的三邊長是 6、9、12。△DEF 與 △ABC 相似，且 △DEF 最短的邊長是 9，則 △DEF 最長的邊長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "8",
+     "mis": "SI13",
+     "feedback": "你算成 12×6÷9，比例放反了。△DEF 比較大，最長邊要比 12 長：12×9÷6。"
+    },
+    {
+     "key": "B",
+     "text": "15",
+     "mis": "SI10",
+     "feedback": "你看最短邊多了 3（6→9），就把最長邊也加 3。相似是乘同一個倍數 3/2。"
+    },
+    {
+     "key": "C",
+     "text": "12",
+     "mis": "SI07",
+     "feedback": "你把 △DEF 的 9 對到 △ABC 的 9。對應邊要依大小配：最短的 9 對最短的 6。"
+    },
+    {
+     "key": "D",
+     "text": "18",
+     "mis": null,
+     "feedback": "正確！最短對最短：9：6＝3：2，最長邊＝12×3/2＝18。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "solve",
+    "eq": "9：6＝x：12"
+   },
+   "hint": "兩個三角形的三邊各由小到大排好，最短對最短、最長對最長。",
+   "seg": "九上1-3-S3"
+  }
+ ],
+ "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字",
+ "updated": "2026-11-05T01:42"
+}

@@ -1,0 +1,728 @@
+{
+ "schema": "fa-bank/1",
+ "id": "A-8下3-2-尺規作圖",
+ "title": "八下 3-2 尺規作圖（路線 A）",
+ "route": "A",
+ "unit": {
+  "grade": "八下",
+  "code": "3-2",
+  "name": "尺規作圖",
+  "curriculum": [
+   "S-8-12 尺規作圖與幾何推理：複製已知的線段、圓、角、三角形；能以尺規作出指定的中垂線、角平分線、平行線、垂直線；能寫出幾何推理所依據的幾何性質。"
+  ]
+ },
+ "source": "Claude 依 115-教科書/知識卡/八下3-2.md（三版教學順序、迷思清單、教學建議）與比較頁迷思表頁碼（digest_raw MS）產題；尺規作圖的判斷題（P01、P03、P06）用 manual，其餘角度題用 value 驗算；題目答案經驗算器重算，老師審題後使用",
+ "createdAt": "2026-11-05",
+ "misconceptions": [
+  {
+   "code": "RC01",
+   "name": "中垂線半徑取不夠大",
+   "desc": "以為作中垂線時半徑取多少都可以，或取 ½AB、比 ½AB 小也行",
+   "example": "AB＝8 公分，以 4 公分為半徑畫弧，兩弧只碰在一點，作不出中垂線",
+   "remedy": "請學生用 2、3、4、5 公分各畫一次，數交點個數，再說畫一條直線要幾個點。",
+   "source": "知識卡迷思：康軒 p.113 動動腦、南一 p.100 例3 對話框、翰林 p.115 想想看（✓／✓／✓）",
+   "card": "中垂線作圖半徑不大於 ½AB（等於或小於一半），兩弧沒有兩個交點",
+   "tiers": [
+    "八下3-2-S2T1"
+   ]
+  },
+  {
+   "code": "RC02",
+   "name": "以為直線也有中垂線",
+   "desc": "把中點、中垂線用在直線上，沒注意只有線段才有中點與中垂線",
+   "example": "說「任一直線都恰有一條中垂線」",
+   "remedy": "請學生在直線上找「中點」，發現直線兩端無限延伸、找不到，再回到線段。",
+   "source": "知識卡迷思：康軒 p.118 自我檢核 2（✓／–／–）",
+   "card": "以為直線也有中垂線、中點（只有線段才有）"
+  },
+  {
+   "code": "RC03",
+   "name": "以為痕跡四邊等長",
+   "desc": "過線外一點作垂線時，以為兩次畫弧的半徑一樣，所以 PA＝PB＝QA＝QB，或以為 L 是 PQ 的中垂線",
+   "example": "以 P 為圓心 5 公分、以 A、B 為圓心 7 公分畫弧，卻說四邊形 PAQB 四邊都是 5 公分",
+   "remedy": "請學生用兩個不同的半徑實際作一次，指出 PA、QA 各是哪一次畫弧的半徑，再說四邊形 PAQB 是箏形。",
+   "source": "知識卡迷思：康軒 p.121 挑錯題、p.118 自我檢核 4，南一 p.107 自評 5，翰林 p.121 作圖說明（✓／✓／✓）",
+   "card": "把作圖痕跡的四邊形當成四邊都相等：過線外一點作垂線時誤以為 PA＝PB＝QA＝QB、L 是 PQ 的中垂線"
+  },
+  {
+   "code": "RC04",
+   "name": "以為連續平分得任意等分",
+   "desc": "以為作幾次角平分線就能把角分成幾等分，或以為連續平分後每一份都一樣大",
+   "example": "以為 150° 作角平分線就能作出 50°",
+   "remedy": "請學生把每次平分後的角度寫出來（150°→75°→37.5°），說明每次都是「一半」。",
+   "source": "知識卡迷思：康軒 p.118 自我檢核 3（∠A＝150° 作三次角平分線可作出 50° 嗎）。迷思表這一列記 ✓／✓／–，但南一的 ✓ 是 p.108 錯誤診療「以為作∠C 的角平分線交 AB 於 P，就能使∠BPC 與∠A 互補」，不是連續平分；連續平分南一學生課本未見；翰林學生課本未見",
+   "card": "誤讀角平分線作圖的結果（以為 AP＝BP，或以為連續平分可得任意等分，例如 150° 分出 50°）",
+   "tiers": [
+    "八下3-2-S2T2"
+   ]
+  },
+  {
+   "code": "RC05",
+   "name": "以為角平分線交對邊中點",
+   "desc": "以為三角形中一角的角平分線一定通過對邊中點（AP＝BP）",
+   "example": "作∠C 的角平分線交 AB 於 P，就說 P 是 AB 的中點",
+   "remedy": "請學生在不等腰的三角形上實際作∠C 的角平分線，用圓規比較 AP、BP。",
+   "source": "知識卡迷思：康軒 p.120 自評 4（依角平分線作圖結果判斷 AP＝BP，×）。迷思表這一列記 ✓／✓／–，但南一的 ✓ 是 p.108 錯誤診療「以為作∠C 的角平分線交 AB 於 P，就能使∠BPC 與∠A 互補（須 CA＝CP）」，是另一種誤讀角平分線結果，沒有談 AP＝BP；翰林學生課本未見",
+   "card": "誤讀角平分線作圖的結果（以為 AP＝BP，或以為連續平分可得任意等分，例如 150° 分出 50°）"
+  },
+  {
+   "code": "RC06",
+   "name": "和差的另一邊放錯側",
+   "desc": "作兩角的和或差時，第二個角的邊放錯側：以為同側是和、兩側是差",
+   "example": "∠1＝70°、∠2＝25°，C 與 A 在 OB 同側，卻答∠AOC＝95°",
+   "remedy": "請學生把兩個角都描上顏色，說明同側時兩角重疊（差）、兩側時兩角拼在一起（和）。",
+   "source": "知識卡迷思：康軒 p.110 例4、p.111 隨堂，南一學生課本未見兩角差，翰林 p.113 隨堂、p.124 自評 1（✓／–／✓）",
+   "card": "作兩角和、差時另一邊放錯側（和在兩側、差在同側）"
+  },
+  {
+   "code": "RC07",
+   "name": "適當長選得太短",
+   "desc": "過線外一點作垂線時，以 P 為圓心的半徑不大於 P 到直線的距離，弧和直線交不到兩點",
+   "example": "P 到 L 的距離 4 公分，以 3 公分為半徑畫弧，弧碰不到 L",
+   "remedy": "提醒「適當長」要比 P 到 L 的距離大，先把圓規張大再畫，畫完檢查是否交在兩點。",
+   "source": "知識卡迷思：康軒學生課本未見、南一備課 p.146（課本 p.102 旁）眉批、翰林備課 p.189 眉批（–／備／備）",
+   "card": "「適當長」選錯：過線外一點作垂線的半徑小於點到直線的距離，或作高時以 AB 為半徑只交於 B",
+   "tiers": [
+    "八下3-2-S3T1"
+   ]
+  },
+  {
+   "code": "RC08",
+   "name": "用刻度或量角器量",
+   "desc": "沿用國小習慣，用直尺刻度量長度、用量角器量角度，再照數字畫",
+   "example": "用直尺量出 AB＝4.6 公分，再量 4.6 公分畫 CD",
+   "remedy": "公告作圖規範：直尺只用來連線，長度用圓規搬，角用等角作圖複製。",
+   "source": "知識卡迷思：康軒 p.105、南一 p.96、翰林 p.122（✓／✓／✓）",
+   "card": "沿用國小作圖習慣：用刻度量長度、擦掉多餘的線；畫弧時圓規兩腳距離改變（尺規規範）",
+   "tiers": [
+    "八下3-2-S1T1"
+   ]
+  },
+  {
+   "code": "RC09",
+   "name": "擦掉作圖痕跡",
+   "desc": "沿用國小「擦掉多餘的線」的習慣，作完把弧擦掉",
+   "example": "作完等線段，把截取的弧擦掉，只留線段 CD",
+   "remedy": "說明作圖痕跡就是作法的證據，請學生看別人的痕跡說出他怎麼作。",
+   "source": "知識卡迷思：康軒 p.105、南一 p.97、翰林 p.109（✓／✓／✓）",
+   "card": "沿用國小作圖習慣：用刻度量長度、擦掉多餘的線；畫弧時圓規兩腳距離改變（尺規規範）",
+   "tiers": [
+    "八下3-2-S1T1"
+   ]
+  },
+  {
+   "code": "RC10",
+   "name": "畫弧時圓規張開改變",
+   "desc": "量好長度後，移動或重新張開圓規，兩腳距離已經變了還照樣畫",
+   "example": "量好 AB 後收起圓規，到射線上再張開成「差不多」的寬度畫弧",
+   "remedy": "示範握柄、針尖固定，量好後不要再動圓規兩腳；用翰林 p.108 作圖小技巧當檢核表。",
+   "source": "知識卡迷思：翰林 p.108 作圖小技巧（針尖固定、拿握柄，畫弧時兩尖腳距離不能改變）。迷思表這一列記 ✓／✓／✓，但康軒 p.105、南一 p.96–97 寫的是不用刻度與保留痕跡，沒有談圓規張開距離",
+   "card": "沿用國小作圖習慣：用刻度量長度、擦掉多餘的線；畫弧時圓規兩腳距離改變（尺規規範）",
+   "tiers": [
+    "八下3-2-S1T1"
+   ]
+  },
+  {
+   "code": "RC11",
+   "name": "把角平分線當垂線",
+   "desc": "以為角平分線一定和對邊（或另一條線）垂直，把角平分線和垂線混在一起",
+   "example": "△ABC 中作∠A 的角平分線交 BC 於 D，就說∠ADC＝90°",
+   "remedy": "請學生在不等腰的三角形上同時作∠A 的角平分線和 BC 邊上的高，比較兩條線是不是同一條。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "RC12",
+   "name": "以為高通過對邊中點",
+   "desc": "以為三角形的高（過一點作的垂線）一定通過對邊的中點",
+   "example": "說△PEF 中 EF 邊上的高一定通過 EF 的中點",
+   "remedy": "請學生在不等腰的三角形上作高，用圓規比較垂足到兩端點的距離。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "RC13",
+   "name": "認錯作圖結果的角",
+   "desc": "作完圖後，把剛複製的角、原來的角或其中一小塊，當成題目要的角",
+   "example": "∠AOC 要算 45°，卻答剛複製的∠BOC＝25°",
+   "remedy": "請學生先在圖上把題目要的角描色，再寫出它由哪幾個角組成。",
+   "source": "依教學經驗"
+  }
+ ],
+ "items": [
+  {
+   "id": "P01A",
+   "set": "A",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-8-12",
+   "stem": "要作一線段 CD 等於已知線段 AB，下列哪一種做法符合尺規作圖的規定？",
+   "options": [
+    {
+     "key": "A",
+     "text": "用直尺的刻度量出 AB 長 4.6 公分，再在射線上量出 4.6 公分",
+     "mis": "RC08",
+     "feedback": "你用了直尺的刻度，這是國小量長度的方法。尺規作圖的直尺只用來連線，長度要用圓規搬過去。"
+    },
+    {
+     "key": "B",
+     "text": "用圓規量取 AB 長，在射線上畫弧截取，作完把弧擦掉，只留下線段 CD",
+     "mis": "RC09",
+     "feedback": "你照國小習慣把多餘的線擦掉了。尺規作圖要保留作圖痕跡，弧就是你作法的證據。"
+    },
+    {
+     "key": "C",
+     "text": "用圓規量取 AB 長，以 C 為圓心在射線上畫弧截取，保留畫過的弧",
+     "mis": null,
+     "feedback": "正確！長度用圓規搬，直尺只用來畫線，弧保留下來就是作法的證據。"
+    },
+    {
+     "key": "D",
+     "text": "用圓規量取 AB 長後收起圓規，到射線上再張開成差不多的寬度畫弧",
+     "mis": "RC10",
+     "feedback": "你收起圓規再重新張開，兩腳距離已經不是 AB 了。量好之後圓規兩腳不能再動。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：尺規作圖時，直尺和圓規各只能做什麼？",
+   "seg": "八下3-2-S1"
+  },
+  {
+   "id": "P01B",
+   "set": "B",
+   "pair": "P01",
+   "bloom": "記憶",
+   "lc": "S-8-12",
+   "stem": "要作一角∠DEF 等於已知角∠ABC，下列哪一種做法符合尺規作圖的規定？",
+   "options": [
+    {
+     "key": "A",
+     "text": "照等角作圖的步驟用圓規畫弧、用直尺連線，畫過的弧都保留",
+     "mis": null,
+     "feedback": "正確！角用圓規畫弧複製，不用量角器，弧保留下來就是作法的證據。"
+    },
+    {
+     "key": "B",
+     "text": "用量角器量出∠ABC＝52°，再在 E 點畫出 52°",
+     "mis": "RC08",
+     "feedback": "你用量角器量角度，這是國小畫角的方法。尺規作圖不用量角器，要用圓規和直尺複製角。"
+    },
+    {
+     "key": "C",
+     "text": "照步驟作出∠DEF 後，把弧都擦掉，只留下角的兩邊",
+     "mis": "RC09",
+     "feedback": "你照國小習慣把多餘的線擦掉了。尺規作圖要保留作圖痕跡，弧就是你作法的證據。"
+    },
+    {
+     "key": "D",
+     "text": "量取兩弧交點間的距離後圓規鬆掉了，憑眼睛調回差不多的寬度再畫弧",
+     "mis": "RC10",
+     "feedback": "圓規鬆掉後再調回「差不多」，距離已經變了。量好之後圓規兩腳不能再動，鬆掉就要重新量。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：尺規作圖時，直尺和圓規各只能做什麼？",
+   "seg": "八下3-2-S1"
+  },
+  {
+   "id": "P02A",
+   "set": "A",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-12",
+   "stem": "已知∠1＝70°、∠2＝25°。小美先作∠AOB＝∠1，再以 OB 為一邊作∠BOC＝∠2，且 C 和 A 在 OB 的同側。小美作出的∠AOC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "95°",
+     "mis": "RC06",
+     "feedback": "你把兩角相加了。C 和 A 在 OB 同側，∠BOC 疊在∠AOB 裡面，作出的是兩角的差 70°−25°。"
+    },
+    {
+     "key": "B",
+     "text": "25°",
+     "mis": "RC13",
+     "feedback": "25° 是剛複製的∠BOC，不是題目要的∠AOC。先把∠AOC 描色，看它是哪兩個角相減。"
+    },
+    {
+     "key": "C",
+     "text": "45°",
+     "mis": null,
+     "feedback": "正確！C 和 A 在 OB 同側，∠BOC 疊在∠AOB 裡面，∠AOC＝70°−25°＝45°。"
+    },
+    {
+     "key": "D",
+     "text": "70°",
+     "mis": "RC13",
+     "feedback": "70° 是原來的∠AOB，不是題目要的∠AOC。先把∠AOC 描色，看它是哪兩個角相減。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "70−25"
+   },
+   "hint": "畫畫看：OC 落在∠AOB 的裡面還是外面？",
+   "seg": "八下3-2-S1"
+  },
+  {
+   "id": "P02B",
+   "set": "B",
+   "pair": "P02",
+   "bloom": "應用",
+   "lc": "S-8-12",
+   "stem": "已知∠1＝80°、∠2＝35°。小傑先作∠AOB＝∠1，再以 OB 為一邊作∠BOC＝∠2，且 C 和 A 在 OB 的兩側。小傑作出的∠AOC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "115°",
+     "mis": null,
+     "feedback": "正確！C 和 A 在 OB 兩側，∠BOC 接在∠AOB 外面，∠AOC＝80°＋35°＝115°。"
+    },
+    {
+     "key": "B",
+     "text": "45°",
+     "mis": "RC06",
+     "feedback": "你把兩角相減了。C 和 A 在 OB 兩側，∠BOC 接在∠AOB 外面，作出的是兩角的和 80°＋35°。"
+    },
+    {
+     "key": "C",
+     "text": "35°",
+     "mis": "RC13",
+     "feedback": "35° 是剛複製的∠BOC，不是題目要的∠AOC。先把∠AOC 描色，看它是哪兩個角相加。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": "RC13",
+     "feedback": "80° 是原來的∠AOB，不是題目要的∠AOC。先把∠AOC 描色，看它是哪兩個角相加。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "80＋35"
+   },
+   "hint": "畫畫看：OC 落在∠AOB 的裡面還是外面？",
+   "seg": "八下3-2-S1"
+  },
+  {
+   "id": "P03A",
+   "set": "A",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-8-12",
+   "stem": "關於中垂線與角平分線作圖，下列敘述何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "作線段 AB 的中垂線時，以 A、B 為圓心、½AB 為半徑畫弧，就能得到兩個交點",
+     "mis": "RC01",
+     "feedback": "半徑剛好是 ½AB 時，兩弧只碰在 AB 的中點一點，畫不出直線。半徑要大於 ½AB 才有兩個交點。"
+    },
+    {
+     "key": "B",
+     "text": "任一直線都恰好有一條中垂線",
+     "mis": "RC02",
+     "feedback": "直線向兩端無限延伸，沒有中點，也就沒有中垂線。只有線段才有中點和中垂線。"
+    },
+    {
+     "key": "C",
+     "text": "在△ABC 中作∠C 的角平分線交 AB 於 P，P 一定是 AB 的中點",
+     "mis": "RC05",
+     "feedback": "角平分線平分的是角，不是對邊。除非 CA＝CB，否則 AP 和 BP 不一樣長。"
+    },
+    {
+     "key": "D",
+     "text": "作線段 AB 的中垂線時，兩弧的兩個交點連成的直線會通過 AB 的中點",
+     "mis": null,
+     "feedback": "正確！兩個交點和 A、B 連成菱形，對角線互相垂直平分，所以這條直線通過 AB 的中點。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：中垂線作圖畫出的是什麼四邊形？角平分線平分的是什麼？",
+   "seg": "八下3-2-S2"
+  },
+  {
+   "id": "P03B",
+   "set": "B",
+   "pair": "P03",
+   "bloom": "理解",
+   "lc": "S-8-12",
+   "stem": "下列關於作圖的敘述，何者正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "在△ABC 中作∠B 的角平分線交 AC 於 D，D 一定是 AC 的中點",
+     "mis": "RC05",
+     "feedback": "角平分線平分的是角，不是對邊。除非 BA＝BC，否則 AD 和 DC 不一樣長。"
+    },
+    {
+     "key": "B",
+     "text": "作線段 AB 的中垂線時，半徑比 ½AB 小也可以，只是弧比較短",
+     "mis": "RC01",
+     "feedback": "半徑比 ½AB 小時，兩弧根本碰不到，沒有交點。半徑要大於 ½AB 才有兩個交點。"
+    },
+    {
+     "key": "C",
+     "text": "一條線段的中垂線只有一條",
+     "mis": null,
+     "feedback": "正確！線段只有一個中點，過中點和線段垂直的直線只有一條。"
+    },
+    {
+     "key": "D",
+     "text": "直線 L 也可以用尺規作出它的中點和中垂線",
+     "mis": "RC02",
+     "feedback": "直線向兩端無限延伸，沒有中點，也就沒有中垂線。只有線段才有中點和中垂線。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：中垂線作圖的半徑為什麼有限制？角平分線平分的是什麼？",
+   "seg": "八下3-2-S2"
+  },
+  {
+   "id": "P04A",
+   "set": "A",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-8-12",
+   "stem": "△ABC 中，∠B＝50°、∠C＝70°。用尺規作∠A 的角平分線，交 BC 於 D（如圖）。∠ADC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "90°",
+     "mis": "RC11",
+     "feedback": "你把角平分線當成和 BC 垂直了。AD 平分的是∠A，∠DAC＝30°，再用△ADC 內角和算∠ADC。"
+    },
+    {
+     "key": "B",
+     "text": "100°",
+     "mis": "RC13",
+     "feedback": "100° 是∠ADB，不是∠ADC。先把∠ADC 描色，它在 D 點靠近 C 的那一側。"
+    },
+    {
+     "key": "C",
+     "text": "30°",
+     "mis": "RC13",
+     "feedback": "30° 是∠DAC，不是∠ADC。∠ADC 的頂點在 D，再用△ADC 內角和算一次。"
+    },
+    {
+     "key": "D",
+     "text": "80°",
+     "mis": null,
+     "feedback": "正確！∠A＝180°−50°−70°＝60°，∠DAC＝30°，∠ADC＝180°−30°−70°＝80°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "180−70−(180−50−70)/2"
+   },
+   "hint": "先算∠A，再算∠DAC，最後看△ADC。",
+   "seg": "八下3-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 193\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"153.6\" y1=\"28.0\" x2=\"35.0\" y2=\"169.3\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"169.3\" x2=\"205.0\" y2=\"169.3\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"205.0\" y1=\"169.3\" x2=\"153.6\" y2=\"28.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"153.6\" y1=\"28.0\" x2=\"128.7\" y2=\"169.3\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M171.4 61.6 A38.0 38.0 0 0 1 125.3 53.4\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M150.1 83.9 A34.0 34.0 0 0 1 135.0 90.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M149.6 93.2 A34.0 34.0 0 0 1 137.7 81.7\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><circle cx=\"153.6\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"153.6\" y=\"20.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"35.0\" cy=\"169.3\" r=\"2.5\" fill=\"#333\"/><text x=\"27.0\" y=\"183.3\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"205.0\" cy=\"169.3\" r=\"2.5\" fill=\"#333\"/><text x=\"213.0\" y=\"183.3\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">C</text><circle cx=\"128.7\" cy=\"169.3\" r=\"2.5\" fill=\"#333\"/><text x=\"128.7\" y=\"185.3\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">D</text><text x=\"65.0\" y=\"163.3\" font-size=\"13\" fill=\"#333\" text-anchor=\"middle\">50°</text><text x=\"175.0\" y=\"163.3\" font-size=\"13\" fill=\"#333\" text-anchor=\"middle\">70°</text></svg>"
+  },
+  {
+   "id": "P04B",
+   "set": "B",
+   "pair": "P04",
+   "bloom": "應用",
+   "lc": "S-8-12",
+   "stem": "△ABC 中，∠B＝30°、∠C＝70°。用尺規作∠A 的角平分線，交 BC 於 D（如圖）。∠ADC 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "40°",
+     "mis": "RC13",
+     "feedback": "40° 是∠DAC，不是∠ADC。∠ADC 的頂點在 D，再用△ADC 內角和算一次。"
+    },
+    {
+     "key": "B",
+     "text": "90°",
+     "mis": "RC11",
+     "feedback": "你把角平分線當成和 BC 垂直了。AD 平分的是∠A，∠DAC＝40°，再用△ADC 內角和算∠ADC。"
+    },
+    {
+     "key": "C",
+     "text": "70°",
+     "mis": null,
+     "feedback": "正確！∠A＝180°−30°−70°＝80°，∠DAC＝40°，∠ADC＝180°−40°−70°＝70°。"
+    },
+    {
+     "key": "D",
+     "text": "110°",
+     "mis": "RC13",
+     "feedback": "110° 是∠ADB，不是∠ADC。先把∠ADC 描色，它在 D 點靠近 C 的那一側。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "180−70−(180−30−70)/2"
+   },
+   "hint": "先算∠A，再算∠DAC，最後看△ADC。",
+   "seg": "八下3-2-S2",
+   "fig": "<svg viewBox=\"0 0 240 133\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"175.5\" y1=\"28.0\" x2=\"35.0\" y2=\"109.1\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"35.0\" y1=\"109.1\" x2=\"205.0\" y2=\"109.1\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"205.0\" y1=\"109.1\" x2=\"175.5\" y2=\"28.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><line x1=\"175.5\" y1=\"28.0\" x2=\"146.0\" y2=\"109.1\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M193.3 61.6 A38.0 38.0 0 0 1 140.2 42.2\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M164.4 73.1 A34.0 34.0 0 0 1 149.6 80.3\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M161.7 84.7 A34.0 34.0 0 0 1 155.0 69.7\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><circle cx=\"175.5\" cy=\"28.0\" r=\"2.5\" fill=\"#333\"/><text x=\"175.5\" y=\"20.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"35.0\" cy=\"109.1\" r=\"2.5\" fill=\"#333\"/><text x=\"27.0\" y=\"123.1\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"205.0\" cy=\"109.1\" r=\"2.5\" fill=\"#333\"/><text x=\"213.0\" y=\"123.1\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">C</text><circle cx=\"146.0\" cy=\"109.1\" r=\"2.5\" fill=\"#333\"/><text x=\"146.0\" y=\"125.1\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">D</text><text x=\"65.0\" y=\"103.1\" font-size=\"13\" fill=\"#333\" text-anchor=\"middle\">30°</text><text x=\"175.0\" y=\"103.1\" font-size=\"13\" fill=\"#333\" text-anchor=\"middle\">70°</text></svg>"
+  },
+  {
+   "id": "P05A",
+   "set": "A",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-12",
+   "stem": "∠AOB＝150°。先作∠AOB 的角平分線 OC，再作∠AOC 的角平分線 OD。∠DOB 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "100°",
+     "mis": "RC04",
+     "feedback": "你以為兩條角平分線把 150° 分成 3 個 50°。其實第一次平分得 75°，第二次是把 75° 再平分，三份不一樣大。"
+    },
+    {
+     "key": "B",
+     "text": "112.5°",
+     "mis": null,
+     "feedback": "正確！∠COB＝150°÷2＝75°，∠DOC＝75°÷2＝37.5°，∠DOB＝37.5°＋75°＝112.5°。"
+    },
+    {
+     "key": "C",
+     "text": "37.5°",
+     "mis": "RC06",
+     "feedback": "你把 OD 放到 OC 靠 B 的那一側，用 75°−37.5° 相減了。OD 平分的是∠AOC，在 OA 和 OC 之間，∠DOB 要把∠DOC 和∠COB 加起來。"
+    },
+    {
+     "key": "D",
+     "text": "75°",
+     "mis": "RC13",
+     "feedback": "75° 是∠COB，不是∠DOB。∠DOB 還要加上∠DOC。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "150/2＋150/4"
+   },
+   "hint": "把每次平分後的角度寫出來，再看∠DOB 由哪幾塊組成。",
+   "seg": "八下3-2-S2"
+  },
+  {
+   "id": "P05B",
+   "set": "B",
+   "pair": "P05",
+   "bloom": "分析",
+   "lc": "S-8-12",
+   "stem": "∠AOB＝132°。先作∠AOB 的角平分線 OC，再作∠AOC 的角平分線 OD。∠DOB 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "33°",
+     "mis": "RC06",
+     "feedback": "你把 OD 放到 OC 靠 B 的那一側，用 66°−33° 相減了。OD 平分的是∠AOC，在 OA 和 OC 之間，∠DOB 要把∠DOC 和∠COB 加起來。"
+    },
+    {
+     "key": "B",
+     "text": "66°",
+     "mis": "RC13",
+     "feedback": "66° 是∠COB，不是∠DOB。∠DOB 還要加上∠DOC。"
+    },
+    {
+     "key": "C",
+     "text": "88°",
+     "mis": "RC04",
+     "feedback": "你以為兩條角平分線把 132° 分成 3 個 44°。其實第一次平分得 66°，第二次是把 66° 再平分，三份不一樣大。"
+    },
+    {
+     "key": "D",
+     "text": "99°",
+     "mis": null,
+     "feedback": "正確！∠COB＝132°÷2＝66°，∠DOC＝66°÷2＝33°，∠DOB＝33°＋66°＝99°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "132/2＋132/4"
+   },
+   "hint": "把每次平分後的角度寫出來，再看∠DOB 由哪幾塊組成。",
+   "seg": "八下3-2-S2"
+  },
+  {
+   "id": "P06A",
+   "set": "A",
+   "pair": "P06",
+   "bloom": "理解",
+   "lc": "S-8-12",
+   "stem": "過直線 L 外一點 P 作 L 的垂線：以 P 為圓心畫弧交 L 於 A、B，再分別以 A、B 為圓心、相同半徑畫弧交於 Q，連 PQ（如圖）。下列敘述何者一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "PA＝PB＝QA＝QB",
+     "mis": "RC03",
+     "feedback": "PA、PB 是第一次畫弧的半徑，QA、QB 是第二次畫弧的半徑，兩次半徑不一定一樣。只能確定 PA＝PB、QA＝QB。"
+    },
+    {
+     "key": "B",
+     "text": "PQ 垂直平分 AB",
+     "mis": null,
+     "feedback": "正確！PA＝PB、QA＝QB，P、Q 都在 AB 的中垂線上，所以 PQ 垂直平分 AB。"
+    },
+    {
+     "key": "C",
+     "text": "以 P 為圓心畫弧時，半徑取多少都會和 L 交在兩點",
+     "mis": "RC07",
+     "feedback": "半徑不比 P 到 L 的距離大時，弧最多只碰到 L 一點。「適當長」要比 P 到 L 的距離大。"
+    },
+    {
+     "key": "D",
+     "text": "若 E、F 也是 L 上的點，△PEF 中 EF 邊上的高一定通過 EF 的中點",
+     "mis": "RC12",
+     "feedback": "高只保證和 EF 垂直，不保證通過中點。除非 PE＝PF，垂足才會是 EF 的中點。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：PA 和 PB 是哪一次畫弧的半徑？QA 和 QB 呢？",
+   "seg": "八下3-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 161\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"95.0\" x2=\"225.0\" y2=\"95.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"232.0\" y=\"100.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">L</text><path d=\"M187.1 82.2 A85.0 85.0 0 0 1 52.9 82.2\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M129.7 127.1 A72.0 72.0 0 0 1 107.1 153.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M132.9 153.6 A72.0 72.0 0 0 1 110.3 127.1\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"30.0\" x2=\"120.0\" y2=\"141.7\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"120.0\" cy=\"30.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"22.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">P</text><circle cx=\"65.2\" cy=\"95.0\" r=\"2.5\" fill=\"#333\"/><text x=\"53.2\" y=\"87.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"174.8\" cy=\"95.0\" r=\"2.5\" fill=\"#333\"/><text x=\"186.8\" y=\"87.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"120.0\" cy=\"141.7\" r=\"2.5\" fill=\"#333\"/><text x=\"136.0\" y=\"146.7\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">Q</text></svg>"
+  },
+  {
+   "id": "P06B",
+   "set": "B",
+   "pair": "P06",
+   "bloom": "理解",
+   "lc": "S-8-12",
+   "stem": "過直線 L 外一點 P 作 L 的垂線：以 P 為圓心畫弧交 L 於 A、B，再分別以 A、B 為圓心、相同半徑畫弧交於 Q，連 PQ（如圖）。下列敘述何者一定正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "以 P 為圓心畫弧時，半徑只要大於 0 就可以",
+     "mis": "RC07",
+     "feedback": "半徑不比 P 到 L 的距離大時，弧最多只碰到 L 一點。「適當長」要比 P 到 L 的距離大。"
+    },
+    {
+     "key": "B",
+     "text": "L 是 PQ 的中垂線",
+     "mis": "RC03",
+     "feedback": "PA 和 QA 是兩次不同的半徑，不一定一樣長，所以 L 不一定平分 PQ。能確定的是 PQ 垂直平分 AB。"
+    },
+    {
+     "key": "C",
+     "text": "若 E、F 也是 L 上的點，△PEF 中 EF 邊上的高一定通過 EF 的中點",
+     "mis": "RC12",
+     "feedback": "高只保證和 EF 垂直，不保證通過中點。除非 PE＝PF，垂足才會是 EF 的中點。"
+    },
+    {
+     "key": "D",
+     "text": "PQ 與 L 垂直",
+     "mis": null,
+     "feedback": "正確！PA＝PB、QA＝QB，P、Q 都在 AB 的中垂線上，所以 PQ 和 L 垂直。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "想一想：PA 和 PB 是哪一次畫弧的半徑？QA 和 QB 呢？",
+   "seg": "八下3-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 197\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"95.0\" x2=\"225.0\" y2=\"95.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><text x=\"232.0\" y=\"100.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">L</text><path d=\"M179.1 83.9 A80.0 80.0 0 0 1 60.9 83.9\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M138.6 164.0 A95.0 95.0 0 0 1 98.6 186.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M141.4 186.6 A95.0 95.0 0 0 1 101.4 164.0\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"30.0\" x2=\"120.0\" y2=\"177.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"120.0\" cy=\"30.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"22.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">P</text><circle cx=\"73.4\" cy=\"95.0\" r=\"2.5\" fill=\"#333\"/><text x=\"61.4\" y=\"87.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"166.6\" cy=\"95.0\" r=\"2.5\" fill=\"#333\"/><text x=\"178.6\" y=\"87.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"120.0\" cy=\"177.8\" r=\"2.5\" fill=\"#333\"/><text x=\"136.0\" y=\"182.8\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">Q</text></svg>"
+  },
+  {
+   "id": "P07A",
+   "set": "A",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-8-12",
+   "stem": "∠AOB 是平角。先過 O 作 OC⊥AB，再作∠COB 的角平分線 OD（如圖）。∠AOD 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "120°",
+     "mis": "RC04",
+     "feedback": "你以為 OC、OD 兩條線把平角分成 3 個 60°。其實 OC 先分出兩個 90°，OD 再把 90° 平分，三份不一樣大。"
+    },
+    {
+     "key": "B",
+     "text": "45°",
+     "mis": "RC06",
+     "feedback": "你把 OD 當成在 OC 靠 A 的那一側，用 90°−45° 相減了。OD 平分的是∠COB，在 OC 和 OB 之間，∠AOD 要把∠AOC 和∠COD 加起來。"
+    },
+    {
+     "key": "C",
+     "text": "90°",
+     "mis": "RC13",
+     "feedback": "90° 是∠AOC，不是∠AOD。∠AOD 還要加上∠COD。"
+    },
+    {
+     "key": "D",
+     "text": "135°",
+     "mis": null,
+     "feedback": "正確！∠AOC＝90°，∠COD＝90°÷2＝45°，∠AOD＝90°＋45°＝135°。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "90＋90/2"
+   },
+   "hint": "把每一塊角的度數寫在圖上，再看∠AOD 由哪幾塊組成。",
+   "seg": "八下3-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"140.0\" x2=\"225.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M80.9 148.3 A40.0 40.0 0 0 1 80.9 131.7\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M159.1 131.7 A40.0 40.0 0 0 1 159.1 148.3\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M104.9 74.6 A70.0 70.0 0 0 1 132.7 93.9\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M107.3 93.9 A70.0 70.0 0 0 1 135.1 74.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"140.0\" x2=\"120.0\" y2=\"22.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M116.4 106.2 A34.0 34.0 0 0 1 153.8 143.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M149.6 100.9 A30.0 30.0 0 0 1 146.9 119.3\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M140.7 113.1 A30.0 30.0 0 0 1 159.1 110.4\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"140.0\" x2=\"199.2\" y2=\"60.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"120.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">O</text><circle cx=\"15.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"15.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"225.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"225.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"120.0\" cy=\"22.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"16.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">C</text><circle cx=\"199.2\" cy=\"60.8\" r=\"2.5\" fill=\"#333\"/><text x=\"206.2\" y=\"56.8\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">D</text></svg>"
+  },
+  {
+   "id": "P07B",
+   "set": "B",
+   "pair": "P07",
+   "bloom": "分析",
+   "lc": "S-8-12",
+   "stem": "∠AOB 是平角。先過 O 作 OC⊥AB，再作∠AOC 的角平分線 OD（如圖）。∠DOB 是幾度？",
+   "options": [
+    {
+     "key": "A",
+     "text": "90°",
+     "mis": "RC13",
+     "feedback": "90° 是∠COB，不是∠DOB。∠DOB 還要加上∠DOC。"
+    },
+    {
+     "key": "B",
+     "text": "135°",
+     "mis": null,
+     "feedback": "正確！∠COB＝90°，∠DOC＝90°÷2＝45°，∠DOB＝45°＋90°＝135°。"
+    },
+    {
+     "key": "C",
+     "text": "120°",
+     "mis": "RC04",
+     "feedback": "你以為 OD、OC 兩條線把平角分成 3 個 60°，∠DOB 是兩份。其實 OC 先分出兩個 90°，OD 再把 90° 平分，三份不一樣大。"
+    },
+    {
+     "key": "D",
+     "text": "45°",
+     "mis": "RC06",
+     "feedback": "你把 OD 當成在 OC 靠 B 的那一側，用 90°−45° 相減了。OD 平分的是∠AOC，在 OA 和 OC 之間，∠DOB 要把∠DOC 和∠COB 加起來。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "90/2＋90"
+   },
+   "hint": "把每一塊角的度數寫在圖上，再看∠DOB 由哪幾塊組成。",
+   "seg": "八下3-2-S3",
+   "fig": "<svg viewBox=\"0 0 240 165\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"15.0\" y1=\"140.0\" x2=\"225.0\" y2=\"140.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M80.9 148.3 A40.0 40.0 0 0 1 80.9 131.7\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M159.1 131.7 A40.0 40.0 0 0 1 159.1 148.3\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M104.9 74.6 A70.0 70.0 0 0 1 132.7 93.9\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M107.3 93.9 A70.0 70.0 0 0 1 135.1 74.6\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"140.0\" x2=\"120.0\" y2=\"22.0\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M86.2 143.6 A34.0 34.0 0 0 1 123.6 106.2\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M93.1 119.3 A30.0 30.0 0 0 1 90.4 100.9\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><path d=\"M80.9 110.4 A30.0 30.0 0 0 1 99.3 113.1\" stroke=\"#333\" stroke-width=\"1.4\" fill=\"none\"/><line x1=\"120.0\" y1=\"140.0\" x2=\"40.8\" y2=\"60.8\" stroke=\"#333\" stroke-width=\"1.6\" fill=\"none\"/><circle cx=\"120.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">O</text><circle cx=\"15.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"15.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">A</text><circle cx=\"225.0\" cy=\"140.0\" r=\"2.5\" fill=\"#333\"/><text x=\"225.0\" y=\"157.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">B</text><circle cx=\"120.0\" cy=\"22.0\" r=\"2.5\" fill=\"#333\"/><text x=\"120.0\" y=\"16.0\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">C</text><circle cx=\"40.8\" cy=\"60.8\" r=\"2.5\" fill=\"#333\"/><text x=\"32.8\" y=\"56.8\" font-size=\"14\" fill=\"#333\" text-anchor=\"middle\">D</text></svg>"
+  }
+ ],
+ "note": "每組平行題（P01～P07）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或情境",
+ "updated": "2026-11-05T01:42"
+}
