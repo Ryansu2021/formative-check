@@ -475,6 +475,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
             <div class="small muted" id="c-picked"></div>
             <button class="btn zhu" id="c-go">建立場次並產生代碼</button>
             <button class="btn sm ghost" id="c-resume" style="white-space:normal;max-width:100%" hidden>回到進行中的場次</button>
+            <div id="c-resume-list" style="max-height:190px;overflow-y:auto" hidden></div>
           </div>
         </div>
         <div class="col" style="flex:1;min-height:0">
@@ -2541,7 +2542,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.8.1（2026-11-09）';
+const APP_VERSION = 'v3.8.2（2026-11-09）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -3023,6 +3024,7 @@ async function pickUnitBank() {
   if (b) { T.bankId = b.id; T.tab = 'bank'; toast(upd ? '已更新成最新題庫' : `已選好 ${want} 的題庫`); }
   else toast(`${want} 還沒有形成性評量題庫`, 3500);
 }
+const tsMD = t => { const m = tsMs(t); if (!m) return ''; const d = new Date(m); return `${d.getMonth() + 1}/${d.getDate()}`; };
 const resumeLabel = codes => `回到進行中的場次（${codes.slice(0, 3).join('、')}${codes.length > 3 ? ` 等 ${codes.length} 場` : ''}）`;   // 最多列 3 個代碼，避免超出卡片（v3.8.1）
 async function openBankView() {
   show('v-tbank'); stopLive();
@@ -3031,8 +3033,15 @@ async function openBankView() {
   if (!T.bankId || !Banks.get(T.bankId)) T.bankId = banks[0] && banks[0].id;
   renderBankView();
   loadUsage();
-  try { const act = (await store.listActive()).filter(x => x.active); const btn = $('c-resume');
-    if (act.length) { btn.hidden = false; btn.textContent = resumeLabel(act.map(a => a.code)); btn.title = act.map(a => a.code).join('、'); btn.onclick = () => openLive(act[0].code); } else btn.hidden = true;
+  try { const act = (await store.listActive()).filter(x => x.active).sort((a, b) => tsMs(b.createdAt) - tsMs(a.createdAt)); const btn = $('c-resume'), box = $('c-resume-list');
+    box.hidden = true;
+    if (act.length) {
+      btn.hidden = false; btn.textContent = resumeLabel(act.map(a => a.code)); btn.title = act.map(a => a.code).join('、');
+      // 只有一場直接進入；兩場以上列出來選（v3.8.2）
+      box.innerHTML = act.map(a => `<button class="btn sm ghost" data-live="${esc(a.code)}" style="display:block;width:100%;text-align:left;white-space:normal;margin-top:6px"><b>${esc(a.label || '')}</b>　${esc(a.code)}<span class="muted small">　${esc(tsMD(a.createdAt))}${a.bankTitle ? '・' + esc(shownT(a.bankTitle)) : ''}${ls.get('fa-tbank:' + a.code, null) ? '' : '・這台電腦沒有完整題庫'}</span></button>`).join('');
+      box.querySelectorAll('[data-live]').forEach(x => x.onclick = () => openLive(x.dataset.live));
+      btn.onclick = () => { if (act.length === 1) openLive(act[0].code); else box.hidden = !box.hidden; };
+    } else btn.hidden = true;
   } catch (e) { console.warn(e); }
 }
 function renderBankView() {
