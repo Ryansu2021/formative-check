@@ -2127,8 +2127,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     GC02b: { mis: 'GC02', name: '有一個質數就以為互質', fn: ({ t, w }) => ({ text: `${t} 與 ${t * w}`, trace: `${t} 是質數，就以為 ${t} 與 ${t * w} 互質`, fix: `${t} 是 ${t * w} 的因數，最大公因數是 ${t}，不互質` }) }
   };
   R.gcGcd = {
-    GC03a: { mis: 'GC03', name: '以為沒有最大公因數', fn: ({ a, b }) => gcd2(a, b) !== 1 ? null : ({ text: '沒有最大公因數', trace: `${a} 與 ${b} 沒有共同的質因數，就以為沒有最大公因數`, fix: `1 是任何兩數的公因數，${a} 與 ${b} 的最大公因數是 1` }) },
-    GC03b: { mis: 'GC03', name: '以為最大公因數是 0', fn: ({ a, b }) => gcd2(a, b) !== 1 ? null : ({ value: 0, trace: `${a} 與 ${b} 沒有共同的質因數，就把最大公因數寫成 0`, fix: `0 不是 ${a} 的因數，${a} 與 ${b} 的最大公因數是 1` }) },
+    GC03a: { mis: 'GC03', name: '以為沒有最大公因數', excl: 'GC03', fn: ({ a, b }) => gcd2(a, b) !== 1 ? null : ({ text: '沒有最大公因數', trace: `${a} 與 ${b} 沒有共同的質因數，就以為沒有最大公因數`, fix: `1 是任何兩數的公因數，${a} 與 ${b} 的最大公因數是 1` }) },
+    GC03b: { mis: 'GC03', name: '以為最大公因數是 0', excl: 'GC03', fn: ({ a, b }) => gcd2(a, b) !== 1 ? null : ({ value: 0, trace: `${a} 與 ${b} 沒有共同的質因數，就把最大公因數寫成 0`, fix: `0 不是 ${a} 的因數，${a} 與 ${b} 的最大公因數是 1` }) },
     GC01c: { mis: 'GC01', name: '兩個奇數就以為互質', fn: ({ a, b }) => (gcd2(a, b) === 1 || a % 2 === 0 || b % 2 === 0) ? null : ({ value: 1, trace: `看到 ${a} 與 ${b} 都是奇數，就以為互質，最大公因數是 1`, fix: `${a} 與 ${b} 有公因數 ${gcd2(a, b)}，最大公因數是 ${gcd2(a, b)}` }) },
     GC01e: { mis: 'GC01', name: '不是質數就以為不互質', fn: ({ a, b }) => (gcd2(a, b) !== 1 || V.isPrime(a) || V.isPrime(b)) ? null : ({ text: '大於 1（兩數都不是質數）', trace: `看到 ${a} 與 ${b} 都不是質數，就以為兩數不互質`, fix: `${a} 與 ${b} 沒有共同的質因數，最大公因數是 1，兩數互質` }) },
     GC04a: { mis: 'GC04', name: '短除法只除一次就停', fn: ({ a, b }) => { const g = gcd2(a, b); if (g === 1) return null; const p = smallestFactor(g); if (p === g) return null; return { value: p, trace: `短除法只除一次 ${p} 就停，下面的 ${a / p}、${b / p} 還有公因數 ${g / p}，就把 ${p} 當成最大公因數`, fix: `${p} 是公因數但不是最大的，要除到兩數互質，最大公因數是 ${g}` }; } },
@@ -2369,16 +2369,21 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     return out;
   }
 
+  // 互斥（v3.7.1）：規則寫 excl:'組名'，同一題同一組只出一條（例：七上2-2 的「沒有最大公因數」與「0」）
+  const exclOf = (kindName, id) => { const r = R[kindName] && R[kindName][id]; return r && r.excl || null; };
+  const effCount = (kindName, ids) => new Set(ids.map(id => exclOf(kindName, id) || id)).size;   // 互斥組只算一條
+
   // 依序挑 pick 條：不等於正解、彼此不同；規則要在 A、B 兩組數字都能用
   function choose(evA, evB, tpl, ruleIds, need, kind) {
-    const chosen = [], usedA = new Set([evA.ansKey]), usedB = new Set([evB.ansKey]);
+    const chosen = [], usedA = new Set([evA.ansKey]), usedB = new Set([evB.ansKey]), usedEx = new Set();
     for (const id of ruleIds) {
       if (chosen.length >= need) break;
+      const ex = exclOf(tpl.kind, id); if (ex && usedEx.has(ex)) continue;
       const a = evA.cands.find(d => d.rule === id), b = evB.cands.find(d => d.rule === id);
       if (!a || !b) continue;
       const ka = kind.key(a.text), kb = kind.key(b.text);
       if (usedA.has(ka) || usedB.has(kb)) continue;
-      usedA.add(ka); usedB.add(kb); chosen.push(id);
+      usedA.add(ka); usedB.add(kb); chosen.push(id); if (ex) usedEx.add(ex);
     }
     return chosen.length === need ? chosen : null;
   }
@@ -2404,7 +2409,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     const need = tpl.pick || 3, maxTry = opt.maxTry || 50, pair = opt.pair || 'P01';
     const mine = myOk(tpl) ? (opt.custom || []).map(c => 'MY:' + c.code) : [];
     const allow = mine.concat(opt.rules ? (tpl.distractors || []).filter(id => opt.rules.includes(id)) : (tpl.distractors || []));
-    if (allow.length < need) throw new Error(`模板 ${tpl.tpl}：可用的規則只有 ${allow.length} 條，至少要 ${need} 條`);
+    if (effCount(tpl.kind, allow) < need) throw new Error(`模板 ${tpl.tpl}：可用的規則只有 ${effCount(tpl.kind, allow)} 條（互斥的算一條），至少要 ${need} 條`);
     const misMap = opt.misMap;
     const why = {}, note = m => why[m] = (why[m] || 0) + 1;
     for (let t = 0; t < maxTry; t++) {
@@ -2438,7 +2443,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     const misMap = {}; misAll.forEach(m => misMap[m.code] = m);
     // 老師勾的可以是迷思代碼（PF09）或規則 id（PF09a）
     const allowRule = (tpl, id) => !spec.rules || spec.rules.includes(id) || spec.rules.includes(R[tpl.kind][id].mis);
-    const usable = tpls.filter(tp => (tp.distractors || []).filter(id => allowRule(tp, id)).length + (myOk(tp) ? custom.length : 0) >= (tp.pick || 3));
+    const usable = tpls.filter(tp => effCount(tp.kind, (tp.distractors || []).filter(id => allowRule(tp, id))) + (myOk(tp) ? custom.length : 0) >= (tp.pick || 3));
     if (!usable.length) throw new Error('勾選的迷思太少：每種模板至少要 3 條可用的規則');
     const count = spec.count || usable.length, items = [];
     for (let i = 0; i < count; i++) {
@@ -2465,7 +2470,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
   // 刪掉某個誘答、由規則補下一個（審題畫面用）：保留同一組數字，換掉這條規則
   function replaceDistractor(item, pairItem, tpl, ruleId, opt = {}) {
     const kind = KINDS[tpl.kind], used = item.options.filter(o => o.rule).map(o => o.rule);
-    const pool = (tpl.distractors || []).filter(id => !used.includes(id) && (!opt.rules || opt.rules.includes(id) || opt.rules.includes(R[tpl.kind][id].mis)));
+    const keptEx = new Set(used.filter(id => id !== ruleId).map(id => exclOf(tpl.kind, id)).filter(Boolean));   // 留下的規則佔用的互斥組
+    const pool = (tpl.distractors || []).filter(id => !used.includes(id) && !keptEx.has(exclOf(tpl.kind, id)) && (!opt.rules || opt.rules.includes(id) || opt.rules.includes(R[tpl.kind][id].mis)));
     for (const id of pool) {
       const a = runRule(tpl.kind, id, item.params), b = pairItem ? runRule(tpl.kind, id, pairItem.params) : a;
       if (!a || !b) continue;
@@ -2528,7 +2534,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.7（2026-11-09）';
+const APP_VERSION = 'v3.7.1（2026-11-09）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
