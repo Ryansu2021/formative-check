@@ -83,5 +83,12 @@ service cloud.firestore {
           && request.resource.data.conf in ['high', 'mid', 'low'];
       }
     }
+
+    // ---------------- 出題紀錄（v3.8）：老師自己的開課紀錄，和作答資料分開；結束場次不會刪；只有本人能讀寫 ----------------
+    match /fa_usage/{uid}/logs/{logId} {
+      allow read, delete: if faSignedTeacher() && request.auth.uid == uid;
+      allow create, update: if faSignedTeacher() && request.auth.uid == uid
+        && request.resource.data.ownerUid == uid;
+    }
   }
 }
