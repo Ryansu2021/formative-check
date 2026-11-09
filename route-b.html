@@ -3797,7 +3797,8 @@ async function tplMisTable(u) {
 }
 async function renderTplPane() {
   const f = ls.get('fa-tpl-form', {}); const units = tplUnits();
-  const u = units.includes(f.unit) ? f.unit : units.includes(T.tplUnit) ? T.tplUnit : units[0]; T.tplUnit = u;
+  if (T.tplUrlUnit === undefined) { const w = params.get('unit'); T.tplUrlUnit = w && units.includes(w) ? w : null; }   // 網址 ?unit= 有模板就預設選它（v3.7.1）；老師手動換單元後不再套用
+  const u = T.tplUrlUnit || (units.includes(f.unit) ? f.unit : units.includes(T.tplUnit) ? T.tplUnit : units[0]); T.tplUnit = u;
   const key = ls.get('fa-gemini-key', '');
   $('tp-gen').innerHTML = `<div class="gen-form card scroll">
       ${genModeSw()}
@@ -3819,7 +3820,7 @@ async function renderTplPane() {
         <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
     </div>
     <div class="col" style="flex:1;min-height:0" id="g-result"><div class="card muted" style="line-height:1.8">出題後，這裡會列出每一組 A、B 卷。每個誘答旁有<b>「學生怎麼算出這個」</b>：<br>・勾「我的學生真的會這樣算」＝老師確認過這個誘答<br>・按「刪掉，換一個」＝這條規則不要，由下一條規則補上（A、B 卷一起換）<br>確認後按「存入題庫」，就能到「題庫與建立場次」開課。</div></div>`;
-  $('m-unit').onchange = e => { T.tplUnit = e.target.value; ls.set('fa-tpl-form', { ...ls.get('fa-tpl-form', {}), unit: T.tplUnit }); renderTplPane().then(bindGenModeSw); };
+  $('m-unit').onchange = e => { T.tplUrlUnit = null; T.tplUnit = e.target.value; ls.set('fa-tpl-form', { ...ls.get('fa-tpl-form', {}), unit: T.tplUnit }); renderTplPane().then(bindGenModeSw); };
   $('m-go').onclick = runTplGen;
   await loadTplMis(u);
   if (T.genBank && T.genBank.gen === 'template') showGenResult();
