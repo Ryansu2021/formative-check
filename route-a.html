@@ -2470,7 +2470,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.5（2026-11-05）';
+const APP_VERSION = 'v3.6（2026-11-09）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -3332,8 +3332,8 @@ function openSummary() {
   const stu = seats.map(seat => { const a = s1.seats[seat], b = s2.seats[seat]; return { seat, a, b, d1: s1.done.has(seat), d2: s2.done.has(seat) }; });
   show('v-sum'); stopLive();
   $('v-sum').innerHTML = `<div class="row" style="justify-content:space-between"><h2 style="font-size:30px">本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2>
-    <div class="row" style="gap:8px"><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv">匯出學生 CSV</button><button class="btn sm" id="u-csv2">匯出作答明細 CSV</button>
-    <button class="btn sm" id="u-print">列印</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
+    <div class="row" style="gap:8px"><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv" title="開啟報表後，印表機選「另存為 PDF」">學生報表 PDF</button><button class="btn sm" id="u-csv2" title="開啟報表後，印表機選「另存為 PDF」">作答明細 PDF</button>
+    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
     <div class="stat-row"><div class="stat"><b>${seats.length}</b><span>參與人數</span></div><div class="stat"><b>${N}</b><span>每場題數</span></div>
       <div class="stat"><b>${pct(avg(s1))}</b><span>第一場平均答對率</span></div><div class="stat"><b>${has2 ? pct(avg(s2)) : '—'}</b><span>第二場（平行題）平均答對率</span></div>
       <div class="stat"><b style="color:var(--zhu)">${need.size}</b><span>${has2 ? '第二場仍有迷思的學生' : '第一場有迷思的學生'}</span></div></div>
@@ -3360,23 +3360,85 @@ function openSummary() {
         <div class="small muted">!＝有「很確定卻答錯」的題目</div>
       </div></div>`;
   $('u-back').onclick = () => openLive(L.code);
-  $('u-print').onclick = () => window.print();
+  // v3.6：匯出改成 PDF——開一頁 A4 報表（完整內容、表頭每頁重複、列不切半），自動叫出列印，目的地選「另存為 PDF」
+  const rate = (st, x) => st ? `${st.ok}/${st.n}` : '—';
+  const misTxt = set => [...set].map(c => `<b>${esc(c)}</b> ${esc(mm[c] ? mm[c].name : '')}`).join('<br>');
+  const respRows = () => { const all = [...setOf(1).map((it, i) => [1, i, it]), ...setOf(2).map((it, i) => [2, i, it])];
+    return [...L.resp].map(r => { const f = all.find(([rr, , it]) => rr === r.round && it.id === r.itemId); if (!f) return null; const [, i, it] = f; const o = it.options.find(x => x.key === r.choice);
+      return { seat: +r.seat, round: r.round, no: i + 1, pair: it.pair || '', stem: it.stem, choice: r.choice, ok: r.choice === it.answer, mis: o && o.mis && r.choice !== it.answer ? o.mis : '', conf: CONF[r.conf] || '', sec: Math.round((r.ms || 0) / 1000) }; })
+      .filter(Boolean).sort((a, b) => a.seat - b.seat || a.round - b.round || a.no - b.no); };
+  const usedMis = codes => codes.filter(c => mm[c]).map(c => `<tr><td><b>${esc(c)}</b></td><td class="l">${esc(mm[c].name)}</td><td class="l">${esc(mm[c].remedy || '')}</td></tr>`).join('');
+  const reportHTML = kind => {
+    const d = new Date(), pad = n => String(n).padStart(2, '0'), day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const name = { stu: '學生報表', detail: '作答明細', sum: '出場摘要' }[kind];
+    const fname = `${s.label}_${s.code}_${name}`.replace(/[\\/:*?"<>|\s]+/g, '');
+    let body = '';
+    if (kind === 'sum') {
+      body = `<div class="stats"><div><b>${seats.length}</b>參與人數</div><div><b>${N}</b>每場題數</div><div><b>${pct(avg(s1))}</b>第一場平均答對率</div><div><b>${has2 ? pct(avg(s2)) : '—'}</b>第二場平均答對率</div><div><b class="zhu">${need.size}</b>${has2 ? '第二場仍有迷思' : '第一場有迷思'}的學生</div></div>
+      <h2>依迷思分組補救</h2>${groups.map(g => `<div class="grp"><h3><span class="code">${esc(g.c)}</span>${esc(g.m.name)}　<small>第一場 ${g.r1.length} 人${has2 ? ` → 第二場 ${g.r2.length} 人` : ''}</small></h3>
+        ${has2 ? `<div>仍有：<b class="zhu">${g.remain.map(x => x + ' 號').join('、') || '—'}</b>${g.fresh.length ? `　第二場新出現：<b class="zhu">${g.fresh.map(x => x + ' 號').join('、')}</b>` : ''}　已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>` : `<div>座號：<b>${g.r1.map(x => x + ' 號').join('、')}</b></div>`}
+        <div class="rem">補救：${esc(g.m.remedy || '')}</div></div>`).join('') || '<p>沒有學生出現迷思選項。</p>'}
+      <h2>各題組</h2><table><thead><tr><th>組</th><th class="l">第一場題目</th><th>第一場答對率</th><th>第二場答對率</th><th>變化</th></tr></thead><tbody>
+      ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const dd = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
+        return `<tr><td>${i + 1}</td><td class="l">${M(p.it.stem)}</td><td>${pct(p.rate)}（${p.n} 人）</td><td>${has2 && q ? `${pct(q.rate)}（${q.n} 人）` : '—'}</td><td>${dd == null ? '—' : (dd > 0 ? '+' : '') + dd}</td></tr>`; }).join('')}</tbody></table>
+      <h2>每位學生</h2>`;
+    }
+    if (kind === 'sum' || kind === 'stu') {
+      body += `<table><thead><tr><th>座號</th><th>第一場<br>答對／作答</th>${has2 ? '<th>第二場<br>答對／作答</th>' : ''}<th class="l">第一場迷思</th>${has2 ? '<th class="l">第二場迷思</th>' : ''}<th>很確定卻答錯<br>（題號）</th></tr></thead><tbody>
+      ${stu.map(x => `<tr><td><b>${x.seat}</b></td><td>${rate(x.a)}</td>${has2 ? `<td>${rate(x.b)}</td>` : ''}<td class="l">${x.a ? misTxt(x.a.mis) : ''}</td>${has2 ? `<td class="l zhu">${x.b ? misTxt(x.b.mis) : ''}</td>` : ''}
+        <td>${[x.a && x.a.sure.length ? `第一場 ${x.a.sure.join('、')}` : '', x.b && x.b.sure.length ? `第二場 ${x.b.sure.join('、')}` : ''].filter(Boolean).join('<br>') || '—'}</td></tr>`).join('')}</tbody></table>`;
+      if (kind === 'stu') body += `<h2>迷思代碼對照</h2><table><thead><tr><th>代碼</th><th class="l">迷思</th><th class="l">補救做法</th></tr></thead><tbody>${usedMis(codes) || '<tr><td colspan="3">沒有學生出現迷思選項。</td></tr>'}</tbody></table>`;
+    }
+    if (kind === 'detail') {
+      const rr = respRows(); const bySeat = {}; rr.forEach(r => (bySeat[r.seat] = bySeat[r.seat] || []).push(r));
+      body = Object.keys(bySeat).sort((a, b) => a - b).map(st => { const rs = bySeat[st]; const ok = r => rs.filter(x => x.round === r && x.ok).length, n = r => rs.filter(x => x.round === r).length;
+        return `<section class="seat"><h3>${st} 號　<small>第一場 ${ok(1)}/${n(1)}${has2 && n(2) ? `　第二場 ${ok(2)}/${n(2)}` : ''}</small></h3>
+        <table><thead><tr>${has2 ? '<th>場次</th>' : ''}<th>題號</th><th class="l stem">題目</th><th>作答</th><th>對錯</th><th class="l mis">迷思</th><th>信心</th><th>秒數</th></tr></thead><tbody>
+        ${rs.map(r => `<tr class="${r.ok ? '' : 'wrong'}">${has2 ? `<td>${r.round === 1 ? '一' : '二'}</td>` : ''}<td>${r.no}</td><td class="l stem">${M(r.stem)}</td><td>${esc(r.choice)}</td><td>${r.ok ? '○' : '<b class="zhu">✕</b>'}</td>
+          <td class="l mis">${r.mis ? `<b>${esc(r.mis)}</b> ${esc(mm[r.mis] ? mm[r.mis].name : '')}` : ''}</td><td>${esc(r.conf)}${r.conf === '很確定' && !r.ok ? '<b class="zhu">！</b>' : ''}</td><td>${r.sec}</td></tr>`).join('')}</tbody></table></section>`; }).join('') || '<p>還沒有作答紀錄。</p>';
+    }
+    const unit = L.bank ? shownT(L.bank.title || '') : '';
+    return { fname, html: `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>${esc(fname)}</title><style>
+@page{size:A4;margin:14mm 12mm 16mm}
+*{box-sizing:border-box}body{margin:0;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#2b2420;font-size:12.5px;line-height:1.5;background:#fff}
+.bar{position:sticky;top:0;background:#f4ecd9;border-bottom:1px solid #d8c9a8;padding:10px 16px;display:flex;gap:12px;align-items:center;font-size:14px}
+.bar button{font:inherit;font-weight:700;padding:6px 16px;border:2px solid #2b2420;border-radius:8px;background:#4f8a78;color:#fff;cursor:pointer}
+main{max-width:186mm;margin:0 auto;padding:12px 0 24px}
+header.h{border-bottom:2.5px solid #2b2420;padding-bottom:6px;margin-bottom:10px}
+header.h h1{font-family:'Noto Serif TC','Songti TC','PMingLiU',serif;font-size:21px;margin:0}
+header.h div{color:#6b5d50;font-size:12.5px;margin-top:2px}
+h2{font-family:'Noto Serif TC','Songti TC','PMingLiU',serif;font-size:16px;margin:14px 0 6px;break-after:avoid}
+h3{font-size:14px;margin:0 0 4px;break-after:avoid}h3 small,h3 .code{font-weight:400;color:#6b5d50}h3 .code{font-weight:700;color:#b5432f;margin-right:6px}
+table{width:100%;border-collapse:collapse;margin:4px 0 8px}
+thead{display:table-header-group}tr{break-inside:avoid}
+th,td{border:1px solid #cdbf9f;padding:4px 6px;text-align:center;vertical-align:top}
+th{background:#efe6d2;font-weight:700;white-space:nowrap}.l{text-align:left}
+section.seat td:not(.l){white-space:nowrap}section.seat .stem{width:46%}section.seat .mis{width:24%}
+tr.wrong td{background:#fbf0ec}.zhu{color:#b5432f}
+.stats{display:flex;gap:6px;margin-bottom:6px}.stats div{flex:1;border:1px solid #cdbf9f;border-radius:6px;padding:6px 8px;color:#6b5d50;font-size:11.5px}.stats b{display:block;font-size:20px;color:#2b2420}.stats b.zhu{color:#b5432f}
+.grp{border:1px solid #cdbf9f;border-left:4px solid #b5432f;border-radius:4px;padding:6px 10px;margin-bottom:6px;break-inside:avoid}
+.rem{color:#4f8a78;margin-top:2px}
+section.seat{margin-bottom:10px}section.seat h3{border-bottom:1px solid #cdbf9f}
+.math{font-family:'Times New Roman',serif}
+footer.f{margin-top:14px;color:#8a7c6c;font-size:11px;text-align:right}
+@media print{.bar{display:none}main{max-width:none;padding:0}}
+</style></head><body><div class="bar"><button onclick="print()">列印／存成 PDF</button><span>印表機（目的地）選「另存為 PDF」或「Microsoft Print to PDF」，就會存成 PDF。</span></div>
+<main><header class="h"><h1>課堂形成性評量・${name}</h1><div>${esc(unit)}　班級 ${esc(s.label || '')}　場次 ${esc(s.code || L.code)}　${day}${has2 ? '　（含第二場平行題）' : '　（只做第一場）'}</div></header>
+${body}<footer class="f">蘇恭弘。數學王子。台南市忠孝國中製作　${esc(APP_VERSION)}</footer></main>
+<script>window.addEventListener('load',()=>setTimeout(()=>{try{print()}catch(e){}},400))<\/script></body></html>` };
+  };
+  const openReport = kind => {
+    const { html } = reportHTML(kind); const w = window.open('', '_blank');
+    if (!w) { toast('瀏覽器擋下了新視窗，請允許這個網站開啟彈出式視窗再按一次'); return; }
+    w.document.open(); w.document.write(html); w.document.close(); if (kind !== 'sum') L.exported = true;
+  };
+  window.__FA_report = reportHTML;   // 測試用
+  $('u-print').onclick = () => openReport('sum');
   $('u-prep').onclick = () => { const d = prepClassData(); download(`prep_class_${d.unit || '單元'}_${d.class.replace(/[\\/:*?"<>|\s]+/g, '') || '班級'}_${d.date.replace(/-/g, '')}.json`, JSON.stringify(d, null, 2), 'application/json'); toast('已下載，請放進 115-教科書/_網頁素材暫存/，再跑 mkprep.py'); };
-  $('u-csv').onclick = () => {
-    const head = ['座號', '第一場答對', '第一場作答', '第二場答對', '第二場作答', '第一場迷思', '第二場迷思', '第一場很確定卻答錯題號', '第二場很確定卻答錯題號'];
-    const rows = stu.map(x => [x.seat, x.a ? x.a.ok : '', x.a ? x.a.n : '', x.b ? x.b.ok : '', x.b ? x.b.n : '', x.a ? [...x.a.mis].join(' ') : '', x.b ? [...x.b.mis].join(' ') : '', x.a ? x.a.sure.join(' ') : '', x.b ? x.b.sure.join(' ') : '']);
-    csv(`${s.label}_${s.code}_學生.csv`, [head, ...rows]); L.exported = true;
-  };
-  $('u-csv2').onclick = () => {
-    const head = ['座號', '場次', '題號', '題組', '題目', '選項', '對錯', '迷思代碼', '迷思名稱', '信心', '作答秒數'];
-    const all = [...setOf(1).map((it, i) => [1, i, it]), ...setOf(2).map((it, i) => [2, i, it])];
-    const rows = [...L.resp].map(r => { const f = all.find(([rr, , it]) => rr === r.round && it.id === r.itemId); if (!f) return null; const [, i, it] = f; const o = it.options.find(x => x.key === r.choice);
-      return [r.seat, r.round, i + 1, it.pair || '', it.stem, r.choice, r.choice === it.answer ? '對' : '錯', o && o.mis || '', o && o.mis && mm[o.mis] ? mm[o.mis].name : '', CONF[r.conf] || '', Math.round((r.ms || 0) / 1000)]; })
-      .filter(Boolean).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
-    csv(`${s.label}_${s.code}_作答明細.csv`, [head, ...rows]); L.exported = true;
-  };
+  $('u-csv').onclick = () => openReport('stu');
+  $('u-csv2').onclick = () => openReport('detail');
   $('u-end').onclick = async () => {
-    if (!L.exported && !confirm('還沒有匯出 CSV。結束後資料會從雲端刪除，確定要結束嗎？')) return;
+    if (!L.exported && !confirm('還沒有匯出學生報表或作答明細 PDF。結束後資料會從雲端刪除，確定要結束嗎？')) return;
     if (L.exported && !confirm('結束場次並刪除雲端作答資料？')) return;
     await store.endSession(L.code, true); ls.del('fa-tbank:' + L.code); toast('場次已結束'); openBankView();
   };
