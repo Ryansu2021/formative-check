@@ -67,8 +67,10 @@
    "hint": "先畫表格：現在、x 年後，兩個人各幾歲？",
    "distractors": [
     "WP04",
+    "WP04c",
     "WP01",
-    "WP05"
+    "WP05",
+    "WP05c"
    ],
    "pick": 3,
    "distinctAB": [
@@ -182,7 +184,8 @@
    "distractors": [
     "WP02",
     "WP03",
-    "WP14"
+    "WP14",
+    "WP14c"
    ],
    "pick": 3,
    "distinctAB": [
@@ -252,6 +255,7 @@
    "distractors": [
     "WP06a",
     "WP06b",
+    "WP05",
     "WP14"
    ],
    "pick": 3
@@ -305,8 +309,9 @@
    "hint": "打折後賣的是原價的幾成？誰乘以折數會等於售價？",
    "distractors": [
     "WP07",
-    "WP07b",
-    "WP13"
+    "WP13",
+    "WP13b",
+    "WP08c"
    ],
    "pick": 3,
    "distinctAB": [
@@ -416,7 +421,9 @@
    "distractors": [
     "WP10",
     "WP11",
-    "WP04"
+    "WP11c",
+    "WP04",
+    "WP04c"
    ],
    "pick": 3,
    "distinctAB": [

@@ -1,56 +1,336 @@
 {
  "schema": "fa-tpl/1",
- "unit": {"grade": "八上", "code": "3-1", "name": "利用提公因式與乘法公式做因式分解", "curriculum": ["A-8-4 因式分解：因式的意義（限制在二次多項式的一次因式）；二次多項式的因式分解意義。", "A-8-5 因式分解的方法：提公因式法；利用乘法公式與十字交乘法因式分解。"]},
+ "unit": {
+  "grade": "八上",
+  "code": "3-1",
+  "name": "利用提公因式與乘法公式做因式分解",
+  "curriculum": [
+   "A-8-4 因式分解：因式的意義（限制在二次多項式的一次因式）；二次多項式的因式分解意義。",
+   "A-8-5 因式分解的方法：提公因式法；利用乘法公式與十字交乘法因式分解。"
+  ]
+ },
  "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 src/units/八上3-1.js 的規則 id（迷思代碼沿用 題庫_八上3-1_利用提公因式與乘法公式做因式分解_路線A.json 的 FA01～FA12）。v3.11（2026-11-10）新增",
- "coverage": {"min": 10, "note": "每個迷思至少能產生 10 種不同題目（2026-11-10 老師裁定：比照七上 2-2）", "exclude": {"FA03": "「因式、倍式方向顛倒」是判讀敘述對錯的題目，要人工判讀（現成題庫 P01 是 manual 題），驗算器沒辦法自動驗算"}},
+ "coverage": {
+  "min": 10,
+  "note": "每個迷思至少能產生 10 種不同題目（2026-11-10 老師裁定：比照七上 2-2）",
+  "exclude": {
+   "FA03": "「因式、倍式方向顛倒」是判讀敘述對錯的題目，要人工判讀（現成題庫 P01 是 manual 題），驗算器沒辦法自動驗算"
+  }
+ },
  "tpls": [
-  {"tpl": "FA-gcf", "title": "提出最大公因式", "kind": "faGcf", "bloom": "應用", "lc": "A-8-5", "seg": "八上3-1-S2",
-   "params": {"g": [2, 3, 4, 5, 6], "p": [2, 3, 4, 5, 6, 7], "q": [1, 1, 1, 2, 3, 4, 5]},
+  {
+   "tpl": "FA-gcf",
+   "title": "提出最大公因式",
+   "kind": "faGcf",
+   "bloom": "應用",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S2",
+   "params": {
+    "g": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "p": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "q": [
+     1,
+     1,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
    "when": "p != q && gcd(p, q) == 1",
-   "stem": "把 {g * p}x²−{g * q}x 提出最大公因式做因式分解，結果是哪一個？", "answer": "g + 'x(' + p + 'x−' + q + ')'", "check": {"type": "factorForm", "expr": "{g * p}x^2−{g * q}x"},
+   "stem": "把 {g * p}x²−{g * q}x 提出最大公因式做因式分解，結果是哪一個？",
+   "answer": "g + 'x(' + p + 'x−' + q + ')'",
+   "check": {
+    "type": "factorForm",
+    "expr": "{g * p}x^2−{g * q}x"
+   },
    "okfb": "正確！係數的最大公因數是 {g}、文字都有 x，最大公因式是 {g}x：{g}x({p}x−{q})。",
    "hint": "係數取最大公因數，文字取最低次；提完乘回去檢查。",
-   "distractors": ["FA05", "FA05b", "FA06", "FA04"], "pick": 3},
-  {"tpl": "FA-common", "title": "提出共同的一次因式", "kind": "faCommon", "bloom": "應用", "lc": "A-8-5", "seg": "八上3-1-S2",
-   "params": {"a": [1, 2, 3, 4, 5, 6], "p": [2, 3, 4, 5, 6], "b": [1, 2, 3, 4, 5, 7]},
+   "distractors": [
+    "FA05",
+    "FA05b",
+    "FA06",
+    "FA04",
+    "FA02"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-common",
+   "title": "提出共同的一次因式",
+   "kind": "faCommon",
+   "bloom": "應用",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S2",
+   "params": {
+    "a": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "p": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     7
+    ]
+   },
    "when": "gcd(p, b) == 1 && a != b",
    "stem": "因式分解 (x＋{a}){faP(p, -b)}＋{faP(p, -b)}，結果是哪一個？",
-   "answer": "faP(p, -b) + faP(1, a + 1)", "check": {"type": "factorForm", "expr": "(x+{a})({p}x−{b})+({p}x−{b})"},
+   "answer": "faP(p, -b) + faP(1, a + 1)",
+   "check": {
+    "type": "factorForm",
+    "expr": "(x+{a})({p}x−{b})+({p}x−{b})"
+   },
    "okfb": "正確！第二項寫成 1×{faP(p, -b)}，提出後剩 (x＋{a})＋1＝x＋{a + 1}。",
    "hint": "把第二項寫成 1·{faP(p, -b)} 再提。",
-   "distractors": ["FA04", "FA01", "FA06"], "pick": 3},
-  {"tpl": "FA-neg", "title": "提公因式（b−a 與 a−b）", "kind": "faNeg", "bloom": "應用", "lc": "A-8-5", "seg": "八上3-1-S2",
-   "params": {"c": [2, 3, 4, 5, 6], "a": [2, 3, 4, 5, 6, 7, 8, 9]},
-   "stem": "因式分解 {c}x(x−{a})＋({a}−x)，結果是哪一個？", "answer": "'(x−' + a + ')(' + c + 'x−1)'", "check": {"type": "factorForm", "expr": "{c}x(x−{a})+({a}−x)"},
+   "distractors": [
+    "FA04",
+    "FA01",
+    "FA06"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-neg",
+   "title": "提公因式（b−a 與 a−b）",
+   "kind": "faNeg",
+   "bloom": "應用",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S2",
+   "params": {
+    "c": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   },
+   "stem": "因式分解 {c}x(x−{a})＋({a}−x)，結果是哪一個？",
+   "answer": "'(x−' + a + ')(' + c + 'x−1)'",
+   "check": {
+    "type": "factorForm",
+    "expr": "{c}x(x−{a})+({a}−x)"
+   },
    "okfb": "正確！{a}−x＝−(x−{a})，提出 (x−{a}) 後剩 {c}x−1。",
    "hint": "先把 {a}−x 寫成 −(x−{a})。",
-   "distractors": ["FA07", "FA04", "FA01"], "pick": 3},
-  {"tpl": "FA-sq", "title": "提公因式（含平方項）", "kind": "faSq", "bloom": "分析", "lc": "A-8-5", "seg": "八上3-1-S2",
-   "params": {"a": [2, 3, 4, 5, 6, 7, 8, 9], "k": [1, 2, 3, 4, 5, 6, 7]},
+   "distractors": [
+    "FA07",
+    "FA04",
+    "FA01"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-sq",
+   "title": "提公因式（含平方項）",
+   "kind": "faSq",
+   "bloom": "分析",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S2",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "k": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
    "when": "gcd(a, k) == 1",
-   "stem": "因式分解 ({k}−{a}x)²＋x({a}x−{k})，結果是哪一個？", "answer": "faP(a, -k) + faP(a + 1, -k)", "check": {"type": "factorForm", "expr": "({k}−{a}x)^2+x({a}x−{k})"},
+   "stem": "因式分解 ({k}−{a}x)²＋x({a}x−{k})，結果是哪一個？",
+   "answer": "faP(a, -k) + faP(a + 1, -k)",
+   "check": {
+    "type": "factorForm",
+    "expr": "({k}−{a}x)^2+x({a}x−{k})"
+   },
    "okfb": "正確！({k}−{a}x)²＝({a}x−{k})²，提出 {faP(a, -k)} 後剩 {faP(a, -k)}＋x＝{polyT(a + 1, -k)}。",
    "hint": "({k}−{a}x)² 和 ({a}x−{k})² 相等嗎？代 x＝0 算算看。",
-   "distractors": ["FA08", "FA07", "FA01"], "pick": 3},
-  {"tpl": "FA-diff", "title": "平方差公式", "kind": "faDiff", "bloom": "應用", "lc": "A-8-5", "seg": "八上3-1-S3",
-   "params": {"a": [1, 2, 3, 4, 5], "b": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
+   "distractors": [
+    "FA08",
+    "FA07",
+    "FA01"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-diff",
+   "title": "平方差公式",
+   "kind": "faDiff",
+   "bloom": "應用",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S3",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   },
    "when": "gcd(a, b) == 1",
-   "stem": "因式分解 {a == 1 ? '' : a * a}x²−{b * b}，結果是哪一個？", "answer": "faP(a, b) + faP(a, -b)", "check": {"type": "factorForm", "expr": "{a * a}x^2−{b * b}"},
+   "stem": "因式分解 {a == 1 ? '' : a * a}x²−{b * b}，結果是哪一個？",
+   "answer": "faP(a, b) + faP(a, -b)",
+   "check": {
+    "type": "factorForm",
+    "expr": "{a * a}x^2−{b * b}"
+   },
    "okfb": "正確！{a == 1 ? '' : a * a}x²−{b * b}＝{a == 1 ? 'x²' : '(' + a + 'x)²'}−{b}²＝{faP(a, b)}{faP(a, -b)}。",
    "hint": "套公式前先把兩項都寫成 (  )²，寫出 a、b 各是什麼。",
-   "distractors": ["FA10", "FA10b", "FA11", "FA02"], "pick": 3},
-  {"tpl": "FA-perf", "title": "完全平方公式", "kind": "faPerf", "bloom": "應用", "lc": "A-8-5", "seg": "八上3-1-S3",
-   "params": {"a": [1, 2, 3, 4, 5], "b": [1, 2, 3, 4, 5, 6, 7], "s": [1, -1]},
+   "distractors": [
+    "FA10",
+    "FA10b",
+    "FA11",
+    "FA02"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-perf",
+   "title": "完全平方公式",
+   "kind": "faPerf",
+   "bloom": "應用",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S3",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "s": [
+     1,
+     -1
+    ]
+   },
    "when": "gcd(a, b) == 1",
-   "stem": "因式分解 {faQ2(a * a, 2 * s * a * b, b * b)}，結果是哪一個？", "answer": "faP(a, s * b) + '²'", "check": {"type": "factorForm", "expr": "{a * a}x^2{s > 0 ? '+' : '−'}{2 * a * b}x+{b * b}"},
+   "stem": "因式分解 {faQ2(a * a, 2 * s * a * b, b * b)}，結果是哪一個？",
+   "answer": "faP(a, s * b) + '²'",
+   "check": {
+    "type": "factorForm",
+    "expr": "{a * a}x^2{s > 0 ? '+' : '−'}{2 * a * b}x+{b * b}"
+   },
    "okfb": "正確！首末兩項是 {a == 1 ? 'x²' : '(' + a + 'x)²'} 和 {b}²，中間項 {s > 0 ? '＋' : '−'}{2 * a * b}x＝{s > 0 ? '＋' : '−'}2×{a == 1 ? 'x' : a + 'x'}×{b}，所以是 {faP(a, s * b)}²。",
    "hint": "先把首、末兩項寫成 (  )²，再檢查中間項是不是 ±2ab。",
-   "distractors": ["FA12", "FA11", "FA02", "FA10"], "pick": 3},
-  {"tpl": "FA-sum", "title": "提公因式後的平方和", "kind": "faSum", "bloom": "分析", "lc": "A-8-5", "seg": "八上3-1-S3",
-   "params": {"k": [2, 3, 4, 5, 6, 8, 9], "c": [1, 2, 3, 4, 5, 6]},
-   "stem": "把 {k}x²＋{k * c * c} 提出最大公因式後，再看能不能繼續分解，結果是哪一個？", "answer": "k + '(x²＋' + (c * c) + ')'", "check": {"type": "factorForm", "expr": "{k}x^2+{k * c * c}"},
+   "distractors": [
+    "FA12",
+    "FA12b",
+    "FA11",
+    "FA11c",
+    "FA02"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "FA-sum",
+   "title": "提公因式後的平方和",
+   "kind": "faSum",
+   "bloom": "分析",
+   "lc": "A-8-5",
+   "seg": "八上3-1-S3",
+   "params": {
+    "k": [
+     4,
+     6,
+     8,
+     9,
+     10,
+     12
+    ],
+    "c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "stem": "把 {k}x²＋{k * c * c} 提出最大公因式後，再看能不能繼續分解，結果是哪一個？",
+   "answer": "k + '(x²＋' + (c * c) + ')'",
+   "check": {
+    "type": "factorForm",
+    "expr": "{k}x^2+{k * c * c}"
+   },
    "okfb": "正確！提出 {k} 後是 x²＋{c * c}，這是平方和，不能再分解。",
    "hint": "提出最大公因式後，看括號裡是平方差還是平方和；平方和不能用平方差公式。",
-   "distractors": ["FA09", "FA09b", "FA05", "FA06"], "pick": 3}
+   "distractors": [
+    "FA09",
+    "FA09b",
+    "FA05",
+    "FA06"
+   ],
+   "pick": 3
+  }
  ]
 }
