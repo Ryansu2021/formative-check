@@ -1,0 +1,404 @@
+{
+ "schema": "fa-tpl/1",
+ "unit": {
+  "grade": "八上",
+  "code": "1-3",
+  "name": "多項式的乘除運算",
+  "curriculum": [
+   "A-8-3 多項式的四則運算：直式、橫式的多項式加法與減法；直式的多項式乘法（乘積最高至三次）；被除式為二次之多項式的除法運算。"
+  ]
+ },
+ "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 src/units/八上1-3.js 的規則 id（迷思代碼沿用 題庫_八上1-3_多項式的乘除運算_路線A.json 的 PM01～PM13）；同代碼的誘答一題只出一個（老師 2026-11-10 裁定）。v3.12（2026-11-10）新增",
+ "coverage": {
+  "min": 10,
+  "note": "每個迷思至少能產生 10 種不同題目（2026-11-10 老師裁定：比照七上 2-2）",
+  "exclude": {
+   "PM10": "「整除方向說反」是判讀敘述對錯的題目，要人工判讀（現成題庫 P08 是 manual 題）",
+   "PM11": "「整除就不寫餘式」是判讀敘述對錯的題目，要人工判讀（現成題庫 P08 是 manual 題）"
+  }
+ },
+ "tpls": [
+  {
+   "tpl": "PM-mono",
+   "title": "單項式相乘",
+   "kind": "pmMono",
+   "bloom": "記憶",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S1",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "b": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "s": [
+     -1
+    ]
+   },
+   "when": "a != b",
+   "distinctAB": [
+    "a"
+   ],
+   "stem": "({s < 0 ? '−' : ''}{a}x)·({b}x)²＝？",
+   "answer": "pmMono(s * a * b * b, 3)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "({s * a}x)({b}x)^2"
+   },
+   "okfb": "正確！({b}x)²＝{b * b}x²；係數 {sgn(s * a)}×{b * b}＝{sgn(s * a * b * b)}，x·x²＝x³。",
+   "hint": "({b}x)² 先寫成 ({b}x)({b}x)；係數放一起、x 放一起。",
+   "distractors": [
+    "PM02",
+    "PM03",
+    "PM03c",
+    "PM13"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-mul",
+   "title": "多項式乘法（缺項）",
+   "kind": "pmMul",
+   "bloom": "應用",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S1",
+   "params": {
+    "a": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "c": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "d": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "when": "a * d != c",
+   "distinctAB": [
+    "c"
+   ],
+   "stem": "用直式計算 ({pmMono(a, 2)}−{c})(x＋{d})，結果是？",
+   "answer": "pmP3(a, a * d, -c, -c * d)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "({a}x^2−{c})(x+{d})"
+   },
+   "okfb": "正確！缺的 x 項補 0x，四項：{pmMono(a, 3)}＋{pmMono(a * d, 2)}−{pmMono(c, 1)}−{c * d}。",
+   "hint": "缺的 x 項先補 0x，每一欄只放同一次的項。",
+   "distractors": [
+    "PM05",
+    "PM01",
+    "PM06",
+    "PM13"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-div",
+   "title": "單項式相除",
+   "kind": "pmDiv",
+   "bloom": "應用",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S2",
+   "params": {
+    "b": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "k": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "s": [
+     -1
+    ]
+   },
+   "when": "b != k",
+   "distinctAB": [
+    "k"
+   ],
+   "stem": "({s < 0 ? '−' : ''}{b * k}x³)÷({b}x)＝？",
+   "answer": "pmMono(s * k, 2)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "({s * b * k}x^3)/({b}x)"
+   },
+   "okfb": "正確！係數除係數：{sgn(s * b * k)}÷{b}＝{sgn(s * k)}；x 除 x：x³÷x＝x²。",
+   "hint": "係數除係數、x 除 x，分開算；算完用乘法驗算。",
+   "distractors": [
+    "PM04a",
+    "PM04b",
+    "PM13",
+    "PM02"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-quot",
+   "title": "直式除法的商式",
+   "kind": "pmQuot",
+   "bloom": "應用",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S2",
+   "params": {
+    "a": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "d": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "e": [
+     -7,
+     -5,
+     -4,
+     -3,
+     -2,
+     -1,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "r": [
+     -5,
+     -3,
+     -2,
+     -1,
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "let": {
+    "B": "e + a * d",
+    "C": "d * e + r"
+   },
+   "when": "B != 0 && C != 0",
+   "distinctAB": [
+    "d"
+   ],
+   "stem": "用直式計算 ({pmP3(0, a, B, C)})÷(x＋{d})，商式是？",
+   "answer": "pmLin(a, e)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "{a}x+({e})"
+   },
+   "okfb": "正確！商 {pmMono(a, 1)}，相減後剩 {pmLin(e, C)}；再商 {sgn(e)}，餘式 {sgn(r)}。商式是 {pmLin(a, e)}。",
+   "hint": "每一步相減前，先把下面那一列每一項變號；餘式次數比除式低才停。",
+   "distractors": [
+    "PM07",
+    "PM08",
+    "PM13"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-rem",
+   "title": "直式除法的餘式（缺項）",
+   "kind": "pmRem",
+   "bloom": "分析",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S2",
+   "params": {
+    "c": [
+     2,
+     3,
+     5,
+     6,
+     7,
+     8,
+     10,
+     11,
+     12,
+     13,
+     15,
+     17,
+     20
+    ],
+    "d": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "when": "d * d != c && d != c",
+   "distinctAB": [
+    "c"
+   ],
+   "stem": "用直式計算 (x²−{c})÷(x−{d})，餘式是？",
+   "answer": "sgn(d * d - c)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "{d * d - c}"
+   },
+   "okfb": "正確！先寫成 x²＋0x−{c}；商 x，剩 {pmLin(d, -c)}；再商 {d}，餘式 −{c}＋{d * d}＝{sgn(d * d - c)}。",
+   "hint": "缺的 x 項先補 0x；餘式的次數要比除式低。",
+   "distractors": [
+    "PM06",
+    "PM08",
+    "PM07"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-frac",
+   "title": "商式有分數係數",
+   "kind": "pmFrac",
+   "bloom": "分析",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S2",
+   "params": {
+    "k": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "when": "b != k",
+   "distinctAB": [
+    "b"
+   ],
+   "stem": "({pmP3(0, 1, b, c)})÷({k}x) 的商式是？",
+   "answer": "pmFx(1, k) + '＋' + frT(b, k)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(1/{k})x+{b}/{k}"
+   },
+   "okfb": "正確！x²÷{k}x＝{pmFx(1, k)}，{b}x÷{k}x＝{frT(b, k)}，餘式 {c}；商式可以有分數係數。",
+   "hint": "商式可以有分數係數；算完用除式×商式＋餘式驗算。",
+   "distractors": [
+    "PM09",
+    "PM04",
+    "PM04b",
+    "PM08"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PM-recon",
+   "title": "由商式、餘式求被除式",
+   "kind": "pmRecon",
+   "bloom": "應用",
+   "lc": "A-8-3",
+   "seg": "八上1-3-S3",
+   "params": {
+    "p": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "q": [
+     -6,
+     -4,
+     -3,
+     -2,
+     -1,
+     1,
+     2,
+     3,
+     5
+    ],
+    "d": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "r": [
+     -5,
+     -4,
+     -3,
+     -2,
+     -1,
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "when": "q - d * p != 0 && q + d * p != 0",
+   "distinctAB": [
+    "d"
+   ],
+   "stem": "多項式 A 除以 x−{d}，商式是 {pmLin(p, q)}，餘式是 {sgn(r)}。A＝？",
+   "answer": "pmP3(0, p, q - d * p, -d * q + r)",
+   "check": {
+    "type": "sameExpr",
+    "expr": "(x−{d})({p}x+({q}))+({r})"
+   },
+   "okfb": "正確！被除式＝除式×商式＋餘式：(x−{d})({pmLin(p, q)})＋({sgn(r)})＝{pmP3(0, p, q - d * p, -d * q + r)}。",
+   "hint": "被除式＝除式×商式＋餘式；可以用 38＝7×5＋3 對照。",
+   "distractors": [
+    "PM12",
+    "PM05",
+    "PM13"
+   ],
+   "pick": 3
+  }
+ ]
+}
