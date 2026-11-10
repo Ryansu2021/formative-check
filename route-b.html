@@ -2542,7 +2542,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.8.2（2026-11-09）';
+const APP_VERSION = 'v3.8.3（2026-11-10）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -2632,6 +2632,7 @@ class LocalStore {
   async simulate(code, list, students, dones, round) { const d = this._get(code); if (!d) return; (students || []).forEach(s => { if (!d.students[s.seat]) d.students[s.seat] = s; }); list.forEach(r => d.responses[`${r.seat}_${r.itemId}_r${r.round}`] = r); (dones || []).forEach(seat => { if (d.students[seat]) d.students[seat]['done' + round] = true; }); this._put(code, d); }
   async resetSeat(code, seat) { const d = this._get(code); if (!d) return; delete d.students[seat]; this._put(code, d); }
   async endSession(code, purge) { const d = this._get(code); if (!d) return; if (purge) { ls.del(this._key(code)); this._emit(); } else { d.session.active = false; this._put(code, d); } }
+  async countResponses(code) { const d = this._get(code); return d ? Object.keys(d.responses || {}).length : 0; }
   async addUsage(rec) { const a = ls.get('fa-usage', []).filter(x => x.code !== rec.code); a.push({ ...rec, ownerUid: this.uid }); ls.set('fa-usage', a); return { saved: 'local' }; }   // 出題紀錄（v3.8）：示範模式存本機，結束場次不會刪
   async listUsage() { return { list: ls.get('fa-usage', []), pending: 0 }; }
 }
@@ -2703,6 +2704,7 @@ class FireStore {
     }
     await F.deleteDoc(this.sref(code));
   }
+  async countResponses(code) { const F = this.F; return (await F.getDocs(F.collection(this.db, COL, code, 'responses'))).size; }
   // 出題紀錄（v3.8）：fa_usage/{uid}/logs/{場次代碼}，和作答資料分開，結束場次不會刪。規則還沒發布時先存這台電腦，之後讀得到雲端就自動補寫
   uref(code) { return this.F.doc(this.db, 'fa_usage', this.uid, 'logs', code); }
   _pendKey() { return 'fa-usage-pending:' + this.uid; }
@@ -3033,16 +3035,32 @@ async function openBankView() {
   if (!T.bankId || !Banks.get(T.bankId)) T.bankId = banks[0] && banks[0].id;
   renderBankView();
   loadUsage();
-  try { const act = (await store.listActive()).filter(x => x.active).sort((a, b) => tsMs(b.createdAt) - tsMs(a.createdAt)); const btn = $('c-resume'), box = $('c-resume-list');
-    box.hidden = true;
-    if (act.length) {
-      btn.hidden = false; btn.textContent = resumeLabel(act.map(a => a.code)); btn.title = act.map(a => a.code).join('、');
-      // 只有一場直接進入；兩場以上列出來選（v3.8.2）
-      box.innerHTML = act.map(a => `<button class="btn sm ghost" data-live="${esc(a.code)}" style="display:block;width:100%;text-align:left;white-space:normal;margin-top:6px"><b>${esc(a.label || '')}</b>　${esc(a.code)}<span class="muted small">　${esc(tsMD(a.createdAt))}${a.bankTitle ? '・' + esc(shownT(a.bankTitle)) : ''}${ls.get('fa-tbank:' + a.code, null) ? '' : '・這台電腦沒有完整題庫'}</span></button>`).join('');
-      box.querySelectorAll('[data-live]').forEach(x => x.onclick = () => openLive(x.dataset.live));
-      btn.onclick = () => { if (act.length === 1) openLive(act[0].code); else box.hidden = !box.hidden; };
-    } else btn.hidden = true;
-  } catch (e) { console.warn(e); }
+  try { await renderResume(false); } catch (e) { console.warn(e); }
+}
+// 進行中的場次：只有一場時直接列出（可刪除）；兩場以上點按鈕展開清單（v3.8.2）。每一場都可以刪除（v3.8.3）
+async function renderResume(keepOpen) {
+  const btn = $('c-resume'), box = $('c-resume-list');
+  const act = (await store.listActive()).filter(x => x.active).sort((a, b) => tsMs(b.createdAt) - tsMs(a.createdAt));
+  if (!act.length) { btn.hidden = true; box.hidden = true; box.innerHTML = ''; return; }
+  btn.hidden = false; btn.textContent = resumeLabel(act.map(a => a.code)); btn.title = act.map(a => a.code).join('、');
+  const other = a => store.mode === 'cloud' && a.ownerUid && a.ownerUid !== store.uid;
+  box.innerHTML = act.map(a => `<div style="display:flex;gap:6px;margin-top:6px;align-items:stretch">
+    <button class="btn sm ghost" data-live="${esc(a.code)}" style="flex:1;min-width:0;text-align:left;white-space:normal"><b>${esc(a.label || '')}</b>　${esc(a.code)}<span class="muted small">　${esc(tsMD(a.createdAt))}${a.bankTitle ? '・' + esc(shownT(a.bankTitle)) : ''}${ls.get('fa-tbank:' + a.code, null) ? '' : '・這台電腦沒有完整題庫'}${other(a) ? '・其他老師（' + esc(a.owner || '') + '）' : ''}</span></button>
+    <button class="btn sm ghost" data-del-live="${esc(a.code)}" style="flex:none;color:var(--zhu);padding:6px 10px" title="刪除這個場次和學生作答">刪除</button></div>`).join('');
+  box.querySelectorAll('[data-live]').forEach(x => x.onclick = () => openLive(x.dataset.live));
+  box.querySelectorAll('[data-del-live]').forEach(x => x.onclick = async () => {
+    const a = act.find(s => s.code === x.dataset.delLive); let n = null;
+    try { n = await store.countResponses(a.code); } catch (e) { console.warn(e); }
+    const msg = `刪除「${a.label || ''}　${a.code}」這個場次？\n` + (other(a) ? `⚠ 這是其他老師（${a.owner || ''}）的場次。\n` : '')
+      + (n === null ? '無法確認有幾筆學生作答。\n' : n ? `裡面有 ${n} 筆學生作答，請先確認報表已經匯出。\n` : '這個場次還沒有學生作答。\n')
+      + '刪除後無法復原；出題紀錄會留著。';
+    if (!confirm(msg)) return;
+    x.disabled = true;
+    try { await store.endSession(a.code, true); ls.del('fa-tbank:' + a.code); toast(`已刪除 ${a.code}`); await renderResume(true); }
+    catch (e) { x.disabled = false; alert('刪除失敗：' + (e.code === 'permission-denied' ? fbWhy(e) : (e.message || e.code))); }
+  });
+  box.hidden = act.length > 1 && !keepOpen;
+  btn.onclick = () => { if (act.length === 1) openLive(act[0].code); else box.hidden = !box.hidden; };
 }
 function renderBankView() {
   renderTabs();
