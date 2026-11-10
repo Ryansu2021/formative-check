@@ -516,13 +516,9 @@
     "LH": "hi == 0 ? 'x' : hi == 1 ? 'y' : 'z'",
     "r0": "z == 1 ? (p + q + r) / gcd(p + q + r, abs(ci - cj) * ch + (ci == cj ? 1 : 0)) : r1",
     "D": "(ci - cj) * r0",
-    "KD": "ci - cj == 1 ? 'r' : (ci - cj) + 'r'",
-    "gw": "gcd(p * q, p * r, q * r)",
-    "wi": "(di == 0 ? p * q : di == 1 ? p * r : q * r) / gw",
-    "wj": "(dj == 0 ? p * q : dj == 1 ? p * r : q * r) / gw",
-    "wh": "(hi == 0 ? p * q : hi == 1 ? p * r : q * r) / gw"
+    "KD": "ci - cj == 1 ? 'r' : (ci - cj) + 'r'"
    },
-   "when": "di != dj && ci > cj && p != q && q != r && p != r && gcd(p, q, r) == 1 && r0 >= 2 && r0 <= 12 && r0 != ch && ch != ci - cj && wi > wj && D % (wi - wj) == 0 && wh * D / (wi - wj) != ch * r0 && wh * D / (wi - wj) <= 99",
+   "when": "di != dj && ci > cj && p != q && q != r && p != r && gcd(p, q, r) == 1 && r0 >= 2 && r0 <= 12 && r0 != ch && ch != ci - cj",
    "stem": "x：y：z＝{p}：{q}：{r}，且 {Li}−{Lj}＝{D}，則 {LH}＝？",
    "answer": "ch * r0",
    "check": {
@@ -536,7 +532,8 @@
     "CR12b",
     "CR01",
     "CR07",
-    "CR03"
+    "CR03",
+    "CR04"
    ],
    "pick": 3
   },
