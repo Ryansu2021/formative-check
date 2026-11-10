@@ -17,14 +17,49 @@
       "kind": "cxPos",
       "bloom": "應用",
       "lc": "A-8-5",
-      "params": { "p": [1, 2, 3, 4, 5, 6, 7, 8], "q": [2, 3, 4, 5, 6, 7, 8, 9, 10, 12], "s": [1, -1] },
+      "seg": "八上3-2-S1",
+      "params": {
+        "p": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "q": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12
+        ],
+        "s": [
+          1,
+          -1
+        ]
+      },
       "when": "p < q && nPairs(p*q) >= 2 && p*q <= 72",
       "stem": "因式分解 {polyS(1, s*(p+q), p*q)}，結果是哪一個？",
       "answer": "fac2(1, s*p, 1, s*q)",
-      "check": { "type": "factorForm", "expr": "{polyR(1, s*(p+q), p*q)}" },
+      "check": {
+        "type": "factorForm",
+        "expr": "{polyR(1, s*(p+q), p*q)}"
+      },
       "okfb": "正確！{sgn(s*p)}×{negP(s*q)}＝{p*q}、{sgn(s*p)}＋{negP(s*q)}＝{sgn(s*(p+q))}，所以 {polyS(1, s*(p+q), p*q)}＝{fac2(1, s*p, 1, s*q)}。",
       "hint": "常數項是正的，兩數同號；拆成兩數相乘後，再檢查兩數的和是不是一次項係數。",
-      "distractors": ["CX03", "CX01", "CX10"],
+      "distractors": [
+        "CX03",
+        "CX01",
+        "CX10"
+      ],
       "pick": 3
     },
     {
@@ -33,14 +68,52 @@
       "kind": "cxNeg",
       "bloom": "應用",
       "lc": "A-8-5",
-      "params": { "p": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15], "q": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15] },
+      "seg": "八上3-2-S1",
+      "params": {
+        "p": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12,
+          15
+        ],
+        "q": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12,
+          15
+        ]
+      },
       "when": "p != q && p*q >= 6 && p*q <= 72",
       "stem": "因式分解 {polyS(1, p-q, -p*q)}，結果是哪一個？",
       "answer": "fac2(1, p, 1, -q)",
-      "check": { "type": "factorForm", "expr": "{polyR(1, p-q, -p*q)}" },
+      "check": {
+        "type": "factorForm",
+        "expr": "{polyR(1, p-q, -p*q)}"
+      },
       "okfb": "正確！{sgn(p)}×{negP(-q)}＝{sgn(-p*q)}、{sgn(p)}＋{negP(-q)}＝{sgn(p-q)}，所以 {polyS(1, p-q, -p*q)}＝{fac2(1, p, 1, -q)}。",
       "hint": "常數項是負的，兩數一正一負；絕對值大的那個，正負號跟一次項係數一樣。",
-      "distractors": ["CX02", "CX03", "CX01", "CX10"],
+      "distractors": [
+        "CX02",
+        "CX03",
+        "CX01",
+        "CX10"
+      ],
       "pick": 3
     },
     {
@@ -49,14 +122,57 @@
       "kind": "cxA",
       "bloom": "應用",
       "lc": "A-8-5",
-      "params": { "A": [2, 3, 5], "p": [-7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 7], "q": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6] },
+      "seg": "八上3-2-S2",
+      "params": {
+        "A": [
+          2,
+          3,
+          5
+        ],
+        "p": [
+          -7,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ],
+        "q": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
       "when": "gcd(A, abs(p)) == 1 && A*q + p != 0 && p != q && abs(p*q) <= 30",
       "stem": "因式分解 {polyS(A, A*q+p, p*q)}，結果是哪一個？",
       "answer": "fac2(A, p, 1, q)",
-      "check": { "type": "factorForm", "expr": "{polyR(A, A*q+p, p*q)}" },
+      "check": {
+        "type": "factorForm",
+        "expr": "{polyR(A, A*q+p, p*q)}"
+      },
       "okfb": "正確！十字圖第一列 {A}x、{sgn(p)}，第二列 x、{sgn(q)}，交叉相乘 {A}x×{negP(q)}＋x×{negP(p)}＝{sgn(A*q+p)}x，橫著讀：{fac2(A, p, 1, q)}。",
       "hint": "十字圖左邊拆二次項 {A}x²＝{A}x×x，右邊拆常數項；交叉相乘的和要等於一次項，寫因式時橫著讀。",
-      "distractors": ["CX11", "CX04", "CX03", "CX10"],
+      "distractors": [
+        "CX11",
+        "CX04",
+        "CX03",
+        "CX10"
+      ],
       "pick": 3
     },
     {
@@ -65,14 +181,56 @@
       "kind": "cxA",
       "bloom": "理解",
       "lc": "A-8-5",
-      "params": { "A": [2, 3, 5], "p": [-7, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 7], "q": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6] },
+      "seg": "八上3-2-S2",
+      "params": {
+        "A": [
+          2,
+          3,
+          5
+        ],
+        "p": [
+          -7,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ],
+        "q": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
       "when": "gcd(A, abs(p)) == 1 && A*q + p != 0 && p != q && abs(p*q) <= 30",
       "stem": "用十字交乘法分解 {polyS(A, A*q+p, p*q)}：十字圖第一列是 {A}x、{sgn(p)}，第二列是 x、{sgn(q)}（交叉相乘 {A}x×{negP(q)}＋x×{negP(p)}＝{sgn(A*q+p)}x）。分解的結果是哪一個？",
       "answer": "fac2(A, p, 1, q)",
-      "check": { "type": "factorForm", "expr": "{polyR(A, A*q+p, p*q)}" },
+      "check": {
+        "type": "factorForm",
+        "expr": "{polyR(A, A*q+p, p*q)}"
+      },
       "okfb": "正確！十字圖要橫著讀：第一列是 ({lin(A, p)})，第二列是 ({lin(1, q)})，所以是 {fac2(A, p, 1, q)}。",
       "hint": "十字圖斜線是用來檢查交叉相乘的和；寫因式時一列一個因式（橫著讀）。",
-      "distractors": ["CX04", "CX11", "CX03"],
+      "distractors": [
+        "CX04",
+        "CX11",
+        "CX03"
+      ],
       "pick": 3
     },
     {
@@ -81,14 +239,59 @@
       "kind": "cxK",
       "bloom": "理解",
       "lc": "A-8-4",
-      "params": { "m": [-9, -8, -7, -6, -5, -4, -3, -2, 2, 3, 4, 5, 6, 7, 8, 9], "q": [-9, -8, -7, -6, -5, -4, -3, -2, 2, 3, 4, 5, 6, 7, 8, 9] },
+      "seg": "八上3-2-S1",
+      "params": {
+        "m": [
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "q": [
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
       "when": "m*q < 0 && m + q != 0 && abs(m*q) <= 60",
       "stem": "若 x²＋kx−{abs(m*q)}＝(x＋a)(x{q > 0 ? '＋' : '−'}{abs(q)})，a 是整數，則 k＝？",
       "answer": "m+q",
-      "check": { "type": "value", "expr": "{negP(m*q)}÷{negP(q)}+{negP(q)}" },
+      "check": {
+        "type": "value",
+        "expr": "{negP(m*q)}÷{negP(q)}+{negP(q)}"
+      },
       "okfb": "正確！a×{negP(q)}＝{sgn(m*q)}，a＝{sgn(m)}；k＝{sgn(m)}＋{negP(q)}＝{sgn(m+q)}。",
       "hint": "(x＋a)(x{q > 0 ? '＋' : '−'}{abs(q)}) 乘開：常數項是 a×{negP(q)}，一次項係數是 a＋{negP(q)}。",
-      "distractors": ["CX02", "CX01", "CX03"],
+      "distractors": [
+        "CX02",
+        "CX01",
+        "CX03"
+      ],
       "pick": 3
     }
   ]

@@ -1,13 +1,282 @@
 {
   "schema": "fa-tpl/1",
-  "unit": {"grade": "七上", "code": "1-4", "name": "指數記法、10 的負次方、科學記號", "curriculum": ["N-7-6 指數的意義", "N-7-8 科學記號"]},
+  "unit": {
+    "grade": "七上",
+    "code": "1-4",
+    "name": "指數記法、10 的負次方、科學記號",
+    "curriculum": [
+      "N-7-6 指數的意義",
+      "N-7-8 科學記號"
+    ]
+  },
   "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 rules.js 的規則 id，pick 是每題用幾條",
   "tpls": [
-    {"tpl": "EX-negOut", "title": "減號後面接次方", "kind": "exSubPow", "bloom": "理解", "lc": "N-7-6", "params": {"c": [1, 2, 3, 4, 5, 6, 7, 8, 9], "a": [2, 3, 4, 5, 6, 7], "n": [2, 4]}, "when": "c != a && pow(a,n) <= 700 && pow(a,n) > c", "stem": "{c}−{a}^{n}＝？", "answer": "c - pow(a,n)", "check": {"type": "value", "expr": "{c}−{a}^{n}"}, "okfb": "正確！先算次方 {a}^{n}＝{pow(a,n)}，再減：{c}−{pow(a,n)}＝{sgn(c - pow(a,n))}。", "hint": "先乘方、再加減；{a}^{n} 前面的減號不在次方裡面。", "distractors": ["EX01", "EX05", "EX02"], "pick": 3},
-    {"tpl": "EX-negIn", "title": "負數的奇數次方", "kind": "exPow", "bloom": "理解", "lc": "N-7-6", "params": {"a": [2, 3, 4, 5], "n": [3, 5], "form": "in"}, "when": "pow(a,n) <= 1000", "stem": "(−{a})^{n}＝？", "answer": "pow(-a,n)", "check": {"type": "value", "expr": "(−{a})^{n}"}, "okfb": "正確！{n} 個 −{a} 相乘，奇數個負數相乘是負的：−{pow(a,n)}。", "hint": "負數的奇數次方是負的，偶數次方是正的。", "distractors": ["EX04", "EX02", "EX02s"], "pick": 3},
-    {"tpl": "EX-01", "title": "0 和 1 的次方", "kind": "ex01", "bloom": "理解", "lc": "N-7-6", "params": {"m": [3, 4, 5, 6, 7, 8, 9], "k": [2, 3, 4, 5, 6]}, "when": "m != k && m != 2", "stem": "1^{m}＋0^{k}＝？", "answer": "1", "check": {"type": "value", "expr": "1^{m}+0^{k}"}, "okfb": "正確！1^{m}＝1、0^{k}＝0，1＋0＝1。", "hint": "1 的任何次方都是 1；0 的正整數次方都是 0。", "distractors": ["EX03a", "EX03b", "EX02"], "pick": 3},
-    {"tpl": "EX-neg10", "title": "10 的負次方", "kind": "exNeg10", "bloom": "理解", "lc": "N-7-6", "params": {"n": [2, 3, 4, 5, 6]}, "stem": "10^-{n}＝？", "answer": "dec(n)", "check": {"type": "value", "expr": "10^-{n}"}, "okfb": "正確！10^-{n}＝1/10^{n}＝{dec(n)}，1 在小數點後第 {n} 位。", "hint": "10 的負 n 次方＝1/10ⁿ，1 在小數點後第 n 位。", "distractors": ["EX06", "EX07a", "EX07b", "EX02"], "pick": 3},
-    {"tpl": "EX-sci", "title": "寫成科學記號", "kind": "exSci", "bloom": "理解", "lc": "N-7-8", "params": {"M": [12, 15, 23, 36, 48, 235, 306, 725, 108, 4125], "k": [4, 5, 6, 7, 8]}, "let": {"d": "len(M) - 1", "N": "sciN(M, len(M) - 1, k)"}, "when": "k > d", "stem": "{N} 用科學記號表示是哪一個？", "answer": "shift(M, d) + '×10^' + k", "check": {"type": "sci", "value": "{N}"}, "okfb": "正確！{N}＝{shift(M,d)}×10^{k}，1≤{shift(M,d)}＜10。", "hint": "a×10ⁿ：a 要在 1 到 10 之間（可以是 1，不能是 10）。", "distractors": ["EX08a", "EX10", "EX08b"], "pick": 3},
-    {"tpl": "EX-cmp", "title": "科學記號比大小", "kind": "exCmp", "bloom": "分析", "lc": "N-7-8", "params": {"a1": [1.2, 1.5, 2.1, 3.4], "m": [4, 5, 6, 7], "c1": [9.8, 8.7, 7.6], "c2": [9.9, 9.5, 6.4], "c3": [7.5, 8.2, 9.1], "e": [3, 4, 5, 6, 7, 8]}, "stem": "下列哪一個數最大？", "answer": "a1 + '×10^' + m", "check": {"type": "extreme", "want": "max"}, "okfb": "正確！先比指數：10^{m} 最大，所以 {a1}×10^{m} 最大。", "hint": "科學記號比大小：先比指數，指數一樣再比係數。", "distractors": ["EX09a", "EX09b", "EX11"], "pick": 3, "distinctAB": ["m"]}
+    {
+      "tpl": "EX-negOut",
+      "title": "減號後面接次方",
+      "kind": "exSubPow",
+      "bloom": "理解",
+      "lc": "N-7-6",
+      "seg": "七上1-4-S1",
+      "params": {
+        "c": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "a": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "n": [
+          2,
+          4
+        ]
+      },
+      "when": "c != a && pow(a,n) <= 700 && pow(a,n) > c",
+      "stem": "{c}−{a}^{n}＝？",
+      "answer": "c - pow(a,n)",
+      "check": {
+        "type": "value",
+        "expr": "{c}−{a}^{n}"
+      },
+      "okfb": "正確！先算次方 {a}^{n}＝{pow(a,n)}，再減：{c}−{pow(a,n)}＝{sgn(c - pow(a,n))}。",
+      "hint": "先乘方、再加減；{a}^{n} 前面的減號不在次方裡面。",
+      "distractors": [
+        "EX01",
+        "EX05",
+        "EX02"
+      ],
+      "pick": 3
+    },
+    {
+      "tpl": "EX-negIn",
+      "title": "負數的奇數次方",
+      "kind": "exPow",
+      "bloom": "理解",
+      "lc": "N-7-6",
+      "seg": "七上1-4-S1",
+      "params": {
+        "a": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "n": [
+          3,
+          5
+        ],
+        "form": "in"
+      },
+      "when": "pow(a,n) <= 1000",
+      "stem": "(−{a})^{n}＝？",
+      "answer": "pow(-a,n)",
+      "check": {
+        "type": "value",
+        "expr": "(−{a})^{n}"
+      },
+      "okfb": "正確！{n} 個 −{a} 相乘，奇數個負數相乘是負的：−{pow(a,n)}。",
+      "hint": "負數的奇數次方是負的，偶數次方是正的。",
+      "distractors": [
+        "EX04",
+        "EX02",
+        "EX02s"
+      ],
+      "pick": 3
+    },
+    {
+      "tpl": "EX-01",
+      "title": "0 和 1 的次方",
+      "kind": "ex01",
+      "bloom": "理解",
+      "lc": "N-7-6",
+      "seg": "七上1-4-S1",
+      "params": {
+        "m": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "k": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "when": "m != k && m != 2",
+      "stem": "1^{m}＋0^{k}＝？",
+      "answer": "1",
+      "check": {
+        "type": "value",
+        "expr": "1^{m}+0^{k}"
+      },
+      "okfb": "正確！1^{m}＝1、0^{k}＝0，1＋0＝1。",
+      "hint": "1 的任何次方都是 1；0 的正整數次方都是 0。",
+      "distractors": [
+        "EX03a",
+        "EX03b",
+        "EX02"
+      ],
+      "pick": 3
+    },
+    {
+      "tpl": "EX-neg10",
+      "title": "10 的負次方",
+      "kind": "exNeg10",
+      "bloom": "理解",
+      "lc": "N-7-6",
+      "seg": "七上1-4-S2",
+      "params": {
+        "n": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "stem": "10^-{n}＝？",
+      "answer": "dec(n)",
+      "check": {
+        "type": "value",
+        "expr": "10^-{n}"
+      },
+      "okfb": "正確！10^-{n}＝1/10^{n}＝{dec(n)}，1 在小數點後第 {n} 位。",
+      "hint": "10 的負 n 次方＝1/10ⁿ，1 在小數點後第 n 位。",
+      "distractors": [
+        "EX06",
+        "EX07a",
+        "EX07b",
+        "EX02"
+      ],
+      "pick": 3
+    },
+    {
+      "tpl": "EX-sci",
+      "title": "寫成科學記號",
+      "kind": "exSci",
+      "bloom": "理解",
+      "lc": "N-7-8",
+      "seg": "七上1-4-S2",
+      "params": {
+        "M": [
+          12,
+          15,
+          23,
+          36,
+          48,
+          235,
+          306,
+          725,
+          108,
+          4125
+        ],
+        "k": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "let": {
+        "d": "len(M) - 1",
+        "N": "sciN(M, len(M) - 1, k)"
+      },
+      "when": "k > d",
+      "stem": "{N} 用科學記號表示是哪一個？",
+      "answer": "shift(M, d) + '×10^' + k",
+      "check": {
+        "type": "sci",
+        "value": "{N}"
+      },
+      "okfb": "正確！{N}＝{shift(M,d)}×10^{k}，1≤{shift(M,d)}＜10。",
+      "hint": "a×10ⁿ：a 要在 1 到 10 之間（可以是 1，不能是 10）。",
+      "distractors": [
+        "EX08a",
+        "EX10",
+        "EX08b"
+      ],
+      "pick": 3
+    },
+    {
+      "tpl": "EX-cmp",
+      "title": "科學記號比大小",
+      "kind": "exCmp",
+      "bloom": "分析",
+      "lc": "N-7-8",
+      "seg": "七上1-4-S3",
+      "params": {
+        "a1": [
+          1.2,
+          1.5,
+          2.1,
+          3.4
+        ],
+        "m": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "c1": [
+          9.8,
+          8.7,
+          7.6
+        ],
+        "c2": [
+          9.9,
+          9.5,
+          6.4
+        ],
+        "c3": [
+          7.5,
+          8.2,
+          9.1
+        ],
+        "e": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "stem": "下列哪一個數最大？",
+      "answer": "a1 + '×10^' + m",
+      "check": {
+        "type": "extreme",
+        "want": "max"
+      },
+      "okfb": "正確！先比指數：10^{m} 最大，所以 {a1}×10^{m} 最大。",
+      "hint": "科學記號比大小：先比指數，指數一樣再比係數。",
+      "distractors": [
+        "EX09a",
+        "EX09b",
+        "EX11"
+      ],
+      "pick": 3,
+      "distinctAB": [
+        "m"
+      ]
+    }
   ]
 }
