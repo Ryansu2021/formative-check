@@ -1,0 +1,417 @@
+{
+ "schema": "fa-tpl/1",
+ "unit": {
+  "grade": "八上",
+  "code": "2-2",
+  "name": "根式的運算",
+  "curriculum": [
+   "N-8-1 二次方根：二次方根的意義；根式的化簡及四則運算"
+  ]
+ },
+ "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 src/units/八上2-2.js 的規則 id（迷思代碼沿用 題庫_八上2-2_根式的運算_路線A.json 的 RO01～RO15，沒有 RO06）；同代碼的誘答一題只出一個（老師 2026-11-10 裁定）。check 一律 radValue form:true。v3.13（2026-11-10）新增",
+ "coverage": {
+  "min": 10,
+  "note": "每個迷思至少能產生 10 種不同題目（2026-11-10 老師裁定）；八上2-2 依第 4 批規劃沒有要排除的迷思"
+ },
+ "tpls": [
+  {
+   "tpl": "RO-simp",
+   "title": "化成最簡根式",
+   "kind": "roSimp",
+   "bloom": "記憶",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S1",
+   "params": {
+    "k": [
+     4,
+     6,
+     8,
+     9,
+     10,
+     12
+    ],
+    "m": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ]
+   },
+   "let": {
+    "N": "k * k * m"
+   },
+   "when": "N <= 600",
+   "distinctAB": [
+    "N"
+   ],
+   "stem": "把 √{N} 化成最簡根式，結果是？",
+   "answer": "radT(k, m)",
+   "check": {
+    "type": "radValue",
+    "expr": "√{N}",
+    "form": true
+   },
+   "okfb": "正確！{N}＝{roFac(N)}，成對的質因數各提出一個：√{N}＝{radT(k, m)}。",
+   "hint": "先把 {N} 寫成標準分解式，圈出能兩兩成對的質因數。",
+   "distractors": [
+    "RO03",
+    "RO11",
+    "RO10"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-mul",
+   "title": "根式的乘法",
+   "kind": "roMul",
+   "bloom": "應用",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S1",
+   "params": {
+    "c": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "d": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "ab": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ]
+   },
+   "let": {
+    "a": "roMulA(ab)",
+    "b": "roMulB(ab)"
+   },
+   "when": "c != d",
+   "stem": "{c}√{a}×{d}√{b} 化成最簡根式，結果是？",
+   "answer": "radS2(c * d, a * b)",
+   "check": {
+    "type": "radValue",
+    "expr": "{c}√{a}×{d}√{b}",
+    "form": true
+   },
+   "okfb": "正確！係數乘係數、根號乘根號：{c}×{d}＝{c * d}、√{a}×√{b}＝√{a * b}，{c * d}√{a * b}＝{radS2(c * d, a * b)}。",
+   "hint": "係數乘係數、根號乘根號，最後再化成最簡根式。",
+   "distractors": [
+    "RO14",
+    "RO03",
+    "RO11"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-ratl",
+   "title": "分母有理化",
+   "kind": "roRatl",
+   "bloom": "應用",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S1",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "s": [
+     2,
+     3
+    ],
+    "c": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ]
+   },
+   "when": "s * s * c <= 63",
+   "stem": "把 {a}/√{s * s * c} 化成最簡根式，結果是？",
+   "answer": "fracR(a, c, s * c)",
+   "check": {
+    "type": "radValue",
+    "expr": "{a}/√{s * s * c}",
+    "form": true
+   },
+   "okfb": "正確！√{s * s * c}＝{s}√{c}，分子、分母同乘 √{c}：{roRatlF(a, s, c)}。",
+   "hint": "先把分母化成最簡根式，再讓分子、分母同乘一個數，使分母不含根號。",
+   "distractors": [
+    "RO13",
+    "RO03",
+    "RO11"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-frac",
+   "title": "根號內是帶分數",
+   "kind": "roFrac",
+   "bloom": "理解",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S1",
+   "params": {
+    "t": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "distinctAB": [
+    "t"
+   ],
+   "stem": "√({roMixT(t)}) 化成最簡分數，結果是？",
+   "answer": "roMixA(t)",
+   "check": {
+    "type": "radValue",
+    "expr": "√({roMixE(t)})",
+    "form": true
+   },
+   "okfb": "正確！先化成假分數：{roMixF(t)}。",
+   "hint": "先把帶分數化成假分數，再用平方驗算你的答案。",
+   "distractors": [
+    "RO09",
+    "RO12",
+    "RO03",
+    "RO03b"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-add",
+   "title": "根式的加法",
+   "kind": "roAdd",
+   "bloom": "應用",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S2",
+   "params": {
+    "s": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "t": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "c": [
+     3,
+     5,
+     7,
+     11
+    ]
+   },
+   "when": "s < t && t * t * c <= 200",
+   "stem": "√{s * s * c}＋√{t * t * c} 化成最簡根式，結果是？",
+   "answer": "radT(s + t, c)",
+   "check": {
+    "type": "radValue",
+    "expr": "√{s * s * c}＋√{t * t * c}",
+    "form": true
+   },
+   "okfb": "正確！先化成最簡根式：{radT(s, c)}＋{radT(t, c)}，是同類方根，合併成 {radT(s + t, c)}。",
+   "hint": "合併之前，先把每一項化成最簡根式。",
+   "distractors": [
+    "RO01",
+    "RO02",
+    "RO04"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-sub",
+   "title": "根式的減法",
+   "kind": "roSub",
+   "bloom": "應用",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S2",
+   "params": {
+    "s": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "t": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "c": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ]
+   },
+   "when": "s > t && s * s * c <= 200",
+   "stem": "√{s * s * c}−√{t * t * c} 化成最簡根式，結果是？",
+   "answer": "radT(s - t, c)",
+   "check": {
+    "type": "radValue",
+    "expr": "√{s * s * c}−√{t * t * c}",
+    "form": true
+   },
+   "okfb": "正確！先化成最簡根式：{radT(s, c)}−{radT(t, c)}，是同類方根，相減得 {radT(s - t, c)}。",
+   "hint": "先把兩項都化成最簡根式，再看是不是同類方根。",
+   "distractors": [
+    "RO08",
+    "RO11",
+    "RO04"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-mix3",
+   "title": "三項根式的化簡",
+   "kind": "roMix3",
+   "bloom": "分析",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S2",
+   "params": {
+    "m": [
+     1,
+     2,
+     3
+    ],
+    "t": [
+     2,
+     3
+    ],
+    "a": [
+     3,
+     5,
+     7
+    ],
+    "n": [
+     2,
+     3,
+     4
+    ],
+    "b": [
+     2,
+     3,
+     5,
+     6,
+     7,
+     10,
+     11
+    ]
+   },
+   "when": "a != b && b != 2 * a",
+   "stem": "{roM3(m, t, a, n, b)} 化簡後，結果是？",
+   "answer": "roM3A(m, t, a, n, b)",
+   "check": {
+    "type": "radValue",
+    "expr": "{roM3(m, t, a, n, b)}",
+    "form": true
+   },
+   "okfb": "正確！√{t * t * a}＝{radT(t, a)}，和 {radT(m, a)} 合併成 {radT(m + t, a)}；√{a} 和 √{b} 不是同類方根，答案是 {roM3A(m, t, a, n, b)}。",
+   "hint": "先化簡每一項，只合併根號內相同的項。",
+   "distractors": [
+    "RO02",
+    "RO04",
+    "RO05"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "RO-sq",
+   "title": "根式的完全平方",
+   "kind": "roSq",
+   "bloom": "分析",
+   "lc": "N-8-1",
+   "seg": "八上2-2-S3",
+   "params": {
+    "i": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17
+    ],
+    "s": [
+     1,
+     -1
+    ]
+   },
+   "let": {
+    "a": "roSqA(i)",
+    "b": "roSqB(i)"
+   },
+   "stem": "(√{a}{roPm(s)}√{b})² 化成最簡根式，結果是？",
+   "answer": "roSqAns(a, b, s)",
+   "check": {
+    "type": "radValue",
+    "expr": "(√{a}{roPm(s)}√{b})^2",
+    "form": true
+   },
+   "okfb": "正確！(√{a}{roPm(s)}√{b})²＝{a}{roPm(s)}2√{a * b}＋{b}＝{roSqAns(a, b, s)}。",
+   "hint": "先判斷要用哪一個乘法公式，標出 a、b 再代入。",
+   "distractors": [
+    "RO07",
+    "RO15",
+    "RO03"
+   ],
+   "pick": 3
+  }
+ ]
+}
