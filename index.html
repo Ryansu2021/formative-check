@@ -226,6 +226,7 @@ footer b{color:var(--ink2)}
 【資料區】
   章節架構照抄「國中數學備課入口」（115-教科書/index.html）的 PORTAL；那邊改了章節，這裡也要同步。
   哪一節有題庫不用手寫：頁面會到線上 banks/<單元>.json 檢查（例：banks/七上2-1.json），有就亮起。
+  哪一節可以模板出題也不用手寫：頁面會到線上 tpl/<單元>.json 檢查，有就在卡片加「🧩 模板出題」連結（2026-11-10 起）。
   making：正在製作題庫的小節（還沒有題庫時顯示「製作中」）。
 =====================================================================
 -->
@@ -233,7 +234,7 @@ footer b{color:var(--ink2)}
 const FA = {
   title: '國中數學課堂形成性評量',
   year: '115',
-  updated: '2026-11-04',
+  updated: '2026-11-10',
   online: 'https://ryansu2021.github.io/formative-check/',
   making: [],
   versions: { kx:'康軒', ny:'南一', hl:'翰林' },
@@ -381,6 +382,7 @@ const NUM = {7:'七',8:'八',9:'九'};
 const LOCAL = location.protocol === 'file:';
 const IC = { open:'<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>' };
 const BANK = {};          // 單元 → 題庫摘要（線上檢查得到）
+const TPL = {};           // 單元 → 有出題模板（線上 tpl/<單元>.json，2026-11-10 起）
 let CHECKED = false;
 
 const semShort = (g, sm) => NUM[g.id] + (sm.id === 'up' ? '上' : '下');
@@ -410,6 +412,7 @@ async function checkBanks(){
   await Promise.all(rows.map(async r => {
     try { const res = await fetch(FA.online + 'banks/' + encodeURIComponent(r.u) + '.json', { cache: 'no-cache' });
       if (res.ok) BANK[r.u] = summarize(await res.json()); } catch (e) {}
+    try { const t = await fetch(FA.online + 'tpl/' + encodeURIComponent(r.u) + '.json', { cache: 'no-cache' }); if (t.ok) TPL[r.u] = true; } catch (e) {}
   }));
   CHECKED = true; route();
 }
@@ -431,11 +434,12 @@ function secCard(r, withCrumb){
   const n = sec.names || {}; const keys = Object.keys(FA.versions).filter(k => n[k]);
   const tip = (keys.length ? keys.map(k => FA.versions[k] + '：' + n[k]).join('\n') : '') + (b && b.top.length ? '\n評量的迷思：' + b.top.join('、') + (b.mis > b.top.length ? ' 等' : '') : '');
   let body = '', acts = '';
+  const tplLink = TPL[u] ? `<a href="${esc(FA.online + 'route-b.html?role=teacher&unit=' + encodeURIComponent(u))}" target="_blank" rel="noopener" title="AI 自助出題頁直接選好這一節：用模板出平行題（不用 AI、不用金鑰），每次數字都不同，程式自動驗算">🧩 模板出題</a>` : '';
   if (b) {
     body = `<div class="fa-info"><b>${b.pairs} 組・${b.mis} 個迷思</b></div>`;
     acts = btn(FA.online + 'route-a.html?role=teacher&unit=' + encodeURIComponent(u), '開啟課堂評量', '#7a6ad8', '開啟教師控台並選好這一節的題庫')
-      + `<div class="lks">${LOCAL ? `<a href="${esc(`../../115-教科書/${u}_三版本教科書比較.html#9`)}" target="_blank" rel="noopener" title="比較頁的「形成性評量」分頁（只在這台電腦上有效）">題組與迷思表</a>` : ''}<a href="${esc(FA.online + 'banks/' + encodeURIComponent(u) + '.json')}" target="_blank" rel="noopener" title="下載這一節的題庫">題庫 JSON</a></div>`;
-  } else acts = `<span class="pb soon">${st === 'mk' ? '題庫製作中' : '題庫尚未建立'}</span>`;
+      + `<div class="lks">${LOCAL ? `<a href="${esc(`../../115-教科書/${u}_三版本教科書比較.html#9`)}" target="_blank" rel="noopener" title="比較頁的「形成性評量」分頁（只在這台電腦上有效）">題組與迷思表</a>` : ''}<a href="${esc(FA.online + 'banks/' + encodeURIComponent(u) + '.json')}" target="_blank" rel="noopener" title="下載這一節的題庫">題庫 JSON</a>${tplLink}</div>`;
+  } else acts = `<span class="pb soon">${st === 'mk' ? '題庫製作中' : '題庫尚未建立'}</span>` + (tplLink ? `<div class="lks">${tplLink}</div>` : '');
   return `<article class="sec ${st === 'ready' ? 'ready' : st === 'mk' ? 'mk' : 'wait'}" data-no="${esc(sec.no)}">
     ${crumb}
     <div class="sh"><span class="sn">${esc(sec.no)}</span><h4 class="st" title="${esc(tip.trim())}">${esc(sec.title)}</h4>${badge}</div>
@@ -566,7 +570,7 @@ $('#q').addEventListener('input', route);
 window.addEventListener('hashchange', () => { if ($('#q').value) $('#q').value = ''; route(); window.scrollTo(0,0); });
 if (!LOCAL) $('#toPrep').remove();
 $('#foot').innerHTML = `<b>${esc(FA.title)}</b>　資料更新：${esc(FA.updated)}　·　蘇恭弘。數學王子。台南市忠孝國中製作<br>
-  題庫狀態即時讀取線上 banks/ 資料夾；「題組與迷思表」連到本機的三版本比較網頁，只在這台電腦上顯示。`;
+  題庫狀態即時讀取線上 banks/ 資料夾，「🧩 模板出題」讀取線上 tpl/ 資料夾；「題組與迷思表」連到本機的三版本比較網頁，只在這台電腦上顯示。`;
 route(); checkBanks();
 </script>
 </body>
