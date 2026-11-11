@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<!-- 學生頁（v3.16）：只有加入、作答、結果；不含錯誤規則引擎、模板、驗算器、Gemini、教師端。由 build.py 從 student.html＋core.js＋verify.js 的顯示段組成 -->
+<!-- 先連線：網頁一打開就和 Firebase 建立連線、預先下載加入要用的 SDK（app、auth、firestore-lite；完整 firestore 等登入後才載，不搶頻寬）。版本要和 core.js 的 FB_V 相同 -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin><link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"><link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-lite.js">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>課堂形成性評量・學生</title>
+<style>
+:root{
+  --paper:#f3ead7; --paper2:#eadfc6; --card:#fbf6ea; --ink:#2a2420; --ink2:#5d5248; --ink3:#8c7f70;
+  --line:#d8c9a8; --zhu:#b5432f; --zhu-l:#f3d9d0; --qing:#4f8a78; --qing-l:#d6e8e0; --huang:#b98a1e; --huang-l:#f3e6c2;
+  --dai:#3c587a; --dai-l:#d9e2ee;
+  --oA:#3c587a; --oB:#b98a1e; --oC:#8b5a3c; --oD:#6d5a8a; --oE:#4a6b4a;
+  --serif:'Noto Serif TC','Songti TC','PMingLiU',serif; --sans:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#d9ccb0;font-family:var(--sans);color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center;
+  background:var(--paper);background-image:radial-gradient(circle at 20% 10%,rgba(255,255,255,.5),transparent 40%),radial-gradient(circle at 90% 90%,rgba(181,67,47,.05),transparent 40%);
+  box-shadow:0 10px 40px rgba(60,40,20,.25);overflow:hidden;display:flex;flex-direction:column}
+header.top{height:64px;flex:0 0 64px;display:flex;align-items:center;gap:18px;padding:0 28px;border-bottom:2px solid var(--line);background:rgba(251,246,234,.7)}
+.brand{font-family:var(--serif);font-weight:900;font-size:26px;letter-spacing:2px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand .seal{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:6px;background:var(--zhu);color:#fff;font-size:17px;letter-spacing:0}
+.route-tag{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;border:1.5px solid var(--ink2);color:var(--ink2);font-family:var(--sans);letter-spacing:0}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;padding:6px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--ink3)}
+.dot.on{background:var(--qing)} .dot.warn{background:var(--huang)} .dot.off{background:var(--zhu)}
+main{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;padding:26px 32px;display:flex;flex-direction:column;gap:18px}
+footer.by{position:absolute;right:18px;bottom:8px;font-size:12px;color:var(--ink3);font-family:var(--serif);pointer-events:none}
+h1,h2,h3{font-family:var(--serif);margin:0}
+.btn{font-family:var(--sans);font-weight:700;font-size:17px;border:2px solid var(--ink);background:var(--card);color:var(--ink);padding:10px 20px;border-radius:10px;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s;white-space:nowrap}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+.btn.zhu{background:var(--zhu);color:#fff;border-color:#7d2a1c;box-shadow:3px 3px 0 #7d2a1c}
+.btn.qing{background:var(--qing);color:#fff;border-color:#2f5b4d;box-shadow:3px 3px 0 #2f5b4d}
+.btn.dai{background:var(--dai);color:#fff;border-color:#243a55;box-shadow:3px 3px 0 #243a55}
+.btn.ghost{box-shadow:none;border-color:var(--line);background:transparent}
+.btn.sm{font-size:14px;padding:6px 12px;border-radius:8px;box-shadow:2px 2px 0 var(--ink)}
+.btn.big{font-size:22px;padding:16px 28px;border-radius:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px}
+.muted{color:var(--ink3)} .small{font-size:14px}
+input[type=text],input[type=number],input[type=password],textarea,select{font-family:var(--sans);font-size:18px;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:#fffdf7;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--dai)}
+label.fl{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:15px;color:var(--ink2)}
+.row{display:flex;gap:14px;align-items:center}
+.col{display:flex;flex-direction:column;gap:12px}
+sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:super}
+.math{font-family:'Times New Roman',var(--serif);letter-spacing:.5px}
+
+/* ---------- 首頁 ---------- */
+#v-home{align-items:center;justify-content:center;gap:30px}
+#v-home h1{font-size:58px;letter-spacing:6px}
+#v-home .sub{font-size:21px;color:var(--ink2);font-family:var(--serif)}
+.home-choice{display:flex;gap:34px;margin-top:10px}
+.home-card{width:420px;height:250px;border:2.5px solid var(--ink);border-radius:20px;background:var(--card);box-shadow:6px 6px 0 var(--ink);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:transform .1s}
+.home-card:hover{transform:translate(-2px,-2px)}
+.home-card .ic{font-size:60px} .home-card b{font-family:var(--serif);font-size:32px} .home-card span{color:var(--ink2);font-size:16px}
+.home-note{max-width:980px;text-align:center;color:var(--ink2);font-size:16px;line-height:1.7}
+
+/* ---------- 學生 ---------- */
+#v-join{align-items:center;justify-content:center}
+.join-box{width:620px;display:flex;flex-direction:column;gap:20px;align-items:stretch}
+.join-box input{font-size:34px;text-align:center;letter-spacing:6px;padding:14px}
+.err{color:var(--zhu);font-weight:700;background:var(--zhu-l);border:1.5px solid var(--zhu);padding:10px 14px;border-radius:10px}
+#v-stu{padding:22px 40px}
+.stu-head{display:flex;align-items:center;gap:16px}
+.stu-head .qno{font-family:var(--serif);font-weight:900;font-size:24px;color:var(--zhu)}
+.round-banner{background:var(--huang-l);border:2px solid var(--huang);color:#6b4f10;font-weight:700;padding:10px 16px;border-radius:12px;font-size:19px}
+.stem{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1.5}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.opt{display:flex;align-items:center;gap:18px;border:2.5px solid var(--line);border-radius:16px;background:var(--card);padding:18px 22px;cursor:pointer;font-size:32px;min-height:96px;transition:all .1s}
+.opt:hover{border-color:var(--ink2)}
+.opt .k{flex:0 0 52px;height:52px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:26px;font-family:var(--sans)}
+.opt.sel{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink);background:#fff}
+.opt.was{outline:3px dashed var(--ink3);outline-offset:3px}
+.opt.right{border-color:var(--qing);background:var(--qing-l)}
+.opt.wrong{border-color:var(--zhu);background:var(--zhu-l)}
+.opt.dim{opacity:.45}
+.conf{display:flex;gap:14px;align-items:center;font-size:20px;font-weight:700}
+.conf button{font-size:20px;padding:10px 18px;border-radius:12px;border:2px solid var(--line);background:var(--card);cursor:pointer;font-family:var(--sans);font-weight:700}
+.conf button.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.stu-msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+.stu-msg .big{font-family:var(--serif);font-size:46px;font-weight:900}
+.fb{font-size:24px;line-height:1.6;padding:16px 20px;border-radius:14px;border:2px solid}
+.fb.ok{background:var(--qing-l);border-color:var(--qing)} .fb.no{background:var(--zhu-l);border-color:var(--zhu)}
+
+/* ---------- 教師：題庫 ---------- */
+.tabs{display:flex;gap:6px;border-bottom:2px solid var(--line)}
+.tab{font-family:var(--serif);font-weight:700;font-size:19px;padding:10px 22px;border:2px solid transparent;border-bottom:none;border-radius:12px 12px 0 0;cursor:pointer;color:var(--ink2);background:transparent;margin-bottom:-2px}
+.tab.on{background:var(--card);border-color:var(--line);color:var(--ink)}
+.tpane{flex:1;display:flex;gap:20px;min-height:0}
+.scroll{overflow:auto;min-height:0}
+.scroll::-webkit-scrollbar{width:10px} .scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px}
+.bank-side{width:360px;flex:0 0 360px;display:flex;flex-direction:column;gap:14px}
+.bank-list{display:flex;flex-direction:column;gap:8px}
+.bank-li{border:2px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;background:var(--card)}
+.bank-li.on{border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.bank-li b{font-family:var(--serif);font-size:16px;display:block}
+.bank-li .meta{font-size:13px;color:var(--ink3);margin-top:3px}
+.rtag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;color:#fff;margin-right:6px;vertical-align:1px}
+.rtag.A{background:var(--dai)} .rtag.B{background:var(--huang)}
+.items{flex:1;display:flex;flex-direction:column;gap:10px;padding-right:6px}
+.item{border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:12px 16px}
+.item-h{display:flex;gap:12px;align-items:center}
+.item-h input[type=checkbox]{width:22px;height:22px;accent-color:var(--zhu)}
+.item-h .st{font-family:var(--serif);font-size:18px;font-weight:700;flex:1}
+.badge{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.pass{background:var(--qing-l);color:#245446;border:1px solid var(--qing)}
+.badge.fail{background:var(--zhu-l);color:#7d2a1c;border:1px solid var(--zhu)}
+.badge.manual{background:var(--huang-l);color:#6b4f10;border:1px solid var(--huang)}
+.badge.bl{background:var(--dai-l);color:var(--dai);border:1px solid var(--dai)}
+.item-o{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 18px;margin:8px 0 0 34px;font-size:15px}
+.item-o div{display:flex;gap:8px;align-items:baseline}
+.item-o .ok{color:#245446;font-weight:700}
+.mis-code{font-size:12px;font-weight:700;color:var(--zhu);border:1px solid var(--zhu);border-radius:5px;padding:0 5px}
+.diag{font-size:12px;color:var(--ink3)}
+.vmsg{margin:6px 0 0 34px;font-size:13.5px;color:#7d2a1c}
+.vmsg.w{color:#6b4f10}
+.create-box{display:flex;flex-direction:column;gap:10px}
+
+/* ---------- 教師：即時儀表板 ---------- */
+#v-live{padding:18px 26px;gap:14px}
+.live-bar{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.code-big{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:6px;color:var(--zhu);background:var(--card);border:2px solid var(--zhu);border-radius:12px;padding:2px 16px;cursor:pointer}
+.phase{font-weight:700;font-size:16px;padding:6px 12px;border-radius:10px;background:var(--paper2)}
+.phase.open{background:var(--qing);color:#fff} .phase.locked{background:var(--huang);color:#fff} .phase.reveal{background:var(--dai);color:#fff}
+.live-grid{flex:1;display:grid;grid-template-columns:1.12fr 1fr;grid-template-rows:auto 1fr;gap:14px;min-height:0}
+.panel{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:0;position:relative}
+.panel h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.panel h3 .n{font-family:var(--sans);font-size:14px;color:var(--ink3);font-weight:500}
+.live-stem{font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.45}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:44px 1fr 64px;gap:10px;align-items:center}
+.bar-row .k{height:40px;border-radius:9px;color:#fff;font-weight:900;font-size:20px;display:grid;place-items:center}
+.bar-track{position:relative;height:46px;background:var(--paper2);border-radius:9px;overflow:hidden}
+.bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:9px;transition:width .4s ease;opacity:.3;border-right:6px solid rgba(0,0,0,.25)}
+.bar-fill.r2{opacity:.42;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 8px,transparent 8px 16px)}
+.bar-txt{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;font-weight:700;color:var(--ink);white-space:nowrap;display:flex;gap:10px;align-items:center}
+.bar-row .cnt{font-size:22px;font-weight:900;text-align:right;font-family:var(--serif)}
+.bar-row.right .bar-track{outline:3px solid var(--qing);outline-offset:1px}
+.bar-ghost{position:absolute;top:0;bottom:0;border-right:3px dashed var(--ink2);transition:left .4s}
+.mis-bars{display:flex;flex-direction:column;gap:8px}
+.mis-row{display:grid;grid-template-columns:1fr 54px;gap:10px;align-items:center;cursor:pointer}
+.mis-row .t{font-size:16px;font-weight:700;margin-bottom:3px}
+.mis-row .t .mis-code{margin-right:6px}
+.mis-track{height:24px;background:var(--paper2);border-radius:6px;overflow:hidden;position:relative}
+.mis-fill{position:absolute;left:0;top:0;bottom:0;background:var(--zhu);transition:width .4s}
+.mis-fill.sure{background:#7d2a1c}
+.mis-row .c{font-family:var(--serif);font-weight:900;font-size:22px;text-align:right}
+.mis-seats{font-size:13px;color:var(--ink2);margin-top:2px}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quad div{border-radius:10px;padding:8px 12px;border:1.5px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
+.quad div b{font-family:var(--serif);font-size:26px}
+.quad .q-ok{background:var(--qing-l)} .quad .q-luck{background:#eef3ef} .quad .q-learn{background:#f7eee6} .quad .q-stuck{background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c}
+.seats{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.seat .nl{position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#bbb}.seat .nl.g{background:#1f9d6b}.seat .nl.o{background:#e39a1c}.seat .nl.r{background:#d64545}.seat .nj{position:absolute;left:3px;top:1px;font-size:9px;font-style:normal;font-weight:500;color:var(--ink3);opacity:.85}
+.seat{height:38px;border-radius:8px;border:2px dashed var(--line);display:grid;place-items:center;font-weight:700;font-size:15px;color:var(--ink3);position:relative}
+.seat.in{border-style:solid;border-color:var(--ink3);background:#fff;color:var(--ink2)}
+.seat.ans{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.seat.ok{background:var(--qing);border-color:var(--qing);color:#fff}
+.seat.no{background:var(--zhu);border-color:var(--zhu);color:#fff}
+.seat.sure::after{content:'';position:absolute;inset:-5px;border:3px solid #7d2a1c;border-radius:11px}
+.seat.flash{animation:fl .6s}
+@keyframes fl{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+.suggest{font-size:15.5px;font-weight:700;padding:8px 12px;border-radius:10px;background:var(--huang-l);border:1.5px solid var(--huang);color:#5c430c}
+.veil{position:absolute;inset:44px 10px 10px;background:repeating-linear-gradient(135deg,var(--paper2) 0 14px,var(--card) 14px 28px);border-radius:10px;display:grid;place-items:center;font-weight:700;color:var(--ink2);font-size:18px;text-align:center}
+.trans{display:flex;gap:8px;flex-wrap:wrap}
+.trans span{font-size:14px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--paper2)}
+.qr-modal{position:absolute;inset:0;background:rgba(42,36,32,.55);display:grid;place-items:center;z-index:50}
+.qr-box{background:var(--card);border-radius:22px;padding:30px 44px;display:flex;gap:40px;align-items:center;border:3px solid var(--ink)}
+.qr-box .c{font-family:var(--serif);font-weight:900;font-size:110px;letter-spacing:14px;color:var(--zhu);line-height:1}
+#qr{background:#fff;padding:12px;border-radius:10px}
+
+/* ---------- 出場摘要 ---------- */
+#v-sum{gap:14px}
+.sum-grid{flex:1;display:grid;grid-template-columns:1fr 1.15fr;gap:16px;min-height:0}
+.stat-row{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
+.stat b{display:block;font-family:var(--serif);font-size:32px} .stat span{font-size:14px;color:var(--ink3)}
+table.t{border-collapse:collapse;width:100%;font-size:15px}
+table.t th,table.t td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:center}
+table.t th{background:var(--paper2);font-weight:700;position:sticky;top:0}
+table.t td.l,table.t th.l{text-align:left}
+.grp{border:1.5px solid var(--line);border-left:6px solid var(--zhu);border-radius:10px;padding:10px 14px;background:#fff}
+.grp h4{margin:0 0 4px;font-size:17px;font-family:var(--serif)}
+.grp .seatsline{font-size:15px;font-weight:700;color:var(--zhu)}
+.grp .rem{font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.55}
+
+/* ---------- 路線 B：AI 生題 / 比較 ---------- */
+.gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
+.gen-form>*{flex-shrink:0}
+.fb-line{color:var(--ink2,#555)}.fb-line .netc{white-space:nowrap;cursor:pointer}.fb-line .netc input{vertical-align:-2px;margin-right:2px}.fb-line a{color:inherit;text-decoration:underline;cursor:pointer}.fb-ok{color:var(--qing)}.fb-bad{color:var(--zhu);font-weight:700}
+.fig{display:flex;justify-content:center;margin:6px 0}.fig svg{max-width:100%;height:auto;max-height:260px}.fig-stu svg{max-height:34vh}.fig-live svg{max-height:38vh}.fig-sm svg{max-height:140px}.fig-sm{display:inline-flex;vertical-align:middle;margin:0 8px}
+.fig svg text{font-family:inherit}
+.gen-form textarea{height:150px;resize:none;font-size:15.5px;line-height:1.5}
+.tr-opts{display:flex;flex-direction:column;gap:6px;margin:8px 0 0 34px;font-size:15px}
+.tr-o{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.tr-o .ok{color:#245446;font-weight:700}
+.tr-o .trace{flex-basis:100%;margin-left:22px;font-size:13.5px;color:var(--ink2,#444);line-height:1.5}
+.tr-o .tr-ok{margin-left:22px}
+.keynote{font-size:13.5px;color:var(--ink2);line-height:1.6;background:var(--paper2);border-radius:10px;padding:10px 12px}
+.spinner{display:inline-block;width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--zhu);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.cmp td{font-size:15.5px}
+.cmp td.better{font-weight:900;color:#245446}
+.toast{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;z-index:80;font-size:17px}
+
+/* ---------- v2：整卷作答 ---------- */
+.pdots{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.pdot{width:42px;height:42px;border-radius:10px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:17px;cursor:pointer;color:var(--ink2)}
+.pdot.ok{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.pdot.warn{background:var(--huang-l);border-color:var(--huang);color:#6b4f10}
+.conf.need button{border-color:var(--huang);background:var(--huang-l);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(185,138,30,.25)}}
+.conf.shake{animation:shk .45s}
+@keyframes shk{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.save-msg{text-align:right;min-height:22px;font-size:15px;color:var(--ink3)}
+.save-msg.need{color:#8a5a00;font-weight:700;font-size:18px}
+.pdot.cur{outline:3px solid var(--zhu);outline-offset:2px}
+.pair{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.25)}
+.pair.on{border-style:solid;border-color:var(--ink3)}
+.pair-h{display:flex;gap:10px;align-items:center;font-size:16px;cursor:pointer}
+.pair-h input{width:22px;height:22px;accent-color:var(--zhu)}
+.used-tag{color:var(--vio);margin-left:auto;text-align:right}
+.settag{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:6px;color:#fff;white-space:nowrap}
+.settag.a{background:var(--dai)} .settag.b{background:var(--huang)}
+.seg-sw{display:flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg-sw button{font-family:var(--sans);font-weight:700;font-size:15px;padding:7px 16px;border:none;background:var(--card);cursor:pointer;color:var(--ink2)}
+.seg-sw button.on{background:var(--ink);color:#fff} .seg-sw button:disabled{opacity:.35;cursor:not-allowed}
+.suggest{max-width:760px;white-space:normal;line-height:1.45}
+.suggest .sg-mis{margin-top:3px}.suggest .sg-q{display:block;font-weight:400;cursor:pointer;margin-left:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none;border-bottom:1px solid rgba(138,82,0,.25)}.suggest .sg-more{display:block;margin-left:1em;font-weight:400;font-size:.88em}.suggest .sg-q:hover{background:rgba(255,255,255,.6)}.suggest .sg-tail{font-weight:400;font-size:.9em;margin-top:3px}
+.irows{display:flex;flex-direction:column;gap:6px;min-height:0}
+.irow{display:grid;grid-template-columns:30px minmax(0,1.1fr) 1fr 128px 70px;gap:10px;align-items:center;padding:6px 8px;border-radius:10px;cursor:pointer;border:1.5px solid transparent}
+.irow:hover{border-color:var(--line);background:#fff}
+.ino{font-family:var(--serif);font-weight:900;font-size:20px;color:var(--zhu);text-align:center}
+.istem{font-family:var(--serif);font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar{display:flex;height:30px;border-radius:7px;overflow:hidden;background:var(--paper2)}
+.sbar .seg{display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700;min-width:0;overflow:hidden;white-space:nowrap;opacity:.85}
+.sbar .seg.right{opacity:1;box-shadow:inset 0 0 0 3px var(--qing),inset 0 0 0 5px #fff}
+.irate{font-family:var(--serif);font-weight:900;font-size:20px;text-align:right;white-space:nowrap}
+.stuck-list{grid-column:1/3;background:#fff;font-weight:500;max-height:92px;overflow:auto;font-size:14.5px;line-height:1.5}
+.imis{font-size:13px;font-weight:700;white-space:nowrap}
+.seat{flex-direction:column;line-height:1.05;overflow:hidden}
+.seat small{font-size:10.5px;font-weight:700;opacity:.9}
+.seat i{position:absolute;left:0;bottom:0;height:4px;background:var(--qing);transition:width .3s}
+.seat.ok i,.seat.no i,.seat.mid i{display:none}
+.seat.mid{background:var(--huang);border-color:var(--huang);color:#fff}
+.mis-ghost{position:absolute;top:-3px;bottom:-3px;border-right:3px dashed var(--ink);transition:left .4s}
+.live-grid .veil{inset:44px 10px 10px}
+.stale{display:flex;align-items:center;gap:14px;font-weight:700;font-size:16px;padding:10px 16px;border-radius:12px;background:var(--zhu-l);border:2px solid var(--zhu);color:#7d2a1c}
+
+/* ============ 備課網頁風格（與三版本教科書比較網頁一致） ============ */
+:root{
+  --paper:#f3f8fb; --paper2:#edf3f8; --card:#fff; --ink:#18324a; --ink2:#4f6679; --ink3:#8aa0b2; --line:#e2ecf3;
+  --zhu:#e2574c; --zhu-l:#fdecea;            /* 錯誤、迷思：紅 */
+  --qing:#12a37f; --qing-l:#e3f6ef;          /* 正確：綠（南一綠） */
+  --huang:#e0901c; --huang-l:#fff3df;        /* 提醒：橘（翰林橘） */
+  --dai:#2f7fd8; --dai-l:#e8f2fd;            /* 主要：藍（康軒藍） */
+  --vio:#7a6ad8; --vio-l:#efecfc;            /* 強調：紫 */
+  --oA:#2f7fd8; --oB:#12a37f; --oC:#e0901c; --oD:#7a6ad8; --oE:#4f6679;
+  --serif:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --sh:0 6px 18px rgba(24,50,74,.06); --sh2:0 2px 8px rgba(24,50,74,.07);
+}
+html,body{background:#e6eef5}
+#stage{background:radial-gradient(1200px 600px at 85% -10%,#dff1ff 0,transparent 60%),radial-gradient(900px 500px at -10% 110%,#e0f7ee 0,transparent 55%),var(--paper);box-shadow:0 10px 40px rgba(24,50,74,.15)}
+h1,h2,h3{font-weight:800;letter-spacing:.01em}
+header.top{background:rgba(243,248,251,.94);border-bottom:2px solid var(--line)}
+.brand{font-weight:800;letter-spacing:.5px}
+.brand .seal{background:var(--vio);border-radius:10px}
+.route-tag{border:2px solid var(--vio);color:var(--vio);background:var(--card)}
+.chip{background:var(--card);border:2px solid var(--line);color:var(--ink2);box-shadow:none}
+footer.by{font-family:var(--sans)}
+/* 按鈕：膠囊、柔和陰影 */
+.btn{border:2px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;box-shadow:var(--sh2);font-weight:700}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(24,50,74,.10);border-color:var(--ink3)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn:disabled{box-shadow:none;transform:none}
+.btn.zhu{background:var(--zhu);border-color:var(--zhu);color:#fff;box-shadow:0 4px 12px rgba(226,87,76,.25)}
+.btn.qing{background:var(--qing);border-color:var(--qing);color:#fff;box-shadow:0 4px 12px rgba(18,163,127,.25)}
+.btn.dai{background:var(--dai);border-color:var(--dai);color:#fff;box-shadow:0 4px 12px rgba(47,127,216,.25)}
+.btn.ghost{background:transparent;box-shadow:none}
+.btn.sm{box-shadow:var(--sh2);border-radius:999px}
+.btn.big{border-radius:999px}
+/* 卡片：白底、圓角 20、上緣色條 */
+.card,.panel{background:var(--card);border:none;border-radius:20px;box-shadow:var(--sh)}
+.panel{border-top:6px solid var(--dai)}
+.live-grid .panel:nth-child(2){border-top-color:var(--qing)} .live-grid .panel:nth-child(3){border-top-color:var(--zhu)}
+.home-card{border:none;border-top:8px solid var(--dai);border-radius:22px;box-shadow:var(--sh)}
+.home-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(24,50,74,.12)}
+#go-tea{border-top-color:var(--vio)}
+.home-card b{font-weight:800}
+#v-home h1{font-weight:900;letter-spacing:4px}
+#v-home .sub{font-family:var(--sans)}
+/* 分頁：膠囊；選取＝深藍實心 */
+.tabs{border-bottom:2px solid var(--line);gap:10px;padding-bottom:8px}
+.tab{border:2px solid var(--vio-l);border-radius:999px;margin-bottom:0;background:var(--card);color:var(--ink2);font-weight:700;box-shadow:var(--sh2);font-size:17px;padding:8px 20px}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg-sw{border:2px solid var(--line);border-radius:999px}
+.seg-sw button{font-weight:700}
+.seg-sw button.on{background:var(--ink)}
+/* 題庫 */
+.bank-li{border:2px solid var(--line);border-radius:16px;background:var(--card)}
+.bank-li.on{border-color:var(--vio);box-shadow:0 0 0 3px var(--vio-l)}
+.bank-li b{font-weight:800}
+.rtag.A{background:var(--dai)} .rtag.B{background:var(--huang)}
+.pair{border:2px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.5)}
+.pair.on{border:2px solid var(--vio-l);background:#fff;box-shadow:var(--sh)}
+.pair-h input,.item-h input[type=checkbox]{accent-color:var(--vio)}
+.item{border:1.5px solid var(--line);border-radius:14px;background:#fbfdff}
+.settag.a{background:var(--dai)} .settag.b{background:var(--huang)}
+.mis-code{color:var(--zhu);border-color:var(--zhu);background:#fff;border-radius:999px;padding:0 7px}
+input[type=text],input[type=number],input[type=password],textarea,select{border:2px solid var(--line);border-radius:12px;background:#fff}
+input:focus,textarea:focus,select:focus{border-color:var(--vio)}
+.keynote{background:var(--vio-l)}
+/* 學生作答 */
+.stem{font-weight:800}
+.opt{border:2px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--sh2)}
+.opt:hover{border-color:var(--ink3)}
+.opt .k{border-radius:12px}
+.opt.sel{border-color:var(--vio);box-shadow:0 0 0 4px var(--vio-l);background:#fff}
+.opt.right{border-color:var(--qing);background:var(--qing-l)}
+.opt.wrong{border-color:var(--zhu);background:var(--zhu-l)}
+.conf button{border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink2)}
+.conf button.sel{background:var(--vio);border-color:var(--vio);color:#fff}
+.conf.need button{border-color:var(--huang);background:var(--huang-l);color:#9a5d00}
+.pdot{border-radius:999px;border:2px solid var(--line);background:var(--card)}
+.pdot.ok{background:var(--ink);border-color:var(--ink)}
+.pdot.warn{background:var(--huang-l);border-color:var(--huang);color:#9a5d00}
+.pdot.cur{outline:3px solid var(--vio)}
+.stu-head .qno{color:var(--vio);font-weight:800}
+.round-banner{background:var(--huang-l);border:2px solid var(--huang);color:#8a5200;border-radius:16px}
+.fb{border-radius:16px}
+.stu-msg .big{font-weight:900}
+/* 儀表板 */
+.code-big{color:var(--vio);border:2px solid var(--vio);background:#fff;border-radius:14px;font-weight:900;font-family:var(--sans)}
+.phase{border-radius:999px;background:var(--paper2);color:var(--ink2)}
+.phase.open{background:var(--qing);color:#fff} .phase.locked{background:var(--huang);color:#fff} .phase.reveal{background:var(--dai);color:#fff}
+.suggest{background:var(--huang-l);border:2px solid #f6d7a3;color:#8a5200;border-radius:14px}
+.irow{border-radius:12px} .irow:hover{background:#f5faff;border-color:var(--line)}
+.ino{color:var(--vio)}
+.sbar{border-radius:999px;background:var(--paper2)}
+.sbar .seg{opacity:.9}
+.bar-track{background:var(--paper2);border-radius:12px} .bar-fill{border-radius:12px}
+.bar-row .k{border-radius:10px}
+.mis-track{background:var(--paper2);border-radius:999px} .mis-fill{background:#f08a80} .mis-fill.sure{background:var(--zhu)}
+.quad div{border-radius:14px;border:2px solid var(--line)}
+.quad .q-ok{background:var(--qing-l);border-color:#bfe8d9} .quad .q-luck{background:#f2faf6} .quad .q-learn{background:#fff8ee} .quad .q-stuck{background:var(--zhu-l);border-color:#f6c4be;color:#b23a30}
+.seat{border-radius:10px;border:2px dashed var(--line)}
+.seat.in{border:2px solid var(--line);background:#fff;color:var(--ink2)}
+.seat.ans{background:var(--ink2);border-color:var(--ink2)}
+.seat.ok{background:var(--qing);border-color:var(--qing)} .seat.mid{background:var(--huang);border-color:var(--huang)} .seat.no{background:var(--zhu);border-color:var(--zhu)}
+.seat.sure::after{border:3px solid #8f2a22;border-radius:13px}
+.seat i{background:var(--vio)}
+.veil{background:repeating-linear-gradient(135deg,var(--paper2) 0 14px,#fff 14px 28px);border-radius:14px}
+.stale{background:var(--zhu-l);border:2px solid #f6c4be;color:#b23a30;border-radius:14px}
+.qr-box{border:none;border-radius:24px;box-shadow:0 20px 50px rgba(24,50,74,.25)}
+.qr-box .c{color:var(--vio);font-family:var(--sans);font-weight:900}
+.qr-modal{background:rgba(24,50,74,.45)}
+/* 摘要 */
+.stat{background:var(--card);border:none;border-radius:18px;box-shadow:var(--sh);border-top:5px solid var(--dai)}
+.stat-row .stat:nth-child(3){border-top-color:var(--qing)} .stat-row .stat:nth-child(4){border-top-color:var(--huang)} .stat-row .stat:nth-child(5){border-top-color:var(--zhu)}
+.stat b{font-weight:900}
+.grp{border:none;border-left:6px solid var(--zhu);border-radius:14px;background:#fff;box-shadow:var(--sh2)}
+table.t th{background:#f5f9fc;color:var(--ink2)}
+table.t th,table.t td{border-bottom:1px solid var(--line)}
+.err{border-radius:12px}
+.toast{background:var(--ink);border-radius:999px}
+.badge.bl{background:var(--dai-l);color:var(--dai);border-color:#c9def6}
+.math{font-family:var(--sans);font-weight:600;letter-spacing:.3px}
+.mis-code{border-radius:7px}
+.create-box input{width:100%;min-width:0}
+.create-box .row>label{min-width:0}
+
+/* 學生頁不載 Google 字型（省下字型下載；iPad 用內建蘋方） */
+body, button, input { font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <header class="top">
+    <div class="brand"><span class="seal">評</span>課堂形成性評量</div>
+    <div class="sp"></div>
+    <span class="chip" id="mode-chip"><span class="dot" id="mode-dot"></span><span id="mode-txt">連線中…</span></span>
+  </header>
+  <main>
+    <!-- 學生：加入 -->
+    <section class="view" id="v-join" hidden>
+      <div class="join-box card">
+        <h2 style="font-size:32px;text-align:center">加入課堂</h2>
+        <label class="fl">課堂代碼<input type="text" id="j-code" maxlength="8" autocomplete="off" placeholder="例如 K7Q2"></label>
+        <label class="fl">座號<input type="number" id="j-seat" min="1" max="60" inputmode="numeric" placeholder="1"></label>
+        <label class="row small muted" id="j-demo-wrap"><input type="checkbox" id="j-demo"> 示範模式（和教師控台開在同一台電腦測試用）</label>
+        <div class="err" id="j-err" hidden></div>
+        <button class="btn zhu big" id="j-go">進入課堂</button>
+      </div>
+    </section>
+    <!-- 學生：作答 -->
+    <section class="view" id="v-stu" hidden></section>
+    <div class="toast" id="toast" hidden></div>
+  </main>
+  <footer class="by">蘇恭弘。數學王子。台南市忠孝國中製作　<span id="app-ver"></span></footer>
+</div>
+<script>
+(function (G) {
+  // @@VIEW-BEGIN（v3.16：從這裡到 @@VIEW-END 是學生頁 student.html 也用的顯示函式，build.py 單獨抽出；這段不能用到上面的函式）
+  // ---------- 題目附圖（v3.1）：fig 是 SVG 字串，只留白名單裡的基本圖形與文字 ----------
+  const SVG_TAGS = new Set(['svg', 'g', 'line', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'path', 'text', 'tspan']);
+  const SVG_ATTR = new Set(['viewBox', 'width', 'height', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry', 'points', 'd', 'fill', 'stroke',
+    'stroke-width', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'fill-opacity', 'opacity', 'font-size', 'font-weight', 'font-style', 'text-anchor',
+    'dominant-baseline', 'transform', 'dx', 'dy', 'xmlns']);
+  const SVG_DROP_CONTENT = /^(script|style|foreignObject|iframe|object|embed|title|desc|metadata)$/i;
+  function safeSVG(src) {
+    const s = String(src || '').trim(); if (!/^<svg[\s>]/i.test(s)) return '';
+    const out = []; let i = 0, skip = 0; const stack = [];
+    while (i < s.length) {
+      if (s[i] !== '<') { const j = s.indexOf('<', i); const t = s.slice(i, j < 0 ? s.length : j); if (!skip && stack.length && /^(text|tspan)$/.test(stack[stack.length - 1])) out.push(t.replace(/&(?!amp;|lt;|gt;|quot;|#\d+;)/g, '&amp;').replace(/>/g, '&gt;')); i = j < 0 ? s.length : j; continue; }
+      if (s.startsWith('<!--', i)) { const j = s.indexOf('-->', i); i = j < 0 ? s.length : j + 3; continue; }
+      const m = /^<\s*(\/?)\s*([a-zA-Z][\w:-]*)([^>]*?)(\/?)\s*>/.exec(s.slice(i));
+      if (!m) { i++; continue; }
+      i += m[0].length; const close = !!m[1], tag = m[2], self = !!m[4];
+      if (SVG_DROP_CONTENT.test(tag)) { if (!close && !self) skip++; else if (close && skip) skip--; continue; }
+      if (skip || !SVG_TAGS.has(tag)) continue;
+      if (close) { if (stack[stack.length - 1] === tag) { stack.pop(); out.push(`</${tag}>`); } continue; }
+      const attrs = []; const re = /([a-zA-Z][\w:-]*)\s*=\s*("([^"]*)"|'([^']*)')/g; let a;
+      while ((a = re.exec(m[3]))) {
+        const k = a[1], v = a[3] !== undefined ? a[3] : a[4];
+        if (!SVG_ATTR.has(k) || /url\s*\(|javascript:|expression\s*\(|[<>]/i.test(v)) continue;
+        if (k === 'xmlns' && v !== 'http://www.w3.org/2000/svg') continue;
+        attrs.push(`${k}="${v.replace(/"/g, '&quot;')}"`);
+      }
+      out.push(`<${tag}${attrs.length ? ' ' + attrs.join(' ') : ''}${self ? '/>' : '>'}`);
+      if (!self) stack.push(tag);
+    }
+    while (stack.length) out.push(`</${stack.pop()}>`);
+    return out.join('');
+  }
+
+  // 把 2^3×3^2 轉成 HTML 上標
+  function mathHTML(text) {
+    const esc = String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    return esc.replace(/\^(\{([^}]*)\}|[-−]?[0-9a-zA-Z□○]+(?:\.[0-9]+)?)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
+  }
+  G.FAVerify = { mathHTML, safeSVG };
+})(window);
+</script>
+<script type="module">
+// ============================================================
+//  共用核心（v3.16）：設定、小工具、資料層（Firebase／示範模式）、學生端
+//  路線 A、B（教師＋學生）與 student.html（只有學生端）都由 build.py 把這份放在最前面；學生端只改這裡
+// ============================================================
+const V = window.FAVerify;
+const ROUTE = window.ROUTE;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD23OUzbSu2Je_ljhuzZHPnF8sKNw8Elow",
+  authDomain: "prime-challenge-9dafb.firebaseapp.com",
+  projectId: "prime-challenge-9dafb",
+  storageBucket: "prime-challenge-9dafb.firebasestorage.app",
+  messagingSenderId: "1046327881501",
+  appId: "1:1046327881501:web:e33a3f1c08334fb796fbf4"
+};
+const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
+const FB_V = '10.12.2';
+const COL = 'fa_sessions';
+const APP_VERSION = 'v3.16（2026-11-11）';
+// ---------- 使用自己的 Firebase（v3.3）----------
+// 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
+// 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
+const FB_DEFAULT = FIREBASE_CONFIG;
+const FB_KEYS = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+const FB_LS = 'fa-fb-config';
+function parseFbConfig(text) {                       // 接受 JSON 或 Firebase 主控台的 const firebaseConfig = {…}（不用 eval）
+  const cfg = {}, errs = [];
+  String(text || '').replace(/["']?(\w+)["']?\s*:\s*["']([^"'\n]+)["']/g, (m, k, v) => { if (FB_KEYS.includes(k) || k === 'measurementId') cfg[k] = v.trim(); return m; });
+  if (!/^AIza[0-9A-Za-z_\-]{30,}$/.test(cfg.apiKey || '')) errs.push('apiKey 格式不對（應該是 AIza 開頭的一長串）');
+  if (!/^[a-z0-9][a-z0-9-]{3,28}[a-z0-9]$/.test(cfg.projectId || '')) errs.push('projectId 格式不對（小寫英文、數字、減號）');
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(cfg.authDomain || '')) errs.push('authDomain 格式不對（例如 你的專案.firebaseapp.com）');
+  if (!/^1:\d+:web:[0-9a-f]+$/.test(cfg.appId || '')) errs.push('appId 格式不對（例如 1:1234567890:web:abc123）');
+  return { ok: !errs.length, cfg, errs };
+}
+const fbPublic = c => Object.fromEntries(FB_KEYS.filter(k => c[k]).map(k => [k, c[k]]));
+const b64u = s => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64u = s => atob(String(s).replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((String(s).length + 3) % 4));
+const fbEncode = c => b64u(JSON.stringify(fbPublic(c)));
+function fbDecode(s) { try { const c = JSON.parse(unb64u(s)); const p = parseFbConfig(JSON.stringify(c)); return p.ok ? fbPublic(p.cfg) : null; } catch (e) { return null; } }
+function activeFbConfig() {
+  const q = new URLSearchParams(location.search);
+  if (q.get('role') === 'student' && q.get('fb')) { const c = fbDecode(q.get('fb')); if (c) return c; }
+  const own = ls.get(FB_LS, null);
+  if (own && parseFbConfig(JSON.stringify(own)).ok) return own;
+  return FB_DEFAULT;
+}
+// ---------- 學校網路相容模式（v3.15.1）----------
+// 學校的網路過濾設備常把 Firestore 的即時串流整段緩衝住（約 30 秒逾時才放行），學生按「開始」後要等很久才看到題目。
+// 預設開：Firestore 改用 long polling（每次回應都是完整的一小段，過濾設備會直接放行）。老師可在登入頁／題庫頁關掉；學生端跟著 QR 網址（lp=0＝關）。
+const NET_LS = 'fa-netcompat';
+function isStudentPage() { const q = new URLSearchParams(location.search); return q.get('role') === 'student' || !!q.get('code'); }
+function netCompatOn() { if (isStudentPage()) return new URLSearchParams(location.search).get('lp') !== '0'; return ls.get(NET_LS, true) !== false; }
+const isDefaultFb = c => (c || activeFbConfig()).projectId === FB_DEFAULT.projectId;
+
+// ---------- 小工具 ----------
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const M = t => `<span class="math">${V.mathHTML(t)}</span>`;
+const OPT_COLOR = k => `var(--o${'ABCDE'.includes(k) ? k : 'E'})`;
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { } }
+};
+const ss = {
+  get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) { } },
+  del(k) { try { sessionStorage.removeItem(k); } catch (e) { } }
+};
+function toast(msg, ms = 2200) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, ms); }
+function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); const h = $('btn-home'); if (h) h.hidden = id === 'v-home'; }
+function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
+function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); $('stage').style.transform = `translate(-50%,-50%) scale(${s})`; }
+addEventListener('resize', fit); fit();
+try { document.getElementById('app-ver').textContent = APP_VERSION; } catch (e) { }
+const rid = () => Math.random().toString(36).slice(2, 10);
+function newCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
+const fmtTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const FIG = (it, cls) => it && it.fig ? `<div class="fig ${cls || ''}">${V.safeSVG(it.fig)}</div>` : '';   // 題目附圖（v3.1）：一律先過白名單
+// 學生端各步驟耗時（v3.16）：毫秒，從開網頁算起（performance.now）；加入時寫進自己的座號文件 net 欄位，教師端儀表板顯示
+const NET = {};
+function netNow(step) {
+  if (step) NET[step] = NET[step] || Math.round(performance.now());
+  return { v: APP_VERSION.split('（')[0], lp: typeof netCompatOn === 'function' && netCompatOn() ? 1 : 0, load: NET.load || 0, sdk: NET.sdk || 0, auth: NET.auth || 0, click: NET.click || 0, join: NET.join || 0, ...(NET.start != null ? { start: NET.start } : {}), at: Date.now() };
+}
+const CONF = { high: '很確定', mid: '有點確定', low: '用猜的' };
+
+// ============================================================
+//  資料層：Firebase（雲端）與 Local（示範模式）實作同一組介面
+// ============================================================
+class LocalStore {
+  constructor() { this.mode = 'demo'; this.uid = ss.get('fa-demo-uid') || rid(); ss.set('fa-demo-uid', this.uid); this.subs = new Set();
+    try { this.bc = new BroadcastChannel('fa-demo'); this.bc.onmessage = () => this._emit(); } catch (e) { this.bc = null; }
+    addEventListener('storage', e => { if (e.key && e.key.startsWith('fa-demo:')) this._emit(); }); }
+  _key(c) { return 'fa-demo:' + c; }
+  _get(c) { return ls.get(this._key(c), null); }
+  _put(c, d) { ls.set(this._key(c), d); try { this.bc && this.bc.postMessage(c); } catch (e) { } this._emit(); }
+  _emit() { this.subs.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+  _watch(fn) { this.subs.add(fn); fn(); return () => this.subs.delete(fn); }
+  async teacherUser() { return { email: '示範模式' }; }
+  async createSession(code, data) { this._put(code, { session: { ...data, code, createdAt: Date.now() }, students: {}, responses: {} }); }
+  async listActive() { const out = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('fa-demo:')) { const d = ls.get(k); if (d && d.session.active) out.push(d.session); } } return out; }
+  watchSession(code, cb, meta) { if (meta) meta({ fromCache: false }); return this._watch(() => { const d = this._get(code); cb(d ? d.session : null, false); }); }
+  async waitWrites() { }
+  async saveNet(code, seat, net) { const d = this._get(code); if (d && d.students[seat]) { d.students[seat].net = net; this._put(code, d); } }
+  resume() { }
+  async updateSession(code, patch) { const d = this._get(code); if (!d) return; Object.assign(d.session, patch, { updAt: Date.now() }); this._put(code, d); }
+  watchResponses(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? Object.values(d.responses) : []); }); }
+  watchStudents(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? Object.values(d.students) : []); }); }
+  async getSession(code) { const d = this._get(code); return d ? d.session : null; }
+  async pollSession(code) { return this.getSession(code); }
+  async join(code, seat) {
+    const d = this._get(code); if (!d) throw new Error('找不到這個課堂代碼（示範模式要和教師控台開在同一台電腦、同一個瀏覽器）。');
+    if (!d.session.active) throw new Error('這堂課已經結束了。');
+    if (seat > (d.session.size || 60)) throw new Error(`座號超出範圍（本班 1～${d.session.size} 號）。`);
+    const st = d.students[seat]; if (st && st.uid !== this.uid && !st.sim) throw new Error(`${seat} 號已經有人登入了，請確認座號。`);
+    this.rejoin = !!st; d.students[seat] = { ...(st || {}), uid: this.uid, seat, joinedAt: (st && st.joinedAt) || Date.now(), net: (st && st.net) || netNow('join') }; this._put(code, d); return d.session;
+  }
+  async submit(code, r) { const d = this._get(code); if (!d || d.session.phase !== 'open' || d.session.round !== r.round || !(d.session.curIds || []).includes(r.itemId)) throw new Error('現在不能作答'); d.responses[`${r.seat}_${r.itemId}_r${r.round}`] = { ...r, uid: this.uid, at: Date.now() }; this._put(code, d); }
+  async getStudent(code, seat) { const d = this._get(code); return d ? d.students[seat] || null : null; }
+  async markDone(code, seat, round) { const d = this._get(code); if (!d || d.session.phase !== 'open') throw new Error('現在不能交卷'); d.students[seat] = { ...(d.students[seat] || { uid: this.uid, seat }), ['done' + round]: true }; this._put(code, d); }
+  async getMine(code, id) { const d = this._get(code); return d ? d.responses[id] || null : null; }
+  async simulate(code, list, students, dones, round) { const d = this._get(code); if (!d) return; (students || []).forEach(s => { if (!d.students[s.seat]) d.students[s.seat] = s; }); list.forEach(r => d.responses[`${r.seat}_${r.itemId}_r${r.round}`] = r); (dones || []).forEach(seat => { if (d.students[seat]) d.students[seat]['done' + round] = true; }); this._put(code, d); }
+  async resetSeat(code, seat) { const d = this._get(code); if (!d) return; delete d.students[seat]; this._put(code, d); }
+  async endSession(code, purge) { const d = this._get(code); if (!d) return; if (purge) { ls.del(this._key(code)); this._emit(); } else { d.session.active = false; this._put(code, d); } }
+  async countResponses(code) { const d = this._get(code); return d ? Object.keys(d.responses || {}).length : 0; }
+  async addUsage(rec) { const a = ls.get('fa-usage', []).filter(x => x.code !== rec.code); a.push({ ...rec, ownerUid: this.uid }); ls.set('fa-usage', a); return { saved: 'local' }; }   // 出題紀錄（v3.8）：示範模式存本機，結束場次不會刪
+  async listUsage() { return { list: ls.get('fa-usage', []), pending: 0 }; }
+}
+
+class FireStore {
+  constructor(cfg) { this.mode = 'cloud'; this.cfg = cfg || null; }
+  // 載入分兩段（v3.16）：initCore＝app＋auth（登入、firestore-lite 只要這段，學生加入走這裡）；init＝再加完整 Firestore（即時更新、離線快取）
+  initCore() {
+    if (!this._core) this._core = (async () => {
+      const [{ initializeApp, getApps }, A] = await Promise.all([
+        import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-app.js`),
+        import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-auth.js`)]);
+      this.A = A; this.cfg = this.cfg || activeFbConfig();
+      let name = isDefaultFb(this.cfg) ? '[DEFAULT]' : 'fa-' + this.cfg.projectId + (this.cfg._test ? '-test' : '');
+      const ex = getApps().find(a => a.name === name);
+      this.app = ex || initializeApp(fbPublic(this.cfg), name); this.auth = A.getAuth(this.app);
+      NET.sdk = NET.sdk || Math.round(performance.now());
+    })();
+    return this._core.catch(e => { this._core = null; throw e; });
+  }
+  async init() {
+    if (this.ready) return;
+    const [, F] = await Promise.all([this.initCore(), import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-firestore.js`)]);
+    if (this.ready) return;
+    this.F = F;
+    this.netCompat = netCompatOn();
+    const lp = this.netCompat ? { experimentalForceLongPolling: true } : { experimentalAutoDetectLongPolling: true };
+    // 學生端開本機快取（v3.16）：離線時作答先存在平板（IndexedDB），連回後 SDK 自動送出；IndexedDB 不能用時 SDK 自動退回記憶體快取
+    let cache = null; if (isStudentPage()) { try { cache = F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }); this.cacheKind = 'persistent'; } catch (e) { cache = null; } }
+    try { this.db = F.initializeFirestore(this.app, cache ? { ...lp, localCache: cache } : lp); }
+    catch (e) { try { this.db = F.getFirestore(this.app); } catch (e2) { throw e; } }   // 同一個 app 已初始化過 Firestore（例：設定頁測試連線後）
+    NET.full = NET.full || Math.round(performance.now());
+    this.ready = true;
+  }
+  get uid() { return this.auth && this.auth.currentUser ? this.auth.currentUser.uid : null; }
+  async teacherUser(interactive) {
+    await this.init(); const A = this.A;
+    await this.auth.authStateReady?.();
+    let u = this.auth.currentUser;
+    if ((!u || u.isAnonymous) && interactive) {
+      try { u = (await A.signInWithPopup(this.auth, new A.GoogleAuthProvider())).user; }
+      catch (e) {
+        if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment', 'auth/cancelled-popup-request'].includes(e.code)) { await A.signInWithRedirect(this.auth, new A.GoogleAuthProvider()); return null; }
+        throw e;
+      }
+    }
+    if (!u || u.isAnonymous) return null;
+    this.isAdmin = ADMIN_EMAILS.map(x => x.toLowerCase()).includes((u.email || '').toLowerCase()) && isDefaultFb(this.cfg);
+    return u;
+  }
+  async signOut() { await this.init(); await this.A.signOut(this.auth); }
+  sref(code) { return this.F.doc(this.db, COL, code); }
+  async createSession(code, data) { const F = this.F; await F.setDoc(this.sref(code), { ...data, code, owner: this.auth.currentUser.email, ownerUid: this.auth.currentUser.uid, createdAt: F.serverTimestamp() }); }
+  async listActive() { const F = this.F; const w = [F.where('active', '==', true)]; if (!this.isAdmin) w.push(F.where('ownerUid', '==', this.uid));   // 規則只准查自己的場次
+    const snap = await F.getDocs(F.query(F.collection(this.db, COL), ...w)); return snap.docs.map(d => d.data()); }
+  watchSession(code, cb, meta) {
+    if (!meta) return this.F.onSnapshot(this.sref(code), s => cb(s.exists() ? s.data() : null), e => console.error(e));
+    // 學生端（v3.16）：連同「是否已和伺服器同步」一起回報（右上角連線燈號）；只有資料變了才呼叫 cb
+    let last; return this.F.onSnapshot(this.sref(code), { includeMetadataChanges: true }, s => {
+      meta(s.metadata); const d = s.exists() ? s.data() : null; const j = JSON.stringify(d);
+      if (j === last) return; last = j; cb(d, s.metadata.fromCache);
+    }, e => { console.error(e); meta({ fromCache: true, error: e }); });
+  }
+  async waitWrites() { await this.init(); await this.F.waitForPendingWrites(this.db); }
+  async saveNet(code, seat, net) { await this.init(); await this.F.updateDoc(this.F.doc(this.db, COL, code, 'students', String(seat)), { net }); }   // 規則（v3.16）：學生只能改自己座號文件的 net
+  resume() { try { if (this.ready) this.F.enableNetwork(this.db); } catch (e) { } }
+  async updateSession(code, patch) { await this.F.updateDoc(this.sref(code), { ...patch, updAt: this.F.serverTimestamp() }); }   // updAt：學生端比新舊（保險讀取和即時更新誰先到都不會倒退）
+  watchResponses(code, cb) { const F = this.F; return F.onSnapshot(F.collection(this.db, COL, code, 'responses'), s => cb(s.docs.map(d => d.data())), e => console.error(e)); }
+  watchStudents(code, cb) { const F = this.F; return F.onSnapshot(F.collection(this.db, COL, code, 'students'), s => cb(s.docs.map(d => d.data())), e => console.error(e)); }
+  async getSession(code) { await this.init(); const s = await this.F.getDoc(this.sref(code)); return s.exists() ? s.data() : null; }
+  // 保險讀取（v3.15.1）：用 firestore-lite（一般的 HTTPS 請求，不走即時串流），串流被學校網路卡住時也讀得到最新場次
+  async pollSession(code) {
+    await this.ensureAnon();
+    const L = await this._lite(); const s = await L.getDoc(L.doc(this.ldb, COL, code)); return s.exists() ? s.data() : null;
+  }
+  async _lite() { await this.initCore(); if (!this.FL) { this.FL = await import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-firestore-lite.js`); this.ldb = this.FL.getFirestore(this.app); } return this.FL; }
+  // 學生匿名登入（v3.15.1）：先等瀏覽器裡記住的登入狀態（重新整理後沿用同一個學生身分，不會變成「座號已有人登入」），沒有才匿名登入；學生頁一打開就先做
+  ensureAnon() {
+    if (!this._anon) this._anon = (async () => { await this.initCore(); await this.auth.authStateReady?.(); if (!this.auth.currentUser) await this.A.signInAnonymously(this.auth); NET.auth = NET.auth || Math.round(performance.now()); })();
+    return this._anon.catch(e => { this._anon = null; throw e; });
+  }
+  // 進入課堂（v3.16）：firestore-lite（一般 HTTPS），讀場次、讀座號、建立座號三件事同時送出（慢網路每來回一次就要好幾秒）；
+  //   場次若在學生輸入座號時已先讀好（QR 網址帶代碼）就直接用。座號已存在時建立會被規則擋下：自己的＝重新加入，別人的＝讀不到 → 提示座號已有人
+  async join(code, seat) {
+    const [, L] = await Promise.all([this.ensureAnon(), this._lite()]);
+    const seatMsg = `${seat} 號已經有人登入了，請確認座號，或請老師重設。`;
+    const r = L.doc(this.ldb, COL, code, 'students', String(seat));
+    const sP = this._pre && this._preCode === code ? this._pre.catch(() => this._readSession(code)) : this._readSession(code); this._pre = null;
+    const [S, snap, w] = await Promise.all([sP, L.getDoc(r).catch(e => e), L.setDoc(r, { uid: this.uid, seat, joinedAt: L.serverTimestamp(), net: netNow('join') }).then(() => true, e => e)]);
+    if (!S) throw new Error('找不到這個課堂代碼，請再確認一次。');
+    if (!S.active) throw new Error('這堂課已經結束了。');
+    if (seat > (S.size || 60)) throw new Error(`座號超出範圍（本班 1～${S.size} 號）。`);
+    if (snap instanceof Error) { if (snap.code === 'permission-denied') throw new Error(seatMsg); throw snap; }
+    if (w !== true) { if (!(snap.exists() && snap.data().uid === this.uid)) { if (w.code === 'permission-denied') throw new Error(seatMsg); throw w; } }
+    this.rejoin = w !== true;
+    return S;
+  }
+  async _readSession(code) { const L = await this._lite(); await this.ensureAnon(); const s = await L.getDoc(L.doc(this.ldb, COL, code)); return s.exists() ? s.data() : null; }
+  // 學生頁一打開就：載入 SDK、匿名登入、先讀場次（QR 網址帶代碼時；順便把連線暖好），都在學生輸入座號時完成；完整 Firestore 等登入後再載，不和加入要用的模組搶頻寬
+  prewarm(code) {
+    this._lite().catch(() => { });
+    this.ensureAnon().then(() => { this.init().catch(() => { }); }, () => { });
+    if (code) { this._preCode = code; this._pre = this._readSession(code); this._pre.catch(() => { }); }
+    return this;
+  }
+  async submit(code, r) { await this.init(); const F = this.F; await F.setDoc(F.doc(this.db, COL, code, 'responses', `${r.seat}_${r.itemId}_r${r.round}`), { ...r, uid: this.uid, at: F.serverTimestamp() }); }
+  // 學生讀自己的舊答案、座號文件：改用 firestore-lite（一般 HTTPS），不走可能被學校網路緩衝的串流（v3.15.1）
+  async getMine(code, id) { try { const L = await this._lite(); const s = await L.getDoc(L.doc(this.ldb, COL, code, 'responses', id)); return s.exists() ? s.data() : null; } catch (e) { return null; } }
+  async getStudent(code, seat) { try { const L = await this._lite(); const s = await L.getDoc(L.doc(this.ldb, COL, code, 'students', String(seat))); return s.exists() ? s.data() : null; } catch (e) { return null; } }
+  async markDone(code, seat, round) { await this.init(); const F = this.F; await F.updateDoc(F.doc(this.db, COL, code, 'students', String(seat)), { ['done' + round]: true }); }
+  async resetSeat(code, seat) { const F = this.F; await F.deleteDoc(F.doc(this.db, COL, code, 'students', String(seat))); }
+  async endSession(code, purge) {
+    const F = this.F;
+    if (!purge) { await F.updateDoc(this.sref(code), { active: false, phase: 'ended' }); return; }
+    for (const sub of ['responses', 'students']) {
+      const snap = await F.getDocs(F.collection(this.db, COL, code, sub));
+      for (let i = 0; i < snap.docs.length; i += 400) { const b = F.writeBatch(this.db); snap.docs.slice(i, i + 400).forEach(d => b.delete(d.ref)); await b.commit(); }
+    }
+    await F.deleteDoc(this.sref(code));
+  }
+  async countResponses(code) { const F = this.F; return (await F.getDocs(F.collection(this.db, COL, code, 'responses'))).size; }
+  // 出題紀錄（v3.8）：fa_usage/{uid}/logs/{場次代碼}，和作答資料分開，結束場次不會刪。規則還沒發布時先存這台電腦，之後讀得到雲端就自動補寫
+  uref(code) { return this.F.doc(this.db, 'fa_usage', this.uid, 'logs', code); }
+  _pendKey() { return 'fa-usage-pending:' + this.uid; }
+  async addUsage(rec) {
+    const r = { ...rec, ownerUid: this.uid };
+    try { await this.F.setDoc(this.uref(rec.code), r); return { saved: 'cloud' }; }
+    catch (e) { const k = this._pendKey(); ls.set(k, [...ls.get(k, []).filter(x => x.code !== rec.code), r]); return { saved: 'pending', why: e.code || e.message }; }
+  }
+  async listUsage() {
+    const F = this.F, k = this._pendKey(), pend = ls.get(k, []); let cloud;
+    try { cloud = (await F.getDocs(F.collection(this.db, 'fa_usage', this.uid, 'logs'))).docs.map(d => d.data()); }
+    catch (e) { return { list: pend, pending: pend.length, denied: true }; }
+    const left = [];
+    for (const r of pend) { try { await F.setDoc(this.uref(r.code), r); cloud.push(r); } catch (e) { left.push(r); } }
+    if (left.length) ls.set(k, left); else ls.del(k);
+    const byCode = new Map([...cloud, ...left].map(r => [r.code, r]));
+    return { list: [...byCode.values()], pending: left.length };
+  }
+}
+
+let store = null;
+const params = new URLSearchParams(location.search);
+
+// ============================================================
+//  學生端（v2：整卷自主作答 → 交卷 → 等待討論 → 第二場平行題）
+// ============================================================
+let S = { code: null, seat: null, session: null, unsub: null, ans: {}, idx: 0, round: 0, done: {}, openedAt: 0, loading: false };
+function openJoin(prefill) {
+  show('v-join');
+  $('j-code').value = (prefill && prefill.code) || params.get('code') || '';
+  $('j-demo').checked = params.get('demo') === '1' || (prefill && prefill.demo) || false;
+  $('j-err').hidden = true;
+  setMode('學生', '');
+  setTimeout(() => ($('j-code').value ? $('j-seat') : $('j-code')).focus(), 50);
+}
+$('j-seat').addEventListener('keydown', e => { if (e.key === 'Enter') $('j-go').click(); });
+$('j-go').onclick = async () => {
+  const code = $('j-code').value.trim().toUpperCase(); const seat = parseInt($('j-seat').value, 10);
+  const err = m => { $('j-err').textContent = m; $('j-err').hidden = false; };
+  if (!code) return err('請輸入課堂代碼。');
+  if (!(seat >= 1 && seat <= 60)) return err('請輸入正確的座號（1～60）。');
+  $('j-go').disabled = true; $('j-go').textContent = '連線中…';
+  try {
+    store = $('j-demo').checked ? new LocalStore() : store && store.mode === 'cloud' && store.prewarmed ? store : new FireStore();
+    NET.click = Math.round(performance.now()); const first = await store.join(code, seat); netNow('join');
+    ss.set('fa-stu', { code, seat, demo: store.mode === 'demo' });
+    startStudent(code, seat, first, store.rejoin);
+  } catch (e) { err(e.message || String(e)); console.error(e); }
+  finally { $('j-go').disabled = false; $('j-go').textContent = '進入課堂'; }
+};
+function stopStudent() { if (S.unsub) S.unsub(); S.unsub = null; clearInterval(S.pollT); S.pollT = null; }
+// 場次新舊（v3.15.1）：老師每次改場次都寫 updAt；即時更新和保險讀取誰先到都用新的，不會倒退回舊畫面
+const updMs = x => { const t = x && x.updAt; return !t ? 0 : t.toMillis ? t.toMillis() : typeof t === 'number' ? t : t.seconds ? t.seconds * 1000 + Math.floor((t.nanoseconds || 0) / 1e6) : 0; };
+function stuApply(sess, from) {
+  const cur = S.session;
+  if (sess && cur && updMs(sess) && updMs(cur) && updMs(sess) < updMs(cur)) return;      // 比手上的舊：不用
+  if (from === 'poll' && cur && sess && JSON.stringify(sess) === JSON.stringify(cur)) return;   // 保險讀取沒有新東西
+  if (sess && sess.round && (!cur || cur.round !== sess.round || cur.phase !== sess.phase)) S.via = from;   // 量測用：這一場的畫面是靠即時更新（snap）還是保險讀取（poll）進來的
+  S.session = sess; onStudentSession();
+}
+// 學生在「請等老師開始」「已交卷等待」「這一場結束」畫面：8 秒沒收到任何場次更新，就另外讀一次（之後每 8 秒一次，收到即時更新就重新計時）
+const POLL_MS = 8000;
+const stuLog = (k, x) => { (S.tl = S.tl || []).push([k, Date.now(), x]); if (S.tl.length > 200) S.tl.shift(); };   // 量測用的時間線（v3.15.1）
+function stuWaiting() { const s = S.session; if (!s || !s.active || s.results || S.loading) return false; return !s.round || s.phase === 'wait' || s.phase === 'closed' || !!S.done[s.round]; }
+async function stuPoll(manual) {
+  if (S.polling || !store || !store.pollSession) return; S.polling = true; S.lastPoll = Date.now(); stuLog('poll');
+  try { const d = await store.pollSession(S.code); S.polls = (S.polls || 0) + 1; stuLog('pollok', d && d.phase); if (d) stuApply(d, 'poll'); else if (manual) toast('找不到這個場次'); }
+  catch (e) { console.warn('保險讀取失敗', e); if (manual) toast('連不上，請確認網路後再按一次'); }
+  finally { S.polling = false; }
+}
+// 作答先存在這台平板的 sessionStorage（v3.15.1）：開始第一／二場時，本機已有紀錄就不去雲端讀舊答案（避免全班同時讀、也避免卡在被緩衝的串流）
+const stuKey = () => `fa-ans:${S.code}:${S.seat}`;
+function stuSaveLocal() { if (S.code) ss.set(stuKey(), { ans: S.ans, done: S.done, has: S.hasLocal }); }
+function stuWatch() {
+  if (store.mode === 'cloud' && !store.ready) { const code = S.code; store.init().then(() => { if (S.code === code) stuWatch(); }, e => { console.warn('即時通道載入失敗', e); }); return; }   // 完整 Firestore 還在下載：等好再監聽（這段時間靠加入時讀到的場次＋保險讀取）
+  if (S.unsub) S.unsub(); S.lastSnap = Date.now(); S.synced = store.mode === 'demo';
+  S.unsub = store.watchSession(S.code, (sess, fromCache) => {
+    if (fromCache && S.session) return;                        // 平板快取裡的舊場次：已有加入時讀到的就不用
+    S.lastSnap = Date.now(); stuLog('snap', sess && sess.phase); stuApply(sess, 'snap');
+  }, m => { const was = S.synced; S.synced = !m.fromCache; if (S.synced) S.everSynced = true; if (S.synced) S.lastSnap = Date.now(); if (was !== S.synced) stuLog(S.synced ? 'sync' : 'unsync'); stuNet(); });
+}
+// 右上角連線燈號（v3.16）：綠＝已連線；橘＝重新連線中（答案先存在平板，連回後自動補送）
+function stuNet() {
+  if (!S.code) return;
+  const pend = S.pend ? S.pend.size : 0, off = navigator.onLine === false || !S.synced;
+  const who = `${S.code}・${S.seat} 號`;
+  if (store && store.mode === 'demo') return setMode(`${who}・示範`, 'on');
+  setMode(off ? `${who}・${S.everSynced ? '重新連線中' : '連線中'}${pend ? `（${pend} 題待送出，連回後自動補送）` : '…'}` : `${who}・已連線${pend ? `（${pend} 題送出中）` : ''}`, off ? 'warn' : 'on');
+}
+// 平板休眠回來、網路恢復（v3.16）：監聽沒在同步就重新監聽，並補讀一次場次
+function stuResume(why) {
+  if (!S.code || !store) return; stuLog('resume', why);
+  if (why === 'online') store.resume();
+  if (!S.synced || (S.hiddenAt && Date.now() - S.hiddenAt > 30000)) stuWatch();
+  stuPoll(false); stuNet();
+}
+addEventListener('online', () => stuResume('online'));
+addEventListener('offline', () => { stuLog('offline'); stuNet(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') S.hiddenAt = Date.now(); else { stuResume('visible'); S.hiddenAt = 0; } });
+// 量測寫進自己的座號文件（v3.16；規則還沒發布時寫不進去，不影響作答）
+function stuNetSave() { if (!store || !store.saveNet || !S.code) return; store.saveNet(S.code, S.seat, netNow()).catch(e => stuLog('netdeny', e.code || e.message)); }
+function stuNudge() { stuWatch(); stuPoll(true); toast('重新讀取中…'); }   // 「還沒看到題目？點這裡」：重新監聽＋立刻讀一次
+function startStudent(code, seat, first, rejoin) {
+  stopStudent();
+  Object.assign(S, { code, seat, ans: {}, idx: 0, round: 0, done: {}, loading: false, session: null, lastPoll: 0, polls: 0, hasLocal: false, restored: {}, pend: new Map(), synced: false });
+  const loc = ss.get(stuKey()); if (loc) Object.assign(S, { ans: loc.ans || {}, done: loc.done || {}, hasLocal: !!loc.has });
+  show('v-stu');
+  if (first) { S.session = first; onStudentSession(); }   // 加入時已讀到的場次先顯示，不等即時通道
+  stuWatch(); stuNet();
+  if (rejoin) stuNetSave();                                   // 座號文件已存在（重新整理、重新加入）：量測另外寫入；新加入的已在建立座號時一起寫
+  S.pollT = setInterval(() => { if (stuWaiting() && Date.now() - Math.max(S.lastSnap || 0, S.lastPoll || 0) >= POLL_MS) stuPoll(false); }, 1000);
+}
+const roundItems = (s, r) => (s && s.sets && s.sets[r === 2 ? 'B' : 'A']) || [];
+const rk = (itemId, r) => `${S.seat}_${itemId}_r${r}`;
+async function onStudentSession() {
+  const s = S.session;
+  if (s && !s.round && !S.hasLocal) { S.hasLocal = true; stuSaveLocal(); }   // 開始前就在場：之後兩場都不必讀雲端舊答案
+  if (s && s.round && s.round !== S.round && !S.loading) {     // 進入新的一場
+    if (s.round === 1 && s.phase === 'open' && NET.start == null && S.round === 0 && s.openedAt) { const o = updMs({ updAt: s.openedAt }); if (o) { NET.start = Math.max(0, Date.now() - o); stuNetSave(); } }   // 老師按開始→平板收到（毫秒；含平板與伺服器的時鐘差）
+    S.round = s.round; S.idx = 0;
+    const items = roundItems(s, s.round);
+    if (!S.hasLocal && !S.restored[s.round]) {                 // 本機沒有紀錄（中途才加入、換平板、清掉資料）才去雲端讀自己已作答的紀錄
+      S.loading = true; renderStudent();
+      try {
+        const mine = await Promise.all(items.map(it => store.getMine(S.code, rk(it.id, s.round))));
+        mine.forEach((m, i) => { if (m) S.ans[rk(items[i].id, s.round)] = { choice: m.choice, conf: m.conf, saved: true }; });
+        const me = await store.getStudent(S.code, S.seat);
+        if (me) S.done = { 1: !!me.done1, 2: !!me.done2 };
+      } catch (e) { console.warn('讀取舊答案失敗', e); }
+      S.restored[s.round] = true; stuSaveLocal();
+    }
+    const firstEmpty = items.findIndex(it => !(S.ans[rk(it.id, s.round)] || {}).saved);
+    S.idx = firstEmpty < 0 ? 0 : firstEmpty;
+    S.openedAt = Date.now(); S.loading = false;
+  }
+  renderStudent();
+}
+function stuMsg(big, small, nudge) {
+  $('v-stu').innerHTML = `<div class="stu-msg"><div class="big">${big}</div>${small ? `<div class="muted" style="font-size:22px;line-height:1.7">${small}</div>` : ''}${nudge ? `<button class="btn ghost" id="s-nudge" style="margin-top:28px;font-size:20px">${nudge}</button>` : ''}</div>`;
+  if (nudge) $('s-nudge').onclick = stuNudge;
+}
+const NUDGE = '還沒看到題目？點這裡';
+function renderStudent() {
+  const s = S.session;
+  if (!s || !s.active) { stuMsg('課堂已結束', '謝謝你的作答！'); setMode('課堂已結束', 'off'); return; }
+  if (S.loading) { stuMsg('載入中…'); return; }
+  if (s.results) return renderStudentResults();
+  const who = `${esc(s.label || '')}・${S.seat} 號`;
+  if (!s.round || s.phase === 'wait') { stuMsg('請等老師開始', `${who}　畫面會自動更新`, NUDGE); return; }
+  const r = s.round; const name = r === 2 ? '第二場' : '第一場';
+  if (s.phase === 'closed') {
+    stuMsg(r === 1 ? '第一場結束，準備討論' : '第二場結束', r === 1 ? '請把注意力放到老師和同學的討論。' : '謝謝你的作答！等老師說明。', r === 1 ? '老師開始第二場了，還沒看到題目？點這裡' : '');
+    return;
+  }
+  if (S.done[r]) { stuMsg(`已完成${name}`, r === 1 ? '等待老師帶全班討論' : '等待老師說明', r === 1 ? '老師開始第二場了，還沒看到題目？點這裡' : ''); return; }
+  // 作答中
+  const items = roundItems(s, r); const N = items.length;
+  S.idx = Math.max(0, Math.min(N - 1, S.idx));
+  const it = items[S.idx]; const a = S.ans[rk(it.id, r)] || {};
+  const isSaved = y => !!(y && (y.saved || y.local)); const nAns = items.filter(x => isSaved(S.ans[rk(x.id, r)])).length;
+  const dots = items.map((x, i) => { const aa = S.ans[rk(x.id, r)] || {}; return `<button class="pdot ${i === S.idx ? 'cur' : ''} ${isSaved(aa) ? 'ok' : aa.choice ? 'warn' : ''}" data-i="${i}">${i + 1}</button>`; }).join('');
+  $('v-stu').innerHTML = `
+    <div class="stu-head"><span class="qno">${name}・第 ${S.idx + 1} / ${N} 題</span>${r === 2 ? '<span class="chip" style="background:var(--huang-l)">平行題：數字換了，想法一樣</span>' : ''}
+      <div class="pdots">${dots}</div><span class="chip">已答 ${nAns} / ${N}</span></div>
+    <div class="stem">${M(it.stem)}</div>${FIG(it, "fig-stu")}
+    <div class="opts">${it.options.map(o => `<div class="opt ${a.choice === o.key ? 'sel' : ''}" data-k="${o.key}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span><span>${M(o.text)}</span></div>`).join('')}</div>
+    <div class="row" style="justify-content:space-between;margin-top:auto">
+      <div class="conf ${a.choice && !a.conf ? 'need' : ''}" id="s-conf">你有多確定？${Object.entries(CONF).map(([k, t]) => `<button data-c="${k}" class="${a.conf === k ? 'sel' : ''}">${t}</button>`).join('')}</div>
+      <div class="row">
+        <button class="btn big" id="s-prev" ${S.idx === 0 ? 'disabled' : ''}>◀ 上一題</button>
+        ${S.idx < N - 1 ? `<button class="btn dai big" id="s-next">下一題 ▶</button>` : `<button class="btn zhu big" id="s-submit">交卷</button>`}
+      </div></div>
+    <div class="save-msg ${a.choice && !a.conf ? 'need' : ''}" id="s-save">${a.saved ? '✓ 這題已儲存，交卷前都可以改' : a.local ? '✓ 已存在平板，連線後送出（交卷前都可以改）' : a.choice && a.conf ? '儲存中…' : a.choice ? '⚠ 還沒選「你有多確定」，這題還沒儲存' : '選一個答案，再選你有多確定'}</div>`;
+  const box = $('v-stu');
+  box.querySelectorAll('.opt').forEach(el => el.onclick = () => { const x = S.ans[rk(it.id, r)] = { ...(S.ans[rk(it.id, r)] || {}), choice: el.dataset.k, saved: false }; stuSaveLocal(); renderStudent(); saveCur(it, r, x); });
+  box.querySelectorAll('.conf button').forEach(el => el.onclick = () => { const x = S.ans[rk(it.id, r)] = { ...(S.ans[rk(it.id, r)] || {}), conf: el.dataset.c, saved: false }; stuSaveLocal(); renderStudent(); saveCur(it, r, x); });
+  const needConf = () => { if (a.choice && !a.conf) { const c = $('s-conf'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); toast('這題還沒選「你有多確定」，選好才會儲存'); return true; } return false; };
+  const go = i => { if (i !== S.idx && needConf()) return; S.idx = i; renderStudent(); };
+  box.querySelectorAll('.pdot').forEach(el => el.onclick = () => go(+el.dataset.i));
+  $('s-prev').onclick = () => go(S.idx - 1);
+  if ($('s-next')) $('s-next').onclick = () => go(S.idx + 1);
+  if ($('s-submit')) $('s-submit').onclick = async () => {
+    if (needConf()) return;
+    const noConf = items.map((x, i) => [x, i]).filter(([x]) => { const y = S.ans[rk(x.id, r)] || {}; return y.choice && !y.conf; }).map(([, i]) => i + 1);
+    if (noConf.length) { S.idx = noConf[0] - 1; renderStudent(); toast(`第 ${noConf.join('、')} 題還沒選「你有多確定」，選好再交卷`); return; }
+    const blank = items.map((x, i) => [x, i]).filter(([x]) => !isSaved(S.ans[rk(x.id, r)])).map(([, i]) => i + 1);
+    if (blank.length && !confirm(`${name}還有第 ${blank.join('、')} 題沒有作答，確定要交卷嗎？`)) return;
+    const btn = $('s-submit'); btn.disabled = true;
+    try {
+      // 還有答案沒送到雲端（斷線中）：先等送完再標交卷，按鈕顯示進度（v3.16）
+      const total = S.pend.size;
+      while (S.pend.size) { btn.textContent = `答案送出中 ${total - S.pend.size}/${total}…`; stuNet(); await new Promise(z => setTimeout(z, 300)); }
+      await store.waitWrites(); btn.textContent = '交卷中…';
+      await store.markDone(S.code, S.seat, r); S.done[r] = true; stuSaveLocal(); renderStudent();
+    }
+    catch (e) { btn.disabled = false; btn.textContent = '交卷'; toast(e.code === 'permission-denied' ? '老師已結束作答' : '交卷失敗，請再按一次'); }
+  };
+}
+// 存一題（v3.16）：寫入先進平板的本機快取，不等伺服器；1.2 秒還沒回應就標「已存在平板，連線後送出」，連回後 SDK 自動送出
+async function saveCur(it, r, x) {
+  if (!x.choice || !x.conf) return;
+  const key = rk(it.id, r); S.pend.set(key, (S.pend.get(key) || 0) + 1); stuNet();
+  const t = setTimeout(() => { if (S.ans[key] === x && !x.saved) { x.local = true; stuSaveLocal(); const el = $('s-save'); if (el && S.round === r) renderStudent(); } }, 1200);
+  try {
+    await store.submit(S.code, { seat: S.seat, itemId: it.id, round: r, choice: x.choice, conf: x.conf, ms: Date.now() - S.openedAt });
+    if (S.ans[key] === x) { x.saved = true; x.local = false; stuSaveLocal(); const el = $('s-save'); if (el) el.textContent = '✓ 這題已儲存，交卷前都可以改'; renderStudent(); }
+  } catch (e) {
+    if (S.ans[key] === x) { x.local = false; stuSaveLocal(); renderStudent(); }
+    toast(e.code === 'permission-denied' || /不能作答/.test(e.message) ? '老師已結束這一場作答，這題沒有送出' : '儲存失敗，請再點一次答案');
+  } finally { clearTimeout(t); const n = (S.pend.get(key) || 1) - 1; if (n > 0) S.pend.set(key, n); else S.pend.delete(key); stuNet(); }   // 同一題改了好幾次：最後一次送完才算送完
+}
+// 老師按「公布結果給學生」之後：看自己兩場的對錯與回饋
+function renderStudentResults() {
+  const s = S.session; const R = s.results;
+  const row = (it, r) => { const a = S.ans[rk(it.id, r)]; const rr = R[it.id] || {}; const ok = a && a.choice === rr.answer;
+    return { a, rr, ok, html: a ? `<b style="color:${ok ? 'var(--qing)' : 'var(--zhu)'}">${ok ? '○' : '✗ ' + esc(a.choice)}</b>` : '<span class="muted">未答</span>' }; };
+  const A = roundItems(s, 1), B = s.round >= 2 ? roundItems(s, 2) : [];
+  const rows = A.map((it, i) => { const b = B[i]; const x = row(it, 1), y = b ? row(b, 2) : null;
+    const fb = y && y.a && !y.ok ? '第二場：' + ((y.rr.feedback || {})[y.a.choice] || '') : (!x.ok && x.a ? '第一場：' + ((x.rr.feedback || {})[x.a.choice] || '') + (y && y.ok ? '　第二場改對了！' : '') : '');
+    return `<tr><td>${i + 1}</td><td>${x.html}</td>${B.length ? `<td>${y ? y.html : '—'}</td>` : ''}<td class="l" style="font-size:17px">${fb ? V.mathHTML(fb) : (y && y.ok ? '兩場都答對！' : x.ok ? '答對了！' : '')}</td></tr>`; }).join('');
+  if (S._resLoaded !== s.round && !S.hasLocal) { S._resLoaded = s.round; Promise.all([1, 2].flatMap(r => roundItems(s, r).map(async it => { const m = await store.getMine(S.code, rk(it.id, r)); if (m) S.ans[rk(it.id, r)] = { choice: m.choice, conf: m.conf, saved: true }; }))).then(renderStudent); }
+  $('v-stu').innerHTML = `<h2 style="font-size:34px">我的結果・${S.seat} 號</h2>
+    <div class="card scroll" style="flex:1"><table class="t" style="font-size:20px"><tr><th>題</th><th>第一場</th>${B.length ? '<th>第二場（平行題）</th>' : ''}<th class="l">提醒</th></tr>${rows}</table></div>`;
+}
+
+// 學生端啟動（v3.16 從 app.js 搬來；route-a／b 從電腦直接開檔時、student.html 都呼叫這裡）
+async function bootStudent() {
+  NET.load = Math.round(performance.now());
+  const saved = ss.get('fa-stu');
+  // 雲端學生頁：一打開就在背景載入 SDK、匿名登入（v3.15.1）
+  if (params.get('demo') !== '1' && location.protocol !== 'file:') { store = new FireStore().prewarm((params.get('code') || '').trim().toUpperCase()); store.prewarmed = true; }
+  if (saved && (!params.get('code') || saved.code === params.get('code').toUpperCase())) {
+    try { if (saved.demo) store = new LocalStore(); else if (!store || store.mode !== 'cloud') store = new FireStore(); const first = await store.join(saved.code, saved.seat); netNow('join'); startStudent(saved.code, saved.seat, first, store.rejoin); return; }
+    catch (e) { ss.del('fa-stu'); }
+  }
+  openJoin();
+}
+
+bootStudent();
+window.__FA = { get S() { return S; }, get store() { return store; }, stuApply, netCompatOn, FireStore, LocalStore, student: true };
+</script>
+</body>
+</html>
