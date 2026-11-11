@@ -1,0 +1,610 @@
+{
+ "schema": "fa-tpl/1",
+ "unit": {
+  "grade": "七下",
+  "code": "3-2",
+  "name": "正比與反比",
+  "curriculum": [
+   "N-7-9 比與比例式：比；比例式；正比；反比；相關之基本運算與應用問題，教學情境應以有意義之比值為例"
+  ]
+ },
+ "note": "每個模板產一組平行題；distractors 是 src/units/七下3-2.js 的規則 id（迷思代碼沿用 題庫_七下3-2_正比與反比_路線A.json 的 PR01～PR12，沒有 PR06）；同代碼的誘答一題只出一個。老師 2026-11-11 裁定（全部依規劃建議）：PR03、PR04 改成對應表題 PV-table（verify propTable，k 為負數）；PV-ctx 用 propKind 的 k，v＝0 出 PR09「y＝x/n」不出 PR07；PV-iword 的 PR11 用在反比情境；PV-dword 約 77% 第 2 小，接受；C9：三版學生課本沒有「比例常數」一詞，模板回饋寫「y＝kx 的 k」，題庫不動。v3.16（2026-11-11）新增2026-11-11 獨立審核後修正：PV-isD、PV-isI 在 k＜0 時 PR07、PR08 也帶負號（正解不再是唯一有負號的選項）；PV-dword 回饋用「蛋的顆數÷布丁的個數」這類完整說法；PV-table 正解回饋改成「正比不一定 x 愈大 y 愈大」（反比比照）。老師 2026-11-11 裁定「方向固定、情境可換」：各模板 sameAB 列的參數（x 在前項／後項、正比／反比、正負號、上界／下界、端點含不含、整除與否等）A、B 卷相同。",
+ "coverage": {
+  "min": 10,
+  "note": "每個迷思至少能產生 10 種不同題目；11 個迷思都能自動驗算，沒有 exclude",
+  "exclude": {}
+ },
+ "tpls": [
+  {
+   "tpl": "PV-isD",
+   "title": "哪一個關係式成正比",
+   "kind": "pvIsD",
+   "bloom": "理解",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S1",
+   "params": {
+    "n": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "sg": [
+     1,
+     -1
+    ],
+    "f": [
+     0,
+     0,
+     1
+    ],
+    "e": [
+     0,
+     1
+    ],
+    "cs": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "when": "cs != n",
+   "distinctAB": [
+    "n"
+   ],
+   "stem": "下列哪一個關係式中，y 與 x 成正比？",
+   "answer": "pvIsDok(n, sg, f)",
+   "check": {
+    "type": "propKind",
+    "want": "direct"
+   },
+   "okfb": "正確！{pvIsDok(n, sg, f)} 中 y÷x 一直是同一個數，是 y＝kx 的樣子。",
+   "hint": "取兩組 x、y 各算 y÷x，看是不是同一個數。",
+   "distractors": [
+    "PR01",
+    "PR08",
+    "PR07"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "sg",
+    "f",
+    "e"
+   ]
+  },
+  {
+   "tpl": "PV-isI",
+   "title": "哪一個關係式成反比",
+   "kind": "pvIsI",
+   "bloom": "理解",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S2",
+   "params": {
+    "n": [
+     6,
+     8,
+     10,
+     12,
+     15,
+     16,
+     18,
+     20,
+     24,
+     30,
+     36,
+     48
+    ],
+    "sg": [
+     1,
+     -1
+    ],
+    "f": [
+     0,
+     1
+    ]
+   },
+   "distinctAB": [
+    "n"
+   ],
+   "stem": "下列哪一個關係式中，y 與 x 成反比？",
+   "answer": "pvIsIok(n, sg, f)",
+   "check": {
+    "type": "propKind",
+    "want": "inverse"
+   },
+   "okfb": "正確！{pvIsIok(n, sg, f)} 中 x×y 一直是同一個數，是反比。",
+   "hint": "取兩組 x、y 各算 x×y，看是不是同一個數。",
+   "distractors": [
+    "PR02",
+    "PR07",
+    "PR08"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "sg",
+    "f"
+   ]
+  },
+  {
+   "tpl": "PV-dval",
+   "title": "正比：已知一組值求另一個值",
+   "kind": "pvDval",
+   "bloom": "應用",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S1",
+   "params": {
+    "k": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "sg": [
+     1,
+     -1
+    ],
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "c": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   },
+   "let": {
+    "b": "sg * k * a"
+   },
+   "when": "a != c",
+   "distinctAB": [
+    "a"
+   ],
+   "stem": "y 與 x 成正比，x＝{a} 時 y＝{sgn(b)}。當 x＝{c} 時，y＝？",
+   "answer": "sg * k * c",
+   "check": {
+    "type": "value",
+    "expr": "{negP(b)}÷{a}×{c}"
+   },
+   "okfb": "正確！k＝{negP(b)}÷{a}＝{sg * k}，y＝{negP(sg * k)}×{c}＝{sgn(sg * k * c)}。",
+   "hint": "先求 k＝y÷x，再寫出 y＝kx 代入 x＝{c}。",
+   "distractors": [
+    "PR09",
+    "PR10",
+    "PR12",
+    "PR11"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "sg"
+   ]
+  },
+  {
+   "tpl": "PV-ival",
+   "title": "反比：已知一組值求另一個值",
+   "kind": "pvIval",
+   "bloom": "應用",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S2",
+   "params": {
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "bb": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "sg": [
+     1,
+     -1
+    ],
+    "c": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   },
+   "let": {
+    "b": "sg * bb"
+   },
+   "when": "a != c && (a * bb) % c == 0",
+   "distinctAB": [
+    "a"
+   ],
+   "stem": "y 與 x 成反比，x＝{a} 時 y＝{sgn(b)}。當 x＝{c} 時，y＝？",
+   "answer": "a * b / c",
+   "check": {
+    "type": "value",
+    "expr": "{a}×{negP(b)}÷{c}"
+   },
+   "okfb": "正確！k＝{a}×{negP(b)}＝{a * b}，y＝{negP(a * b)}÷{c}＝{sgn(a * b / c)}。",
+   "hint": "先求 k＝x×y，再寫出 xy＝k 代入 x＝{c}。",
+   "distractors": [
+    "PR10",
+    "PR02",
+    "PR07",
+    "PR12"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "sg"
+   ]
+  },
+  {
+   "tpl": "PV-ctx",
+   "title": "情境列出關係式",
+   "kind": "pvCtx",
+   "bloom": "應用",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S3",
+   "params": {
+    "cx": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "v": [
+     0,
+     1
+    ],
+    "n": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "N": [
+     12,
+     18,
+     24,
+     30,
+     36,
+     40,
+     48,
+     60,
+     72,
+     90,
+     120
+    ]
+   },
+   "let": {
+    "W": "v == 0 ? 'direct' : 'inverse'",
+    "KK": "v == 0 ? n : N"
+   },
+   "distinctAB": [
+    "KK"
+   ],
+   "stem": "{pvCtxS(cx, v, n, N)}x、y 的關係式是哪一個？",
+   "answer": "v == 0 ? 'y＝' + n + 'x' : 'xy＝' + N",
+   "check": {
+    "type": "propKind",
+    "want": "{W}",
+    "k": "{KK}"
+   },
+   "okfb": "正確！{pvCtxF(cx)}，不變的量是 {v == 0 ? n : N}，關係式是 {v == 0 ? 'y＝' + n + 'x' : 'xy＝' + N}。",
+   "hint": "先寫文字式：{pvCtxF(cx)}，哪一個量不變？",
+   "distractors": [
+    "PR05",
+    "PR01",
+    "PR09",
+    "PR02",
+    "PR07"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "v"
+   ]
+  },
+  {
+   "tpl": "PV-dword",
+   "title": "正比應用題",
+   "kind": "pvDword",
+   "bloom": "應用",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S3",
+   "params": {
+    "cx": [
+     0,
+     1,
+     2
+    ],
+    "v": [
+     0,
+     1
+    ],
+    "a": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "r": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "n": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ]
+   },
+   "let": {
+    "b": "a * r",
+    "c": "v == 0 ? r * n : n",
+    "U1": "pvDwU(cx, v)",
+    "ANS": "v == 0 ? n : n * r",
+    "CE": "v == 0 ? a + '/' + a * r + '×' + r * n : a * r + '/' + a + '×' + n"
+   },
+   "when": "n != a && (cx == 0 ? r >= 8 : cx == 1 ? r >= 5 : r <= 6) && n * r * r <= 1500 && (v == 0 ? pvFin(a * a, n) : n * r <= 400 && pvFin(n, r) && n >= 2 * r && pvFin(a * a * r, n))",
+   "distinctAB": [
+    "b"
+   ],
+   "stem": "{pvDwS(cx, v, a, b, c)}",
+   "answer": "ANS + ' ' + U1",
+   "check": {
+    "type": "value",
+    "expr": "{CE}"
+   },
+   "okfb": "正確！兩個量成正比，{v == 0 ? b + '÷' + a + '＝' + r + '，' + c + '÷' + r + '＝' + n : b + '÷' + a + '＝' + r + '，' + n + '×' + r + '＝' + n * r} {U1}。",
+   "hint": "設 y＝kx，先求 k；也可以先想答案大約是多少。",
+   "distractors": [
+    "PR09",
+    "PR10",
+    "PR11"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "v"
+   ]
+  },
+  {
+   "tpl": "PV-iword",
+   "title": "反比應用題",
+   "kind": "pvIword",
+   "bloom": "應用",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S3",
+   "params": {
+    "cx": [
+     0,
+     1,
+     2
+    ],
+    "g": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "p": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "q": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "tt": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "h": [
+     0,
+     1
+    ]
+   },
+   "let": {
+    "a": "g * p",
+    "c": "g * q",
+    "b": "q * tt",
+    "U": "pvIwU(cx)"
+   },
+   "when": "p != q && gcd(p, q) == 1 && (h == 0 ? p < q : p > q) && a >= 2 && c >= 2 && abs(c - a) < b && pvFin(b * c, a) && b <= 30 && (cx != 0 || a <= 12 && c <= 12) && (cx != 1 || a >= 5 && c >= 5) && (cx != 2 || a >= 6 && c >= 4)",
+   "distinctAB": [
+    "b"
+   ],
+   "stem": "{pvIwS(cx, a, b, c)}",
+   "answer": "a * b / c + ' ' + U",
+   "check": {
+    "type": "value",
+    "expr": "{a}×{b}÷{c}"
+   },
+   "okfb": "正確！總量 {a}×{b}＝{a * b} 固定，是反比：{a * b}÷{c}＝{a * b / c} {U}。",
+   "hint": "先想：哪一個量不變？是乘積不變還是比值不變？",
+   "distractors": [
+    "PR10",
+    "PR02",
+    "PR11"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "h"
+   ]
+  },
+  {
+   "tpl": "PV-table",
+   "title": "由對應表判斷正比、反比",
+   "kind": "pvTable",
+   "bloom": "分析",
+   "lc": "N-7-9",
+   "seg": "七下3-2-S3",
+   "params": {
+    "v": [
+     0,
+     1
+    ],
+    "kk": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "ki": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "t": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "let": {
+    "XS": "pvTbXs(v, kk, ki, t)",
+    "YS": "pvTbYs(v, kk, ki, t)",
+    "KV": "pvTbK(v, kk, ki)"
+   },
+   "distinctAB": [
+    "KV"
+   ],
+   "stem": "如表，x、y 的對應值如下。下列敘述哪一個正確？",
+   "answer": "pvTbOK(v, kk, ki)",
+   "check": {
+    "type": "propTable",
+    "xs": "{XS}",
+    "ys": "{YS}"
+   },
+   "okfb": "正確！{v == 0 ? '每一組 y÷x 都是 ' + sgn(KV) + '，是正比；k 是負數，所以 x 愈大 y 反而愈小。正比不一定「x 愈大 y 愈大」' : '每一組 x×y 都是 ' + sgn(KV) + '，是反比；k 是負數，x 是正數時 x 愈大 y 反而愈大。反比不一定「x 愈大 y 愈小」'}。",
+   "hint": "判斷正比、反比要看 y÷x 或 x×y 固不固定，不是看變大或變小。",
+   "fig": {
+    "kind": "table",
+    "rows": "{pvTbRows(v, kk, ki, t)}",
+    "dir": "h",
+    "minW": 260
+   },
+   "distractors": [
+    "PR03",
+    "PR04",
+    "PR08",
+    "PR12",
+    "PR09",
+    "PR07"
+   ],
+   "pick": 3,
+   "sameAB": [
+    "v"
+   ]
+  }
+ ]
+}
