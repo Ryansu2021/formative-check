@@ -198,7 +198,7 @@ table.t td.l,table.t th.l{text-align:left}
 .gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
 .gen-form>*{flex-shrink:0}
 .fb-line{color:var(--ink2,#555)}.fb-line .netc{white-space:nowrap;cursor:pointer}.fb-line .netc input{vertical-align:-2px;margin-right:2px}.fb-line a{color:inherit;text-decoration:underline;cursor:pointer}.fb-ok{color:var(--qing)}.fb-bad{color:var(--zhu);font-weight:700}
-.fig{display:flex;justify-content:center;margin:6px 0}.fig svg{max-width:100%;height:auto;max-height:260px}.fig-stu svg{max-height:34vh}.fig-live svg{max-height:38vh}.fig-sm svg{max-height:140px}.fig-sm{display:inline-flex;vertical-align:middle;margin:0 8px}
+.fig{display:flex;justify-content:center;margin:6px 0}.fig svg{max-width:100%;height:auto;max-height:260px}.fig-stu svg{max-height:34vh}.fig-live svg{max-height:38vh}.fig-sm svg{max-height:140px;height:140px;width:auto}.fig-opt svg{width:340px;max-width:100%;height:auto;max-height:none}.fig-sm{display:inline-flex;vertical-align:middle;margin:0 8px}
 .fig svg text{font-family:inherit}
 .gen-form textarea{height:150px;resize:none;font-size:15.5px;line-height:1.5}
 .tr-opts{display:flex;flex-direction:column;gap:6px;margin:8px 0 0 34px;font-size:15px}
@@ -470,7 +470,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.18（2026-11-12）';
+const APP_VERSION = 'v3.19（2026-11-12）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
