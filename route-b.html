@@ -158,6 +158,26 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .mis-fill.sure{background:#7d2a1c}
 .mis-row .c{font-family:var(--serif);font-weight:900;font-size:22px;text-align:right}
 .mis-seats{font-size:13px;color:var(--ink2);margin-top:2px}
+.mz{display:flex;flex-direction:column;gap:10px;min-height:0}
+.mz-title{font-size:24px}.mz-title .mis-code{font-size:18px}.mz-title .n b{font-size:18px}.zhu{color:var(--zhu)}
+.mz-chg{margin-left:12px;padding:1px 10px;border-radius:999px;background:var(--paper2)}
+.mz-body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;flex:1;min-height:0}
+.mz-qs,.mz-side{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto}
+.mz-card{border:1.5px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.mz-qh{font-weight:900;font-size:18px}
+.mz-card .bar-row{grid-template-columns:44px 1fr 92px}.mz-card .bar-row .cnt{white-space:nowrap}
+.mz-card .bar-track{height:auto;min-height:46px}.mz-card .bar-fill{position:absolute;left:0;top:0;bottom:0}.mz-card .bar-txt{position:relative;left:auto;top:auto;transform:none;white-space:normal;line-height:1.3;padding:8px 14px;flex-wrap:wrap}
+.bar-row.hit .bar-track{outline:3.5px solid var(--zhu);outline-offset:1px}
+.mz-tag{font-size:15px;background:#fff}
+.mz-sec h4{margin:0 0 6px;font-size:16px}.mz-sec h4 .n{font-weight:400;font-size:13px;color:var(--ink2)}
+.mz-why{font-size:19px;line-height:1.55}.mz-ex{font-size:18px;line-height:1.55;margin-top:6px;padding:6px 10px;border-left:4px solid var(--zhu);background:var(--zhu-l)}
+.mz-rem{padding:10px 14px;border-radius:12px;background:var(--huang-l);border:2px solid var(--huang)}
+.mz-remedy{font-size:24px;font-weight:700;line-height:1.55}
+.mz-cardln{margin-top:8px;font-size:15px;color:var(--ink2)}
+.mz-seats{display:flex;flex-wrap:wrap;gap:6px}.mz-seats span{min-width:34px;text-align:center;padding:2px 6px;border-radius:8px;background:var(--paper2);font-weight:700;font-size:18px}
+.mz-seats span.sure{color:#fff;background:var(--zhu)}
+.mz-trend{margin-top:8px;font-size:16px;line-height:1.7}
+@media (max-width:900px){.mz-body{grid-template-columns:1fr}}
 .quad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .quad div{border-radius:10px;padding:8px 12px;border:1.5px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
 .quad div b{font-family:var(--serif);font-size:26px}
@@ -11639,7 +11659,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.22（2026-11-12）';
+const APP_VERSION = 'v3.23（2026-11-12）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -12529,11 +12549,11 @@ function renderHowto() {
 //  教師：即時儀表板（v2：整卷）
 //  流程：待開始 →（第一場作答中）→ 第一場結束＝討論 →（第二場作答中）→ 第二場結束 → 公布結果
 // ============================================================
-let L = { code: null, session: null, bank: null, resp: [], students: [], unsubs: [], veil: false, timer: null, misOpen: null, detail: null, view: 1 };
+let L = { code: null, session: null, bank: null, resp: [], students: [], unsubs: [], veil: false, timer: null, misZoom: null, detail: null, view: 1 };
 function stopLive() { L.unsubs.forEach(u => u()); L.unsubs = []; clearInterval(L.timer); L.timer = null; }
 function openLive(code, showQR) {
   stopLive();
-  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), resp: [], students: [], misOpen: null, detail: null, view: 1 });
+  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), resp: [], students: [], misZoom: null, detail: null, view: 1 });
   show('v-live');
   $('l-sim').hidden = store.mode !== 'demo';
   L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } if (s.round && L.view !== s.round && !L.manualView) L.view = s.round; checkStale(); renderLive(); }));
@@ -12626,13 +12646,19 @@ function renderLive() {
     else {
       const its = setOf(1);
       sg.innerHTML = `建議先討論：${top.map(([c, g]) => `<div class="sg-mis">${esc(c)} ${esc(st.mm[c] ? st.mm[c].name : '')}（${g.seats.size} 人）${[...g.items].slice(0, 2).map(n => `<a class="sg-q" data-i="${n - 1}" title="點一下放大投影">第 ${n} 題：<span class="math">${its[n - 1] ? V.mathHTML(its[n - 1].stem) : ''}</span></a>`).join('')}${g.items.size > 2 ? `<span class="sg-more">另有第 ${[...g.items].slice(2).join('、')} 題</span>` : ''}</div>`).join('')}<div class="sg-tail">點題目可放大投影。沒時間做第二場，可直接公布第一場結果或看出場摘要。</div>`;
-      sg.querySelectorAll('.sg-q').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.view = 1; renderLive(); });
+      sg.querySelectorAll('.sg-q').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; L.view = 1; renderLive(); });
     }
   }
   else if (s.round === 2 && s.phase === 'open') sg.textContent = `第二場是平行題（同迷思、換數字）。交卷 ${doneAll}/${joined.size || s.size} 人。`;
   else sg.textContent = '可以看「出場摘要」：誰的迷思已經改善、誰還需要補救。';
   const veiled = L.veil && !(s.round === 2 && s.phase === 'closed');
-  L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
+  if (L.misZoom != null && !misOrderOf(st, r === 2 ? statRound(1) : null).some(x => x.c === L.misZoom)) L.misZoom = null;
+  L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
+}
+// 迷思分布的排序（本場人數多到少，同人數看第一場）；總覽與迷思放大檢視的上一個／下一個共用
+function misOrderOf(st, prev) {
+  const codes = [...new Set(st.items.flatMap(it => it.options.map(o => o.mis).filter(Boolean)))];
+  return codes.map(c => ({ c, g: st.mis[c], p: prev && prev.mis[c] })).sort((x, y) => ((y.g ? y.g.seats.size : 0) - (x.g ? x.g.seats.size : 0)) || ((y.p ? y.p.seats.size : 0) - (x.p ? x.p.seats.size : 0)));
 }
 function renderOverview(st, r, veiled, joined) {
   const s = L.session; const prev = r === 2 ? statRound(1) : null;
@@ -12648,16 +12674,13 @@ function renderOverview(st, r, veiled, joined) {
       <span class="imis">${tm && tm.mis ? `<span class="mis-code">${esc(tm.mis)}</span> ${topMis[1]}` : ''}</span></div>`;
   }).join('');
   // 迷思（本場，依人數）
-  const codes = [...new Set(st.items.flatMap(it => it.options.map(o => o.mis).filter(Boolean)))];
+  const ord = misOrderOf(st, prev); const codes = ord.map(x => x.c);
   const mmax = Math.max(1, ...codes.map(c => st.mis[c] ? st.mis[c].seats.size : 0), ...(prev ? codes.map(c => prev.mis[c] ? prev.mis[c].seats.size : 0) : [0]));
-  const misRows = codes.map(c => ({ c, g: st.mis[c], p: prev && prev.mis[c] })).sort((x, y) => ((y.g ? y.g.seats.size : 0) - (x.g ? x.g.seats.size : 0)) || ((y.p ? y.p.seats.size : 0) - (x.p ? x.p.seats.size : 0))).map(({ c, g, p }) => {
+  const misRows = ord.map(({ c, g, p }) => {
     const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, np = p ? p.seats.size : null; const m = st.mm[c] || { name: '?' };
-    let still = '';
-    if (p && L.misOpen === c) { const improved = [...p.seats].filter(x => !(g && g.seats.has(x))), remain = [...p.seats].filter(x => g && g.seats.has(x)), fresh = g ? [...g.seats].filter(x => !p.seats.has(x)) : [];
-      still = `<br>已改善：${improved.sort((a, b) => a - b).join('、') || '—'}　仍有：<b style="color:var(--zhu)">${remain.sort((a, b) => a - b).join('、') || '—'}</b>${fresh.length ? `　新出現：${fresh.sort((a, b) => a - b).join('、')}` : ''}`; }
     return `<div class="mis-row" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${esc(m.name)}</div>
       <div class="mis-track"><div class="mis-fill" style="width:${n / mmax * 100}%"></div><div class="mis-fill sure" style="width:${ns / mmax * 100}%"></div>${np != null ? `<div class="mis-ghost" style="left:${np / mmax * 100}%"></div>` : ''}</div>
-      ${L.misOpen === c ? `<div class="mis-seats">座號：${g ? [...g.seats].sort((a, b) => a - b).join('、') : '—'}（第 ${g ? [...g.items].join('、') : '—'} 題）${still}<br>補救：${esc(m.remedy || '')}</div>` : ''}</div>
+      </div>
       <span class="c">${n}${np != null ? `<span class="small muted" style="font-family:var(--sans)"> ←${np}</span>` : ''}</span></div>`;
   }).join('');
   // 座號
@@ -12690,10 +12713,45 @@ function renderOverview(st, r, veiled, joined) {
       <div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯（頑固迷思）<b>${q.stuck}</b></div>
       ${stuck.length ? `<div class="stuck-list">很確定卻答錯（${stuck.length} 人）：${stuck.map(x => `${x} 號（第 ${st.seats[x].sure.join('、')} 題）`).join('、')}</div>` : ''}</div>
       ${veiled ? '<div class="veil">投影保護中</div>' : ''}</div>
-    <div class="panel"><h3>迷思分布 <span class="n">人數（深紅＝很確定）${r === 2 ? '・虛線與 ←＝第一場人數' : ''}・點一下看座號</span></h3>
+    <div class="panel"><h3>迷思分布 <span class="n">人數（深紅＝很確定）${r === 2 ? '・虛線與 ←＝第一場人數' : ''}・點一下放大檢視</span></h3>
       <div class="mis-bars scroll">${misRows}</div>${veiled ? '<div class="veil">投影保護中</div>' : ''}</div>`;
-  $('l-main').querySelectorAll('.irow').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; renderLive(); });
-  $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misOpen = L.misOpen === el.dataset.m ? null : el.dataset.m; renderLive(); });
+  $('l-main').querySelectorAll('.irow').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; renderLive(); });
+  $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misZoom = el.dataset.m; L.detail = null; renderLive(); });
+}
+// 迷思放大檢視（v3.23，老師：「點了右邊迷思分布cx10後，應該放大出現題目與補救建議，而不是只有補救的文字」）
+function renderMisZoom(st, r, veiled) {
+  const c = L.misZoom; const prev = r === 2 ? statRound(1) : null;
+  const order = misOrderOf(st, prev).map(x => x.c); const k = order.indexOf(c);
+  const m = st.mm[c] || { name: '?' }; const g = st.mis[c], p = prev && prev.mis[c];
+  const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0;
+  const sortN = a => [...a].sort((x, y) => x - y);
+  const head = veiled ? '' : `・這一場 <b>${n}</b> 人（很確定 <b class="zhu">${ns}</b> 人）${r === 2 ? `<span class="mz-chg">第一場 <b>${p ? p.seats.size : 0}</b> 人 → 第二場 <b>${n}</b> 人</span>` : ''}`;
+  const its = st.perItem.map((q, i) => ({ q, i })).filter(({ q }) => q.it.options.some(o => o.mis === c));
+  const cards = its.map(({ q, i }) => { const it = q.it; const max = Math.max(1, q.n);
+    const bars = it.options.map(o => { const cc = q.cnt[o.key] || 0; const right = o.key === it.answer && !veiled; const hit = o.mis === c && !veiled;
+      return `<div class="bar-row ${right ? 'right' : ''} ${hit ? 'hit' : ''}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${cc / max * 100}%;background:${OPT_COLOR(o.key)}"></div><div class="bar-txt">${M(o.text)}${right ? ' ✓' : ''}${hit ? `<span class="mis-code mz-tag">${esc(c)}</span>` : ''}</div></div>
+        <span class="cnt">${cc}${q.n ? `<span class="small muted" style="font-family:var(--sans)"> ${Math.round(cc / q.n * 100)}%</span>` : ''}</span></div>`; }).join('');
+    return `<div class="mz-card" data-i="${i}"><div class="mz-qh">第 ${i + 1} 題 <span class="n">${q.n} 人作答</span></div><div class="live-stem">${M(it.stem)}</div>${FIG(it, 'fig-live')}<div class="bars">${bars}</div></div>`; }).join('');
+  let seats = '';
+  if (!veiled) {
+    const sure = g ? g.sure : new Set();
+    seats = `<div class="mz-sec"><h4>選到的座號 <span class="n">紅字＝很確定</span></h4><div class="mz-seats">${g ? sortN(g.seats).map(x => `<span class="${sure.has(x) ? 'sure' : ''}">${x}</span>`).join('') : '—'}</div>`;
+    if (r === 2) { const ps = p ? p.seats : new Set(), gs = g ? g.seats : new Set();
+      const improved = sortN([...ps].filter(x => !gs.has(x))), remain = sortN([...ps].filter(x => gs.has(x))), fresh = sortN([...gs].filter(x => !ps.has(x)));
+      seats += `<div class="mz-trend">已改善：${improved.join('、') || '—'}<br>仍有：<b class="zhu">${remain.join('、') || '—'}</b><br>新出現：${fresh.join('、') || '—'}</div>`; }
+    seats += '</div>';
+  }
+  const why = veiled ? '' : `<div class="mz-sec"><h4>為什麼會錯</h4><div class="mz-why">${M(m.desc || '')}</div>${m.example ? `<div class="mz-ex">學生的錯誤算法：${M(m.example)}</div>` : ''}</div>`;
+  $('l-main').innerHTML = `<div class="panel mz" style="grid-column:1/3;grid-row:1/3">
+    <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 class="mz-title"><span class="mis-code">${esc(c)}</span> ${esc(m.name)} <span class="n">第${r === 2 ? '二' : '一'}場${head}</span></h3>
+      <div class="row" style="gap:8px"><button class="btn sm" id="mz-prev" ${k <= 0 ? 'disabled' : ''}>◀ 上一個迷思</button><button class="btn sm" id="mz-next" ${k >= order.length - 1 ? 'disabled' : ''}>下一個迷思 ▶</button><button class="btn sm dai" id="mz-back">回總覽</button></div></div>
+    <div class="mz-body"><div class="mz-qs scroll">${cards || '<div class="muted">這一場沒有題目用到這個迷思。</div>'}</div>
+      <div class="mz-side scroll">${why}<div class="mz-sec mz-rem"><h4>補救建議</h4><div class="mz-remedy">${M(m.remedy || '')}</div>${m.card ? `<div class="mz-cardln">備課網頁對應卡：${esc(m.card)}</div>` : ''}</div>${seats}
+      ${veiled ? '<div class="small muted">投影保護中：座號、正解與迷思標註已隱藏</div>' : ''}</div></div></div>`;
+  $('mz-back').onclick = () => { L.misZoom = null; renderLive(); };
+  $('mz-prev').onclick = () => { L.misZoom = order[k - 1]; renderLive(); };
+  $('mz-next').onclick = () => { L.misZoom = order[k + 1]; renderLive(); };
 }
 // 單題放大（討論用）
 function renderDetail(st, r, veiled) {
@@ -12715,24 +12773,24 @@ function renderDetail(st, r, veiled) {
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
     ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${esc(mm[o.mis].name)}：${esc(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
     ${veiled ? '<div class="small muted">投影保護中：正解與迷思標註已隱藏</div>' : ''}</div>`;
-  $('d-back').onclick = () => { L.detail = null; renderLive(); };
+  $('d-back').onclick = () => { L.detail = null; L.misZoom = null; renderLive(); };
   $('d-prev').onclick = () => { L.detail = i - 1; renderLive(); };
   $('d-next').onclick = () => { L.detail = i + 1; renderLive(); };
 }
 const upd = patch => store.updateSession(L.code, patch).catch(e => toast('更新失敗：' + (e.message || e.code)));
 const nowTs = () => store.mode === 'cloud' ? store.F.serverTimestamp() : Date.now();
-$('l-start1').onclick = () => { L.manualView = false; L.view = 1; L.detail = null; upd({ round: 1, phase: 'open', curIds: L.session.sets.A.map(x => x.id), openedAt: nowTs() }); };
-$('l-end1').onclick = () => { if (confirm('結束第一場？還沒交卷的學生會停在目前的進度。')) { L.detail = null; upd({ phase: 'closed' }); } };
-$('l-start2').onclick = () => { if (L.session.results && !confirm('學生已經看到第一場的正解，還要進行第二場嗎？')) return; L.manualView = false; L.view = 2; L.detail = null; upd({ round: 2, phase: 'open', curIds: L.session.sets.B.map(x => x.id), openedAt: nowTs(), results: null }); };
-$('l-end2').onclick = () => { if (confirm('結束第二場？')) { L.detail = null; upd({ phase: 'closed' }); } };
+$('l-start1').onclick = () => { L.manualView = false; L.view = 1; L.detail = null; L.misZoom = null; upd({ round: 1, phase: 'open', curIds: L.session.sets.A.map(x => x.id), openedAt: nowTs() }); };
+$('l-end1').onclick = () => { if (confirm('結束第一場？還沒交卷的學生會停在目前的進度。')) { L.detail = null; L.misZoom = null; upd({ phase: 'closed' }); } };
+$('l-start2').onclick = () => { if (L.session.results && !confirm('學生已經看到第一場的正解，還要進行第二場嗎？')) return; L.manualView = false; L.view = 2; L.detail = null; L.misZoom = null; upd({ round: 2, phase: 'open', curIds: L.session.sets.B.map(x => x.id), openedAt: nowTs(), results: null }); };
+$('l-end2').onclick = () => { if (confirm('結束第二場？')) { L.detail = null; L.misZoom = null; upd({ phase: 'closed' }); } };
 $('l-results').onclick = () => {
   const one = L.session.round === 1;
   if (!confirm(one ? '不做第二場，直接把第一場的正解與回饋公布給學生？' : '把兩場的正解與回饋公布給學生？學生畫面會顯示自己每題的對錯。')) return;
   const R = {}; [...setOf(1), ...(one ? [] : setOf(2))].forEach(it => { const fb = {}; it.options.forEach(o => fb[o.key] = o.feedback || ''); R[it.id] = { answer: it.answer, feedback: fb, hint: it.hint || '' }; });
   upd({ results: R });
 };
-$('l-v1').onclick = () => { L.manualView = true; L.view = 1; L.detail = null; renderLive(); };
-$('l-v2').onclick = () => { L.manualView = true; L.view = 2; L.detail = null; renderLive(); };
+$('l-v1').onclick = () => { L.manualView = true; L.view = 1; L.detail = null; L.misZoom = null; renderLive(); };
+$('l-v2').onclick = () => { L.manualView = true; L.view = 2; L.detail = null; L.misZoom = null; renderLive(); };
 $('l-veil').onclick = () => { L.veil = !L.veil; renderLive(); };
 $('l-back').onclick = () => openBankView();
 $('l-sum').onclick = () => openSummary();
