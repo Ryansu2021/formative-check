@@ -506,11 +506,12 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
         <div class="col" style="flex:1;min-height:0">
           <div class="row" style="justify-content:space-between">
             <div><h3 style="font-size:22px" id="bank-title"></h3><div class="small muted" id="bank-meta"></div></div>
-            <div class="row" style="gap:8px"><button class="btn sm" id="b-selall">全選通過題</button><button class="btn sm" id="b-pick">挑 6 組</button><button class="btn sm ghost" id="b-selnone">全不選</button></div>
+            <div class="row" style="gap:8px"><button class="btn sm" id="b-selall">全選通過題</button><button class="btn sm" id="b-pick">挑 5 組</button><button class="btn sm ghost" id="b-selnone">全不選</button></div>
           </div>
           <div class="row small" id="b-pickbar" style="gap:10px;align-items:center;flex-wrap:wrap;margin:2px 0 6px">
             <label style="display:flex;align-items:center;gap:4px">班級<input type="text" id="b-cls" list="b-cls-list" style="width:90px;padding:2px 6px;font-size:15px"></label><datalist id="b-cls-list"></datalist>
-            <label style="display:flex;align-items:center;gap:4px">組數<input type="number" id="b-n" value="6" min="1" max="30" style="width:64px;padding:2px 6px;font-size:15px"></label>
+            <label style="display:flex;align-items:center;gap:4px">組數<input type="number" id="b-n" value="5" min="1" max="30" style="width:64px;padding:2px 6px;font-size:15px"></label>
+            <span style="display:flex;align-items:center;gap:4px">快選<button class="btn sm ghost" data-preset="3" style="padding:2px 10px">3 題</button><button class="btn sm ghost" data-preset="5" style="padding:2px 10px">5 題</button><button class="btn sm ghost" data-preset="10" style="padding:2px 10px">10 題</button></span>
             <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="b-unused" style="width:18px;height:18px">只看這個班沒用過的</label>
             <span class="muted" id="b-pickmsg"></span><span class="muted" id="b-usagenote"></span>
           </div>
@@ -11659,7 +11660,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.23（2026-11-12）';
+const APP_VERSION = 'v3.24（2026-11-13）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -12419,7 +12420,7 @@ function renderBankPane() {
   $('b-pickmsg').textContent = T.pickMsg && T.pickMsg.bank === b.id ? T.pickMsg.text : '';
   $('b-usagenote').textContent = T.usageNote || '';
   const visible = ps.filter(p => !(T.unusedOnly && cls && usedHere(p)));
-  if (!T.picked[b.id]) { T.picked[b.id] = {}; ps.forEach(p => T.picked[b.id][p.pair] = okPair(p) && !(p.A && p.A.optional)); }   // optional（進階）題組預設不勾（v3.3.1）
+  if (!T.picked[b.id]) { const r = pickPairs(ps.filter(p => okPair(p) && !(p.A && p.A.optional)), cls ? usageOf(b.id) : [], cls, pickN()); T.picked[b.id] = {}; ps.forEach(p => T.picked[b.id][p.pair] = r.pairs.includes(p.pair)); }   // v3.24：一打開就依「組數」自動挑（不再預設全勾）；optional（進階）題組不挑
   $('item-list').innerHTML = `<div class="small muted">每一組：上面是第一場（A 卷），下面是第二場的平行題（B 卷）；同一組的誘答對應相同的迷思。</div>` +
     (visible.length ? '' : `<div class="muted">${esc(cls)} 班已經用過這份題庫的每一組。</div>`) +
     visible.map(p => `<div class="pair ${T.picked[b.id][p.pair] ? 'on' : ''}"><label class="pair-h"><input type="checkbox" data-pick="${esc(p.pair)}" ${T.picked[b.id][p.pair] ? 'checked' : ''}>
@@ -12461,22 +12462,27 @@ function updatePicked() {
 $('b-selall').onclick = () => { const b = Banks.get(T.bankId); const vr = V.verifyBank(b).results; bankPairs(b).forEach(p => T.picked[b.id][p.pair] = [p.A, p.B].filter(Boolean).every(it => vr[it.id].status === 'pass')); T.pickMsg = null; renderBankPane(); };
 $('b-selnone').onclick = () => { const b = Banks.get(T.bankId); bankPairs(b).forEach(p => T.picked[b.id][p.pair] = false); T.pickMsg = null; renderBankPane(); };
 // 挑 N 組（v3.8）：班級和建立場次的「班級」是同一格
-const pickN = () => Math.max(1, Math.min(30, parseInt($('b-n').value, 10) || 6));
-$('b-n').oninput = () => { $('b-pick').textContent = `挑 ${pickN()} 組`; };
+const pickN = () => Math.max(1, Math.min(30, parseInt($('b-n').value, 10) || 5));
+{ const q = parseInt(params.get('n'), 10); if (q >= 1 && q <= 30) $('b-n').value = q; }   // 網址 ?n=3：預設挑 3 組（v3.24，研習電子書的連結用）
+$('b-pick').textContent = `挑 ${pickN()} 組`;
+let pickT = null;
+$('b-n').oninput = () => { $('b-pick').textContent = `挑 ${pickN()} 組`; clearTimeout(pickT); pickT = setTimeout(() => { if ($('b-n').value) autoPick(pickN()); }, 250); };   // v3.24：改組數就自動重挑
+document.querySelectorAll('[data-preset]').forEach(x => x.onclick = () => { $('b-n').value = x.dataset.preset; $('b-pick').textContent = `挑 ${pickN()} 組`; clearTimeout(pickT); autoPick(pickN()); });
 $('b-cls').oninput = () => { $('c-label').value = $('b-cls').value; if (T.bankId && T.unusedOnly) renderBankPane(); };
 $('c-label').oninput = () => { $('b-cls').value = $('c-label').value; if (T.bankId && T.unusedOnly) renderBankPane(); };
 $('b-unused').onchange = e => { T.unusedOnly = e.target.checked; if (T.unusedOnly && !$('c-label').value.trim()) toast('請先填班級'); renderBankPane(); };
-$('b-pick').onclick = () => {
+// 挑 n 組（v3.24 起：組數、快選 3／5／10 題、一打開題庫都用這個；沒填班級也能挑，只是不看這班用過哪些）
+function autoPick(n) {
   const b = Banks.get(T.bankId); if (!b) return;
-  const cls = $('c-label').value.trim(); if (!cls) { toast('請先填班級'); $('b-cls').focus(); return; }
-  const n = pickN(), vr = V.verifyBank(b).results, ps = bankPairs(b);
+  const cls = $('c-label').value.trim(), vr = V.verifyBank(b).results, ps = bankPairs(b);
   const cand = ps.filter(p => [p.A, p.B].filter(Boolean).every(it => vr[it.id].status === 'pass') && !(p.A && p.A.optional));
-  const r = pickPairs(cand, usageOf(b.id), cls, n);
+  const r = pickPairs(cand, cls ? usageOf(b.id) : [], cls, n);
   T.picked[b.id] = {}; ps.forEach(p => T.picked[b.id][p.pair] = r.pairs.includes(p.pair));
-  T.pickMsg = { bank: b.id, text: `已為 ${cls} 挑 ${r.pairs.length} 組` + (r.used ? `，已有 ${r.used} 組用過` : '，都是這個班沒用過的') + (r.pairs.length < n ? `（通過驗算的只有 ${r.pairs.length} 組）` : '') };
+  T.pickMsg = { bank: b.id, text: (cls ? `已為 ${cls} 挑 ${r.pairs.length} 組` + (r.used ? `，已有 ${r.used} 組用過` : '，都是這個班沒用過的') : `已挑 ${r.pairs.length} 組（填班級可避開這班用過的題）`) + (r.pairs.length < n ? `（通過驗算的只有 ${r.pairs.length} 組）` : '') };
   if (r.used) T.unusedOnly = false;                                      // 挑到用過的題，就要看得到
   renderBankPane();
-};
+}
+$('b-pick').onclick = () => { clearTimeout(pickT); autoPick(pickN()); };
 $('b-import').onclick = () => $('b-file').click();
 $('b-file').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
