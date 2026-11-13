@@ -8,16 +8,13 @@
    "S-9-11 證明的意義：幾何推理（須說明所依據的幾何性質）；代數推理（須說明所依據的代數性質）。"
   ]
  },
- "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 src/units/九上3-1.js 的規則 id（迷思代碼沿用 題庫_九上3-1_證明與推理_路線A.json 的 PV01～PV16）；同代碼的誘答一題只出一個。老師 2026-11-12 裁定（第14批評估_結論.md 第 20～24 項全照建議）：PV-cex 用驗算題型 cexPick，命題只收課本兩句「若 a＞b，則 a²＞b²」「若 a²＞b²，則 a＞b」，不收「若 a＞b，則 1/a＜1/b」；PV-cex 正解有時是唯一含負數的選項（題庫 P05A 本身也是，接受）；PV01、PV02、PV03、PV07、PV10 只能比對句子，暫緩（coverage.exclude）。PV-sq、PV-lin 用 sameExpr（比對鍵自己代 k、m、n）；PV-sim 附圖故意不依比例，題幹加「（圖形未依比例）」，作圖時避開「拿題目給的任一條線段當尺量 CD 會量到正解」的畫法，邊的長短順序和題目數字一致；PV-sim、PV-cex 不出和題庫 P05、P07 完全相同的數字。審核後（2026-11-12）：PV-cex 的 PV09 另挑一組「條件、結論都不成立」的數（a3、b3），不再是 PV08 對調；PV-sim 回饋 m＝1 時寫「×2」不寫「×2/1」、PV04 和 PV16 至少一個不是題幹出現過的數、多放 3 組 m＞n、小三角形不畫太小。v3.21（2026-11-12）新增，模板擴充第 14 批 H 組",
+ "note": "每個模板產一組平行題（A、B 卷同一組規則、不同數字）；distractors 是 src/units/九上3-1.js 的規則 id（迷思代碼沿用 題庫_九上3-1_證明與推理_路線A.json 的 PV01～PV16）；同代碼的誘答一題只出一個。老師 2026-11-12 裁定（第14批評估_結論.md 第 20～24 項全照建議）：PV-cex 用驗算題型 cexPick，命題只收課本兩句「若 a＞b，則 a²＞b²」「若 a²＞b²，則 a＞b」，不收「若 a＞b，則 1/a＜1/b」；PV-cex 正解有時是唯一含負數的選項（題庫 P05A 本身也是，接受）；PV01、PV02、PV03、PV07、PV10 只能比對句子，暫緩（coverage.exclude）。PV-sq、PV-lin 用 sameExpr（比對鍵自己代 k、m、n）；PV-sim 附圖故意不依比例，題幹加「（圖形未依比例）」，作圖時避開「拿題目給的任一條線段當尺量 CD 會量到正解」的畫法，邊的長短順序和題目數字一致；PV-sim、PV-cex 不出和題庫 P05、P07 完全相同的數字。審核後（2026-11-12）：PV-cex 的 PV09 另挑一組「條件、結論都不成立」的數（a3、b3），不再是 PV08 對調；PV-sim 回饋 m＝1 時寫「×2」不寫「×2/1」、PV04 和 PV16 至少一個不是題幹出現過的數、多放 3 組 m＞n、小三角形不畫太小。v3.21（2026-11-12）新增，模板擴充第 14 批 H 組 第 16 批第 1 步（2026-11-13）：PV-reason（填理由）、PV-next（下一行怎麼寫）用驗算題型 proofStep（結構化的證明檢查器，逐行依理由重算，不比對整句；PV02、PV03、PV10 不再 exclude）；情境 S1、S2、S4、S8、S10（課本查核報告 1-C），字母可換；PV-reason 求證寫成「⑴ 全等 ⑵ 結果」，PV02 誘答是把要證的全等當已知（打散「和其他選項共用最多」的線索）；PV03 只出寫錯；附圖照條件畫，記號只畫題目給的條件，PV10 誘答是圖上看起來成立、但題目沒給也沒有記號的關係。 審核後（2026-11-13）：PV-reason 的 PV03 一律「對應邊（角）相等；對應邊（角）相等」；PV-next 第③行也出題目給的條件（理由是已知或條件型括號），第⑤行加 PV03「邊寫成對應角」、PV10 優先用不是已知的理由（條件型括號、內錯角）；答對回饋依問的那一行說明；S2 交點型題幹補「連接 AF」；頂角平分線兩半的角弧半徑不同。",
  "coverage": {
   "min": 10,
-  "note": "每個迷思至少能產生 10 種不同題目；PV01、PV02、PV03、PV07、PV10 只能比對句子，暫緩",
+  "note": "每個迷思至少能產生 10 種不同題目；PV01、PV07 第 16 批第 2、3 步再做",
   "exclude": {
-   "PV01": "只能比對句子（parityProof、proofReason、givenProve 固定句型題型），暫緩；老師 2026-11-12 裁定第 22 項：第一階段上線後再決定",
-   "PV02": "只能比對句子（parityProof、proofReason、givenProve 固定句型題型），暫緩；老師 2026-11-12 裁定第 22 項：第一階段上線後再決定",
-   "PV03": "只能比對句子（parityProof、proofReason、givenProve 固定句型題型），暫緩；老師 2026-11-12 裁定第 22 項：第一階段上線後再決定",
-   "PV07": "只能比對句子（parityProof、proofReason、givenProve 固定句型題型），暫緩；老師 2026-11-12 裁定第 22 項：第一階段上線後再決定",
-   "PV10": "只能比對句子（parityProof、proofReason、givenProve 固定句型題型），暫緩；老師 2026-11-12 裁定第 22 項：第一階段上線後再決定"
+   "PV01": "只能比對句子，暫緩；第 16 批第 2、3 步（T4 拆已知與求證、T1 評鑑一段論證）再做（老師 2026-11-13 裁定順序）",
+   "PV07": "只能比對句子，暫緩；第 16 批第 2、3 步（T4 拆已知與求證、T1 評鑑一段論證）再做（老師 2026-11-13 裁定順序）"
   }
  },
  "tpls": [
@@ -410,6 +407,250 @@
     "PV08",
     "PV09",
     "PV06"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PV-reason",
+   "title": "幾何證明填理由（全等的依據與結果）",
+   "kind": "pf9Rsn",
+   "bloom": "理解",
+   "lc": "S-9-11",
+   "seg": "九上3-1-S1",
+   "params": {
+    "sc": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "v": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "rk": [
+     0,
+     1
+    ],
+    "g": [
+     0,
+     1,
+     2
+    ],
+    "L": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "o": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "sh": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "fl": [
+     0,
+     1
+    ],
+    "rot": [
+     -10,
+     -5,
+     0,
+     5,
+     10
+    ]
+   },
+   "when": "pf9Ok(sc, v, rk, g)",
+   "sameAB": [
+    "rk"
+   ],
+   "distinctAB": [
+    "L"
+   ],
+   "stem": "{pf9Stem(sc, v, rk, g, L, o, 9)}",
+   "answer": "pf9RsnAns(sc, v, rk)",
+   "check": {
+    "type": "proofStep",
+    "ask": "fill",
+    "t1": "{pf9T(sc, v, L, 0)}",
+    "t2": "{pf9T(sc, v, L, 1)}",
+    "given": "{pf9Giv(sc, v, L)}",
+    "marks": "{pf9Mk(sc, v, L)}",
+    "lines": "{pf9Ln(sc, v, L)}",
+    "pos": "{pf9Pos(sc, v, L, sh)}",
+    "goal": "{pf9Goal(sc, v, rk, g, L, 1)}",
+    "proof": "{pf9Pf(sc, v, rk, g, L, o, 9)}",
+    "diagMis": {
+     "PV02": "goal",
+     "PV03": "badReason|noCong",
+     "PV04": "wrongName|notSure",
+     "PV10": "notGiven"
+    }
+   },
+   "fig": {
+    "kind": "geo",
+    "w": 240,
+    "h": 180,
+    "m": 22,
+    "flip": "{fl}",
+    "rot": "{rot}",
+    "pts": "{pf9Fig(sc, v, L, sh, 'pts')}",
+    "segs": "{pf9Fig(sc, v, L, sh, 'segs')}",
+    "angles": "{pf9Fig(sc, v, L, sh, 'angles')}",
+    "rights": "{pf9Fig(sc, v, L, sh, 'rights')}"
+   },
+   "okfb": "正確！{pf9Why(sc, v, rk, g, L, 9, o)}。",
+   "hint": "甲：三組條件是邊還是角？角有沒有夾在兩邊中間？乙：這一行是從哪一行推出來的？",
+   "distractors": [
+    "PV02",
+    "PV03",
+    "PV04"
+   ],
+   "pick": 3
+  },
+  {
+   "tpl": "PV-next",
+   "title": "幾何證明的下一行怎麼寫",
+   "kind": "pf9Next",
+   "bloom": "應用",
+   "lc": "S-9-11",
+   "seg": "九上3-1-S1",
+   "params": {
+    "sc": [
+     0,
+     1,
+     2,
+     2,
+     3,
+     4
+    ],
+    "v": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "rk": [
+     0,
+     1
+    ],
+    "g": [
+     0,
+     1,
+     2
+    ],
+    "L": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "o": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "sh": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "fl": [
+     0,
+     1
+    ],
+    "rot": [
+     -10,
+     -5,
+     0,
+     5,
+     10
+    ],
+    "k": [
+     2,
+     2,
+     3,
+     4
+    ],
+    "j": [
+     0,
+     1,
+     2
+    ]
+   },
+   "when": "pf9OkN(sc, v, rk, g, k, o)",
+   "sameAB": [
+    "k",
+    "rk"
+   ],
+   "distinctAB": [
+    "L"
+   ],
+   "stem": "{pf9Stem(sc, v, rk, g, L, o, k)}",
+   "answer": "pf9NextAns(sc, v, rk, g, L, o, k)",
+   "check": {
+    "type": "proofStep",
+    "ask": "next",
+    "t1": "{pf9T(sc, v, L, 0)}",
+    "t2": "{pf9T(sc, v, L, 1)}",
+    "given": "{pf9Giv(sc, v, L)}",
+    "marks": "{pf9Mk(sc, v, L)}",
+    "lines": "{pf9Ln(sc, v, L)}",
+    "pos": "{pf9Pos(sc, v, L, sh)}",
+    "goal": "{pf9Goal(sc, v, rk, g, L, 0)}",
+    "proof": "{pf9Pf(sc, v, rk, g, L, o, k)}",
+    "diagMis": {
+     "PV02": "goal",
+     "PV03": "badReason|noCong",
+     "PV04": "wrongName|notSure",
+     "PV10": "notGiven"
+    }
+   },
+   "fig": {
+    "kind": "geo",
+    "w": 240,
+    "h": 180,
+    "m": 22,
+    "flip": "{fl}",
+    "rot": "{rot}",
+    "pts": "{pf9Fig(sc, v, L, sh, 'pts')}",
+    "segs": "{pf9Fig(sc, v, L, sh, 'segs')}",
+    "angles": "{pf9Fig(sc, v, L, sh, 'angles')}",
+    "rights": "{pf9Fig(sc, v, L, sh, 'rights')}"
+   },
+   "okfb": "正確！{pf9Why(sc, v, rk, g, L, k, o)}。",
+   "hint": "這一行的結論是從哪裡來的？題目給的、圖上的位置（共用邊、對頂角），還是前面證出來的？",
+   "distractors": [
+    "PV02",
+    "PV03a",
+    "PV03b",
+    "PV03c",
+    "PV03d",
+    "PV03e",
+    "PV04",
+    "PV10",
+    "PV02k3",
+    "PV10k3"
    ],
    "pick": 3
   }

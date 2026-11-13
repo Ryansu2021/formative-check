@@ -74,7 +74,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .stu-head{display:flex;align-items:center;gap:16px}
 .stu-head .qno{font-family:var(--serif);font-weight:900;font-size:24px;color:var(--zhu)}
 .round-banner{background:var(--huang-l);border:2px solid var(--huang);color:#6b4f10;font-weight:700;padding:10px 16px;border-radius:12px;font-size:19px}
-.stem{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1.5}
+.stem{font-family:var(--serif);font-size:38px;font-weight:700;line-height:1.5;white-space:pre-line}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .opt{display:flex;align-items:center;gap:18px;border:2.5px solid var(--line);border-radius:16px;background:var(--card);padding:18px 22px;cursor:pointer;font-size:32px;min-height:96px;transition:all .1s}
 .opt:hover{border-color:var(--ink2)}
@@ -111,7 +111,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .item{border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:12px 16px}
 .item-h{display:flex;gap:12px;align-items:center}
 .item-h input[type=checkbox]{width:22px;height:22px;accent-color:var(--zhu)}
-.item-h .st{font-family:var(--serif);font-size:18px;font-weight:700;flex:1}
+.item-h .st{font-family:var(--serif);font-size:18px;font-weight:700;flex:1;white-space:pre-line}
 .badge{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .badge.pass{background:var(--qing-l);color:#245446;border:1px solid var(--qing)}
 .badge.fail{background:var(--zhu-l);color:#7d2a1c;border:1px solid var(--zhu)}
@@ -136,7 +136,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .panel{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:10px;min-height:0;position:relative}
 .panel h3{font-size:19px;display:flex;align-items:center;gap:10px}
 .panel h3 .n{font-family:var(--sans);font-size:14px;color:var(--ink3);font-weight:500}
-.live-stem{font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.45}
+.live-stem{font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.45;white-space:pre-line}
 .bars{display:flex;flex-direction:column;gap:9px}
 .bar-row{display:grid;grid-template-columns:44px 1fr 64px;gap:10px;align-items:center}
 .bar-row .k{height:40px;border-radius:9px;color:#fff;font-weight:900;font-size:20px;display:grid;place-items:center}
@@ -490,7 +490,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.24（2026-11-13）';
+const APP_VERSION = 'v3.25（2026-11-13）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
