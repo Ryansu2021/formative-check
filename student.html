@@ -244,6 +244,20 @@ table.t td.l,table.t th.l{text-align:left}
 @keyframes shk{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
 .save-msg{text-align:right;min-height:22px;font-size:15px;color:var(--ink3)}
 .save-msg.need{color:#8a5a00;font-weight:700;font-size:18px}
+/* v3.27：學生作答內容太長時可以往下捲，不再被舞台裁掉 */
+#v-stu{overflow-y:auto}
+/* v3.27：學生頁手機直向窄版（core.js fit() 加 .narrow；舞台寬 820） */
+#stage.narrow header.top{padding:0 18px}
+#stage.narrow .view{padding:18px 20px}
+#stage.narrow .stu-head{flex-wrap:wrap;gap:10px}
+#stage.narrow .stem{font-size:36px}
+#stage.narrow .opts{grid-template-columns:1fr;gap:14px}
+#stage.narrow .opt{font-size:32px;min-height:84px;padding:16px 18px}
+#stage.narrow #v-stu > .row{flex-wrap:wrap;gap:14px}
+#stage.narrow .conf{flex-wrap:wrap}
+#stage.narrow .fig-stu svg{max-height:480px}
+#stage.narrow .join-box{width:100%}
+#stage.narrow footer.by{display:none}
 .pdot.cur{outline:3px solid var(--zhu);outline-offset:2px}
 .pair{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.25)}
 .pair.on{border-style:solid;border-color:var(--ink3)}
@@ -430,6 +444,7 @@ body, button, input { font-family: -apple-system, "PingFang TC", "Noto Sans TC",
   <footer class="by">蘇恭弘。數學王子。台南市忠孝國中製作　<span id="app-ver"></span></footer>
 </div>
 <script>
+window.__STU_ONLY = true;   // v3.27：core.js 的 fit() 依這個在手機直向改成窄版
 (function (G) {
   // @@VIEW-BEGIN（v3.16：從這裡到 @@VIEW-END 是學生頁 student.html 也用的顯示函式，build.py 單獨抽出；這段不能用到上面的函式）
   // ---------- 題目附圖（v3.1）：fig 是 SVG 字串，只留白名單裡的基本圖形與文字 ----------
@@ -490,7 +505,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.26（2026-11-13）';
+const APP_VERSION = 'v3.27（2026-11-13）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -544,7 +559,14 @@ const ss = {
 function toast(msg, ms = 2200) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, ms); }
 function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); const h = $('btn-home'); if (h) h.hidden = id === 'v-home'; }
 function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
-function fit() { const s = Math.min(innerWidth / 1600, innerHeight / 900); $('stage').style.transform = `translate(-50%,-50%) scale(${s})`; }
+// v3.27：學生頁（student.html）在手機直向時改成窄版：舞台寬 820（字約是原本的兩倍大）、高度跟著螢幕、選項一欄、內容可以往下捲；平板、電腦、教師頁照舊 1600×900 等比縮放
+function fit() {
+  const st = $('stage'), narrow = !!window.__STU_ONLY && innerWidth < innerHeight * 0.85;
+  st.classList.toggle('narrow', narrow);
+  if (narrow) { const s = innerWidth / 820; st.style.width = '820px'; st.style.height = (innerHeight / s) + 'px'; st.style.transform = `translate(-50%,-50%) scale(${s})`; return; }
+  st.style.width = st.style.height = '';
+  const s = Math.min(innerWidth / 1600, innerHeight / 900); st.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
 addEventListener('resize', fit); fit();
 try { document.getElementById('app-ver').textContent = APP_VERSION; } catch (e) { }
 const rid = () => Math.random().toString(36).slice(2, 10);
