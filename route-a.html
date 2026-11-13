@@ -260,6 +260,10 @@ table.t td.l,table.t th.l{text-align:left}
 #stage.narrow .fig-stu svg{max-height:480px}
 #stage.narrow .join-box{width:100%}
 #stage.narrow footer.by{display:none}
+/* v3.28：學生頁滿版（沒有外框陰影、不留邊） */
+#stage.fluid{box-shadow:none}
+#stage.fluid footer.by{display:none}
+#stage.fluid .fig-stu svg{max-height:calc(var(--sh, 900px) * .3)}
 .pdot.cur{outline:3px solid var(--zhu);outline-offset:2px}
 .pair{border:2px dashed var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.25)}
 .pair.on{border-style:solid;border-color:var(--ink3)}
@@ -12569,7 +12573,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.27（2026-11-13）';
+const APP_VERSION = 'v3.28（2026-11-13）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -12623,12 +12627,19 @@ const ss = {
 function toast(msg, ms = 2200) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, ms); }
 function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); const h = $('btn-home'); if (h) h.hidden = id === 'v-home'; }
 function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
-// v3.27：學生頁（student.html）在手機直向時改成窄版：舞台寬 820（字約是原本的兩倍大）、高度跟著螢幕、選項一欄、內容可以往下捲；平板、電腦、教師頁照舊 1600×900 等比縮放
+// v3.28：學生頁（student.html）在手機、平板一律滿版（老師 2026-11-13：「今天用手機開啟時，畫面的字太小，盡量讓手機與平板是滿版，方便學生點選」）
+//   縮放 s＝min(寬/820, 高/560)，且不超過 max(1, 原本 1600×900 的縮放)；舞台＝螢幕大小÷s（不留邊）。舞台寬 < 1000 時加 .narrow（選項一欄）
+//   例：手機直向 390×844 → 820 寬一欄；手機橫向 844×390 → s 0.70（原本 0.43）兩欄；iPad 直向 → 一欄；iPad 橫向、電腦 → s 1（大螢幕最多回到原本的 1600×900）
+//   教師頁照舊 1600×900 等比縮放
 function fit() {
-  const st = $('stage'), narrow = !!window.__STU_ONLY && innerWidth < innerHeight * 0.85;
-  st.classList.toggle('narrow', narrow);
-  if (narrow) { const s = innerWidth / 820; st.style.width = '820px'; st.style.height = (innerHeight / s) + 'px'; st.style.transform = `translate(-50%,-50%) scale(${s})`; return; }
-  st.style.width = st.style.height = '';
+  const st = $('stage');
+  if (window.__STU_ONLY) {
+    const s = Math.min(innerWidth / 820, innerHeight / 560, Math.max(1, Math.min(innerWidth / 1600, innerHeight / 900)));
+    const w = innerWidth / s, h = innerHeight / s;
+    st.style.width = w + 'px'; st.style.height = h + 'px'; st.style.setProperty('--sh', h + 'px'); st.style.transform = `translate(-50%,-50%) scale(${s})`;
+    st.classList.toggle('narrow', w < 1000); st.classList.add('fluid');
+    return;
+  }
   const s = Math.min(innerWidth / 1600, innerHeight / 900); st.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener('resize', fit); fit();
