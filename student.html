@@ -419,6 +419,8 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .mis-code{border-radius:7px}
 .create-box input{width:100%;min-width:0}
 .create-box .row>label{min-width:0}
+.create-box .c-soc{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink2);cursor:pointer}.create-box .c-soc input{width:auto;transform:scale(1.25)}
+.soc-set{border-top:1px dashed var(--line, #ccc);padding-top:12px;display:flex;flex-direction:column;gap:8px}
 
 
 /* 學生頁不載 Google 字型（省下字型下載；iPad 用內建蘋方） */
@@ -694,7 +696,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.33.1（2026-11-16）';
+const APP_VERSION = 'v3.34（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -797,6 +799,9 @@ class LocalStore {
   watchSession(code, cb, meta) { if (meta) meta({ fromCache: false }); return this._watch(() => { const d = this._get(code); cb(d ? d.session : null, false); }); }
   async waitWrites() { }
   async saveNet(code, seat, net) { const d = this._get(code); if (d && d.students[seat]) { d.students[seat].net = net; this._put(code, d); } }
+  async saveSoc(code, seat, soc) { const d = this._get(code); if (!d || !d.session.active || d.session.soc !== true || !d.session.results) throw new Error('現在不能寫入'); if (d.students[seat]) { d.students[seat].soc = soc; this._put(code, d); } }
+  async idToken() { return 'demo.' + b64u(JSON.stringify({ user_id: this.uid, demo: true })) + '.x'; }   // 示範模式沒有 Firebase 登入：AI 訂正服務會拒絕（測試用模擬服務認得這個格式）
+  get projectId() { return activeFbConfig().projectId; }
   resume() { }
   async updateSession(code, patch) { const d = this._get(code); if (!d) return; Object.assign(d.session, patch, { updAt: Date.now() }); this._put(code, d); }
   watchResponses(code, cb) { return this._watch(() => { const d = this._get(code); cb(d ? Object.values(d.responses) : []); }); }
@@ -893,6 +898,9 @@ class FireStore {
     }, e => { console.error(e); meta({ fromCache: true, error: e }); });
   }
   async waitWrites() { await this.init(); await this.F.waitForPendingWrites(this.db); }
+  async saveSoc(code, seat, soc) { const L = await this._lite(); await L.updateDoc(L.doc(this.ldb, COL, code, 'students', String(seat)), { soc }); }   // v3.34 規則：學生只能改自己座號文件的 soc（AI 訂正進度），場次 soc＝true 且已公布結果
+  async idToken() { await this.ensureAnon(); return this.auth.currentUser.getIdToken(); }
+  get projectId() { return (this.cfg || activeFbConfig()).projectId; }
   async saveNet(code, seat, net) { await this.init(); await this.F.updateDoc(this.F.doc(this.db, COL, code, 'students', String(seat)), { net }); }   // 規則（v3.16）：學生只能改自己座號文件的 net
   resume() { try { if (this.ready) this.F.enableNetwork(this.db); } catch (e) { } }
   async updateSession(code, patch) { await this.F.updateDoc(this.sref(code), { ...patch, updAt: this.F.serverTimestamp() }); }   // updAt：學生端比新舊（保險讀取和即時更新誰先到都不會倒退）
@@ -972,6 +980,22 @@ class FireStore {
 
 let store = null;
 const params = new URLSearchParams(location.search);
+// v3.34 AI 訂正：soc.js 是另一個檔案，只有 student.html 在「場次 soc＝true、已公布結果、網址帶 sw（Worker 網址）」時才載入；
+//   單純形成性評量（soc 不是 true、舊場次沒有 soc）不下載也不執行；route-a／b 不載入
+let SOC = null, socP = null;
+function socSW() { try { const x = new URL(params.get('sw') || ''); return (x.protocol === 'https:' || (x.protocol === 'http:' && /^(localhost|127\.0\.0\.1)$/.test(x.hostname))) && !x.search && !x.hash ? x.href.replace(/\/$/, '') : ''; } catch (e) { return ''; } }
+const socWanted = s => !!(window.__STU_ONLY && s && s.soc === true && s.results && typeof s.results === 'object' && Object.keys(s.results).length && socSW());
+function socLoad() {
+  if (SOC) return Promise.resolve(SOC);
+  if (!window.__STU_ONLY || !socSW()) return Promise.resolve(null);
+  if (!socP) socP = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = 'soc.js?v=' + encodeURIComponent(APP_VERSION.split('（')[0]);
+    sc.onload = () => { try { SOC = window.FA_SOC_INIT({ get S() { return S; }, get store() { return store; }, set store(v) { store = v; }, sw: socSW(), params, $, esc, M, V, ls, ss, show, toast, roundItems, rk, FIG, OPT_COLOR, renderStudent, stopStudent, LocalStore, FireStore }); } catch (e) { console.error(e); } res(SOC); };
+    sc.onerror = () => { socP = null; console.warn('AI 訂正程式（soc.js）載入失敗'); res(null); };
+    document.head.appendChild(sc);
+  });
+  return socP;
+}
 
 // ============================================================
 //  學生端（v2：整卷自主作答 → 交卷 → 等待討論 → 第二場平行題）
@@ -1094,7 +1118,9 @@ function stuMsg(big, small, nudge) {
 const NUDGE = '還沒看到題目？點這裡';
 function renderStudent() {
   const s = S.session;
+  if ((!s || !s.active) && SOC && SOC.cached()) { setMode('課堂已結束', 'off'); return renderStudentResults(SOC.cached(), true); }   // v3.34：老師結束場次後，已公布的結果與 AI 訂正仍可繼續
   if (!s || !s.active) { stuMsg('課堂已結束', '謝謝你的作答！'); setMode('課堂已結束', 'off'); return; }
+  if (SOC && !s.results) SOC.forget();
   if (S.loading) { stuMsg('載入中…'); return; }
   if (s.results) return renderStudentResults();
   const who = `${esc(s.label || '')}・${S.seat} 號`;
@@ -1162,17 +1188,23 @@ async function saveCur(it, r, x) {
   } finally { clearTimeout(t); const n = (S.pend.get(key) || 1) - 1; if (n > 0) S.pend.set(key, n); else S.pend.delete(key); stuNet(); }   // 同一題改了好幾次：最後一次送完才算送完
 }
 // 老師按「公布結果給學生」之後：看自己兩場的對錯與回饋
-function renderStudentResults() {
-  const s = S.session; const R = s.results;
+function renderStudentResults(cached, ended) {
+  const s = cached || S.session; const R = s.results;
+  const soc = SOC && SOC.on(s);   // v3.34：老師開放 AI 訂正、已公布結果、有 Worker 網址
+  if (!SOC && socWanted(s)) socLoad().then(x => { if (x) renderStudent(); });   // 第一次需要時才載入 soc.js，載好再畫一次
+  if (soc && !cached) SOC.remember(s);
   const row = (it, r) => { const a = S.ans[rk(it.id, r)]; const rr = R[it.id] || {}; const ok = a && a.choice === rr.answer;
     return { a, rr, ok, html: a ? `<b style="color:${ok ? 'var(--qing)' : 'var(--zhu)'}">${ok ? '○' : '✗ ' + esc(a.choice)}</b>` : '<span class="muted">未答</span>' }; };
   const A = roundItems(s, 1), B = s.round >= 2 ? roundItems(s, 2) : [];
   const rows = A.map((it, i) => { const b = B[i]; const x = row(it, 1), y = b ? row(b, 2) : null;
     const fb = y && y.a && !y.ok ? '第二場：' + ((y.rr.feedback || {})[y.a.choice] || '') : (!x.ok && x.a ? '第一場：' + ((x.rr.feedback || {})[x.a.choice] || '') + (y && y.ok ? '　第二場改對了！' : '') : '');
-    return `<tr><td>${i + 1}</td><td>${x.html}</td>${B.length ? `<td>${y ? y.html : '—'}</td>` : ''}<td class="l" style="font-size:17px">${fb ? V.mathHTML(fb) : (y && y.ok ? '兩場都答對！' : x.ok ? '答對了！' : '')}</td></tr>`; }).join('');
-  if (S._resLoaded !== s.round && !S.hasLocal) { S._resLoaded = s.round; Promise.all([1, 2].flatMap(r => roundItems(s, r).map(async it => { const m = await store.getMine(S.code, rk(it.id, r)); if (m) S.ans[rk(it.id, r)] = { choice: m.choice, conf: m.conf, saved: true }; }))).then(renderStudent); }
-  $('v-stu').innerHTML = `<h2 style="font-size:34px">我的結果・${S.seat} 號</h2>
-    <div class="card scroll" style="flex:1"><table class="t" style="font-size:20px"><tr><th>題</th><th>第一場</th>${B.length ? '<th>第二場（平行題）</th>' : ''}<th class="l">提醒</th></tr>${rows}</table></div>`;
+    // AI 訂正：這一列有答錯（含未答）才出現；兩場都錯（或第二場錯）以第二場那一題為準
+    const tg = !soc ? null : y && !y.ok ? [b, 2, y] : !x.ok ? [it, 1, x] : null;
+    return `<tr><td>${i + 1}</td><td>${x.html}</td>${B.length ? `<td>${y ? y.html : '—'}</td>` : ''}<td class="l" style="font-size:17px">${fb ? V.mathHTML(fb) : (y && y.ok ? '兩場都答對！' : x.ok ? '答對了！' : '')}</td>${soc ? `<td>${tg ? SOC.cell(tg[0], tg[1], tg[2].a, i + 1) : ''}</td>` : ''}</tr>`; }).join('');
+  if (!cached && S._resLoaded !== s.round && !S.hasLocal) { S._resLoaded = s.round; Promise.all([1, 2].flatMap(r => roundItems(s, r).map(async it => { const m = await store.getMine(S.code, rk(it.id, r)); if (m) S.ans[rk(it.id, r)] = { choice: m.choice, conf: m.conf, saved: true }; }))).then(renderStudent); }
+  $('v-stu').innerHTML = `<h2 style="font-size:34px">我的結果・${S.seat} 號</h2>${ended ? '<div class="muted" style="font-size:18px">老師已結束這堂課；結果和 AI 訂正可以繼續看（關掉這個分頁就沒有了）。</div>' : ''}
+    <div class="card scroll" style="flex:1"><table class="t" style="font-size:20px"><tr><th>題</th><th>第一場</th>${B.length ? '<th>第二場（平行題）</th>' : ''}<th class="l">提醒</th>${soc ? '<th>AI 訂正</th>' : ''}</tr>${rows}</table></div>`;
+  if (soc) SOC.after(s);
 }
 
 // 學生端啟動（v3.16 從 app.js 搬來；route-a／b 從電腦直接開檔時、student.html 都呼叫這裡）
@@ -1183,7 +1215,7 @@ async function bootStudent() {
   if (params.get('demo') !== '1' && location.protocol !== 'file:') { store = new FireStore().prewarm((params.get('code') || '').trim().toUpperCase()); store.prewarmed = true; }
   if (saved && (!params.get('code') || saved.code === params.get('code').toUpperCase())) {
     try { if (saved.demo) store = new LocalStore(); else if (!store || store.mode !== 'cloud') store = new FireStore(); const first = await store.join(saved.code, saved.seat); netNow('join'); startStudent(saved.code, saved.seat, first, store.rejoin); return; }
-    catch (e) { ss.del('fa-stu'); }
+    catch (e) { if (socSW() && ss.get(`fa-socres:${saved.code}:${saved.seat}`) && (await socLoad()) && SOC.resume(saved)) return; ss.del('fa-stu'); }   // v3.34：場次已被刪除，但平板存著已公布的結果 → 繼續看結果、AI 訂正
   }
   openJoin();
 }

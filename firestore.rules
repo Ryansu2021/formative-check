@@ -93,6 +93,7 @@ service cloud.firestore {
         // 學生更新自己的座號文件：
         //   ① 交卷：只能改 done1／done2，而且要在作答中
         //   ② 連線量測（2026-11 v3.16）：只能改 net（各步驟耗時，數字小地圖，最多 12 個欄位），場次進行中都可以
+        //   ③ AI 訂正進度（2026-11-16 v3.34）：只能改 soc（各題訂正到哪一階段，最多 60 題），而且老師開放 AI 訂正（場次 soc＝true）、已公布結果
         allow update: if request.auth != null
           && resource.data.uid == request.auth.uid
           && request.resource.data.uid == request.auth.uid
@@ -102,7 +103,12 @@ service cloud.firestore {
                && faSession(code).phase == 'open')
             || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['net'])
                && request.resource.data.net is map
-               && request.resource.data.net.size() <= 12));
+               && request.resource.data.net.size() <= 12)
+            || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['soc'])
+               && request.resource.data.soc is map
+               && request.resource.data.soc.size() <= 60
+               && faSession(code).soc == true
+               && faSession(code).results != null));
       }
 
       // 作答：文件 ID＝座號_題號_r場次；只有「作答中」、且是這一場的題目才能寫入（學生整卷自己往下作答）
