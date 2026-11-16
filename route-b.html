@@ -421,6 +421,53 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .mis-code{border-radius:7px}
 .create-box input{width:100%;min-width:0}
 .create-box .row>label{min-width:0}
+
+/* @@TEACHER-ONLY-BEGIN v3.33 即時統計圖（charts.js；build.py 不放進 student.html） */
+.ch-panel h3 .chz{margin-left:auto}
+.chz{font-size:13px;padding:3px 10px;white-space:nowrap}
+.ch-in{fill:#fff;font-weight:900;font-family:var(--sans)} .ch-in.sm{font-size:11px}
+.ch-mid{fill:var(--ink);font-weight:900;font-family:var(--serif)} .ch-sub{fill:var(--ink2);font-weight:700}
+.ch-ax{fill:var(--ink2);font-size:12px;font-weight:700;font-family:var(--sans)} .ch-num{fill:var(--ink);font-size:12px;font-weight:900;font-family:var(--sans)}
+.ch-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:15px;align-items:center} .ch-leg.sm{font-size:12.5px;gap:2px 10px;color:var(--ink2)}
+.ch-li{display:inline-flex;align-items:center;gap:5px} .ch-li i{display:inline-block;width:14px;height:14px;border-radius:3px;flex:none}
+.ch-li.right{font-weight:900;color:var(--qing)}
+.ch-li i.hatch{background:repeating-linear-gradient(45deg,var(--c) 0 3px,#fff 3px 6px)} .ch-li i.hatch.g{--c:var(--qing)} .ch-li i.hatch.r{--c:var(--zhu)} .ch-li i.hatch.k{--c:var(--ink3)}
+.conf-wrap{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:10px;align-items:start}
+.conf-wrap .quad{grid-template-columns:1fr 1fr;gap:6px} .conf-wrap .quad div{padding:5px 8px;font-size:13px} .conf-wrap .quad div b{font-size:21px}
+.cstack svg{width:100%;height:auto;display:block}
+.hist-wrap svg{width:100%;height:auto;max-height:100%;flex:1;min-height:0;display:block}
+#ch-conf .stuck-list{max-height:min(66px,7vh);padding:4px 10px;font-size:13.5px;border:1.5px solid var(--line);border-radius:10px}
+
+#ch-conf{gap:6px}
+.prog-line{display:flex;align-items:center;gap:10px;font-size:14px} .prog-line .prog{flex:1}
+.prog-bar{display:flex;height:22px;border-radius:999px;overflow:hidden;background:var(--paper2)}
+.prog-bar .pg{display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;min-width:0;transition:flex .4s}
+.pg.done{background:var(--qing);color:#fff} .pg.ans{background:repeating-linear-gradient(45deg,var(--dai) 0 5px,#7fa6d9 5px 10px);color:#fff}
+.pg.join{background:#fff;color:var(--ink2);box-shadow:inset 0 0 0 2px var(--line)} .pg.out{background:var(--paper2);color:var(--ink3)}
+.sbw{display:flex;flex-direction:column;gap:3px;min-width:0}
+.icnt{height:5px;border-radius:9px;background:var(--paper2);overflow:hidden} .icnt i{display:block;height:100%;background:var(--dai);transition:width .4s}
+.mp{display:flex;flex-direction:column;gap:2px}
+.mp-r{display:grid;grid-template-columns:18px 1fr 30px;gap:6px;align-items:center;font-size:12px;color:var(--ink2)} .mp-r b{font-family:var(--serif);font-size:17px;color:var(--ink);text-align:right}
+.mp-t{height:13px;background:var(--paper2);border-radius:999px;overflow:hidden;position:relative}
+.mp-f{position:absolute;left:0;top:0;bottom:0;transition:width .4s} .mp-f.r1{background:repeating-linear-gradient(45deg,var(--ink3) 0 4px,#fff 4px 7px)} .mp-f.r2{background:#f08a80} .mp-f.sure{background:var(--zhu)}
+.mis-row.mpair{grid-template-columns:1fr}
+.rb-tab{display:inline-flex;gap:4px}.rb-tab .btn{font-size:17px;font-weight:800;padding:4px 12px}
+#ch-rb .hist-wrap{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.det-body{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.det-chart{display:flex;flex-direction:column;gap:8px;align-items:center} .det-chart>.row{width:100%}
+.det-chart .ch-pie{width:230px;height:230px} .det-chart .ch-leg{font-size:14px;justify-content:center}
+.tog .btn.on{background:var(--dai);color:#fff}
+.chzoom{gap:14px}.chz-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;justify-content:safe center;overflow:auto}
+.chz-body .ch-items{width:100%;max-height:52vh} .zprog .prog-bar{height:46px} .zprog .pg{font-size:20px}
+.zconf{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:center}
+.quad.big div{padding:20px;font-size:21px} .quad.big div b{font-size:46px}
+.zconf .ch-ax{font-size:18px} .zconf .ch-in.sm{font-size:16px} .zconf .ch-leg.sm{font-size:17px}
+.zhist svg{width:100%;max-height:58vh} .zhist .ch-ax,.zhist .ch-num{font-size:20px} .zhist .ch-leg{font-size:19px}
+.zmis{display:flex;flex-direction:column;gap:14px;overflow:auto} .zmis .t{font-size:21px} .zmis .mp-t{height:22px} .zmis .mp-r{font-size:16px;grid-template-columns:24px 1fr 44px} .zmis .mp-r b{font-size:24px} .zmis .mis-track{height:34px}
+.zpie{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
+.zpie-c{display:flex;flex-direction:column;align-items:center;gap:10px} .zpie .live-stem{font-size:34px} .zpie .ch-pie{width:min(440px,46vh);height:min(440px,46vh)} .zpie .ch-leg{font-size:20px;display:grid;grid-template-columns:auto auto;gap:4px 20px}
+@media (max-width:1100px){.det-body,.zpie,.zconf{grid-template-columns:1fr}}
+/* @@TEACHER-ONLY-END */
 </style>
 </head>
 <body>
@@ -13713,7 +13760,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.32（2026-11-16）';
+const APP_VERSION = 'v3.33（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -14205,6 +14252,104 @@ async function bootStudent() {
     catch (e) { ss.del('fa-stu'); }
   }
   openJoin();
+}
+
+// ============================================================
+//  儀表板即時統計圖（v3.33）：自己畫的 SVG，不用圖表套件；只有教師頁（build.py 接在 app.js 後面）
+//  每個函式收「已經算好的數字」回傳 SVG／HTML 字串；數字和儀表板的表格同一個來源（statRound）。
+//  色弱：每張圖都有圖例文字；「不確定」「第一場」用斜線花紋，不只靠顏色分辨。
+//  每個圖形元素帶 data-v（數值），測試用來核對和表格一致。
+// ============================================================
+const CHC = { ok: 'var(--qing)', luck: 'var(--qing)', learn: 'var(--zhu)', stuck: 'var(--zhu)', r1: 'var(--ink3)', r2: 'var(--dai)', mis: 'var(--zhu)' };
+let CH_SEQ = 0;
+const chId = p => p + (++CH_SEQ);
+const chEsc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// 斜線花紋：底色＋白色斜線（灰階、色弱也看得出和實心不同）
+const chHatch = (id, color, op = 1) => `<pattern id="${id}" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><rect width="7" height="7" style="fill:${color}" opacity="${op}"/><line x1="0" y1="0" x2="0" y2="7" stroke="#fff" stroke-width="3"/></pattern>`;
+const chZoomBtn = key => `<button class="btn sm ghost chz" data-z="${chEsc(key)}" title="放大投影這張圖">⤢ 放大投影</button>`;
+
+// ---- 圓餅圖／甜甜圈圖：slices＝[{key, n, color, right}]；hole＝甜甜圈；中間（或下方）顯示作答人數 ----
+function chPie(slices, opt) {
+  const o = Object.assign({ hole: true, veiled: false, size: 260, label: '人作答' }, opt || {});
+  const S = o.size, cx = S / 2, cy = S / 2, R = S / 2 - 8, r0 = o.hole ? R * 0.56 : 0;
+  const tot = slices.reduce((t, x) => t + x.n, 0);
+  const parts = []; let a0 = -Math.PI / 2;
+  const pt = (a, rr) => [cx + rr * Math.cos(a), cy + rr * Math.sin(a)].map(v => Math.round(v * 10) / 10);
+  slices.forEach(x => {
+    if (!x.n) return;
+    const a1 = a0 + x.n / tot * Math.PI * 2, big = a1 - a0 > Math.PI ? 1 : 0, mark = x.right && !o.veiled;
+    let d;
+    if (x.n === tot) d = o.hole ? `M${cx - R},${cy}a${R},${R} 0 1,0 ${2 * R},0a${R},${R} 0 1,0 ${-2 * R},0M${cx - r0},${cy}a${r0},${r0} 0 1,1 ${2 * r0},0a${r0},${r0} 0 1,1 ${-2 * r0},0Z` : `M${cx - R},${cy}a${R},${R} 0 1,0 ${2 * R},0a${R},${R} 0 1,0 ${-2 * R},0Z`;
+    else { const [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R), [x2, y2] = pt(a1, r0), [x3, y3] = pt(a0, r0);
+      d = o.hole ? `M${x0},${y0}A${R},${R} 0 ${big},1 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 ${big},0 ${x3},${y3}Z` : `M${cx},${cy}L${x0},${y0}A${R},${R} 0 ${big},1 ${x1},${y1}Z`; }
+    const am = (a0 + a1) / 2, [lx, ly] = pt(am, o.hole ? (R + r0) / 2 : R * 0.64), pc = Math.round(x.n / tot * 100);
+    parts.push(`<path class="ch-sl${mark ? ' right' : ''}" data-k="${chEsc(x.key)}" data-v="${x.n}" d="${d}" style="fill:${x.color}" stroke="#fff" stroke-width="${mark ? 0 : 2}"/>`
+      + (mark ? `<path d="${d}" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>` : '')
+      + (x.n / tot >= 0.07 ? `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" class="ch-in" style="font-size:${S * 0.075}px">${chEsc(x.key)}${mark ? '✓' : ''}</text>${x.n / tot >= 0.12 ? `<text x="${lx}" y="${ly + S * 0.075}" text-anchor="middle" dominant-baseline="central" class="ch-in" style="font-size:${S * 0.05}px">${pc}%</text>` : ''}` : ''));
+    a0 = a1;
+  });
+  const center = !tot ? `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" class="ch-mid" style="font-size:${S * 0.07}px">尚無作答</text>`
+    : o.hole ? `<text x="${cx}" y="${cy - S * 0.03}" text-anchor="middle" dominant-baseline="central" class="ch-mid" style="font-size:${S * 0.15}px" data-v="${tot}">${tot}</text><text x="${cx}" y="${cy + S * 0.09}" text-anchor="middle" dominant-baseline="central" class="ch-sub" style="font-size:${S * 0.055}px">${o.label}</text>` : '';
+  const ring = !tot ? `<circle cx="${cx}" cy="${cy}" r="${R}" fill="var(--paper2)"/>${o.hole ? `<circle cx="${cx}" cy="${cy}" r="${r0}" fill="var(--card)"/>` : ''}` : '';
+  const svg = `<svg class="ch-pie" viewBox="0 0 ${S} ${S}" role="img" aria-label="${o.hole ? '甜甜圈圖' : '圓餅圖'}：${tot} 人作答">${ring}${parts.join('')}${center}</svg>`;
+  const legend = `<div class="ch-leg">${slices.map(x => `<span class="ch-li${x.right && !o.veiled ? ' right' : ''}"><i style="background:${x.color}"></i><b>${chEsc(x.key)}</b> ${x.n} 人${tot ? `（${Math.round(x.n / tot * 100)}%）` : ''}${x.right && !o.veiled ? ' ✓ 正解' : ''}</span>`).join('')}${!o.hole && tot ? `<span class="ch-li"><b>${tot} 人作答</b></span>` : ''}</div>`;
+  return svg + legend;
+}
+
+// ---- 每題堆疊長條：很確定答對／不確定答對／不確定答錯／很確定答錯（不確定＝斜線花紋）----
+function chStack(rows, opt) {
+  const o = Object.assign({ w: 420, rowH: 20 }, opt || {});
+  const id = chId('cs'), max = Math.max(1, ...rows.map(r => r.ok + r.luck + r.learn + r.stuck));
+  const L0 = 26, W = o.w - L0 - 34, H = rows.length * o.rowH + 6;
+  const KS = [['ok', `fill:${CHC.ok}`], ['luck', `fill:url(#${id}l)`], ['learn', `fill:url(#${id}w)`], ['stuck', `fill:${CHC.stuck}`]];
+  const body = rows.map((r, i) => {
+    let x = L0; const y = 3 + i * o.rowH, h = o.rowH - 6, tot = r.ok + r.luck + r.learn + r.stuck;
+    const segs = KS.map(([k, st]) => { const v = r[k], w = v / max * W; const s = v ? `<rect class="ch-seg" data-q="${k}" data-v="${v}" x="${x.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="${h}" style="${st}"/>${w >= 16 ? `<text x="${(x + w / 2).toFixed(1)}" y="${y + h / 2}" text-anchor="middle" dominant-baseline="central" class="ch-in sm"${k === 'luck' || k === 'learn' ? ' style="fill:var(--ink)"' : ''}>${v}</text>` : ''}` : ''; x += w; return s; }).join('');
+    return `<g class="ch-row" data-i="${r.no}"><text x="${L0 - 6}" y="${y + h / 2}" text-anchor="end" dominant-baseline="central" class="ch-ax">${r.no}</text>${segs}<text x="${(x + 4).toFixed(1)}" y="${y + h / 2}" dominant-baseline="central" class="ch-ax" data-v="${tot}">${tot}</text></g>`;
+  }).join('');
+  return `<svg class="ch-stack" viewBox="0 0 ${o.w} ${H}" preserveAspectRatio="xMinYMin meet" role="img" aria-label="每題信心與對錯堆疊長條"><defs>${chHatch(id + 'l', CHC.luck, .55)}${chHatch(id + 'w', CHC.learn, .55)}</defs>${body}</svg>
+  <div class="ch-leg sm"><span class="ch-li"><i style="background:${CHC.ok}"></i>很確定答對</span><span class="ch-li"><i class="hatch g"></i>不確定答對</span><span class="ch-li"><i class="hatch r"></i>不確定答錯</span><span class="ch-li"><i style="background:${CHC.stuck}"></i>很確定答錯</span></div>`;
+}
+
+// ---- 分數分布直方圖：每位學生答對題數的人數；第二場時第一場（斜線）與第二場（實心）並排 ----
+function chHist(N, c1, c2, opt) {
+  const o = Object.assign({ w: 440, h: 150 }, opt || {});
+  const id = chId('ch'), two = !!c2, k = N + 1, padL = 6, padB = 22, padT = 16;
+  const max = Math.max(1, ...c1, ...(c2 || [0])), gw = (o.w - padL * 2) / k, bw = two ? gw * 0.38 : gw * 0.66, H = o.h - padB - padT;
+  const bar = (v, x, st, cls) => { const h = v / max * H, y = padT + H - h; return `<rect class="ch-bar ${cls}" data-v="${v}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" style="${st}"/>${v ? `<text x="${(x + bw / 2).toFixed(1)}" y="${(y - 3).toFixed(1)}" text-anchor="middle" class="ch-num">${v}</text>` : ''}`; };
+  let g = '';
+  for (let s = 0; s <= N; s++) {
+    const x0 = padL + s * gw;
+    g += `<g class="ch-bin" data-s="${s}">` + (two ? bar(c1[s], x0 + gw * 0.1, `fill:url(#${id})`, 'r1') + bar(c2[s], x0 + gw * 0.52, `fill:${CHC.r2}`, 'r2') : bar(c1[s], x0 + (gw - bw) / 2, `fill:${CHC.r2}`, 'r1'))
+      + `<text x="${(x0 + gw / 2).toFixed(1)}" y="${o.h - 6}" text-anchor="middle" class="ch-ax">${s}</text></g>`;
+  }
+  const n1 = c1.reduce((t, v) => t + v, 0), n2 = c2 ? c2.reduce((t, v) => t + v, 0) : 0;
+  return `<svg class="ch-hist" viewBox="0 0 ${o.w} ${o.h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="答對題數分布"><defs>${chHatch(id, CHC.r1, .6)}</defs><line x1="${padL}" x2="${o.w - padL}" y1="${padT + H}" y2="${padT + H}" stroke="var(--line)"/>${g}</svg>
+  <div class="ch-leg sm"><span class="ch-li muted">橫軸＝答對題數（0～${N}）</span>${two ? `<span class="ch-li"><i class="hatch k"></i>第一場 ${n1} 人</span><span class="ch-li"><i style="background:${CHC.r2}"></i>第二場 ${n2} 人</span>` : `<span class="ch-li"><i style="background:${CHC.r2}"></i>${n1} 人</span>`}</div>`;
+}
+
+// ---- 作答進度：已交卷／作答中／已加入未作答／未加入（花紋＋文字）----
+function chProgress(size, done, answering, joined) {
+  const den = Math.max(1, size, joined), a = Math.max(0, answering - done), j = Math.max(0, joined - answering), out = Math.max(0, size - joined);
+  const seg = (cls, v, t) => v ? `<i class="pg ${cls}" data-v="${v}" style="flex:${v}" title="${t} ${v} 人">${v / den >= 0.08 ? `${t} ${v}` : v}</i>` : '';
+  return `<div class="prog" data-den="${den}"><div class="prog-bar">${seg('done', done, '已交卷')}${seg('ans', a, '作答中')}${seg('join', j, '已加入')}${seg('out', out, '未加入')}</div></div>`;
+}
+
+// ---- 迷思：第一場（斜線）vs 第二場（實心，深色＝很確定）並排長條 ----
+function chMisPair(n1, n2, s2, max) {
+  const w = v => (v / Math.max(1, max) * 100).toFixed(1) + '%';
+  return `<div class="mp"><div class="mp-r r1" title="第一場 ${n1} 人"><span class="mp-l">一</span><div class="mp-t"><div class="mp-f r1" data-v="${n1}" style="width:${w(n1)}"></div></div><b>${n1}</b></div>
+    <div class="mp-r r2" title="第二場 ${n2} 人（其中很確定 ${s2} 人）"><span class="mp-l">二</span><div class="mp-t"><div class="mp-f r2" data-v="${n2}" style="width:${w(n2)}"></div><div class="mp-f sure" style="width:${w(s2)}"></div></div><b>${n2}</b></div></div>`;
+}
+
+// ---- 每題作答人數（作答進度放大用）：直條，上面寫「人數／分母」----
+function chItemCounts(rows, den, opt) {
+  const o = Object.assign({ w: 900, h: 260 }, opt || {});
+  const n = rows.length, padB = 30, padT = 26, gw = (o.w - 20) / Math.max(1, n), bw = Math.min(70, gw * 0.6), H = o.h - padB - padT, D = Math.max(1, den);
+  return `<svg class="ch-items" viewBox="0 0 ${o.w} ${o.h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="每題作答人數"><line x1="10" x2="${o.w - 10}" y1="${padT + H}" y2="${padT + H}" stroke="var(--line)"/>`
+    + rows.map((r, i) => { const x = 10 + i * gw + (gw - bw) / 2, h = Math.min(1, r.n / D) * H, y = padT + H - h;
+      return `<g class="ch-ic" data-i="${r.no}"><rect x="${x.toFixed(1)}" y="${padT}" width="${bw.toFixed(1)}" height="${H}" fill="var(--paper2)"/><rect class="ch-bar" data-v="${r.n}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${CHC.r2}"/><text x="${(x + bw / 2).toFixed(1)}" y="${(y - 6).toFixed(1)}" text-anchor="middle" class="ch-num">${r.n}/${D}</text><text x="${(x + bw / 2).toFixed(1)}" y="${o.h - 8}" text-anchor="middle" class="ch-ax">第 ${r.no} 題</text></g>`; }).join('')
+    + '</svg>';
 }
 
 // ============================================================
@@ -14739,7 +14884,9 @@ function renderLive() {
   else sg.textContent = '可以看「出場摘要」：誰的迷思已經改善、誰還需要補救。';
   const veiled = L.veil && !(s.round === 2 && s.phase === 'closed');
   if (L.misZoom != null && !misOrderOf(st, r === 2 ? statRound(1) : null).some(x => x.c === L.misZoom)) L.misZoom = null;
-  L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
+  $('l-main').style.gridTemplateRows = '';
+  L.chartZoom ? renderChartZoom(st, r, veiled, joined) : L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
+  $('l-main').querySelectorAll('.chz').forEach(el => el.onclick = ev => { ev.stopPropagation(); L.chartZoom = el.dataset.z; renderLive(); });   // v3.33 每張圖的「放大投影」
 }
 // 迷思分布的排序（本場人數多到少，同人數看第一場）；總覽與迷思放大檢視的上一個／下一個共用
 function misOrderOf(st, prev) {
@@ -14748,6 +14895,7 @@ function misOrderOf(st, prev) {
 }
 function renderOverview(st, r, veiled, joined) {
   const s = L.session; const prev = r === 2 ? statRound(1) : null;
+  const den = Math.max(1, joined.size || s.size || 1);   // 每題作答人數小長條的分母＝已加入人數
   const rows = st.perItem.map((p, i) => {
     const segs = p.it.options.map(o => { const c = p.cnt[o.key] || 0; if (!c) return ''; const right = o.key === p.it.answer && !veiled;
       return `<div class="seg ${right ? 'right' : ''}" style="flex:${c};background:${OPT_COLOR(o.key)}" title="${o.key}：${c} 人">${o.key}${c > 1 ? ' ' + c : ''}</div>`; }).join('');
@@ -14755,7 +14903,7 @@ function renderOverview(st, r, veiled, joined) {
     const tm = topMis && topMis[1] ? p.it.options.find(o => o.key === topMis[0]) : null;
     const pr = prev && prev.perItem[i] ? prev.perItem[i].rate : null;
     return `<div class="irow" data-i="${i}"><span class="ino">${i + 1}</span><span class="istem">${M(p.it.stem)}</span>
-      <div class="sbar">${segs || '<span class="muted small" style="padding-left:8px">尚無作答</span>'}</div>
+      <div class="sbw"><div class="sbar">${segs || '<span class="muted small" style="padding-left:8px">尚無作答</span>'}</div><div class="icnt" data-v="${p.n}" title="第 ${i + 1} 題：${p.n}／${den} 人作答"><i style="width:${Math.min(100, p.n / den * 100)}%"></i></div></div>
       <span class="irate">${veiled || p.rate == null ? `<span class="muted">${p.n} 人</span>` : `${Math.round(p.rate * 100)}%`}${pr != null && !veiled && p.rate != null ? `<span class="small muted"> ←${Math.round(pr * 100)}%</span>` : ''}</span>
       <span class="imis">${tm && tm.mis ? `<span class="mis-code">${esc(tm.mis)}</span> ${topMis[1]}` : ''}</span></div>`;
   }).join('');
@@ -14764,10 +14912,11 @@ function renderOverview(st, r, veiled, joined) {
   const mmax = Math.max(1, ...codes.map(c => st.mis[c] ? st.mis[c].seats.size : 0), ...(prev ? codes.map(c => prev.mis[c] ? prev.mis[c].seats.size : 0) : [0]));
   const misRows = ord.map(({ c, g, p }) => {
     const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, np = p ? p.seats.size : null; const m = st.mm[c] || { name: '?' };
-    return `<div class="mis-row" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>
-      <div class="mis-track"><div class="mis-fill" style="width:${n / mmax * 100}%"></div><div class="mis-fill sure" style="width:${ns / mmax * 100}%"></div>${np != null ? `<div class="mis-ghost" style="left:${np / mmax * 100}%"></div>` : ''}</div>
+    if (np != null) return `<div class="mis-row mpair" data-m="${esc(c)}" data-n1="${np}" data-n2="${n}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>${chMisPair(np, n, ns, mmax)}</div></div>`;   // v3.33 第二場：第一場 vs 第二場並排
+    return `<div class="mis-row" data-m="${esc(c)}" data-n1="${n}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>
+      <div class="mis-track"><div class="mis-fill" style="width:${n / mmax * 100}%"></div><div class="mis-fill sure" style="width:${ns / mmax * 100}%"></div></div>
       </div>
-      <span class="c">${n}${np != null ? `<span class="small muted" style="font-family:var(--sans)"> ←${np}</span>` : ''}</span></div>`;
+      <span class="c">${n}</span></div>`;
   }).join('');
   // 座號
   const N = st.items.length; let seatsHTML = '';
@@ -14789,18 +14938,25 @@ function renderOverview(st, r, veiled, joined) {
     seatsHTML += `<div class="${cls}">${inner}${lamp}<i style="width:${x ? x.n / N * 100 : 0}%"></i></div>`;
   }
   const q = st.quad; const stuck = Object.entries(st.seats).filter(([, x]) => x.sure.length).map(([k]) => +k).sort((a, b) => a - b);
+  const cd = chartData(st, r, joined), rb = L.rbTab === 'hist' ? 'hist' : 'mis';   // 右下：迷思分布／分數分布切換（1440×900 放不下兩格）
+  const veilDiv = veiled ? '<div class="veil">投影保護中</div>' : '';
+  $('l-main').style.gridTemplateRows = 'auto minmax(0,1fr)';
   $('l-main').innerHTML = `
-    <div class="panel" style="grid-row:1/3"><h3>各題作答 <span class="n">點題目放大投影・顏色＝選項${r === 2 ? '・←第一場答對率' : ''}</span></h3>
+    <div class="panel" style="grid-row:1/3"><h3>各題作答 <span class="n">點題目放大投影・顏色＝選項・細條＝作答人數${r === 2 ? '・←第一場答對率' : ''}</span></h3>
+      <div class="prog-line"><b>作答進度</b>${chProgress(cd.size, cd.done, cd.answering, cd.joined)}${chZoomBtn('prog')}</div>
       <div class="irows scroll">${rows}</div>
       <h3 style="margin-top:auto">座號 <span class="n">數字＝已答題數・✓＝已交卷　結束後：綠≥80%　黃50–79%　紅<50%，粗框＝有「很確定卻答錯」${netLine}</span></h3>
       <div class="seats">${seatsHTML}</div></div>
-    <div class="panel"><h3>信心 × 對錯 <span class="n">本場全部作答 ${st.nResp} 筆</span></h3>
-      <div class="quad"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div>
-      <div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯（頑固迷思）<b>${q.stuck}</b></div>
-      ${stuck.length ? `<div class="stuck-list">很確定卻答錯（${stuck.length} 人）：${stuck.map(x => `${x} 號（第 ${st.seats[x].sure.join('、')} 題）`).join('、')}</div>` : ''}</div>
-      ${veiled ? '<div class="veil">投影保護中</div>' : ''}</div>
-    <div class="panel"><h3>迷思分布 <span class="n">人數（深紅＝很確定）${r === 2 ? '・虛線與 ←＝第一場人數' : ''}・點一下放大檢視</span></h3>
-      <div class="mis-bars scroll">${misRows}</div>${veiled ? '<div class="veil">投影保護中</div>' : ''}</div>`;
+    <div class="panel ch-panel" id="ch-conf"><h3>信心 × 對錯 <span class="n">本場全部作答 ${st.nResp} 筆</span>${chZoomBtn('conf')}</h3>
+      <div class="conf-wrap"><div class="quad"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div>
+      <div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div>
+      <div class="cstack">${chStack(cd.stack, { rowH: cd.stack.length > 8 ? 16 : 20 })}</div></div>
+      ${stuck.length ? `<div class="stuck-list">很確定卻答錯（${stuck.length} 人）：${stuck.map(x => `${x} 號（第 ${st.seats[x].sure.join('、')} 題）`).join('、')}</div>` : ''}
+      ${veilDiv}</div>
+    <div class="panel ch-panel" id="ch-rb"><h3><span class="tog rb-tab" role="tablist">${[['mis', '迷思分布'], ['hist', '分數分布']].map(([k, t]) => `<button class="btn sm ${rb === k ? 'on' : 'ghost'}" data-rb="${k}" role="tab" aria-selected="${rb === k}">${t}</button>`).join('')}</span>
+      <span class="n">${rb === 'hist' ? `每位學生答對題數的人數${r === 2 ? '・第一場（斜線）與第二場（實心）' : ''}` : `${r === 2 ? '一＝第一場（斜線）、二＝第二場（深色＝很確定）' : '人數（深紅＝很確定）'}・點一下放大檢視`}</span>${chZoomBtn(rb)}</h3>
+      ${rb === 'hist' ? `<div class="hist-wrap" id="ch-hist">${chHist(cd.N, cd.h1, cd.h2)}</div>` : `<div class="mis-bars scroll" id="ch-mis">${misRows}</div>`}${veilDiv}</div>`;
+  $('l-main').querySelectorAll('[data-rb]').forEach(el => el.onclick = () => { L.rbTab = el.dataset.rb; renderLive(); });
   $('l-main').querySelectorAll('.irow').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; renderLive(); });
   $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misZoom = el.dataset.m; L.detail = null; renderLive(); });
 }
@@ -14839,6 +14995,40 @@ function renderMisZoom(st, r, veiled) {
   $('mz-prev').onclick = () => { L.misZoom = order[k - 1]; renderLive(); };
   $('mz-next').onclick = () => { L.misZoom = order[k + 1]; renderLive(); };
 }
+// ---------- v3.33 即時統計圖（charts.js 畫圖；數字一律從 statRound 來，和表格同一份）----------
+const pieSlices = (p, veiled) => p.it.options.map(o => ({ key: o.key, n: p.cnt[o.key] || 0, color: OPT_COLOR(o.key), right: o.key === p.it.answer && !veiled }));
+function chartData(st, r, joined) {
+  const s = L.session, N = st.items.length;
+  const stack = st.perItem.map((p, i) => { const q = { no: i + 1, ok: 0, luck: 0, learn: 0, stuck: 0 };
+    p.a.forEach(x => { const right = x.choice === p.it.answer, sure = x.conf === 'high'; q[right ? (sure ? 'ok' : 'luck') : (sure ? 'stuck' : 'learn')]++; }); return q; });
+  const histOf = sr => { const c = new Array(N + 1).fill(0); Object.values(sr.seats).forEach(x => { c[Math.min(N, x.ok)]++; }); return c; };
+  const h2 = r === 2 ? histOf(st) : null, h1 = r === 2 ? histOf(statRound(1)) : histOf(st);
+  const answering = new Set(L.resp.filter(x => x.round === r).map(x => +x.seat));
+  const done = [...st.done].filter(x => joined.has(x) || answering.has(x)).length;
+  return { N, stack, h1, h2, size: s.size || 0, joined: new Set([...joined, ...answering]).size, answering: new Set([...answering, ...st.done]).size, done,
+    items: st.perItem.map((p, i) => ({ no: i + 1, n: p.n })) };
+}
+function renderChartZoom(st, r, veiled, joined) {
+  const z = L.chartZoom, cd = chartData(st, r, joined), q = st.quad, R = r === 2 ? '第二場' : '第一場';
+  let title = '', body = '', back = () => { L.chartZoom = null; renderLive(); };
+  if (z === 'prog') { title = `作答進度・${R}`; body = `<div class="zprog">${chProgress(cd.size, cd.done, cd.answering, cd.joined)}</div>${chItemCounts(cd.items, cd.joined || cd.size)}`; }
+  else if (z === 'conf') { title = `信心 × 對錯・${R}　<span class="n">全部作答 ${st.nResp} 筆</span>`; body = `<div class="zconf"><div class="quad big"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div><div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div><div class="cstack">${chStack(cd.stack, { w: 700, rowH: Math.min(48, Math.floor(520 / Math.max(1, cd.stack.length))) })}</div></div>`; }
+  else if (z === 'hist') { title = `分數分布・${r === 2 ? '第一場 vs 第二場' : R}`; body = `<div class="zhist">${chHist(cd.N, cd.h1, cd.h2, { w: 1000, h: 420 })}</div>`; }
+  else if (z === 'mis') { const prev = r === 2 ? statRound(1) : null; const ord = misOrderOf(st, prev);
+    const mx = Math.max(1, ...ord.map(({ g, p }) => Math.max(g ? g.seats.size : 0, p ? p.seats.size : 0)));
+    title = `迷思分布・${r === 2 ? '第一場 vs 第二場' : R}`;
+    body = `<div class="zmis">${ord.map(({ c, g, p }) => { const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, m = st.mm[c] || { name: '?' };
+      return `<div class="mis-row ${prev ? 'mpair' : ''}" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>${prev ? chMisPair(p ? p.seats.size : 0, n, ns, mx) : `<div class="mis-track"><div class="mis-fill" style="width:${n / mx * 100}%"></div><div class="mis-fill sure" style="width:${ns / mx * 100}%"></div></div>`}</div>${prev ? '' : `<span class="c">${n}</span>`}</div>`; }).join('')}</div>`; }
+  else if (/^pie:\d+$/.test(z)) { const i = Math.min(+z.slice(4), st.perItem.length - 1), p = st.perItem[i]; title = `${R}・第 ${i + 1} 題　<span class="n">${p.n} 人作答</span>`;
+    body = `<div class="zpie"><div class="live-stem">${M(p.it.stem)}</div><div class="zpie-c"><div class="tog" role="group" aria-label="圖的樣式">${[['donut', '甜甜圈圖'], ['pie', '圓餅圖']].map(([k, t]) => `<button class="btn sm ${(L.pieKind || 'donut') === k ? 'on' : 'ghost'}" data-pk="${k}">${t}</button>`).join('')}</div>${chPie(pieSlices(p, veiled), { hole: (L.pieKind || 'donut') === 'donut', veiled, size: 440 })}</div></div>`;
+    back = () => { L.chartZoom = null; L.detail = i; renderLive(); }; }
+  else { L.chartZoom = null; renderLive(); return; }
+  const veilIt = veiled && /^(conf|hist|mis)$/.test(z);
+  $('l-main').innerHTML = `<div class="panel chzoom" style="grid-column:1/3;grid-row:1/-1"><div class="row" style="justify-content:space-between"><h3 style="font-size:24px">${title}</h3><button class="btn sm dai" id="chz-back">${/^pie:/.test(z) ? '回題目' : '回總覽'}</button></div>
+    <div class="chz-body">${body}</div>${veilIt ? '<div class="veil">投影保護中</div>' : ''}</div>`;
+  $('chz-back').onclick = back;
+  $('l-main').querySelectorAll('[data-pk]').forEach(el => el.onclick = () => { L.pieKind = el.dataset.pk; renderLive(); });
+}
 // 單題放大（討論用）
 function renderDetail(st, r, veiled) {
   const i = Math.min(L.detail, st.perItem.length - 1); const p = st.perItem[i]; const it = p.it; const mm = st.mm;
@@ -14854,12 +15044,15 @@ function renderDetail(st, r, veiled) {
     <div class="row" style="justify-content:space-between"><h3>第${r === 2 ? '二' : '一'}場・第 ${i + 1} 題 <span class="n">${p.n} 人作答</span></h3>
       <div class="row" style="gap:8px"><button class="btn sm" id="d-prev" ${i === 0 ? 'disabled' : ''}>◀ 上一題</button><button class="btn sm" id="d-next" ${i >= st.perItem.length - 1 ? 'disabled' : ''}>下一題 ▶</button><button class="btn sm dai" id="d-back">回總覽</button></div></div>
     <div class="live-stem" style="font-size:34px">${M(it.stem)}</div>${FIG(it, "fig-live")}
-    <div class="bars">${bars}</div>
+    <div class="det-body"><div class="bars">${bars}</div>
+      <div class="det-chart"><div class="row" style="gap:6px;justify-content:space-between"><div class="tog" role="group" aria-label="圖的樣式">${[['donut', '甜甜圈圖'], ['pie', '圓餅圖']].map(([k, t]) => `<button class="btn sm ${(L.pieKind || 'donut') === k ? 'on' : 'ghost'}" data-pk="${k}">${t}</button>`).join('')}</div>${chZoomBtn('pie:' + i)}</div>
+        ${chPie(pieSlices(p, veiled), { hole: (L.pieKind || 'donut') === 'donut', veiled, size: 230 })}</div></div>
     ${!veiled && sure.length ? `<div class="suggest" style="background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c">很確定卻答錯：${sure.map(x => x + ' 號').join('、')}</div>` : ''}
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
     ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${V.mathHTML(mm[o.mis].name)}：${V.mathHTML(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
     ${veiled ? '<div class="small muted">投影保護中：正解與迷思標註已隱藏</div>' : ''}</div>`;
   $('d-back').onclick = () => { L.detail = null; L.misZoom = null; renderLive(); };
+  $('l-main').querySelectorAll('[data-pk]').forEach(el => el.onclick = () => { L.pieKind = el.dataset.pk; renderLive(); });
   $('d-prev').onclick = () => { L.detail = i - 1; renderLive(); };
   $('d-next').onclick = () => { L.detail = i + 1; renderLive(); };
 }
@@ -14912,7 +15105,7 @@ function simulateClass() {
   events.sort((a, b) => a.t - b.t);
   const studs = []; for (let seat = 1; seat <= s.size; seat++) if (!real.has(seat)) studs.push({ uid: 'sim-' + seat, seat, sim: true, joinedAt: Date.now() });
   store.simulate(L.code, [], studs);
-  let i = 0; const t0 = Date.now(); const tick = () => { const until = (Date.now() - t0) * 2.5; const batch = []; const dones = [];
+  let i = 0; const t0 = Date.now(); const SP = window.__FA_simSpeed || 2.5; const tick = () => { const until = (Date.now() - t0) * SP; const batch = []; const dones = [];
     while (i < events.length && events[i].t <= until) { const e = events[i++]; if (e.r) batch.push(e.r); else dones.push(e.done); }
     store.simulate(L.code, batch, [], dones, r); if (i < events.length) setTimeout(tick, 110); };
   tick();
