@@ -203,6 +203,8 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 
 /* ---------- 出場摘要 ---------- */
 #v-sum{gap:14px}
+.gs-box{display:inline-flex;align-items:center;gap:6px}.gs-cum{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;color:var(--ink2)}
+.gs-msg{font-size:15px;line-height:1.6;min-height:0}.gs-msg:empty{display:none}.gs-msg.ok{color:var(--qing);font-weight:700}.gs-msg.err{color:var(--zhu);font-weight:700;background:var(--zhu-l);border-radius:10px;padding:8px 12px}
 .sum-grid{flex:1;display:grid;grid-template-columns:1fr 1.15fr;gap:16px;min-height:0}
 .stat-row{display:flex;gap:12px}
 .stat{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
@@ -494,6 +496,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
             <li>Firestore Database →「建立資料庫」→ 選一個地區（例如 asia-east1）→ 正式版模式。</li>
             <li>Firestore Database → 規則：按下面「複製規則」，整份貼上取代原本內容 →「發布」。</li>
             <li>專案設定（齒輪）→ 一般 → 你的應用程式：新增「網頁應用程式」→ 複製 firebaseConfig，貼回左邊 →「檢查並儲存」→「測試連線」。</li>
+            <li>（選用，要「存到 Google 試算表」才需要）到 console.cloud.google.com，上方選同一個專案 → API 和服務 → 程式庫：搜尋「Google Sheets API」→「啟用」。出場摘要按「存到 Google 試算表」時，Google 會請你同意「建立與存取這個系統的雲端硬碟檔案」（drive.file，看不到你其他檔案）。沒做這步也能按「下載 Excel」。</li>
           </ol>
           <div class="row" style="gap:8px"><button class="btn sm" id="fb-copyrules">複製規則（firestore_自己的專案.rules）</button></div>
           <div class="small muted" style="line-height:1.8">免費額度（Spark 方案）：每天 20,000 次寫入、50,000 次讀取。一場 30 人、兩場各 8 題，估計約 550 次寫入、1,500 次讀取（估計值，實際依網路重連與老師操作而變），一天上好幾個班也在額度內。<br>設定存在這台電腦的瀏覽器；換電腦要再貼一次。學生不用設定：QR Code 與學生網址會自動帶上你的專案。</div>
@@ -13710,7 +13713,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.31（2026-11-16）';
+const APP_VERSION = 'v3.32（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -13883,6 +13886,17 @@ class FireStore {
     if (!u || u.isAnonymous) return null;
     this.isAdmin = ADMIN_EMAILS.map(x => x.toLowerCase()).includes((u.email || '').toLowerCase()) && isDefaultFb(this.cfg);
     return u;
+  }
+  // v3.32 存到 Google 試算表：用已登入的教師帳號再要一個 OAuth 權限（只要 drive.file），拿 access token 呼叫 Sheets API；token 約 1 小時，記在記憶體
+  async googleToken(scope, force) {
+    if (!force && this._gt && this._gt.scope === scope && this._gt.exp > Date.now()) return this._gt.token;
+    await this.init(); const A = this.A; const u = this.auth.currentUser;
+    if (!u || u.isAnonymous) { const e = new Error('還沒有用 Google 帳號登入教師端'); e.code = 'fa/not-signed-in'; throw e; }
+    const p = new A.GoogleAuthProvider(); p.addScope(scope); p.setCustomParameters({ login_hint: u.email || '' });
+    const res = await A.reauthenticateWithPopup(u, p);
+    const cred = A.GoogleAuthProvider.credentialFromResult(res);
+    if (!cred || !cred.accessToken) { const e = new Error('Google 沒有回傳授權'); e.code = 'fa/no-token'; throw e; }
+    this._gt = { scope, token: cred.accessToken, exp: Date.now() + 50 * 60 * 1000 }; return cred.accessToken;
   }
   async signOut() { await this.init(); await this.A.signOut(this.auth); }
   sref(code) { return this.F.doc(this.db, COL, code); }
@@ -14924,10 +14938,11 @@ function openSummary() {
   show('v-sum'); stopLive();
   $('v-sum').innerHTML = `<div class="row" style="justify-content:space-between"><h2 style="font-size:30px">本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2>
     <div class="row" style="gap:8px"><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv" title="開啟報表後，印表機選「另存為 PDF」">學生報表 PDF</button><button class="btn sm" id="u-csv2" title="開啟報表後，印表機選「另存為 PDF」">作答明細 PDF</button>
-    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
+    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm dai" id="u-xlsx" title="課後分析用：說明、試題分析（難度、鑑別度、選項分布）、迷思、學生、作答明細；只有座號沒有姓名。Excel、Google 試算表都能直接開">下載 Excel</button><span class="gs-box"><button class="btn sm dai" id="u-gs" title="用登入教師端的 Google 帳號，在你的雲端硬碟建立試算表（只要求「這個系統建立的檔案」權限）">存到 Google 試算表</button><label class="small gs-cum" title="同一份「課堂形成性評量_累積總表」的累積作答明細、累積試題分析往下加；同一場不重複加"><input type="checkbox" id="u-gs-cum"> 加到我的累積總表</label></span><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
     <div class="stat-row"><div class="stat"><b>${seats.length}</b><span>參與人數</span></div><div class="stat"><b>${N}</b><span>每場題數</span></div>
       <div class="stat"><b>${pct(avg(s1))}</b><span>第一場平均答對率</span></div><div class="stat"><b>${has2 ? pct(avg(s2)) : '—'}</b><span>第二場（平行題）平均答對率</span></div>
       <div class="stat"><b style="color:var(--zhu)">${need.size}</b><span>${has2 ? '第二場仍有迷思的學生' : '第一場有迷思的學生'}</span></div></div>
+    <div class="gs-msg" id="u-gs-msg" aria-live="polite"></div>
     <div class="sum-grid">
       <div class="col" style="min-height:0">
         <h3 style="font-size:20px">依迷思分組補救 <span class="muted small" style="font-family:var(--sans)">${has2 ? '紅字＝第二場仍有（優先補救）' : ''}</span></h3>
@@ -15023,15 +15038,16 @@ ${body}<footer class="f">蘇恭弘。數學王子。台南市忠孝國中製作�
   const openReport = kind => {
     const { html } = reportHTML(kind); const w = window.open('', '_blank');
     if (!w) { toast('瀏覽器擋下了新視窗，請允許這個網站開啟彈出式視窗再按一次'); return; }
-    w.document.open(); w.document.write(html); w.document.close(); if (kind !== 'sum') L.exported = true;
+    w.document.open(); w.document.write(html); w.document.close(); L.exported = true;
   };
   window.__FA_report = reportHTML;   // 測試用
   $('u-print').onclick = () => openReport('sum');
   $('u-prep').onclick = () => { const d = prepClassData(); download(`prep_class_${d.unit || '單元'}_${d.class.replace(/[\\/:*?"<>|\s]+/g, '') || '班級'}_${d.date.replace(/-/g, '')}.json`, JSON.stringify(d, null, 2), 'application/json'); toast('已下載，請放進 115-教科書/_網頁素材暫存/，再跑 mkprep.py'); };
   $('u-csv').onclick = () => openReport('stu');
   $('u-csv2').onclick = () => openReport('detail');
+  wireSheets();   // v3.32 匯出試算表（sheets.js）
   $('u-end').onclick = async () => {
-    if (!L.exported && !confirm('還沒有匯出學生報表或作答明細 PDF。結束後資料會從雲端刪除，確定要結束嗎？')) return;
+    if (!L.exported && !confirm('還沒有匯出（PDF 或試算表）。結束後作答資料會從雲端刪除，之後就不能再匯出。確定要結束嗎？')) return;
     if (L.exported && !confirm('結束場次並刪除雲端作答資料？')) return;
     await store.endSession(L.code, true); ls.del('fa-tbank:' + L.code); toast('場次已結束'); openBankView();
   };
@@ -15667,6 +15683,328 @@ function renderCmpPane() {
   show('v-home');
 })();
 window.__FA = { get L() { return L; }, get T() { return T; }, get S() { return S; }, get store() { return store; }, stuApply, netCompatOn, Banks, V, resumeLabel, pickPairs, usageByPair, FireStore, LocalStore, parseFbConfig, fbEncode, fbDecode, activeFbConfig, isDefaultFb, fbTestConnection, fbWhy, stuURLFor, FB_DEFAULT, stemNumsOk, stemCheck, exprsOf, callGemini, prepClassData, FR };
+
+// ============================================================
+//  出場摘要「匯出試算表」（v3.32）：下載 Excel（.xlsx，自己產生，不靠外部套件、離線也能用）／存到 Google 試算表（drive.file）
+//  兩種內容相同，都來自 sheetBook()。資料不含姓名，只有座號；數學式用一般文字寫法（a/b、√()、^）。
+//  build.py 把這份接在 app.js 後面（只有教師頁；student.html 不含）。
+// ============================================================
+const SHEET_COLOR = { ok: 'E3F6EF', mid: 'FFF3DF', no: 'FDECEA', okT: '0B6B53', midT: '8A5A00', noT: 'A3271D', head: 'EEF3F8' };   // 同儀表板 --qing-l、--huang-l、--zhu-l
+const OPTK = ['A', 'B', 'C', 'D'];
+const D_MIN = 10;   // 少於 10 人不算鑑別度（寫「人數不足」）；少於 20 人在說明頁提醒僅供參考
+const colName = i => { let s = ''; i++; while (i) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+const r1d = x => Math.round(x * 10) / 10;
+
+// 每位學生每一題的作答秒數：這題送出時間 − 同一位學生上一題送出時間（第一題從開場起算）；ms 是「開場後毫秒」
+function itemSeconds(resp) {
+  const out = new Map(); const by = {};
+  resp.forEach(x => (by[x.round + ':' + x.seat] = by[x.round + ':' + x.seat] || []).push(x));
+  Object.values(by).forEach(a => { a.sort((p, q) => (p.ms || 0) - (q.ms || 0)); let prev = 0; a.forEach(x => { const ms = x.ms || 0; out.set(x, Math.max(0, (ms - prev) / 1000)); prev = ms; }); });
+  return out;
+}
+// 鑑別度：依該場答對題數排序（同分依座號），取前後各 k＝四捨五入(人數×27%) 人；人數少於 D_MIN 不算
+function discGroups(items, m) {
+  const seats = [...new Set(items.flatMap(it => Object.keys(m[it.id] || {}).map(Number)))];
+  const score = {}; seats.forEach(s => score[s] = items.filter(it => m[it.id] && m[it.id][s] && m[it.id][s].choice === it.answer).length);
+  const ord = seats.sort((a, b) => score[b] - score[a] || a - b);
+  const n = ord.length, k = Math.round(n * 0.27);
+  if (n < D_MIN || k < 1) return { n, k, ok: false };
+  return { n, k, ok: true, hi: ord.slice(0, k), lo: ord.slice(n - k), score };
+}
+
+function sheetBook() {
+  const s = L.session, mm = misMapOf(L.bank), has2 = s.round >= 2;
+  const rounds = has2 ? [1, 2] : [1];
+  const pad = n => String(n).padStart(2, '0'), d = new Date(), day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const unit = unitKey(L.bank) || '單元', cls = String(s.label || '班級'), code = s.code || L.code;
+  const fname = `${unit}_${cls}_${day.replace(/-/g, '')}_${code}`.replace(/[\\/:*?"<>|\s]+/g, '');
+  const secs = itemSeconds(L.resp);
+  const RN = r => r === 1 ? '第一場' : '第二場';
+  // ---- 試題分析 ----
+  const head = ['場次', '題號', '題組', '題目', '正解', '作答人數', '答對率（難度 P）', '鑑別度 D', '高分組答對率', '低分組答對率',
+    ...OPTK.flatMap(k => [k + ' 人數', k + ' 比例']), ...OPTK.map(k => k + ' 迷思'), '很確定卻答錯', '平均作答秒數', '答對率變化（第二場−第一場）', ...OPTK.map(k => k + ' 選項內容')];
+  const C = Object.fromEntries(head.map((h, i) => [h, i]));
+  const per = {};   // r → [{it, n, ok, P, D, ...}]
+  rounds.forEach(r => {
+    const items = setOf(r), m = respMap(r), g = discGroups(items, m);
+    per[r] = { g, rows: items.map((it, i) => {
+      const a = Object.values(m[it.id] || {}); const n = a.length, ok = a.filter(x => x.choice === it.answer).length;
+      const cnt = {}; OPTK.forEach(k => cnt[k] = a.filter(x => x.choice === k).length);
+      const hit = grp => grp.filter(st => m[it.id] && m[it.id][st] && m[it.id][st].choice === it.answer).length / g.k;
+      const ph = g.ok ? hit(g.hi) : null, pl = g.ok ? hit(g.lo) : null;
+      const sec = a.map(x => secs.get(x)).filter(v => v != null);
+      return { it, i, n, ok, P: n ? ok / n : null, ph, pl, D: g.ok ? ph - pl : null, cnt, sure: a.filter(x => x.conf === 'high' && x.choice !== it.answer).length, sec: sec.length ? r1d(sec.reduce((t, v) => t + v, 0) / sec.length) : null };
+    }) };
+  });
+  const itemRows = [];
+  per[1].rows.forEach((x, i) => rounds.forEach(r => {
+    const y = per[r].rows[i]; if (!y) return; const g = per[r].g, it = y.it;
+    const dCell = g.ok ? { v: Math.round(y.D * 100) / 100, num: '0.00' } : `人數不足（${g.n} 人）`;
+    const chg = r === 2 && y.P != null && per[1].rows[i].P != null ? { v: y.P - per[1].rows[i].P, sgn: true } : null;
+    itemRows.push([RN(r), i + 1, it.pair || it.id, it.stem, it.answer, y.n, y.P == null ? null : { v: y.P, pct: true }, dCell,
+      y.ph == null ? null : { v: y.ph, pct: true }, y.pl == null ? null : { v: y.pl, pct: true },
+      ...OPTK.flatMap(k => [y.cnt[k], y.n ? { v: y.cnt[k] / y.n, pct: true } : null]),
+      ...OPTK.map(k => { const o = it.options.find(o => o.key === k); return !o ? '' : k === it.answer ? '（正解）' : (o.mis || ''); }),
+      y.sure, y.sec, chg, ...OPTK.map(k => { const o = it.options.find(o => o.key === k); return o ? o.text : ''; })]);
+  }));
+  const nItem = itemRows.length;
+  const pctCol = C['答對率（難度 P）'], ansCol = C['正解'];
+  const cfItem = [{ col: pctCol, kind: 'rate' }, { col: C['高分組答對率'], kind: 'rate' }, { col: C['低分組答對率'], kind: 'rate' },
+    ...OPTK.map(k => ({ col: C[k + ' 比例'], kind: 'opt', key: k, ansCol }))];
+  // ---- 迷思 ----
+  const s1 = statRound(1), s2 = has2 ? statRound(2) : null;
+  const tested = [...new Set(rounds.flatMap(r => setOf(r).flatMap(it => it.options.map(o => o.mis).filter(Boolean))))];
+  const codes = [...new Set([...tested, ...Object.keys(s1.mis), ...(s2 ? Object.keys(s2.mis) : [])])];
+  const seatL = a => a.length ? a.join('、') : '';
+  const misRows = codes.map(c => {
+    const a = s1.mis[c] ? [...s1.mis[c].seats].sort((x, y) => x - y) : [], b = s2 && s2.mis[c] ? [...s2.mis[c].seats].sort((x, y) => x - y) : [];
+    const m = mm[c] || {};
+    return [c, m.name || '', a.length, s1.mis[c] ? s1.mis[c].sure.size : 0, has2 ? b.length : '—', seatL(a),
+      has2 ? seatL(a.filter(x => !b.includes(x))) : '—', has2 ? seatL(a.filter(x => b.includes(x))) : '—', has2 ? seatL(b.filter(x => !a.includes(x))) : '—',
+      m.remedy || '', m.card || ''];
+  }).sort((x, y) => y[2] - x[2] || (has2 ? (y[4] - x[4]) : 0) || String(x[0]).localeCompare(String(y[0])));
+  // ---- 學生 ----
+  const seats = [...new Set([...L.students.filter(x => !x.sim || L.resp.some(r => r.seat === +x.seat)).map(x => +x.seat), ...L.resp.map(r => +r.seat)])].sort((a, b) => a - b);
+  const stuRows = seats.map(seat => { const a = s1.seats[seat], b = s2 ? s2.seats[seat] : null;
+    return [seat, a ? a.ok : null, a ? a.n : 0, has2 ? (b ? b.ok : null) : '—', has2 ? (b ? b.n : 0) : '—',
+      a ? [...a.mis].join('、') : '', has2 ? (b ? [...b.mis].join('、') : '') : '—', a ? a.sure.join('、') : '', has2 ? (b ? b.sure.join('、') : '') : '—',
+      s1.done.has(seat) ? '是' : '否', has2 ? (s2.done.has(seat) ? '是' : '否') : '—']; });
+  // ---- 作答明細 ----
+  const all = rounds.flatMap(r => setOf(r).map((it, i) => [r, i, it]));
+  const detRows = L.resp.map(x => { const f = all.find(([r, , it]) => r === x.round && it.id === x.itemId); if (!f) return null; const [r, i, it] = f;
+    const o = it.options.find(y => y.key === x.choice), right = x.choice === it.answer;
+    return [+x.seat, RN(r), i + 1, it.pair || it.id, x.choice, right ? '對' : '錯', !right && o && o.mis ? o.mis : '', CONF[x.conf] || '', r1d((x.ms || 0) / 1000), r1d(secs.get(x) || 0)]; })
+    .filter(Boolean).sort((p, q) => p[0] - q[0] || String(p[1]).localeCompare(String(q[1])) || p[2] - q[2]);
+  // ---- 說明 ----
+  const n1 = per[1].g.n, n2 = has2 ? per[2].g.n : null;
+  const few = [n1, n2].filter(v => v != null && v < 20);
+  const info = [
+    ['項目', '內容'],
+    ['單元', (L.bank && shownT(L.bank.title || '')) || unit], ['班級', cls], ['日期', day], ['場次代碼', code],
+    ['題數', `每場 ${setOf(1).length} 題${has2 ? '（第一場、第二場平行題）' : '（只做第一場）'}`],
+    ['人數', `第一場 ${n1} 人作答${has2 ? `、第二場 ${n2} 人作答` : ''}`],
+    ['資料', '只有座號，沒有姓名。數學式用一般文字寫法：a/b 是分數、1又2/3 是帶分數、√() 是根號、^ 是次方、≤ ≥ 即課本的 ≦ ≧。'],
+    ['', ''],
+    ['難度 P', '答對率＝答對人數 ÷ 這一題的作答人數。P 越高越容易。'],
+    ['鑑別度 D', `高分組答對率 − 低分組答對率。高分組、低分組：把這一場有作答的學生依「這一場答對題數」由高到低排（同分依座號），取前、後各 27%（人數 × 0.27 四捨五入）。沒作答的題目算答錯。少於 ${D_MIN} 人不算，寫「人數不足」。`],
+    ['鑑別度參考', '常用參考：0.40 以上很好、0.30～0.39 良好、0.20～0.29 尚可、0.19 以下宜檢討（Ebel, 1965）。形成性評量的目的是找迷思，鑑別度低不一定是題目不好（例如全班都會）。'],
+    ['人數提醒', few.length ? `這次${n1 < 20 ? `第一場只有 ${n1} 人` : ''}${n1 < 20 && n2 != null && n2 < 20 ? '、' : ''}${n2 != null && n2 < 20 ? `第二場只有 ${n2} 人` : ''}，少於 20 人時鑑別度只供參考；少於 ${D_MIN} 人不計算。` : '兩場人數都在 20 人以上。少於 20 人時鑑別度只供參考。'],
+    ['平均作答秒數', '每一題的秒數＝這題送出的時間 − 同一位學生上一題送出的時間（第一題從老師按開始起算）；回頭改答案以最後一次為準，所以只供參考。'],
+    ['上色', '答對率（含高分組、低分組）：綠＝80% 以上、黃＝50～79%、紅＝未滿 50%（同儀表板）。選項比例：正解選項照答對率上色；誘答選項 50% 以上紅、20～49% 黃（選的人越多越需要處理）。'],
+    ['', ''],
+    ['工作表「試題分析」', '每題一列，第一場、第二場同一組（平行題）上下相鄰。迷思欄＝這個誘答對應的迷思代碼；很確定卻答錯＝信心選「很確定」但答錯的人數；答對率變化＝第二場 − 第一場（只寫在第二場那一列）。'],
+    ['工作表「迷思」', '每個這次有考到的迷思一列：第一場人數（其中幾人很確定）、第二場人數；已改善＝第一場有、第二場沒有；仍有＝兩場都有；新出現＝只有第二場有。'],
+    ['工作表「學生」', '每位學生一列：兩場答對數與作答數、迷思代碼、很確定卻答錯的題號、是否交卷。'],
+    ['工作表「作答明細」', '每筆作答一列：座號、場次、題號、題組、選的選項、對錯、迷思、信心、開場後秒數、這題秒數。'],
+    ['匯出時間', `${day} ${pad(d.getHours())}:${pad(d.getMinutes())}　${typeof APP_VERSION !== 'undefined' ? APP_VERSION : ''}`]
+  ];
+  return {
+    fname, meta: { unit, cls, day, code, has2, n1, n2 },
+    sheets: [
+      { name: '說明', rows: info, widths: [20, 110], wrap: [1], freeze: 1 },
+      { name: '試題分析', rows: [head, ...itemRows], widths: head.map((h, i) => i === C['題目'] ? 46 : /選項內容/.test(h) ? 18 : /迷思/.test(h) ? 9 : /比例|答對率|鑑別度|秒數/.test(h) ? 11 : 8), freeze: 1, cf: cfItem.map(x => ({ ...x, r0: 1, r1: nItem })) },
+      { name: '迷思', rows: [['代碼', '名稱', '第一場人數', '第一場其中很確定', '第二場人數', '第一場座號', '已改善座號', '仍有座號', '新出現座號', '補救建議', '對應備課卡'], ...misRows], widths: [8, 26, 10, 12, 10, 18, 16, 16, 16, 50, 36], freeze: 1 },
+      { name: '學生', rows: [['座號', '第一場答對', '第一場作答', '第二場答對', '第二場作答', '第一場迷思', '第二場迷思', '很確定卻答錯（第一場題號）', '很確定卻答錯（第二場題號）', '第一場交卷', '第二場交卷'], ...stuRows], widths: [6, 10, 10, 10, 10, 22, 22, 16, 16, 10, 10], freeze: 1 },
+      { name: '作答明細', rows: [['座號', '場次', '題號', '題組', '選項', '對錯', '迷思', '信心', '開場後秒數', '這題秒數'], ...detRows], widths: [6, 8, 6, 8, 6, 6, 8, 10, 11, 9], freeze: 1 }
+    ],
+    // 累積總表要加的列（前面多場次代碼、班級、日期、單元）
+    cum: {
+      detailHead: ['場次代碼', '班級', '日期', '單元', ...['座號', '場次', '題號', '題組', '選項', '對錯', '迷思', '信心', '開場後秒數', '這題秒數']],
+      detail: detRows.map(r => [code, cls, day, unit, ...r]),
+      itemHead: ['場次代碼', '班級', '日期', '單元', ...head],
+      item: itemRows.map(r => [code, cls, day, unit, ...r])
+    }
+  };
+}
+// 條件式格式的公式（xlsx 與 Google 試算表共用；位置相對於範圍左上角那一格）
+function cfRules(x) {
+  const c = colName(x.col) + (x.r0 + 1);
+  if (x.kind === 'rate') return [[`AND(ISNUMBER(${c}),${c}>=0.8)`, 'ok'], [`AND(ISNUMBER(${c}),${c}>=0.5,${c}<0.8)`, 'mid'], [`AND(ISNUMBER(${c}),${c}<0.5)`, 'no']];
+  const a = '$' + colName(x.ansCol) + (x.r0 + 1);
+  return [[`AND(ISNUMBER(${c}),${a}="${x.key}",${c}>=0.8)`, 'ok'], [`AND(ISNUMBER(${c}),${a}="${x.key}",${c}>=0.5,${c}<0.8)`, 'mid'], [`AND(ISNUMBER(${c}),${a}="${x.key}",${c}<0.5)`, 'no'],
+    [`AND(ISNUMBER(${c}),${a}<>"${x.key}",${c}>=0.5)`, 'no'], [`AND(ISNUMBER(${c}),${a}<>"${x.key}",${c}>=0.2,${c}<0.5)`, 'mid']];
+}
+
+// ---------- .xlsx（Office Open XML；zip 用「儲存」不壓縮，自己算 CRC32）----------
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipStore(files) {   // files: [[name, string]]
+  const enc = new TextEncoder(); const parts = [], cen = []; let off = 0;
+  const u16 = v => [v & 255, (v >>> 8) & 255], u32 = v => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  for (const [name, text] of files) {
+    const nb = enc.encode(name), db = enc.encode(text), crc = crc32(db);
+    const common = [...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(db.length), ...u32(db.length), ...u16(nb.length), ...u16(0)];
+    const lh = new Uint8Array([...u32(0x04034b50), ...common]); parts.push(lh, nb, db);
+    cen.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...common, ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), nb);
+    off += lh.length + nb.length + db.length;
+  }
+  const cenLen = cen.reduce((t, a) => t + a.length, 0);
+  const end = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cenLen), ...u32(off), ...u16(0)]);
+  const all = [...parts, ...cen, end]; const out = new Uint8Array(all.reduce((t, a) => t + a.length, 0)); let p = 0; all.forEach(a => { out.set(a, p); p += a.length; }); return out;
+}
+const xesc = v => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function xlsxBytes(book) {
+  // 樣式：0 一般、1 表頭（粗體、底色、換行）、2 百分比、3 小數兩位、4 帶正負號的百分比、5 自動換行
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="3"><numFmt numFmtId="164" formatCode="0%"/><numFmt numFmtId="165" formatCode="0.00"/><numFmt numFmtId="166" formatCode="+0%;-0%;0%"/></numFmts>
+<fonts count="2"><font><sz val="12"/><name val="Microsoft JhengHei"/></font><font><b/><sz val="12"/><name val="Microsoft JhengHei"/></font></fonts>
+<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF${SHEET_COLOR.head}"/></patternFill></fill></fills>
+<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment wrapText="1" vertical="center"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf></cellXfs>
+<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+<dxfs count="3">${['ok', 'mid', 'no'].map(k => `<dxf><font><color rgb="FF${SHEET_COLOR[k + 'T']}"/></font><fill><patternFill patternType="solid"><fgColor rgb="FF${SHEET_COLOR[k]}"/><bgColor rgb="FF${SHEET_COLOR[k]}"/></patternFill></fill></dxf>`).join('')}</dxfs></styleSheet>`;
+  const DXF = { ok: 0, mid: 1, no: 2 };
+  const sheetXML = sh => {
+    let pri = 1;
+    const rows = sh.rows.map((row, ri) => `<row r="${ri + 1}">${row.map((v, ci) => {
+      if (v == null || v === '') return '';
+      const ref = colName(ci) + (ri + 1);
+      const hd = ri === 0 && sh.freeze ? ' s="1"' : (sh.wrap && sh.wrap.includes(ci) ? ' s="5"' : '');
+      if (typeof v === 'number') return `<c r="${ref}"${hd}><v>${v}</v></c>`;
+      if (typeof v === 'object') return `<c r="${ref}" s="${v.pct ? 2 : v.sgn ? 4 : 3}"><v>${v.v}</v></c>`;
+      return `<c r="${ref}" t="inlineStr"${hd}><is><t xml:space="preserve">${xesc(v)}</t></is></c>`;
+    }).join('')}</row>`).join('');
+    const cf = (sh.cf || []).filter(x => x.r1 >= x.r0).map(x => `<conditionalFormatting sqref="${colName(x.col)}${x.r0 + 1}:${colName(x.col)}${x.r1 + 1}">${cfRules(x).map(([f, k]) => `<cfRule type="expression" dxfId="${DXF[k]}" priority="${pri++}"><formula>${xesc(f)}</formula></cfRule>`).join('')}</conditionalFormatting>`).join('');
+    const pane = sh.freeze ? `<pane ySplit="${sh.freeze}" topLeftCell="A${sh.freeze + 1}" activePane="bottomLeft" state="frozen"/>` : '';
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0">${pane}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${sh.widths ? `<cols>${sh.widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('')}</cols>` : ''}<sheetData>${rows}</sheetData>${cf}<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/></worksheet>`;
+  };
+  const S = book.sheets;
+  const files = [
+    ['[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${S.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>`],
+    ['_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>`],
+    ['docProps/core.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xesc(book.fname)}</dc:title><dc:creator>課堂形成性評量</dc:creator></cp:coreProperties>`],
+    ['xl/workbook.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${S.map((sh, i) => `<sheet name="${xesc(sh.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets></workbook>`],
+    ['xl/_rels/workbook.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${S.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${S.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+    ['xl/styles.xml', styles],
+    ...S.map((sh, i) => [`xl/worksheets/sheet${i + 1}.xml`, sheetXML(sh)])
+  ];
+  return zipStore(files);
+}
+function downloadXlsx() {
+  const book = sheetBook(); const bytes = xlsxBytes(book);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+  a.download = book.fname + '.xlsx'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  L.exported = true; return book;
+}
+
+// ---------- Google 試算表（Sheets API；權限 drive.file＝只能存取這個系統自己建立的檔案）----------
+const GS_API = 'https://sheets.googleapis.com/v4/spreadsheets';
+const DRIVE_FILE = 'https://www.googleapis.com/auth/drive.file';
+const gsColor = hex => ({ red: parseInt(hex.slice(0, 2), 16) / 255, green: parseInt(hex.slice(2, 4), 16) / 255, blue: parseInt(hex.slice(4, 6), 16) / 255 });
+class SheetErr extends Error { constructor(msg, why) { super(msg); this.why = why; } }
+// 把 Google 回的錯誤翻成老師看得懂的原因（why：api／scope／denied／login／auth／net／other）
+function gsWhy(status, body, project) {
+  const e = (body && body.error) || {}; const msg = String(e.message || ''); const det = JSON.stringify(e.details || []);
+  if (status === 403 && (/SERVICE_DISABLED|has not been used|is disabled/i.test(msg + det)))
+    return new SheetErr(`這個 Firebase 專案${project ? `（${project}）` : ''}還沒有開啟 Google Sheets API。請到 Google Cloud 主控台 → API 和服務 → 程式庫，搜尋「Google Sheets API」→ 啟用；啟用後約 1～5 分鐘生效。現在可以先按「下載 Excel」。`, 'api');
+  if (status === 403 && /insufficient|scope/i.test(msg + det + (e.status || '')))
+    return new SheetErr('Google 沒有給「建立與存取這個系統的雲端硬碟檔案」權限（同意畫面裡那一項沒有勾）。再按一次並勾選，或先按「下載 Excel」。', 'scope');
+  if (status === 401) return new SheetErr('Google 授權已過期，請再按一次。', 'auth');
+  if (status === 404) return new SheetErr('找不到試算表（可能已被刪除）。', 'notfound');
+  return new SheetErr(`Google 試算表回應錯誤（${status}${e.status ? ' ' + e.status : ''}）：${msg.slice(0, 160) || '沒有說明'}。可以先按「下載 Excel」。`, 'other');
+}
+async function gsToken(force) {
+  if (window.__FA_gtokenHook) return window.__FA_gtokenHook(force);   // 測試用：模擬的授權
+  if (store.mode !== 'cloud') throw new SheetErr('示範模式沒有登入 Google，不能存到 Google 試算表。請按「下載 Excel」，或改用雲端模式登入。', 'login');
+  if (location.protocol === 'file:') throw new SheetErr('從電腦直接開檔案時 Google 會擋下授權。請用線上網址，或按「下載 Excel」。', 'login');
+  return store.googleToken(DRIVE_FILE, force);
+}
+async function gsFetch(path, opt, project) {
+  let tok = await gsToken(false);
+  for (let t = 0; t < 2; t++) {
+    let r; try { r = await fetch(path.startsWith('http') ? path : GS_API + path, { ...opt, headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' } }); }
+    catch (e) { throw new SheetErr('連不到 Google（網路中斷或被學校網路擋下）。可以先按「下載 Excel」。', 'net'); }
+    const body = await r.json().catch(() => ({}));
+    if (r.ok) return body;
+    if (r.status === 401 && t === 0) { tok = await gsToken(true); continue; }
+    throw gsWhy(r.status, body, project);
+  }
+}
+const gsVal = v => v == null || v === '' ? {} : typeof v === 'number' ? { userEnteredValue: { numberValue: v } }
+  : typeof v === 'object' ? { userEnteredValue: { numberValue: v.v }, userEnteredFormat: { numberFormat: v.pct ? { type: 'PERCENT', pattern: '0%' } : v.sgn ? { type: 'PERCENT', pattern: '+0%;-0%;0%' } : { type: 'NUMBER', pattern: '0.00' } } }
+  : { userEnteredValue: { stringValue: String(v) } };
+const gsRows = (rows, headBold) => rows.map((row, ri) => ({ values: row.map(v => { const c = gsVal(v); if (ri === 0 && headBold) c.userEnteredFormat = { ...(c.userEnteredFormat || {}), textFormat: { bold: true }, backgroundColor: gsColor(SHEET_COLOR.head), wrapStrategy: 'WRAP' }; return c; }) }));
+function gsCreateBody(title, sheets) {
+  return { properties: { title, locale: 'zh_TW' }, sheets: sheets.map(sh => ({ properties: { title: sh.name, gridProperties: { frozenRowCount: sh.freeze || 0, rowCount: Math.max(sh.rows.length + 20, 100), columnCount: Math.max(26, (sh.rows[0] || []).length) } }, data: [{ startRow: 0, startColumn: 0, rowData: gsRows(sh.rows, !!sh.freeze) }] })) };
+}
+function gsFormatReqs(sheets, ids) {
+  const req = [];
+  sheets.forEach((sh, si) => {
+    const sheetId = ids[si];
+    (sh.widths || []).forEach((w, i) => req.push({ updateDimensionProperties: { range: { sheetId, dimension: 'COLUMNS', startIndex: i, endIndex: i + 1 }, properties: { pixelSize: Math.round(w * 7.5) }, fields: 'pixelSize' } }));
+    (sh.cf || []).filter(x => x.r1 >= x.r0).forEach(x => cfRules(x).forEach(([f, k]) => req.push({ addConditionalFormatRule: { index: 0, rule: { ranges: [{ sheetId, startRowIndex: x.r0, endRowIndex: x.r1 + 1, startColumnIndex: x.col, endColumnIndex: x.col + 1 }],
+      booleanRule: { condition: { type: 'CUSTOM_FORMULA', values: [{ userEnteredValue: '=' + f }] }, format: { backgroundColor: gsColor(SHEET_COLOR[k]), textFormat: { foregroundColor: gsColor(SHEET_COLOR[k + 'T']) } } } } } })));
+  });
+  return req;
+}
+const CUM_KEY = () => 'fa-cumsheet:' + (store.uid || 'local');
+async function saveToGoogle(opts) {
+  const book = sheetBook(); const project = (activeFbConfig() || {}).projectId || '';
+  const made = await gsFetch('', { method: 'POST', body: JSON.stringify(gsCreateBody(book.fname, book.sheets)) }, project);
+  const ids = (made.sheets || []).map(x => x.properties.sheetId);
+  const fr = gsFormatReqs(book.sheets, ids); if (fr.length) await gsFetch(`/${made.spreadsheetId}:batchUpdate`, { method: 'POST', body: JSON.stringify({ requests: fr }) }, project);
+  const out = { url: made.spreadsheetUrl || `https://docs.google.com/spreadsheets/d/${made.spreadsheetId}/edit`, id: made.spreadsheetId, cum: null };
+  if (opts && opts.cumulative) out.cum = await appendCumulative(book, project);
+  L.exported = true; return out;
+}
+// 累積總表：同一份試算表的「累積作答明細」「累積試題分析」往下加；同一個場次代碼已經加過就不重複加
+async function appendCumulative(book, project) {
+  let id = ls.get(CUM_KEY(), null), fresh = false;
+  const mk = async () => {
+    const sh = [{ name: '累積作答明細', rows: [book.cum.detailHead], freeze: 1 }, { name: '累積試題分析', rows: [book.cum.itemHead], freeze: 1 }];
+    const r = await gsFetch('', { method: 'POST', body: JSON.stringify(gsCreateBody('課堂形成性評量_累積總表', sh)) }, project);
+    const pctCols = book.cum.itemHead.map((h, i) => /比例|答對率/.test(h) && !/變化/.test(h) ? i : -1).filter(i => i >= 0);
+    const sid = r.sheets[1].properties.sheetId;
+    await gsFetch(`/${r.spreadsheetId}:batchUpdate`, { method: 'POST', body: JSON.stringify({ requests: pctCols.map(i => ({ repeatCell: { range: { sheetId: sid, startRowIndex: 1, startColumnIndex: i, endColumnIndex: i + 1 }, cell: { userEnteredFormat: { numberFormat: { type: 'PERCENT', pattern: '0%' } } }, fields: 'userEnteredFormat.numberFormat' } })) }) }, project);
+    ls.set(CUM_KEY(), r.spreadsheetId); fresh = true; return r.spreadsheetId;
+  };
+  if (!id) id = await mk();
+  let col;
+  try { col = await gsFetch(`/${id}/values/${encodeURIComponent('累積作答明細!A:A')}`, { method: 'GET' }, project); }
+  catch (e) { if (e.why !== 'notfound') throw e; id = await mk(); col = { values: [] }; }
+  const url = `https://docs.google.com/spreadsheets/d/${id}/edit`;
+  const have = new Set((col.values || []).map(r => r[0]));
+  if (have.has(book.meta.code)) return { url, id, added: false, fresh, reason: `場次 ${book.meta.code} 已經加過，沒有重複加` };
+  const plain = v => v == null ? '' : typeof v === 'object' ? v.v : v;
+  for (const [name, rows] of [['累積作答明細', book.cum.detail], ['累積試題分析', book.cum.item]]) {
+    if (!rows.length) continue;
+    await gsFetch(`/${id}/values/${encodeURIComponent(name + '!A1')}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, { method: 'POST', body: JSON.stringify({ values: rows.map(r => r.map(plain)) }) }, project);
+  }
+  return { url, id, added: true, fresh, rows: book.cum.detail.length, items: book.cum.item.length };
+}
+// 出場摘要的兩個按鈕
+function wireSheets() {
+  const bx = $('u-xlsx'), bg = $('u-gs'); if (!bx) return;
+  bx.onclick = () => { try { const b = downloadXlsx(); toast(`已下載 ${b.fname}.xlsx（Excel、Google 試算表都能直接開）`, 4000); } catch (e) { console.error(e); toast('產生 Excel 失敗：' + e.message, 6000); } };
+  bg.onclick = async () => {
+    const cum = $('u-gs-cum') && $('u-gs-cum').checked; const box = $('u-gs-msg');
+    bg.disabled = true; box.className = 'gs-msg'; box.textContent = '存到 Google 試算表中…（第一次會跳出 Google 授權視窗）';
+    try {
+      const r = await saveToGoogle({ cumulative: cum });
+      box.className = 'gs-msg ok';
+      box.innerHTML = `已建立：<a href="${esc(r.url)}" target="_blank" rel="noopener">開啟試算表</a>${r.cum ? (r.cum.added ? `　已加到<a href="${esc(r.cum.url)}" target="_blank" rel="noopener">累積總表</a>（${r.cum.rows} 筆作答、${r.cum.items} 題${r.cum.fresh ? '；第一次使用，已新建累積總表' : ''}）` : `　累積總表：${esc(r.cum.reason)}（<a href="${esc(r.cum.url)}" target="_blank" rel="noopener">開啟</a>）`) : ''}`;
+    } catch (e) {
+      console.error(e);
+      box.className = 'gs-msg err';
+      box.textContent = '沒有存成：' + (e instanceof SheetErr ? e.message : googleAuthMsg(e));
+    } finally { bg.disabled = false; }
+  };
+}
+function googleAuthMsg(e) {
+  const c = e && e.code || '';
+  if (/popup-closed-by-user|cancelled-popup-request|user-cancelled/.test(c)) return '授權視窗被關掉，或沒有按「允許」。要存到 Google 試算表需要同意「建立與存取這個系統的雲端硬碟檔案」；不想授權可以按「下載 Excel」。';
+  if (/popup-blocked/.test(c)) return '瀏覽器擋下了 Google 授權視窗，請允許彈出式視窗再按一次，或按「下載 Excel」。';
+  if (/unauthorized-domain|operation-not-allowed|invalid-oauth|admin-restricted|internal-error/.test(c)) return `這個 Firebase 專案的 Google 登入設定不完整（${c}）：請到「使用自己的 Firebase」說明的第 2、3 步檢查 Google 登入與授權網域，並啟用 Google Sheets API。現在可以先按「下載 Excel」。`;
+  if (/user-mismatch/.test(c)) return '授權時選了和教師端登入不同的 Google 帳號，請選同一個帳號。';
+  return (e && e.message ? e.message : String(e)) + '。可以先按「下載 Excel」。';
+}
 
 </script>
 </body>

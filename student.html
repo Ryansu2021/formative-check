@@ -201,6 +201,8 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 
 /* ---------- 出場摘要 ---------- */
 #v-sum{gap:14px}
+.gs-box{display:inline-flex;align-items:center;gap:6px}.gs-cum{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;color:var(--ink2)}
+.gs-msg{font-size:15px;line-height:1.6;min-height:0}.gs-msg:empty{display:none}.gs-msg.ok{color:var(--qing);font-weight:700}.gs-msg.err{color:var(--zhu);font-weight:700;background:var(--zhu-l);border-radius:10px;padding:8px 12px}
 .sum-grid{flex:1;display:grid;grid-template-columns:1fr 1.15fr;gap:16px;min-height:0}
 .stat-row{display:flex;gap:12px}
 .stat{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
@@ -691,7 +693,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.31（2026-11-16）';
+const APP_VERSION = 'v3.32（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -864,6 +866,17 @@ class FireStore {
     if (!u || u.isAnonymous) return null;
     this.isAdmin = ADMIN_EMAILS.map(x => x.toLowerCase()).includes((u.email || '').toLowerCase()) && isDefaultFb(this.cfg);
     return u;
+  }
+  // v3.32 存到 Google 試算表：用已登入的教師帳號再要一個 OAuth 權限（只要 drive.file），拿 access token 呼叫 Sheets API；token 約 1 小時，記在記憶體
+  async googleToken(scope, force) {
+    if (!force && this._gt && this._gt.scope === scope && this._gt.exp > Date.now()) return this._gt.token;
+    await this.init(); const A = this.A; const u = this.auth.currentUser;
+    if (!u || u.isAnonymous) { const e = new Error('還沒有用 Google 帳號登入教師端'); e.code = 'fa/not-signed-in'; throw e; }
+    const p = new A.GoogleAuthProvider(); p.addScope(scope); p.setCustomParameters({ login_hint: u.email || '' });
+    const res = await A.reauthenticateWithPopup(u, p);
+    const cred = A.GoogleAuthProvider.credentialFromResult(res);
+    if (!cred || !cred.accessToken) { const e = new Error('Google 沒有回傳授權'); e.code = 'fa/no-token'; throw e; }
+    this._gt = { scope, token: cred.accessToken, exp: Date.now() + 50 * 60 * 1000 }; return cred.accessToken;
   }
   async signOut() { await this.init(); await this.A.signOut(this.auth); }
   sref(code) { return this.F.doc(this.db, COL, code); }
