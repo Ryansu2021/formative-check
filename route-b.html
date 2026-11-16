@@ -4225,17 +4225,199 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
     return out.join('');
   }
 
-  // 把 2^3×3^2 轉成 HTML 上標
-  function mathHTML(text) {
-    const esc = String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    return esc.replace(/\^(\{([^}]*)\}|[-−]?[0-9a-zA-Z□○]+(?:\.[0-9]+)?)/g, (m, a, b) => `<sup>${b !== undefined ? b : a}</sup>`);
+  // ---------- 數學式正式寫法（v3.31）----------
+  // 資料格式不變（a/b、1又2/3、√(…)、^），只在顯示時排版：分數上下式、帶分數、根號橫線、上標、≦≧、減號。
+  // 不用 KaTeX／MathJax（學生頁要小），用 HTML＋CSS（MATH_CSS 由 core.js 插入頁面、報表也帶一份）。
+  const MATH_CSS = `.mf{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;text-align:center;font-size:.86em;line-height:1.08;margin:0 .08em;white-space:nowrap;position:relative;top:-.06em}
+.mf>.mf-n,.mf>.mf-d{display:block;padding:0 .14em}
+.mf>.mf-n{border-bottom:max(1px,.075em) solid currentColor;padding-bottom:.04em}
+.mf>.mf-d{padding-top:.06em}
+.mf .mf{font-size:.92em}
+.mf-m{font-size:.8em;margin-left:.06em}
+.mr{display:inline-block;position:relative;padding-left:.6em;white-space:nowrap;vertical-align:baseline}
+.mr>.mr-s{position:absolute;left:.02em;top:0;width:.6em;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:max(1.2px,.08em);stroke-linejoin:round;stroke-linecap:round}
+.mr>.mr-x{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mr>.mr-i{display:inline-block;border-top:max(1px,.075em) solid currentColor;padding:.1em .1em 0 .04em;line-height:1.1}
+.mr.mr-t>.mr-i{padding-top:.14em}
+.mr .mf{top:0}
+sup .mf{font-size:.9em}
+.mg{white-space:nowrap}`;
+  const MX_ESC = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const MX_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ⁻⁺';
+  const MX_UNIT_A = '(?:km|cm|mm|kg|mL|min|m|g|L|s|h)';
+  const MX_UNIT_C = '(?:公里|公尺|公分|毫米|公克|公斤|毫升|公升|元|角|人|個|次|題|頁|張|本|件|分鐘|分|小時|時|秒|天|日|週|月|年|平方公尺|平方公分|立方公分|立方公尺)';
+  // 不排成分數的斜線（整段原樣、或把 / 換成全形 ／）
+  const MX_KEEP = [
+    [/https?:\/\/[^\s，。、）)」]+/g, 'url'],
+    [/[\w\u4e00-\u9fff.\-]+(?:\/[\w\u4e00-\u9fff.\-]+)+\.(?:md|json|html?|js|py|pdf|txt|png|webp|csv)\b/g, 'path'],
+    [/\b(?:19|20)\d\d\/\d{1,2}(?:\/\d{1,2})?\b/g, 'date'],
+    [/\/{2,}|／{2,}/g, 'par'],
+    [new RegExp(`(?<![A-Za-z])${MX_UNIT_A}\\/${MX_UNIT_A}[²³]?(?![A-Za-z])`, 'g'), 'unit'],
+    [new RegExp(`${MX_UNIT_C}\\/${MX_UNIT_C}`, 'g'), 'unit'],
+    [/\b[A-Z]{1,3}\d{1,3}[A-Z]?(?:\/[A-Z0-9]{1,4})+\b/g, 'code'],
+    [/(?<![A-Za-z])[A-Z]\/[A-Z](?=\s*[卷場版組])/g, 'text']
+  ];
+  function mxSplit(s) {
+    const marks = [];
+    for (const [re, kind] of MX_KEEP) { re.lastIndex = 0; let m; while ((m = re.exec(s))) { if (!marks.some(k => m.index < k.e && m.index + m[0].length > k.b)) marks.push({ b: m.index, e: m.index + m[0].length, kind }); } }
+    marks.sort((a, b) => a.b - b.b);
+    const out = []; let i = 0;
+    for (const k of marks) { if (k.b > i) out.push({ math: s.slice(i, k.b) }); out.push({ keep: s.slice(k.b, k.e), kind: k.kind }); i = k.e; }
+    if (i < s.length) out.push({ math: s.slice(i) });
+    return out;
+  }
+  const mxClose = { '(': ')', '[': ']', '{': '}' };
+  function mxGroupEnd(s, i) {   // s[i] 是 ( 或 [；回傳配對的右括號位置，沒有就 -1
+    const st = [];
+    for (let j = i; j < s.length; j++) {
+      const c = s[j];
+      if (c === '(' || c === '[') st.push(mxClose[c]);
+      else if (c === ')' || c === ']') { if (st.pop() !== c) return -1; if (!st.length) return j; }
+    }
+    return -1;
+  }
+  const MX_LET = /[A-Za-zπα-ωθ□○]/;
+  const MX_CJK = /[\u4e00-\u9fff]/;
+  const MX_WORD = /^(?:和|或|及|與|且|是|否|對|錯|有|無|男|女|上|下|左|右)$/;   // 斜線兩邊是這些字＝文字的「或」，不排成分數
+  function mxTok(s) {
+    const T = []; let i = 0;
+    const last = () => T[T.length - 1];
+    while (i < s.length) {
+      const c = s[i];
+      if (/[0-9]/.test(c)) { const m = /^[0-9]+(?:\.[0-9]+)?/.exec(s.slice(i)); T.push({ t: 'num', raw: m[0] }); i += m[0].length; continue; }
+      if (MX_LET.test(c)) { const m = /^.[₀-₉]*[′']*/u.exec(s.slice(i)); T.push({ t: 'let', raw: m[0] }); i += m[0].length; continue; }
+      if (c === '(' || c === '[') { const j = mxGroupEnd(s, i); if (j > 0) { T.push({ t: 'grp', o: c, c: s[j], inner: s.slice(i + 1, j) }); i = j + 1; continue; } }
+      if (c === '√') {
+        let j = i + 1, rad = null;
+        if (s[j] === '(' || s[j] === '[') { const k = mxGroupEnd(s, j); if (k > 0) { rad = s.slice(j + 1, k); j = k + 1; } }
+        else { const m = /^(?:[0-9]+(?:\.[0-9]+)?|[A-Za-zπ]+)[²³⁴]?/.exec(s.slice(j)); if (m) { rad = m[0]; j += m[0].length; } }
+        if (rad !== null) { T.push({ t: 'sqrt', rad }); i = j; continue; }
+      }
+      if (c === '^') {
+        let j = i + 1, e = null;
+        if (s[j] === '{') { const k = s.indexOf('}', j); if (k > 0) { e = s.slice(j + 1, k); j = k + 1; } }
+        else if (s[j] === '(') { const k = mxGroupEnd(s, j); if (k > 0) { e = s.slice(j + 1, k); j = k + 1; } }
+        else { const m = /^[-−+]?[0-9a-zA-Z□○]+(?:\.[0-9]+)?/.exec(s.slice(j)); if (m) { e = m[0]; j += m[0].length; } }
+        if (e !== null) { const p = last(); if (p && p.t !== 'op') (p.sup = p.sup || []).push({ e }); else T.push({ t: 'op', raw: '', sup: [{ e }] }); i = j; continue; }
+      }
+      if (MX_SUP.includes(c)) { let j = i; while (j < s.length && MX_SUP.includes(s[j])) j++; const u = s.slice(i, j); const p = last(); if (p && p.t !== 'op') (p.sup = p.sup || []).push({ u }); else T.push({ t: 'op', raw: u }); i = j; continue; }
+      if (c === '又' && /[0-9]/.test(s[i - 1] || '') && /[0-9]/.test(s[i + 1] || '')) { T.push({ t: 'you', raw: c }); i++; continue; }
+      if (MX_CJK.test(c)) { let j = i; while (j < s.length && MX_CJK.test(s[j]) && !(s[j] === '又' && /[0-9]/.test(s[j - 1] || '') && /[0-9]/.test(s[j + 1] || ''))) j++; T.push({ t: 'cjk', raw: s.slice(i, j) }); i = j; continue; }
+      T.push({ t: 'op', raw: c }); i++;
+    }
+    return T;
+  }
+  const mxOperand = t => t && (t.t === 'num' || t.t === 'let' || t.t === 'grp' || t.t === 'sqrt');
+  function mxCombine(T, st, src) {
+    // 1) 分數：左邊連續的數、字母、括號、根號＝分子；右邊一個數（1/2x＝(1/2)x，和驗算器一致）、一個括號、一個根號或一串字母＝分母
+    for (let k = 0; k < T.length; k++) {
+      const t = T[k]; if (t.t !== 'op' || t.raw !== '/') continue;
+      const L = T[k - 1], R = T[k + 1];
+      if (!L || !R) { if (st) st.miss.push(st.top || src); continue; }
+      let a = k - 1, b = k + 1;
+      if ((L.t === 'cjk' && L.raw.length > 4) || (R.t === 'cjk' && R.raw.length > 4)) { if (st) st.miss.push(st.top || src); continue; }
+      if (L.t === 'cjk') {
+        if (R.t === 'cjk') {
+          if (MX_WORD.test(L.raw) || MX_WORD.test(R.raw)) { t.raw = '／'; if (st) { st.n.textSlash++; st.text.push(st.top || src); } continue; }   // 和/或、是/否：文字斜線
+          if (st) st.unsure.push(['中文／中文', st.top || src]);
+        } else if (!(mxOperand(R))) { if (st) st.miss.push(st.top || src); continue; }
+        else if (st) st.unsure.push(['中文當分子', st.top || src]);
+      } else if (mxOperand(L)) { while (a - 1 >= 0 && mxOperand(T[a - 1])) a--; }
+      else { if (st) st.miss.push(st.top || src); continue; }
+      if (R.t === 'let') { while (b + 1 < T.length && T[b + 1].t === 'let' && !T[b].sup) b++; }
+      else if (R.t === 'cjk') { if (L.t !== 'cjk' && st) st.unsure.push(['中文當分母', st.top || src]); }
+      else if (!mxOperand(R)) { if (st) st.miss.push(st.top || src); continue; }
+      const numT = T.slice(a, k), denT = T.slice(k + 1, b + 1);
+      if (st && numT.length === 1 && denT.length === 1 && numT[0].t === 'let' && denT[0].t === 'let' && /^[A-Z]/.test(numT[0].raw) && /^[A-Z]/.test(denT[0].raw)) st.unsure.push(['大寫字母相除', st.top || src]);
+      if (st && (numT.some(x => x.t === 'let' && /^[A-Z]/.test(x.raw)) && numT.filter(x => x.t === 'let').length >= 2)) st.unsure.push(['線段比寫成分數', st.top || src]);
+      const f = { t: 'frac', num: numT, den: denT };
+      T.splice(a, b - a + 1, f); k = a;
+      if (st) st.n.frac++;
+    }
+    // 2) 帶分數：整數＋（一個空格或「又」）＋整數分數
+    for (let k = 2; k < T.length; k++) {
+      const f = T[k]; if (f.t !== 'frac') continue;
+      const sp = T[k - 1], w = T[k - 2];
+      if (!w || w.t !== 'num' || w.sup || /\./.test(w.raw)) continue;
+      if (!(f.num.length === 1 && f.den.length === 1 && f.num[0].t === 'num' && f.den[0].t === 'num' && !f.num[0].sup && !f.den[0].sup)) continue;
+      const isYou = sp.t === 'you', isSp = sp.t === 'op' && sp.raw === ' ';
+      if (!isYou && !isSp) continue;
+      const pre = T[k - 3];
+      if (isSp && (+f.num[0].raw >= +f.den[0].raw || (pre && (mxOperand(pre) || pre.t === 'frac' || pre.t === 'cjk' || (pre.t === 'op' && /[0-9.,，、/]/.test(pre.raw)))))) { if (st && +f.num[0].raw < +f.den[0].raw) st.unsure.push(['整數 空格 分數（沒排成帶分數）', st.top || src]); continue; }
+      T.splice(k - 2, 3, { t: 'mix', w, f }); k -= 2;
+      if (st) { st.n.frac--; st.n.mixed++; if (isSp) st.mixSp.push(st.top || src); }
+    }
+    return T;
+  }
+  function mxSup(sup, st) {
+    if (!sup) return '';
+    return sup.map(x => {
+      if (x.u) return MX_ESC(x.u);
+      if (st) { st.n.sup++; if (/-/.test(x.e)) st.n.minus++; }
+      return `<sup>${mxMath(String(x.e).replace(/-/g, '−'), st, true)}</sup>`;
+    }).join('');
+  }
+  const mxStrip = T => T.length === 1 && T[0].t === 'grp' && !T[0].sup ? T[0].inner : null;
+  function mxPart(T, st, inM) { const s = mxStrip(T); return s !== null ? mxMath(s, st, true) : mxRender(T, st, inM); }
+  function mxRender(T, st, inM) {
+    let h = '';
+    for (let k = 0; k < T.length; k++) {
+      const t = T[k];
+      if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
+      else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
+      else if (t.t === 'grp') { const g = MX_ESC(t.o) + mxMath(t.inner, st, inM) + MX_ESC(t.c) + mxSup(t.sup, st); h += t.inner.length <= 24 ? `<span class="mg">${g}</span>` : g; }   // 短括號式不在中間換行
+      else if (t.t === 'sqrt') {
+        if (st) st.n.sqrt++;
+        const ri = mxMath(t.rad, st, true); const tall = /class="mf/.test(ri);
+        // 根號的勾用 SVG 畫（高度跟被開方數一樣、頂端接橫線，不受字型影響）；隱藏的 √ 讓複製與報讀仍是 √
+        h += `<span class="mr${tall ? ' mr-t' : ''}"><svg class="mr-s" viewBox="0 0 10 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0.6 12.2 L2.6 11 L5.4 19.4 L9.9 0.4" vector-effect="non-scaling-stroke"/></svg><span class="mr-x">√</span><span class="mr-i">${ri}</span></span>` + mxSup(t.sup, st);
+      }
+      else if (t.t === 'frac') h += `<span class="mf"><span class="mf-n">${mxPart(t.num, st, true)}</span><span class="mf-d">${mxPart(t.den, st, true)}</span></span>`;
+      else if (t.t === 'mix') h += `<span class="mg">${MX_ESC(t.w.raw)}<span class="mf mf-m"><span class="mf-n">${MX_ESC(t.f.num[0].raw)}</span><span class="mf-d">${MX_ESC(t.f.den[0].raw)}</span></span></span>`;
+      else {
+        let c = t.raw;
+        if (c === '≤') { c = '≦'; if (st) st.n.ineq++; }
+        else if (c === '≥') { c = '≧'; if (st) st.n.ineq++; }
+        else if (c === '-') {
+          // 減號：數學式裡（根號、分數、指數內）一律換；外面只換「一元負號」與明顯的代數減號，課號 1-1、N-7-3、30°-60°-90° 不換
+          const P = T[k - 1], N = T[k + 1], PP = T[k - 2];
+          const nextOk = mxOperand(N) || (N && N.t === 'frac');
+          const unary = (!P || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞]$/.test(P.raw))) && nextOk && !(P && P.raw === ' ' && PP && (PP.t === 'num' || PP.t === 'let'));
+          const binary = P && ((P.t === 'let' && /^[a-zπ]/.test(P.raw) && !(PP && PP.t === 'let')) || P.t === 'grp' || P.t === 'frac' || P.t === 'sqrt' || P.sup) && nextOk;
+          if (inM || unary || binary) { c = '−'; if (st) st.n.minus++; }
+        }
+        else if (c === '*' && mxOperand(T[k - 1]) && (mxOperand(T[k + 1]) || (T[k + 1] && T[k + 1].t === 'frac'))) { c = '×'; if (st) st.n.star++; }
+        h += MX_ESC(c) + mxSup(t.sup, st);
+      }
+    }
+    return h;
+  }
+  function mxMath(s, st, inM) { return mxRender(mxCombine(mxTok(s), st, s), st, inM); }
+  function mathHTML(text, st) {
+    const s = String(text ?? '');
+    if (st) st.top = s;
+    return mxSplit(s).map(p => {
+      if (p.keep !== undefined) {
+        if (p.kind === 'unit') { if (st) { st.n.unitSlash++; st.unit.push(p.keep); } return MX_ESC(p.keep.replace('/', '／')); }
+        if (p.kind === 'par') return MX_ESC(p.keep);
+        if (st) { st.n.keepSlash++; st.keep.push([p.kind, p.keep]); }
+        return MX_ESC(p.keep);
+      }
+      return mxMath(p.math, st, false);
+    }).join('');
+  }
+  // 掃描用（_src/tools/math_scan.js）：同一個排版，回傳各類轉換次數與沒轉換、不確定的原文
+  function mathScan(text) {
+    const st = { n: { frac: 0, mixed: 0, sqrt: 0, sup: 0, ineq: 0, minus: 0, star: 0, unitSlash: 0, keepSlash: 0, textSlash: 0 }, miss: [], unsure: [], mixSp: [], unit: [], keep: [], text: [] };
+    const html = mathHTML(text, st); delete st.top;
+    return { html, ...st };
   }
   // @@VIEW-END
 
   G.FAVerify = { pbQuadOf, pbVertex, isQuadFnJudge, paraTruth, shiftTruth, viewCode, netWhy, perpJudge, boxRel, axesOf, triMeasure, triOrderOpt, parCritJudge, pgCritJudge, quadTruth, quadWitness, isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalQ, fmtQ, evalRel, parseProduct, parseSet,
                  parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
-                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, DIAG_LABEL,
+                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, mathScan, MATH_CSS, DIAG_LABEL,
                  evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, quadEq1Kind, parseSolText, safeSVG, evalR, fmtR, radFormOK, factorOK, splitFactors, quadRootsOf, parseRootSet, relR, rootStmt,
                  lineCoefQ, sameLineQ, seqIs, relKindQ, ineqTruth, ineqBoundary, numText, piVal, piFmt, posTruth,
                  geoTruth: GEO14.truth, geoScene: GEO14.scene, congJudge: CONG14.judge, solveTri: CONG14.solveTri, congWhyJudge: CONGW.judge, congScene: CONGW.scene, congName: CONGW.parseName, cexJudge: CEX14.judge, cexInScope: CEX14.inScope,
@@ -13528,7 +13710,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.30（2026-11-15）';
+const APP_VERSION = 'v3.31（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -13568,6 +13750,8 @@ const isDefaultFb = c => (c || activeFbConfig()).projectId === FB_DEFAULT.projec
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const M = t => `<span class="math">${V.mathHTML(t)}</span>`;
+// v3.31 數學式正式寫法：分數上下式、根號橫線的樣式（verify.js 的 MATH_CSS），教師頁與學生頁共用
+try { if (V.MATH_CSS && !document.getElementById('fa-math-css')) { const e = document.createElement('style'); e.id = 'fa-math-css'; e.textContent = V.MATH_CSS; document.head.appendChild(e); } } catch (e) { }
 const OPT_COLOR = k => `var(--o${'ABCDE'.includes(k) ? k : 'E'})`;
 const ls = {
   get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -14566,7 +14750,7 @@ function renderOverview(st, r, veiled, joined) {
   const mmax = Math.max(1, ...codes.map(c => st.mis[c] ? st.mis[c].seats.size : 0), ...(prev ? codes.map(c => prev.mis[c] ? prev.mis[c].seats.size : 0) : [0]));
   const misRows = ord.map(({ c, g, p }) => {
     const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, np = p ? p.seats.size : null; const m = st.mm[c] || { name: '?' };
-    return `<div class="mis-row" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${esc(m.name)}</div>
+    return `<div class="mis-row" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>
       <div class="mis-track"><div class="mis-fill" style="width:${n / mmax * 100}%"></div><div class="mis-fill sure" style="width:${ns / mmax * 100}%"></div>${np != null ? `<div class="mis-ghost" style="left:${np / mmax * 100}%"></div>` : ''}</div>
       </div>
       <span class="c">${n}${np != null ? `<span class="small muted" style="font-family:var(--sans)"> ←${np}</span>` : ''}</span></div>`;
@@ -14632,7 +14816,7 @@ function renderMisZoom(st, r, veiled) {
   }
   const why = veiled ? '' : `<div class="mz-sec"><h4>為什麼會錯</h4><div class="mz-why">${M(m.desc || '')}</div>${m.example ? `<div class="mz-ex">學生的錯誤算法：${M(m.example)}</div>` : ''}</div>`;
   $('l-main').innerHTML = `<div class="panel mz" style="grid-column:1/3;grid-row:1/3">
-    <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 class="mz-title"><span class="mis-code">${esc(c)}</span> ${esc(m.name)} <span class="n">第${r === 2 ? '二' : '一'}場${head}</span></h3>
+    <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><h3 class="mz-title"><span class="mis-code">${esc(c)}</span> ${V.mathHTML(m.name)} <span class="n">第${r === 2 ? '二' : '一'}場${head}</span></h3>
       <div class="row" style="gap:8px"><button class="btn sm" id="mz-prev" ${k <= 0 ? 'disabled' : ''}>◀ 上一個迷思</button><button class="btn sm" id="mz-next" ${k >= order.length - 1 ? 'disabled' : ''}>下一個迷思 ▶</button><button class="btn sm dai" id="mz-back">回總覽</button></div></div>
     <div class="mz-body"><div class="mz-qs scroll">${cards || '<div class="muted">這一場沒有題目用到這個迷思。</div>'}</div>
       <div class="mz-side scroll">${why}<div class="mz-sec mz-rem"><h4>補救建議</h4><div class="mz-remedy">${M(m.remedy || '')}</div>${m.card ? `<div class="mz-cardln">備課網頁對應卡：${esc(m.card)}</div>` : ''}</div>${seats}
@@ -14647,7 +14831,7 @@ function renderDetail(st, r, veiled) {
   const twin = r === 2 ? statRound(1).perItem[i] : (L.session.round >= 2 ? statRound(2).perItem[i] : null);
   const max = Math.max(1, p.n);
   const bars = it.options.map(o => { const c = p.cnt[o.key] || 0; const right = o.key === it.answer && !veiled;
-    const mis = o.mis && !veiled && mm[o.mis] ? `<span class="mis-code" style="background:#fff">${esc(o.mis)} ${esc(mm[o.mis].name)}</span>` : '';
+    const mis = o.mis && !veiled && mm[o.mis] ? `<span class="mis-code" style="background:#fff">${esc(o.mis)} ${V.mathHTML(mm[o.mis].name)}</span>` : '';
     return `<div class="bar-row ${right ? 'right' : ''}"><span class="k" style="background:${OPT_COLOR(o.key)}">${o.key}</span>
       <div class="bar-track"><div class="bar-fill" style="width:${c / max * 100}%;background:${OPT_COLOR(o.key)}"></div><div class="bar-txt">${M(o.text)}${right ? ' ✓' : ''} ${mis}</div></div>
       <span class="cnt">${c}${p.n ? `<span class="small muted" style="font-family:var(--sans)"> ${Math.round(c / p.n * 100)}%</span>` : ''}</span></div>`; }).join('');
@@ -14659,7 +14843,7 @@ function renderDetail(st, r, veiled) {
     <div class="bars">${bars}</div>
     ${!veiled && sure.length ? `<div class="suggest" style="background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c">很確定卻答錯：${sure.map(x => x + ' 號').join('、')}</div>` : ''}
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
-    ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${esc(mm[o.mis].name)}：${esc(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
+    ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${V.mathHTML(mm[o.mis].name)}：${V.mathHTML(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
     ${veiled ? '<div class="small muted">投影保護中：正解與迷思標註已隱藏</div>' : ''}</div>`;
   $('d-back').onclick = () => { L.detail = null; L.misZoom = null; renderLive(); };
   $('d-prev').onclick = () => { L.detail = i - 1; renderLive(); };
@@ -14747,10 +14931,10 @@ function openSummary() {
     <div class="sum-grid">
       <div class="col" style="min-height:0">
         <h3 style="font-size:20px">依迷思分組補救 <span class="muted small" style="font-family:var(--sans)">${has2 ? '紅字＝第二場仍有（優先補救）' : ''}</span></h3>
-        <div class="col scroll" style="gap:10px;flex:1">${groups.map(g => `<div class="grp"><h4><span class="mis-code">${esc(g.c)}</span> ${esc(g.m.name)}　<span class="muted small">第一場 ${g.r1.length} 人${has2 ? ` → 第二場 ${g.r2.length} 人` : ''}</span></h4>
+        <div class="col scroll" style="gap:10px;flex:1">${groups.map(g => `<div class="grp"><h4><span class="mis-code">${esc(g.c)}</span> ${V.mathHTML(g.m.name)}　<span class="muted small">第一場 ${g.r1.length} 人${has2 ? ` → 第二場 ${g.r2.length} 人` : ''}</span></h4>
           ${has2 ? `<div class="seatsline">仍有：${g.remain.map(x => x + ' 號').join('、') || '—'}${g.fresh.length ? `　第二場新出現：${g.fresh.map(x => x + ' 號').join('、')}` : ''}</div><div class="small" style="color:var(--qing);font-weight:700">已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>`
             : `<div class="seatsline">${g.r1.map(x => x + ' 號').join('、')}</div>`}
-          <div class="rem">補救：${esc(g.m.remedy || '')}</div></div>`).join('') || '<div class="muted">沒有學生出現迷思選項。</div>'}</div>
+          <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`).join('') || '<div class="muted">沒有學生出現迷思選項。</div>'}</div>
       </div>
       <div class="col" style="min-height:0">
         <h3 style="font-size:20px">各題組</h3>
@@ -14774,7 +14958,7 @@ function openSummary() {
     return [...L.resp].map(r => { const f = all.find(([rr, , it]) => rr === r.round && it.id === r.itemId); if (!f) return null; const [, i, it] = f; const o = it.options.find(x => x.key === r.choice);
       return { seat: +r.seat, round: r.round, no: i + 1, pair: it.pair || '', stem: it.stem, choice: r.choice, ok: r.choice === it.answer, mis: o && o.mis && r.choice !== it.answer ? o.mis : '', conf: CONF[r.conf] || '', sec: Math.round((r.ms || 0) / 1000) }; })
       .filter(Boolean).sort((a, b) => a.seat - b.seat || a.round - b.round || a.no - b.no); };
-  const usedMis = codes => codes.filter(c => mm[c]).map(c => `<tr><td><b>${esc(c)}</b></td><td class="l">${esc(mm[c].name)}</td><td class="l">${esc(mm[c].remedy || '')}</td></tr>`).join('');
+  const usedMis = codes => codes.filter(c => mm[c]).map(c => `<tr><td><b>${esc(c)}</b></td><td class="l">${V.mathHTML(mm[c].name)}</td><td class="l">${V.mathHTML(mm[c].remedy || '')}</td></tr>`).join('');
   const reportHTML = kind => {
     const d = new Date(), pad = n => String(n).padStart(2, '0'), day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const name = { stu: '學生報表', detail: '作答明細', sum: '出場摘要' }[kind];
@@ -14782,9 +14966,9 @@ function openSummary() {
     let body = '';
     if (kind === 'sum') {
       body = `<div class="stats"><div><b>${seats.length}</b>參與人數</div><div><b>${N}</b>每場題數</div><div><b>${pct(avg(s1))}</b>第一場平均答對率</div><div><b>${has2 ? pct(avg(s2)) : '—'}</b>第二場平均答對率</div><div><b class="zhu">${need.size}</b>${has2 ? '第二場仍有迷思' : '第一場有迷思'}的學生</div></div>
-      <h2>依迷思分組補救</h2>${groups.map(g => `<div class="grp"><h3><span class="code">${esc(g.c)}</span>${esc(g.m.name)}　<small>第一場 ${g.r1.length} 人${has2 ? ` → 第二場 ${g.r2.length} 人` : ''}</small></h3>
+      <h2>依迷思分組補救</h2>${groups.map(g => `<div class="grp"><h3><span class="code">${esc(g.c)}</span>${V.mathHTML(g.m.name)}　<small>第一場 ${g.r1.length} 人${has2 ? ` → 第二場 ${g.r2.length} 人` : ''}</small></h3>
         ${has2 ? `<div>仍有：<b class="zhu">${g.remain.map(x => x + ' 號').join('、') || '—'}</b>${g.fresh.length ? `　第二場新出現：<b class="zhu">${g.fresh.map(x => x + ' 號').join('、')}</b>` : ''}　已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>` : `<div>座號：<b>${g.r1.map(x => x + ' 號').join('、')}</b></div>`}
-        <div class="rem">補救：${esc(g.m.remedy || '')}</div></div>`).join('') || '<p>沒有學生出現迷思選項。</p>'}
+        <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`).join('') || '<p>沒有學生出現迷思選項。</p>'}
       <h2>各題組</h2><table><thead><tr><th>組</th><th class="l">第一場題目</th><th>第一場答對率</th><th>第二場答對率</th><th>變化</th></tr></thead><tbody>
       ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const dd = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
         return `<tr><td>${i + 1}</td><td class="l">${M(p.it.stem)}</td><td>${pct(p.rate)}（${p.n} 人）</td><td>${has2 && q ? `${pct(q.rate)}（${q.n} 人）` : '—'}</td><td>${dd == null ? '—' : (dd > 0 ? '+' : '') + dd}</td></tr>`; }).join('')}</tbody></table>
@@ -14828,6 +15012,7 @@ tr.wrong td{background:#fbf0ec}.zhu{color:#b5432f}
 .rem{color:#4f8a78;margin-top:2px}
 section.seat{margin-bottom:10px}section.seat h3{border-bottom:1px solid #cdbf9f}
 .math{font-family:'Times New Roman',serif}
+${V.MATH_CSS || ''}
 footer.f{margin-top:14px;color:#8a7c6c;font-size:11px;text-align:right}
 @media print{.bar{display:none}main{max-width:none;padding:0}}
 </style></head><body><div class="bar"><button onclick="print()">列印／存成 PDF</button><span>印表機（目的地）選「另存為 PDF」或「Microsoft Print to PDF」，就會存成 PDF。</span></div>
@@ -15013,7 +15198,7 @@ async function loadMisInfo() {
   if (T.misA && T.misA.key === key) from = T.misA.from;
   else if (!b) { const mi = await fetchUnitMis(key); if (mi) { b = { misconceptions: mi.misconceptions }; from = `迷思庫 mis/${key}.json（${mi.sourceNote || ''}）`; } }
   T.misA = { key, bank: b, from };
-  box.innerHTML = b ? `已載入 ${esc(key)} 的迷思表：<b>${(b.misconceptions || []).length} 個迷思</b>（${(b.misconceptions || []).slice(0, 4).map(m => esc(m.name)).join('、')}…）<br>來源：${esc(shown(from))}`
+  box.innerHTML = b ? `已載入 ${esc(key)} 的迷思表：<b>${(b.misconceptions || []).length} 個迷思</b>（${(b.misconceptions || []).slice(0, 4).map(m => V.mathHTML(m.name)).join('、')}…）<br>來源：${esc(shown(from))}`
     : `<span style="color:var(--zhu)">${esc(key)} 沒有現成題庫，也沒有迷思庫，請改選「自己貼上」或「由 AI 自己列」。</span>`;
 }
 function parseMisPaste(t) {
@@ -15120,7 +15305,7 @@ function showGenResult() {
       <div class="small muted">${b.items.length} 題（${s.pairs} 組平行題，結構一致 ${s.pairOk} 組）・${b.misconceptions.length} 個迷思・驗算 ${s.pass}✓ ${s.fail}✗ ${s.manual}⚠${b.fixRounds ? `・AI 修正 ${b.fixRounds} 次` : ''}</div></div>
       <div class="row" style="gap:8px">${s.fail || s.pairOk < s.pairs ? '<button class="btn sm" id="g-fix">請 AI 修正未通過的題目</button>' : ''}<button class="btn sm qing" id="g-save">存入題庫</button></div></div>
     <details class="card small" style="padding:8px 14px"><summary style="cursor:pointer;font-weight:700">迷思表（${b.misconceptions.length}）${b.misMode === 'A' ? '・沿用現成題庫' : b.misMode === 'paste' ? '・老師貼上' : b.misMode === 'ai' ? '・AI 自列，請逐條確認' : ''}${b.misconceptions.some(m => /AI 新增/.test(m.source || '')) ? `・<span style="color:var(--zhu)">AI 另外新增 ${b.misconceptions.filter(m => /AI 新增/.test(m.source || '')).length} 個</span>` : ''}</summary>
-      ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${esc(m.name)}</b>　${esc(m.example || '')}　<span class="muted">補救：${esc(m.remedy || '')}</span>　<span class="small" style="${/AI/.test(m.source || '') ? 'color:var(--zhu);font-weight:700' : 'color:var(--muted)'}">出處：${esc(m.source || '未寫')}</span></div>`).join('')}</details>
+      ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${V.mathHTML(m.name)}</b>　${V.mathHTML(m.example || '')}　<span class="muted">補救：${V.mathHTML(m.remedy || '')}</span>　<span class="small" style="${/AI/.test(m.source || '') ? 'color:var(--zhu);font-weight:700' : 'color:var(--muted)'}">出處：${esc(m.source || '未寫')}</span></div>`).join('')}</details>
     <div class="items scroll">${renderItemCards(b, vr, {}, false, true)}</div>`;
   const fx = $('g-fix'); if (fx) fx.onclick = () => runGen(true);
   $('g-save').onclick = () => { Banks.save(Object.assign(JSON.parse(JSON.stringify(b)), { _src: 'teacher' })); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
@@ -15183,7 +15368,7 @@ async function loadTplMis(u) {
   $('m-tplinfo').textContent = `${tpls.length} 種模板：${tpls.map(t => t.title || t.tpl).join('、')}`;
   const my = myList(); const exprT = tpls.filter(t => t.check && t.check.type === 'value' && t.check.expr);
   $('m-my').innerHTML = my.length ? `<div style="margin-top:6px"><b>我的迷思</b><span class="muted">（套在算式題：${esc(exprT.map(t => t.title || t.tpl).join('、') || '這一節沒有算式題模板')}）</span></div>` +
-    my.map(m => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-my="${esc(m.code)}" ${exprT.length ? '' : 'disabled'}><span class="mis-code">${esc(m.code)}</span><b>${esc(m.name)}</b><span class="muted">${esc(m.expr)}＝${esc(m.wrong)}</span></label>`).join('') : '';
+    my.map(m => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-my="${esc(m.code)}" ${exprT.length ? '' : 'disabled'}><span class="mis-code">${esc(m.code)}</span><b>${V.mathHTML(m.name)}</b><span class="muted">${esc(m.expr)}＝${esc(m.wrong)}</span></label>`).join('') : '';
   $('m-all').onclick = () => { document.querySelectorAll('[data-mc]').forEach(c => c.checked = true); };
   $('m-none').onclick = () => { document.querySelectorAll('[data-mc]').forEach(c => c.checked = false); };
 }
@@ -15316,14 +15501,14 @@ function renderMyPane() {
       ${genModeSw()}
       <h3 style="font-size:22px">白話寫一條自己的迷思</h3>
       <div class="small muted" style="line-height:1.6">寫一句描述＋一個例子。AI（或你自己）從下面的「變形」挑 1～3 個組合成學生的錯誤算法，程式用例子驗證：算得出你寫的錯誤答案才能存。</div>
-      <label class="fl">描述<input type="text" id="y-desc" value="${esc(d.desc || '')}" placeholder="例：學生把 −3² 當成 9"></label>
+      <label class="fl">描述<input type="text" id="y-desc" value="${V.mathHTML(d.desc || '')}" placeholder="例：學生把 −3² 當成 9"></label>
       <div class="row"><label class="fl" style="flex:1">例子：算式<input type="text" id="y-expr" value="${esc(d.expr || '')}" placeholder="−3^2"></label>
         <label class="fl" style="width:150px">學生算出<input type="text" id="y-wrong" value="${esc(d.wrong || '')}" placeholder="9"></label></div>
       <div class="row"><label class="fl" style="width:110px">代碼<input type="text" id="y-code" value="${esc(d.code || nextMyCode())}"></label>
-        <label class="fl" style="flex:1">迷思名稱<input type="text" id="y-name" value="${esc(d.name || '')}" placeholder="負號也被次方"></label></div>
+        <label class="fl" style="flex:1">迷思名稱<input type="text" id="y-name" value="${V.mathHTML(d.name || '')}" placeholder="負號也被次方"></label></div>
       <div class="row" style="gap:8px"><button class="btn zhu" id="y-ai">🤖 AI 翻成規則</button><span class="small muted">或自己勾下面的變形，再按「用例子驗證」</span></div>
       <div class="fl">變形（白名單，最多勾 3 個，依序套用）<div id="y-tf" class="small" style="line-height:1.9">${Object.entries(TF).map(([k, t]) => `<label class="row" style="gap:6px;align-items:baseline"><input type="checkbox" data-tf="${k}" ${(d.transforms || []).includes(k) ? 'checked' : ''}><b>${esc(t.name)}</b><span class="muted">${esc(t.ex)}</span></label>`).join('')}</div></div>
-      <label class="fl">怎麼改（選填，學生答錯時看到）<input type="text" id="y-fix" value="${esc(d.fix || '')}" placeholder="負號在次方外面：先算 3²＝9，再加負號"></label>
+      <label class="fl">怎麼改（選填，學生答錯時看到）<input type="text" id="y-fix" value="${V.mathHTML(d.fix || '')}" placeholder="負號在次方外面：先算 3²＝9，再加負號"></label>
       <div class="row" style="gap:8px"><button class="btn" id="y-check">用例子驗證</button><button class="btn qing" id="y-save" disabled>存進我的迷思</button></div>
       <div id="y-status" class="small" style="line-height:1.7"></div>
       <details class="small"><summary style="cursor:pointer;font-weight:700">Gemini 設定（AI 翻成規則才需要）</summary>
@@ -15389,9 +15574,9 @@ function renderMyList() {
   $('y-list').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="font-size:21px">我的迷思（${a.length}）</h3>
       <div class="row" style="gap:8px"><button class="btn sm" id="y-exp" ${a.length ? '' : 'disabled'}>匯出 JSON</button><button class="btn sm ghost" id="y-imp">匯入 JSON</button><input type="file" id="y-file" accept=".json" hidden></div></div>
     <div class="small muted">存在這台電腦的瀏覽器。到「📐 模板出題」勾選，就會用在算式題（例如 −3²、5＋(−8)、(2/3)⁴）的誘答。</div>
-    <div class="items scroll">${a.map(m => `<div class="item"><div class="item-h"><span class="mis-code">${esc(m.code)}</span><b>${esc(m.name)}</b><span class="muted small">${esc(m.desc || '')}</span>
+    <div class="items scroll">${a.map(m => `<div class="item"><div class="item-h"><span class="mis-code">${esc(m.code)}</span><b>${V.mathHTML(m.name)}</b><span class="muted small">${V.mathHTML(m.desc || '')}</span>
         <button class="btn sm ghost" data-ydel="${esc(m.code)}" style="margin-left:auto;padding:2px 8px">刪除</button></div>
-        <div class="small" style="margin:6px 0 0 8px;line-height:1.7">例子：${V.mathHTML(m.trace || '')}<br>變形：${m.transforms.map(t => esc(FR.my.TRANSFORMS[t] ? FR.my.TRANSFORMS[t].name : t)).join(' → ')}<span class="muted">　｜　${esc(m.by || '')}・${esc(m.createdAt || '')}</span>${m.fix ? `<br>怎麼改：${esc(m.fix)}` : ''}</div></div>`).join('') || '<div class="card muted">還沒有。左邊寫一句描述＋一個例子試試看，例如「學生把 −3² 當成 9」。</div>'}</div>`;
+        <div class="small" style="margin:6px 0 0 8px;line-height:1.7">例子：${V.mathHTML(m.trace || '')}<br>變形：${m.transforms.map(t => esc(FR.my.TRANSFORMS[t] ? FR.my.TRANSFORMS[t].name : t)).join(' → ')}<span class="muted">　｜　${esc(m.by || '')}・${esc(m.createdAt || '')}</span>${m.fix ? `<br>怎麼改：${V.mathHTML(m.fix)}` : ''}</div></div>`).join('') || '<div class="card muted">還沒有。左邊寫一句描述＋一個例子試試看，例如「學生把 −3² 當成 9」。</div>'}</div>`;
   document.querySelectorAll('[data-ydel]').forEach(b => b.onclick = () => { if (!confirm('刪除這條迷思？')) return; mySave(myList().filter(m => m.code !== b.dataset.ydel)); renderMyList(); });
   $('y-exp').onclick = () => download(`我的迷思_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.json`, JSON.stringify({ schema: 'fa-mymis/1', items: myList() }, null, 2), 'application/json');
   $('y-imp').onclick = () => $('y-file').click();
@@ -15461,8 +15646,8 @@ function renderCmpPane() {
         ${Array.from({ length: Math.max(A.misconceptions.length, B.misconceptions.length) }, (_, i) => {
           const ma = A.misconceptions[i], mb = B.misconceptions[i];
           const cnt = (bk, c) => c ? bk.items.filter(it => it.options.some(o => o.mis === c)).length : '';
-          return `<tr><td class="l">${ma ? `<span class="mis-code">${esc(ma.code)}</span> ${esc(ma.name)}` : ''}</td><td>${ma ? cnt(A, ma.code) : ''}</td>
-            <td class="l">${mb ? `<span class="mis-code">${esc(mb.code)}</span> ${esc(mb.name)}` : ''}</td><td>${mb ? cnt(B, mb.code) : ''}</td></tr>`;
+          return `<tr><td class="l">${ma ? `<span class="mis-code">${esc(ma.code)}</span> ${V.mathHTML(ma.name)}` : ''}</td><td>${ma ? cnt(A, ma.code) : ''}</td>
+            <td class="l">${mb ? `<span class="mis-code">${esc(mb.code)}</span> ${V.mathHTML(mb.name)}` : ''}</td><td>${mb ? cnt(B, mb.code) : ''}</td></tr>`;
         }).join('')}</table></div>
     </div></div>`;
   $('cmp-b').onchange = e => { T.cmpB = e.target.value; renderCmpPane(); };
