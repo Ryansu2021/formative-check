@@ -398,7 +398,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--vio)}
 .quad .q-ok{background:var(--qing-l);border-color:#bfe8d9} .quad .q-luck{background:#f2faf6} .quad .q-learn{background:#fff8ee} .quad .q-stuck{background:var(--zhu-l);border-color:#f6c4be;color:#b23a30}
 .seat{border-radius:10px;border:2px dashed var(--line)}
 .seat.in{border:2px solid var(--line);background:#fff;color:var(--ink2)}
-.seat.ans{background:var(--ink2);border-color:var(--ink2)}
+.seat.ans{background:var(--ink2);border-color:var(--ink2);color:#fff}   /* v3.33.1：.seat.in 在上一行把字設成深灰，作答中（in＋ans）字和底同色、看不到座號 */
 .seat.ok{background:var(--qing);border-color:var(--qing)} .seat.mid{background:var(--huang);border-color:var(--huang)} .seat.no{background:var(--zhu);border-color:var(--zhu)}
 .seat.sure::after{border:3px solid #8f2a22;border-radius:13px}
 .seat i{background:var(--vio)}
@@ -13760,7 +13760,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.33（2026-11-16）';
+const APP_VERSION = 'v3.33.1（2026-11-16）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
