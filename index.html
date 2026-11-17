@@ -72,7 +72,7 @@ body.fit footer{display:none}
 .gcard .mark{position:absolute;right:.15em;top:-.1em;font-size:6.5em;font-weight:800;line-height:1;color:var(--gb);pointer-events:none;user-select:none}
 .gcard h2{position:relative;font-size:2em;font-weight:800;line-height:1.2}
 .gcard h2 small{display:block;font-size:.42em;color:var(--ink3);font-weight:700;letter-spacing:.08em}
-.gcard ul{position:relative;list-style:none;display:flex;flex-direction:column;gap:.3em;font-size:.98em;color:var(--ink2);flex:1;min-height:0;justify-content:center;line-height:1.5}
+.gcard ul{position:relative;list-style:none;display:flex;flex-direction:column;gap:.3em;font-size:.98em;color:var(--ink2);flex:1;min-height:0;justify-content:safe center;line-height:1.5}
 .gcard li{display:flex;gap:.55em;align-items:baseline}
 .gcard li b{flex:none;min-width:2.8em;font-size:.82em;color:var(--gc);background:var(--gb);border-radius:999px;padding:0 .5em;text-align:center;font-weight:800}
 .gcard li.none{color:var(--ink3)}
@@ -543,7 +543,7 @@ function applyFit(){
   const floor = (home ? 12 : 16.5) * k;
   let u = want; root.style.setProperty('--u', u + 'px');
   const bad = el => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
-  const over = () => bad(root) || [...root.querySelectorAll('.gcard,.cbody,.sec')].some(bad);
+  const over = () => bad(root) || [...root.querySelectorAll('.gcard,.gcard ul,.cbody,.sec')].some(bad);
   let n = 0; while (over() && u > floor && n++ < 80){ u = Math.max(floor, u - .5); root.style.setProperty('--u', u + 'px'); }
   if (over()){ document.body.classList.remove('fit'); document.body.classList.add('roll'); root.style.setProperty('--u', Math.max(floor, Math.min(want, 18 * k)) + 'px'); }
 }
