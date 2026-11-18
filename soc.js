@@ -187,11 +187,14 @@ window.FA_SOC_INIT = function (X) {
     } catch (e) { out = ''; }
     return (figCache[it.id] = out);
   }
-  // 進度回寫：自己座號文件的 soc＝{題目:{stage,done,n}}；場次已結束（或還沒公布）就不寫、不報錯
+  // 進度回寫：自己座號文件的 soc＝{題目:{stage,done,n,chat}}；場次已結束（或還沒公布）就不寫、不報錯
+  // v3.38（老師：「老師要看得到學生的 AI 訂正過程」）：連同對話一起寫（每則最多 800 字、每題最近 40 則；整份太大時從最舊的刪），老師在出場摘要點「AI 訂正」看
+  const chatOut = chat => chat.filter(x => x.role === 'me' || x.role === 'tutor').slice(-40).map(x => x.role === 'me' ? { r: 'me', x: String(x.text || '').slice(0, 800) } : { r: 't', s: x.stage || 0, x: String(x.text || '').slice(0, 800) });
   function writeBack() {
     const s = X.S.session; if (!X.store || !X.store.saveSoc || !s || !s.active || s.soc !== true || !s.results) return;
     const m = {};
-    for (const r of [1, 2]) roundItems(s, r).forEach(it => { if (!s.results[it.id]) return; const c = ls.get(chatKey(it.id), null); if (c && c.chat && c.chat.length) m[it.id] = { stage: c.done ? 5 : c.stage || 1, done: !!c.done, n: c.chat.filter(x => x.role === 'me').length }; });
+    for (const r of [1, 2]) roundItems(s, r).forEach(it => { if (!s.results[it.id]) return; const c = ls.get(chatKey(it.id), null); if (c && c.chat && c.chat.length) m[it.id] = { stage: c.done ? 5 : c.stage || 1, done: !!c.done, n: c.chat.filter(x => x.role === 'me').length, chat: chatOut(c.chat) }; });
+    for (let g = 0; g < 400 && JSON.stringify(m).length > 700000; g++) { const k = Object.keys(m).find(k => m[k].chat && m[k].chat.length > 2); if (!k) break; m[k].chat.splice(0, 2); }   // Firestore 文件上限 1 MB
     X.store.saveSoc(X.S.code, X.S.seat, m).catch(e => console.warn('AI 訂正進度沒有寫入', e && (e.code || e.message)));
   }
   // 樣式：只在 student.html

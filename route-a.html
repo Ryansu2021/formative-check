@@ -472,6 +472,24 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .zpie-c{display:flex;flex-direction:column;align-items:center;gap:10px} .zpie .live-stem{font-size:34px} .zpie .ch-pie{width:min(440px,46vh);height:min(440px,46vh)} .zpie .ch-leg{font-size:20px;display:grid;grid-template-columns:auto auto;gap:4px 20px}
 @media (max-width:1100px){.det-body,.zpie,.zconf{grid-template-columns:1fr}}
 .fa-snap #l-start1,.fa-snap #l-end1,.fa-snap #l-start2,.fa-snap #l-end2,.fa-snap #l-results,.fa-snap #l-sim,.fa-snap #l-back,.fa-snap #l-export,.fa-snap #btn-home,.fa-snap #l-stale,.fa-snap #u-end,.fa-snap #u-prep,.fa-snap .gs-box{display:none!important}.fa-snap .code-big{cursor:default}
+.socv-bg{position:fixed;inset:0;z-index:60;background:rgba(20,30,50,.45);display:flex;align-items:center;justify-content:center}
+.socv{width:min(1180px,94vw);max-height:90vh;background:var(--card,#fff);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden}
+.socv-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-bottom:1.5px solid var(--line)}
+.socv-h h3{margin:0;font-size:22px}
+.socv-b{overflow:auto;padding:14px 20px;display:flex;flex-direction:column;gap:14px}
+.socv-it{border:1.5px solid var(--line);border-left:6px solid var(--qing);border-radius:12px;padding:12px 14px;background:#fff}
+.socv-it.done{border-left-color:var(--qing)} .socv-it.go{border-left-color:var(--huang,#e0a030)}
+.socv-it h4{margin:0 0 6px;font-size:17px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.socv-stem{font-size:16px;color:var(--ink2);margin-bottom:6px}
+.socv-steps{display:flex;gap:6px;align-items:center;font-size:13px;margin-bottom:8px;flex-wrap:wrap}
+.socv-steps span{padding:2px 10px;border-radius:99px;background:var(--line);color:var(--ink2);font-weight:700}
+.socv-steps span.ok{background:var(--qing-l,#e3f6ef);color:var(--qing)} .socv-steps span.now{background:var(--huang-l,#fff3df);color:#8a5a00}
+.socv-chat{display:flex;flex-direction:column;gap:6px}
+.socv-m{max-width:78%;padding:7px 12px;border-radius:12px;font-size:15px;line-height:1.6}
+.socv-m.me{align-self:flex-end;background:#e8eefc;border-bottom-right-radius:3px}
+.socv-m.t{align-self:flex-start;background:#f4f1ea;border-bottom-left-radius:3px}
+.socv-m .pill{display:inline-block;font-size:12px;font-weight:800;padding:0 8px;border-radius:99px;background:var(--qing-l,#e3f6ef);color:var(--qing);margin-right:6px}
+.socv-none{font-size:14px;color:var(--ink2)}
 /* @@TEACHER-ONLY-END */
 </style>
 </head>
@@ -13775,7 +13793,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.37（2026-11-18）';
+const APP_VERSION = 'v3.38（2026-11-18）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -15218,6 +15236,30 @@ function openItemFromSum(r, i) {
   Object.assign(L, { view: r, manualView: true, detail: i, misZoom: null, chartZoom: null, fromSum: true });
   renderLive();
 }
+// v3.38 AI 訂正過程（老師：「老師要看得到學生的 AI 訂正過程」）：出場摘要點某位學生的「AI 訂正」→ 每題訂正到哪一階段＋完整對話
+const SOC_STG = ['', '條件', '關係', '計算', '驗算', '完成'];
+function socItemOf(id) { const A = setOf(1), B = setOf(2); let i = A.findIndex(x => x.id === id); if (i >= 0) return { r: 1, i, it: A[i] }; i = B.findIndex(x => x.id === id); return i >= 0 ? { r: 2, i, it: B[i] } : null; }
+function openSocView(seat) {
+  const st = L.students.find(x => +x.seat === seat); const m = st && st.soc && typeof st.soc === 'object' ? st.soc : {};
+  const ids = Object.keys(m).map(id => ({ id, q: socItemOf(id), v: m[id] })).filter(x => x.q).sort((a, b) => a.q.r - b.q.r || a.q.i - b.q.i);
+  const txt = t => String(t || '').split('\n').map(l => V.mathHTML(l).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')).join('<br>');
+  const body = ids.map(({ q, v }) => {
+    const a = L.resp.find(x => x.round === q.r && +x.seat === seat && x.itemId === q.it.id);
+    const stg = v.done ? 5 : (v.stage || 1);
+    const steps = [1, 2, 3, 4, 5].map(k => `<span class="${v.done || k < stg ? 'ok' : k === stg ? 'now' : ''}">${SOC_STG[k]}</span>`).join('<i>›</i>');
+    const chat = Array.isArray(v.chat) && v.chat.length ? `<div class="socv-chat">${v.chat.map(c => c.r === 'me' ? `<div class="socv-m me">${txt(c.x)}</div>` : `<div class="socv-m t">${c.s ? `<span class="pill">${SOC_STG[c.s] || ''}</span>` : ''}${txt(c.x)}</div>`).join('')}</div>`
+      : '<div class="socv-none">只有進度、沒有對話內容（學生的平板用的是較舊的版本，或對話還沒寫回）。</div>';
+    return `<div class="socv-it ${v.done ? 'done' : 'go'}"><h4><span class="qlink" data-q="${q.r}:${q.i}">第${q.r === 2 ? '二' : '一'}場第 ${q.i + 1} 題</span>
+      <span class="muted small">學生選 ${a ? esc(a.choice || '—') : '—'}・正解 ${esc(q.it.answer)}・對話 ${v.n || 0} 回合</span>${v.done ? '<span class="chip" style="color:var(--qing)">✓ 完成</span>' : ''}</h4>
+      <div class="socv-stem">${M(q.it.stem)}</div><div class="socv-steps">${steps}</div>${chat}</div>`;
+  }).join('') || '<div class="socv-none">這位學生還沒有使用 AI 訂正。</div>';
+  let bg = $('socv-bg'); if (!bg) { bg = document.createElement('div'); bg.id = 'socv-bg'; bg.className = 'socv-bg'; $('stage').appendChild(bg); }
+  bg.hidden = false;
+  bg.innerHTML = `<div class="socv"><div class="socv-h"><h3>${seat} 號・AI 訂正過程</h3><button class="btn sm dai" id="socv-x">關閉</button></div><div class="socv-b">${body}</div></div>`;
+  const close = () => { bg.hidden = true; bg.innerHTML = ''; };
+  $('socv-x').onclick = close; bg.onclick = e => { if (e.target === bg) close(); };
+  bg.querySelectorAll('[data-q]').forEach(el => el.onclick = () => { close(); openItemFromSum(...el.dataset.q.split(':').map(Number)); });
+}
 function openSummary() {
   L.fromSum = false;
   const s = L.session; const s1 = statRound(1), s2 = statRound(2); const mm = misMapOf(L.bank);
@@ -15265,11 +15307,12 @@ function openSummary() {
           ${stu.map(x => { const m1 = x.a ? [...x.a.mis] : [], m2 = x.b ? [...x.b.mis] : [];
             return `<tr><td><b>${x.seat}</b></td><td>${x.a ? `${x.a.ok}/${N}` : '—'}${x.a && x.a.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
             <td>${x.b ? `${x.b.ok}/${N}` : '—'}${x.b && x.b.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
-            <td class="l small">${m1.join('、')}</td><td class="l small" style="color:var(--zhu);font-weight:700">${m2.join('、')}</td>${s.soc ? `<td class="small" data-socseat="${x.seat}">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table></div>
+            <td class="l small">${m1.join('、')}</td><td class="l small" style="color:var(--zhu);font-weight:700">${m2.join('、')}</td>${s.soc ? `<td class="small${socTxt(x.seat) !== '—' ? ' qlink' : ''}" data-socseat="${x.seat}" title="看這位學生的 AI 訂正過程（每題階段與對話）">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table></div>
         <div class="small muted">!＝有「很確定卻答錯」的題目</div>
       </div></div>`;
   $('u-back').onclick = () => openLive(L.code);
   document.querySelectorAll('#v-sum [data-q]').forEach(el => el.onclick = () => openItemFromSum(...el.dataset.q.split(':').map(Number)));   // v3.36 點題號看題目
+  document.querySelectorAll('#v-sum [data-socseat]').forEach(el => el.onclick = () => openSocView(+el.dataset.socseat));   // v3.38 看 AI 訂正過程
   if (s.soc) L.unsubs.push(store.watchStudents(L.code, st => { L.students = st; if ($('v-sum').hidden) return;
     document.querySelectorAll('[data-socseat]').forEach(td => td.textContent = socTxt(+td.dataset.socseat));
     const z = socStat(); if ($('u-soc-stat')) { $('u-soc-stat').textContent = z.d; $('u-soc-p').textContent = z.p; } }));
