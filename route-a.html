@@ -13823,7 +13823,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.40（2026-11-19）';
+const APP_VERSION = 'v3.41（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -15650,7 +15650,7 @@ function renderAiPane() {
         <textarea id="g-mispaste" style="height:90px" placeholder="例：&#10;M01 把 1 當成質數（12＝1×2²×3）&#10;M02 分解未完全：留下合數就停" ${g.mis === 'paste' ? '' : 'hidden'}>${esc(g.mispaste || '')}</textarea></div>
       <label class="fl">不要考的內容（選填）<input type="text" id="g-excl" value="${esc(g.excl ?? '')}" placeholder="例：正因數個數公式、正因數和（翰林備課寫不必強調）"></label>
       <div class="row"><label class="fl" style="width:150px">平行題組數<input type="number" id="g-n" value="${g.n || 9}" min="3" max="12"></label>
-        <label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(g.model && !/^gemini-2\.5-/.test(g.model) ? g.model : 'gemini-3.5-flash')}"></label></div>
+        ${gemModelField(g.model)}</div>
       <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
       <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label>
       <div class="keynote">🔐 key 只存在這台電腦的瀏覽器，直接送到 Google，不會寫進題庫、不會傳給學生。學生端完全不需要 AI。<br>免費額度的 API 資料可能被 Google 用於改進產品，題目內容不要放學生個資。</div>
@@ -15699,8 +15699,13 @@ function parseMisPaste(t) {
     return { code: m ? m[1].toUpperCase() : 'M' + String(i + 1).padStart(2, '0'), name: ex ? body.slice(0, ex.index).trim() : body, example: ex ? ex[1] : '', remedy: '', source: '老師提供' };
   });
 }
-// v3.0：503／429／500 自動等 2、4、8 秒重試三次；gemini-3.5-flash 還是失敗就改 gemini-3.5-flash-lite；callGemini.lastModel 記實際用的模型
+// v3.0：503／429／500 自動等 2、4、8 秒重試三次；callGemini.lastModel 記實際用的模型
+// v3.41（2026-11-19，老師截圖回報：模型填 gemini-3.6-flash 遇到 503 沒有改用備援、直接顯示英文錯誤）：
+//   任何模型 503／500／429 重試後，依序改用 GEM_FALLBACK（跳過和原模型相同的）；429 是額度用完（per day／quota）不重試同一模型、直接換；
+//   金鑰無效、模型名稱不存在不重試也不換。丟出的錯誤 message 是中文，e.raw＝Google 原文（畫面放在可展開的詳細資訊）
 const RETRY_WAIT = [2, 4, 8];
+const GEM_MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
+const GEM_FALLBACK = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
 const sleep = s => new Promise(r => setTimeout(r, s * 1000 * (window.__FA_WAIT_SCALE ?? 1)));
 async function callGeminiOnce(prompt, key, model) {
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
@@ -15708,32 +15713,64 @@ async function callGeminiOnce(prompt, key, model) {
     body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { responseMimeType: 'application/json', temperature: 0.6 } })
   });
   const j = await res.json().catch(() => ({}));
-  if (!res.ok) { const e = new Error((j.error && j.error.message) || ('HTTP ' + res.status)); e.status = res.status; throw e; }
+  if (!res.ok) { const e = new Error((j.error && j.error.message) || ('HTTP ' + res.status)); e.status = res.status; e.raw = JSON.stringify(j.error || j); throw e; }
   const text = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
   if (!text) throw new Error('AI 沒有回傳內容' + (j.promptFeedback ? '（' + JSON.stringify(j.promptFeedback) + '）' : ''));
   return text;
 }
+// Google 錯誤 → 種類與老師看得懂的中文
+function gemKind(e, model) {
+  const t = (e.message || '') + ' ' + (e.raw || ''), st = e.status;
+  if (st === 429 && /per ?day|perday/i.test(t)) return { k: 'day', zh: `${model} 今天的免費額度用完了（明天會重置）` };
+  if (st === 429 && /quota/i.test(t)) return { k: 'quota', zh: `${model} 的使用次數超過額度` };
+  if (st === 429) return { k: 'busy', zh: `${model} 短時間內呼叫太多次` };
+  if (st === 503 || st === 500 || /high demand|overloaded|unavailable/i.test(t) && st >= 500) return { k: 'busy', zh: `${model} 目前使用的人太多（Google 忙線）` };
+  if (/API[_ ]KEY[_ ]INVALID|API key not valid|API key expired|PERMISSION_DENIED|unregistered callers/i.test(t) || st === 401 || st === 403) return { k: 'key', zh: 'Gemini 金鑰無效（API key）：請確認金鑰有沒有貼完整、有沒有過期' };
+  if (st === 404 || /is not found|not supported for generateContent/i.test(t)) return { k: 'nf', zh: `模型名稱不存在：「${model}」，請從選單選一個模型` };
+  return { k: 'other', zh: `Gemini 回傳錯誤${st ? '（' + st + '）' : ''}` };
+}
 async function callGemini(prompt) {
   const key = ($('g-key') ? $('g-key').value.trim() : '') || T.gemKey || ls.get('fa-gemini-key', '');   // T.gemKey：這次開著網頁期間記得，關掉就不留
   if (key) T.gemKey = key;
-  const model = ($('g-model') && $('g-model').value.trim()) || 'gemini-3.5-flash';
+  const model = gemModel();
   if (!key) throw new Error('請先填 Gemini API key');
   if ($('g-remember')) { if ($('g-remember').checked) ls.set('fa-gemini-key', key); else ls.del('fa-gemini-key'); }
-  const models = model === 'gemini-3.5-flash' ? [model, 'gemini-3.5-flash-lite'] : [model];
-  const log = []; let last;
+  const models = [model, ...GEM_FALLBACK.filter(x => x !== model)];
+  const log = [], why = []; let last, lastK;
+  const stat = h => { const st = $('g-status') || $('m-status') || $('y-status'); if (st) st.innerHTML = `<span class="spinner"></span> ${h}`; };
+  callGemini.wanted = model; callGemini.why = '';
   for (const m of models) {
     for (let t = 0; t <= RETRY_WAIT.length; t++) {
-      try { const text = await callGeminiOnce(prompt, key, m); callGemini.lastModel = m; callGemini.log = log; return text; }
+      try { const text = await callGeminiOnce(prompt, key, m); callGemini.lastModel = m; callGemini.log = log; callGemini.why = why.join('；'); return text; }
       catch (e) {
-        last = e; log.push(`${m}：${e.status || ''} ${e.message}`);
-        if (![429, 500, 503].includes(e.status)) break;                       // 金鑰錯、格式錯：重試沒用
-        if (t < RETRY_WAIT.length) { const st = $('g-status') || $('m-status'); if (st) st.innerHTML = `<span class="spinner"></span> ${esc(m)} 忙線（${e.status}），${RETRY_WAIT[t]} 秒後重試（第 ${t + 1}／3 次）…`; await sleep(RETRY_WAIT[t]); }
+        last = e; lastK = gemKind(e, m); log.push(`${m}：${e.status || ''} ${e.raw || e.message}`);
+        if (lastK.k === 'key' || lastK.k === 'nf' || lastK.k === 'other') { const x = new Error(lastK.zh); x.raw = log.join('\n'); throw x; }   // 重試、換模型都沒用
+        if (lastK.k === 'day' || lastK.k === 'quota') break;                                     // 額度用完：重試同一模型是浪費，直接換備援
+        if (t < RETRY_WAIT.length) { stat(`${esc(lastK.zh)}，${RETRY_WAIT[t]} 秒後重試（第 ${t + 1}／3 次）…`); await sleep(RETRY_WAIT[t]); }
       }
     }
-    if (models.length > 1 && m === models[0]) { const st = $('g-status') || $('m-status'); if (st) st.innerHTML = `<span class="spinner"></span> ${esc(m)} 一直忙線，改用 ${esc(models[1])}…`; }
+    why.push(lastK.zh);
+    const nx = models[models.indexOf(m) + 1]; if (nx) stat(`${esc(lastK.zh)}，改用備援模型 ${esc(nx)}…`);
   }
-  callGemini.log = log; throw last;
+  callGemini.log = log;
+  const x = new Error(`${why.join('；')}。所有備援模型都試過了，請等幾分鐘再按一次${lastK && (lastK.k === 'day' || lastK.k === 'quota') ? '（或明天再試、換一把金鑰）' : ''}。`); x.raw = log.join('\n'); throw x;
 }
+// 成功後的說明：實際使用的模型（換過備援就說原因）
+const gemUsedNote = () => callGemini.lastModel ? `（實際使用的模型：${esc(callGemini.lastModel)}${callGemini.wanted && callGemini.lastModel !== callGemini.wanted ? `；${esc(callGemini.why || callGemini.wanted + ' 失敗')}，已自動改用備援` : ''}）` : '';
+// 失敗的畫面：中文在前，Google 原文放在可展開的詳細資訊
+const gemErrHTML = (pre, e) => `<span style="color:var(--zhu);font-weight:700">${esc(pre)}${esc(e.message)}</span>${e.raw ? `<details class="small" style="margin-top:4px"><summary style="cursor:pointer">詳細資訊（Google 原文）</summary><pre style="white-space:pre-wrap;word-break:break-all;font-size:12px;max-height:160px;overflow:auto">${esc(e.raw)}</pre></details>` : ''}`;
+// 模型欄位：下拉選單＋「其他」自填（v3.41）；gemModel() 讀目前選的模型
+function gemModelField(saved) {
+  const v = saved && !/^gemini-2\.5-/.test(saved) ? saved : 'gemini-3.5-flash', other = !GEM_MODELS.includes(v);
+  return `<label class="fl" style="flex:1">模型<select id="g-model">${GEM_MODELS.map(m => `<option value="${m}" ${m === v ? 'selected' : ''}>${m}</option>`).join('')}<option value="__other" ${other ? 'selected' : ''}>其他（自己填）</option></select>
+    <input type="text" id="g-model-other" placeholder="例如 gemini-3.6-pro" value="${other ? esc(v) : ''}" ${other ? '' : 'hidden'} style="margin-top:6px"></label>`;
+}
+function gemModel() {
+  const s = $('g-model'); if (!s) return ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash';
+  if (s.value === '__other') return ($('g-model-other').value || '').trim() || 'gemini-3.5-flash';
+  return s.value.trim() || 'gemini-3.5-flash';
+}
+document.addEventListener('change', e => { if (e.target && e.target.id === 'g-model') { const o = $('g-model-other'); if (o) { o.hidden = e.target.value !== '__other'; if (!o.hidden) o.focus(); } } });
 function parseBankJSON(text) {
   let t = text.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
   const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0) throw new Error('回傳的不是 JSON');
@@ -15743,7 +15780,7 @@ function normalizeBank(b, unit, fixedMis, mode) {
   b.schema = 'fa-bank/1'; b.route = 'B'; b.misMode = mode;
   b.id = 'B-' + unit.replace(/\s+/g, '') + '-' + new Date().toISOString().slice(5, 16).replace(/[-T:]/g, '');
   b.title = (b.title || unit) + '（AI 自助出題）';
-  b.source = `Gemini（${callGemini.lastModel || $('g-model').value.trim()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
+  b.source = `Gemini（${callGemini.lastModel || gemModel()}）於 ${new Date().toLocaleString('zh-TW')} 生成，經自動驗算`;
   b.misconceptions = b.misconceptions || []; b.items = (b.items || []).map((it, i) => ({ ...it, id: it.id || `Q${String(i + 1).padStart(2, '0')}`, set: it.set === 'B' ? 'B' : (it.pair ? 'A' : it.set), options: (it.options || []).map(o => ({ ...o, mis: o.mis === 'null' ? null : (o.mis || null) })) }));
   if (fixedMis && fixedMis.length) {
     // 迷思表以老師／路線 A 的為準；AI 若仍用了清單外的代碼，另外列出並標明
@@ -15761,7 +15798,7 @@ function normalizeBank(b, unit, fixedMis, mode) {
 async function runGen(fixOnly) {
   const unit = $('g-unit').value.trim(), note = $('g-note').value.trim(), n = parseInt($('g-n').value, 10) || 9;
   const mode = misMode(), excl = $('g-excl').value.trim(), mispaste = $('g-mispaste').value;
-  ls.set('fa-gen-form', { unit, note, n, model: $('g-model').value.trim(), mis: mode, excl, mispaste });
+  ls.set('fa-gen-form', { unit, note, n, model: gemModel(), mis: mode, excl, mispaste });
   let fixedMis = null;
   if (!fixOnly && mode === 'A') { await loadMisInfo(); fixedMis = T.misA && T.misA.bank ? T.misA.bank.misconceptions : null; if (!fixedMis) { $('g-status').innerHTML = '<span style="color:var(--zhu);font-weight:700">這一節沒有現成題庫的迷思表，請改選迷思來源。</span>'; return; } }
   if (!fixOnly && mode === 'paste') { fixedMis = parseMisPaste(mispaste); if (!fixedMis.length) { $('g-status').innerHTML = '<span style="color:var(--zhu);font-weight:700">請先貼上迷思清單。</span>'; return; } }
@@ -15784,9 +15821,9 @@ async function runGen(fixOnly) {
       T.genBank.genSeconds = Math.round((Date.now() - t0) / 1000);
     }
     const s = V.verifyBank(T.genBank).summary;
-    st.innerHTML = `完成（${Math.round((Date.now() - t0) / 1000)} 秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過、${s.manual} 需人工`;
+    st.innerHTML = `完成（${Math.round((Date.now() - t0) / 1000)} 秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過、${s.manual} 需人工${gemUsedNote()}`;
     showGenResult();
-  } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">失敗：${esc(e.message)}</span>`; console.error(e); }
+  } catch (e) { st.innerHTML = gemErrHTML('失敗：', e); console.error(e); }
   finally { btns.forEach(b => b.disabled = false); }
 }
 function showGenResult() {
@@ -15838,7 +15875,7 @@ async function renderTplPane() {
       <details class="small"><summary style="cursor:pointer;font-weight:700">AI 改寫題幹（選用，要 Gemini key）</summary>
         <div class="small muted" style="margin:6px 0">只改題幹文字（例如改成生活情境）；程式會檢查：改寫後出現的數字和原題相同（重複出現可以），而且原題的算式原樣出現在題幹裡，不符合就退回模板題幹。</div>
         <label class="fl">情境（選填，例如「夜市擺攤」「籃球比賽」；空白＝一般生活情境）<input type="text" id="g-ctx" value="${esc(T.rwCtx || '')}" placeholder="夜市擺攤" maxlength="40"></label>
-        <div class="row"><label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash')}"></label></div>
+        <div class="row">${gemModelField(ls.get('fa-gen-form', {}).model)}</div>
         <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
         <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
     </div>
@@ -15974,8 +16011,8 @@ ${ctxW ? `3. 情境用「${ctxW}」。數字在情境裡要有意義（例如代
     if (!neu) throw new Error('AI 沒有回傳題幹');
     const ck = stemCheck(orig, neu);
     if (!ck.ok) { toast(`AI 改寫的題幹沒通過檢查：${ck.msgs.join('；')}，已退回模板題幹`, 5000); it.stem = orig; delete it.stemOrig; delete it.stemCtx; }
-    else { it.stemOrig = orig; it.stem = neu; it.stemBy = callGemini.lastModel; if (ctxW) it.stemCtx = ctxW; else delete it.stemCtx; toast(`已改寫（${callGemini.lastModel}${ctxW ? '，情境：' + ctxW : ''}），數字與算式檢查通過`); }
-  } catch (e) { toast('改寫失敗：' + e.message, 4000); }
+    else { it.stemOrig = orig; it.stem = neu; it.stemBy = callGemini.lastModel; if (ctxW) it.stemCtx = ctxW; else delete it.stemCtx; toast(`已改寫（${callGemini.lastModel}${callGemini.lastModel !== callGemini.wanted ? '：' + callGemini.wanted + ' 失敗，已改用備援' : ''}${ctxW ? '，情境：' + ctxW : ''}），數字與算式檢查通過`, 4500); }
+  } catch (e) { toast('改寫失敗：' + e.message, 6000); const ms = $('m-status'); if (ms) ms.innerHTML = gemErrHTML('AI 改寫失敗：', e); }
   showTplResult();
 }
 
@@ -16003,7 +16040,7 @@ function renderMyPane() {
       <div class="row" style="gap:8px"><button class="btn" id="y-check">用例子驗證</button><button class="btn qing" id="y-save" disabled>存進我的迷思</button></div>
       <div id="y-status" class="small" style="line-height:1.7"></div>
       <details class="small"><summary style="cursor:pointer;font-weight:700">Gemini 設定（AI 翻成規則才需要）</summary>
-        <div class="row"><label class="fl" style="flex:1">模型<input type="text" id="g-model" value="${esc(ls.get('fa-gen-form', {}).model || 'gemini-3.5-flash')}"></label></div>
+        <div class="row">${gemModelField(ls.get('fa-gen-form', {}).model)}</div>
         <label class="fl">Gemini API key<input type="password" id="g-key" value="${esc(key)}" placeholder="AIza…" autocomplete="off"></label>
         <label class="row small"><input type="checkbox" id="g-remember" ${key ? 'checked' : ''}> 記住在這台電腦（共用電腦不要勾）</label></details>
     </div>
@@ -16057,7 +16094,7 @@ ${Object.entries(TF).map(([k, t]) => `- ${k}：${t.name}（${t.ex}）`).join('\n
     const r2 = showMyCheck(T.myDraft);
     if (!r2.ok) $('y-status').innerHTML += '<br><b>AI 翻出的規則重現不了你的例子，請把描述寫得更具體（例如學生每一步怎麼算），或自己勾變形。</b>';
     else $('y-status').innerHTML += `<br><span class="muted">由 ${esc(T.myDraft.by)} 翻譯；確認沒問題再按「存進我的迷思」。</span>`;
-  } catch (e) { st.innerHTML = `<span style="color:var(--zhu);font-weight:700">AI 失敗：${esc(e.message)}</span>（也可以自己勾變形）`; }
+  } catch (e) { st.innerHTML = gemErrHTML('AI 失敗：', e) + '（也可以自己勾變形）'; }
   finally { const b = $('y-ai'); if (b) b.disabled = false; }
 }
 function renderMyList() {
