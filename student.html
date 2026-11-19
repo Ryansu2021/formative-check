@@ -421,6 +421,11 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .create-box .row>label{min-width:0}
 .create-box .c-soc{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink2);cursor:pointer}.create-box .c-soc input{width:auto;transform:scale(1.25)}
 .soc-set{border-top:1px dashed var(--line, #ccc);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.env-set{border-top:1px dashed var(--line, #ccc);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.env-row{display:grid;grid-template-columns:28px 11em 1fr;gap:6px;align-items:start;padding:4px 0;border-bottom:1px solid #eef}
+.env-dot{width:18px;height:18px;border-radius:50%;margin-top:3px;background:#bbb}.env-dot.ok{background:#1f9d6b}.env-dot.bad{background:#d94a3d}.env-dot.warn{background:#e8a33d}.env-dot.run{background:#9aa;animation:envp 1s infinite}
+@keyframes envp{50%{opacity:.35}}
+.env-fix{color:#b23b2f}
 
 
 /* 學生頁不載 Google 字型（省下字型下載；iPad 用內建蘋方） */
@@ -696,7 +701,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.38（2026-11-18）';
+const APP_VERSION = 'v3.39（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -836,7 +841,7 @@ class FireStore {
         import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-app.js`),
         import(`https://www.gstatic.com/firebasejs/${FB_V}/firebase-auth.js`)]);
       this.A = A; this.cfg = this.cfg || activeFbConfig();
-      let name = isDefaultFb(this.cfg) ? '[DEFAULT]' : 'fa-' + this.cfg.projectId + (this.cfg._test ? '-test' : '');
+      let name = this.cfg._app ? this.cfg._app : isDefaultFb(this.cfg) ? '[DEFAULT]' : 'fa-' + this.cfg.projectId + (this.cfg._test ? '-test' : '');   // _app：環境檢查用另一個 app（另一個登入身分＝模擬學生，v3.35）
       const ex = getApps().find(a => a.name === name);
       this.app = ex || initializeApp(fbPublic(this.cfg), name); this.auth = A.getAuth(this.app);
       NET.sdk = NET.sdk || Math.round(performance.now());
