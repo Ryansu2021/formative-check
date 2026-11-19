@@ -496,6 +496,25 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .socv-m .pill{display:inline-block;font-size:12px;font-weight:800;padding:0 8px;border-radius:99px;background:var(--qing-l,#e3f6ef);color:var(--qing);margin-right:6px}
 .socv-none{font-size:14px;color:var(--ink2)}
 /* @@TEACHER-ONLY-END */
+/* v3.40（2026-11-19，老師：「全修」）教師儀表板版面：
+   ③ 第二列按鈕不換行時，建議框一寬，「投影保護、匯出本場、出場摘要、題庫」被擠出畫面 → 可換行、建議框可縮；
+      附圖題放大：圖放在題目右邊（限高），選項與圓餅圖留在畫面內；內容再多就在面板內捲動，不被切掉
+   ⑤ iPad 直式：儀表板改用 860 寬的直式舞台（core.js fit，#stage.tport），面板改一欄往下捲，字不再縮到 5～7 px */
+#v-live .live-bar{flex-wrap:wrap;row-gap:8px}
+#v-live .live-bar > .btn,#v-live .live-bar > .seg-sw,#v-live .live-bar > .chip,#v-live .live-bar > .phase,#v-live .live-bar > .code-big{flex:none;white-space:nowrap}
+#l-suggest{flex:1 1 360px;min-width:0;max-width:none}
+#l-suggest:empty{display:none}
+.det-q.has-fig{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:22px;align-items:center}   /* 圖欄要給固定寬：auto 欄裡寬度 100% 的 SVG 會變成 0 寬 */
+.det-q.has-fig .fig{margin:0}.det-q.has-fig .fig-live svg{width:100%;height:210px;max-height:210px}
+#l-main > .panel.det{overflow-y:auto}
+#stage.tport #v-live{overflow-y:auto;padding:14px 16px}
+#stage.tport #v-live .live-grid{display:flex;flex-direction:column;flex:none}
+#stage.tport #v-live .live-grid > .panel{flex:none}
+#stage.tport #v-live .mis-bars.scroll,#stage.tport #v-live .scroll{max-height:none}
+#stage.tport #v-live .seat small,#stage.tport #v-live .seat .sub{font-size:13px}
+#stage.tport #v-live .det-q.has-fig{grid-template-columns:minmax(0,1fr) 280px}#stage.tport #v-live .det-q.has-fig .fig-live svg{height:200px;max-height:200px}
+#stage.tport #v-live .det-body{grid-template-columns:minmax(0,1fr) 250px;gap:12px}
+#stage.tport footer.by{display:none}
 </style>
 </head>
 <body>
@@ -13804,7 +13823,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.39（2026-11-19）';
+const APP_VERSION = 'v3.40（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -13858,7 +13877,7 @@ const ss = {
   del(k) { try { sessionStorage.removeItem(k); } catch (e) { } }
 };
 function toast(msg, ms = 2200) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, ms); }
-function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); const h = $('btn-home'); if (h) h.hidden = id === 'v-home'; }
+function show(id) { document.querySelectorAll('main > .view').forEach(v => v.hidden = v.id !== id); const h = $('btn-home'); if (h) h.hidden = id === 'v-home';  if (!window.__STU_ONLY) fit(); }
 function setMode(txt, cls) { $('mode-txt').textContent = txt; $('mode-dot').className = 'dot ' + (cls || ''); }
 // v3.28：學生頁（student.html）在手機、平板一律滿版（老師 2026-11-13：「今天用手機開啟時，畫面的字太小，盡量讓手機與平板是滿版，方便學生點選」）
 //   縮放 s＝min(寬/820, 高/560)，且不超過 max(1, 原本 1600×900 的縮放)；舞台＝螢幕大小÷s（不留邊）。舞台寬 < 1000 時加 .narrow（選項一欄）
@@ -13873,6 +13892,13 @@ function fit() {
     st.classList.toggle('narrow', w < 1000); st.classList.add('fluid');
     return;
   }
+  // v3.40：教師即時儀表板在直式螢幕（iPad 直式）改用 860 寬、高度依螢幕的舞台（iPad 直式縮放約 0.95）（.tport，一欄往下捲）；其他畫面與橫式照舊 1600×900
+  const live = $('v-live') && !$('v-live').hidden;
+  if (live && innerHeight > innerWidth * 1.05) {
+    const s = innerWidth / 860, h = innerHeight / s;
+    st.style.width = '860px'; st.style.height = h + 'px'; st.classList.add('tport'); st.style.transform = `translate(-50%,-50%) scale(${s})`; return;
+  }
+  st.classList.remove('tport'); st.style.width = ''; st.style.height = '';
   const s = Math.min(innerWidth / 1600, innerHeight / 900); st.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener('resize', fit); fit();
@@ -14254,7 +14280,7 @@ function renderStudent() {
       <div class="conf ${a.choice && !a.conf ? 'need' : ''}" id="s-conf">你有多確定？${Object.entries(CONF).map(([k, t]) => `<button data-c="${k}" class="${a.conf === k ? 'sel' : ''}">${t}</button>`).join('')}</div>
       <div class="row">
         <button class="btn big" id="s-prev" ${S.idx === 0 ? 'disabled' : ''}>◀ 上一題</button>
-        ${S.idx < N - 1 ? `<button class="btn dai big" id="s-next">下一題 ▶</button>` : `<button class="btn zhu big" id="s-submit">交卷</button>`}
+        ${S.idx < N - 1 ? `<button class="btn dai big" id="s-next">下一題 ▶</button>` : `<button class="btn zhu big" id="s-submit" ${S.subMsg ? 'disabled' : ''}>${S.subMsg || '交卷'}</button>`}
       </div></div>
     <div class="save-msg ${a.choice && !a.conf ? 'need' : ''}" id="s-save">${a.saved ? '✓ 這題已儲存，交卷前都可以改' : a.local ? '✓ 已存在平板，連線後送出（交卷前都可以改）' : a.choice && a.conf ? '儲存中…' : a.choice ? '⚠ 還沒選「你有多確定」，這題還沒儲存' : '選一個答案，再選你有多確定'}</div>`;
   const box = $('v-stu');
@@ -14271,15 +14297,17 @@ function renderStudent() {
     if (noConf.length) { S.idx = noConf[0] - 1; renderStudent(); toast(`第 ${noConf.join('、')} 題還沒選「你有多確定」，選好再交卷`); return; }
     const blank = items.map((x, i) => [x, i]).filter(([x]) => !isSaved(S.ans[rk(x.id, r)])).map(([, i]) => i + 1);
     if (blank.length && !confirm(`${name}還有第 ${blank.join('、')} 題沒有作答，確定要交卷嗎？`)) return;
-    const btn = $('s-submit'); btn.disabled = true;
+    // v3.40：交卷中的狀態記在 S.subMsg（不是只改按鈕文字），送完一題 renderStudent 重畫時按鈕仍是停用＋進度，不會變回可按的「交卷」
+    const sub = m => { S.subMsg = m; const b = $('s-submit'); if (b) { b.disabled = !!m; b.textContent = m || '交卷'; } };
+    sub('交卷中…');
     try {
       // 還有答案沒送到雲端（斷線中）：先等送完再標交卷，按鈕顯示進度（v3.16）
       const total = S.pend.size;
-      while (S.pend.size) { btn.textContent = `答案送出中 ${total - S.pend.size}/${total}…`; stuNet(); await new Promise(z => setTimeout(z, 300)); }
-      await store.waitWrites(); btn.textContent = '交卷中…';
-      await store.markDone(S.code, S.seat, r); S.done[r] = true; stuSaveLocal(); renderStudent();
+      while (S.pend.size) { sub(`答案送出中 ${total - S.pend.size}/${total}…`); stuNet(); await new Promise(z => setTimeout(z, 300)); }
+      sub('交卷中…'); await store.waitWrites();
+      await store.markDone(S.code, S.seat, r); S.done[r] = true; S.subMsg = ''; stuSaveLocal(); renderStudent();
     }
-    catch (e) { btn.disabled = false; btn.textContent = '交卷'; toast(e.code === 'permission-denied' ? '老師已結束作答' : '交卷失敗，請再按一次'); }
+    catch (e) { sub(''); toast(e.code === 'permission-denied' ? '老師已結束作答' : '交卷失敗，請再按一次'); }
   };
 }
 // 存一題（v3.16）：寫入先進平板的本機快取，不等伺服器；1.2 秒還沒回應就標「已存在平板，連線後送出」，連回後 SDK 自動送出
@@ -14697,6 +14725,8 @@ async function pickUnitBank() {
     }
   }
   const b = Banks.list().find(x => unitKey(x) === want && x._src === 'online') || Banks.list().find(x => unitKey(x) === want);
+  // v3.40（老師：「全修」）：路線 B 帶 ?unit= 進來（評量入口「🧩 模板出題」）直接到出題分頁（預設模板出題、單元＝這一節），不停在題庫分頁
+  if (ROUTE === 'B') { if (b) T.bankId = b.id; T.tab = 'gen'; T.genMode = T.genMode || 'tpl'; return; }
   if (b) { T.bankId = b.id; T.tab = 'bank'; toast(upd ? '已更新成最新題庫' : `已選好 ${want} 的題庫`); }
   else toast(`${want} 還沒有形成性評量題庫`, 3500);
 }
@@ -15052,7 +15082,8 @@ function renderLive() {
   }
   else if (s.round === 2 && s.phase === 'open') sg.textContent = `第二場是平行題（同迷思、換數字）。交卷 ${doneAll}/${joined.size || s.size} 人。`;
   else sg.textContent = '可以看「出場摘要」：誰的迷思已經改善、誰還需要補救。';
-  const veiled = L.veil && !(s.round === 2 && s.phase === 'closed');
+  sg.hidden = L.detail != null || L.misZoom != null || !!L.chartZoom;   // v3.40：放大投影（題目／迷思／圖）時不顯示建議框，空出高度給題目、選項與圖（之前附圖題只看得到 A 選項）
+  const veiled = L.veil;   // v3.40（老師：「全修」）：第二場結束後也遮（v3.23～v3.39 第二場結束後不遮，投影迷思放大頁會露出正解與座號）
   if (L.misZoom != null && !misOrderOf(st, r === 2 ? statRound(1) : null).some(x => x.c === L.misZoom)) L.misZoom = null;
   $('l-main').style.gridTemplateRows = '';
   L.chartZoom ? renderChartZoom(st, r, veiled, joined) : L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
@@ -15210,10 +15241,10 @@ function renderDetail(st, r, veiled) {
       <div class="bar-track"><div class="bar-fill" style="width:${c / max * 100}%;background:${OPT_COLOR(o.key)}"></div><div class="bar-txt">${M(o.text)}${right ? ' ✓' : ''} ${mis}</div></div>
       <span class="cnt">${c}${p.n ? `<span class="small muted" style="font-family:var(--sans)"> ${Math.round(c / p.n * 100)}%</span>` : ''}</span></div>`; }).join('');
   const sure = p.a.filter(x => x.choice !== it.answer && x.conf === 'high').map(x => x.seat).sort((a, b) => a - b);
-  $('l-main').innerHTML = `<div class="panel" style="grid-column:1/3;grid-row:1/3">
+  $('l-main').innerHTML = `<div class="panel det" style="grid-column:1/3;grid-row:1/3">
     <div class="row" style="justify-content:space-between"><h3>第${r === 2 ? '二' : '一'}場・第 ${i + 1} 題 <span class="n">${p.n} 人作答</span></h3>
       <div class="row" style="gap:8px"><button class="btn sm" id="d-prev" ${i === 0 ? 'disabled' : ''}>◀ 上一題</button><button class="btn sm" id="d-next" ${i >= st.perItem.length - 1 ? 'disabled' : ''}>下一題 ▶</button><button class="btn sm dai" id="d-back">${L.fromSum ? '回出場摘要' : '回總覽'}</button></div></div>
-    <div class="live-stem" style="font-size:34px">${M(it.stem)}</div>${FIG(it, "fig-live")}
+    <div class="det-q${it.fig ? ' has-fig' : ''}"><div class="live-stem" style="font-size:34px">${M(it.stem)}</div>${FIG(it, "fig-live")}</div>
     <div class="det-body"><div class="bars">${bars}</div>
       <div class="det-chart"><div class="row" style="gap:6px;justify-content:space-between"><div class="tog" role="group" aria-label="圖的樣式">${[['donut', '甜甜圈圖'], ['pie', '圓餅圖']].map(([k, t]) => `<button class="btn sm ${(L.pieKind || 'donut') === k ? 'on' : 'ghost'}" data-pk="${k}">${t}</button>`).join('')}</div>${chZoomBtn('pie:' + i)}</div>
         ${chPie(pieSlices(p, veiled), { hole: (L.pieKind || 'donut') === 'donut', veiled, size: 230 })}</div></div>
