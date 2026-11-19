@@ -159,6 +159,12 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .mz{display:flex;flex-direction:column;gap:10px;min-height:0}
 .mz-title{font-size:24px}.mz-title .mis-code{font-size:18px}.mz-title .n b{font-size:18px}.zhu{color:var(--zhu)}
 .mz-chg{margin-left:12px;padding:1px 10px;border-radius:999px;background:var(--paper2)}
+.mz-sum{font-size:20px;font-weight:700}.mz-sum b{font-size:24px}
+.mz-chips{display:flex;flex-wrap:wrap;gap:8px}
+.mz-chip{background:var(--zhu-l);color:var(--zhu);border:1.5px solid var(--zhu);border-radius:999px;padding:3px 14px;font-weight:800;font-size:16px;cursor:pointer;font-family:var(--sans)}
+.mz-chip.zero{background:#fff;color:var(--ink3);border-color:var(--line)}
+.mz-hit{margin-left:12px;color:var(--zhu)}
+.mz-note{display:block;font-size:14px;font-weight:400;color:var(--ink3);margin-top:2px}
 .mz-body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;flex:1;min-height:0}
 .mz-qs,.mz-side{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto}
 .mz-card{border:1.5px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
@@ -215,6 +221,15 @@ table.t td.l,table.t th.l{text-align:left}
 .grp h4{margin:0 0 4px;font-size:17px;font-family:var(--serif)}
 .grp .seatsline{font-size:15px;font-weight:700;color:var(--zhu)}
 .grp .rem{font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.55}
+/* v3.44 題號在前、學生選的錯答案、迷思名稱、代碼小字 */
+.code-sm{font-size:12px!important;font-weight:700;color:var(--ink3)!important;background:#fff!important;border:1px solid var(--line)!important;padding:0 6px!important;vertical-align:2px}
+.grp .grp-qs{display:inline-block;background:var(--zhu);color:#fff;border-radius:8px;padding:1px 10px;margin-right:8px;font-family:var(--sans);font-size:16px;font-weight:900}
+.grp .pk{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:baseline;padding:5px 10px;margin-top:4px;border-radius:8px;background:var(--zhu-l);cursor:pointer;font-size:15px}
+.grp .pk:hover{outline:2px solid var(--zhu)}
+.pk-q{font-weight:900;color:var(--zhu);white-space:nowrap}.pk-stem{color:var(--ink2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pk-ans{white-space:nowrap}.pk-ans b{color:var(--zhu);font-size:17px}.pk-ok{color:var(--ink3);font-size:13px}.pk-n{font-weight:900;white-space:nowrap}
+.grp .r1line{font-size:13px;color:var(--ink3);margin-top:3px}.grp .r1line .qlink{margin:0 2px}
+.sum-right{gap:6px}.sum-half{flex:1 1 0;min-height:150px}
 
 /* ---------- 路線 B：AI 生題 / 比較 ---------- */
 .gen-form{width:520px;flex:0 0 520px;display:flex;flex-direction:column;gap:12px}
@@ -469,7 +484,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 #l-main .stuck-list.clip{max-height:3.3em;overflow-y:auto}   /* 有優先補救清單時（清單已列出前幾題很確定答錯的座號），這一段最多兩行、可捲動 */
 #stage.tport #l-main .stuck-list.clip{max-height:none}
 .bar-row.pick{outline:4px solid var(--zhu);outline-offset:3px;border-radius:10px}
-.bar-row.pick .bar-txt::after{content:'← 這一題最多人選的誘答';margin-left:10px;color:var(--zhu);font-weight:900;font-family:var(--sans);font-size:15px}
+.bar-row.pick .bar-txt::after{content:'← 要討論的錯答案';margin-left:10px;color:var(--zhu);font-weight:900;font-family:var(--sans);font-size:15px}
 
 /* 學生頁不載 Google 字型（省下字型下載；iPad 用內建蘋方） */
 body, button, input { font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
@@ -755,7 +770,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.43（2026-11-19）';
+const APP_VERSION = 'v3.44（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
