@@ -1,5 +1,5 @@
 rules_version = '2';
-// 規則版本：fa-rules v3.34（2026-11-16；含 ownerUid、net、soc 分支）。主控台「規則」頁第 3 行不是這一行＝還沒發布最新版。
+// 規則版本：fa-rules v3.43（2026-11-19；含 ownerUid、net、soc 分支、完整題庫 banks）。主控台「規則」頁第 3 行不是這一行＝還沒發布最新版。
 
 // ============================================================
 //  Firebase 專案 prime-challenge 的完整安全規則
@@ -135,6 +135,12 @@ service cloud.firestore {
       allow read, delete: if faSignedTeacher() && request.auth.uid == uid;
       allow create, update: if faSignedTeacher() && request.auth.uid == uid
         && request.resource.data.ownerUid == uid;
+    }
+    // ---------------- 完整題庫（v3.43）：建立場次時另存一份（含正解、迷思表、補救），換一台電腦登入同一個帳號也能看儀表板、匯出本場 ----------------
+    //   只有建立者（Google 登入）與管理者讀寫；學生（匿名登入）讀不到。表頭 banks/{代碼}，內容分段放在 banks/{代碼}/parts/{序號}
+    //   放在 fa_usage（不放 fa_sessions 底下）：結束場次只刪作答資料，完整題庫和出題紀錄一樣保留；代碼日後被別的老師用到也讀不到
+    match /fa_usage/{uid}/banks/{rest=**} {
+      allow read, write: if faAdmin() || (faSignedTeacher() && request.auth.uid == uid);
     }
   }
 }

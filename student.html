@@ -446,6 +446,30 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 #stage.tport #v-live .det-q.has-fig{grid-template-columns:minmax(0,1fr) 280px}#stage.tport #v-live .det-q.has-fig .fig-live svg{height:200px;max-height:200px}
 #stage.tport #v-live .det-body{grid-template-columns:minmax(0,1fr) 250px;gap:12px}
 #stage.tport footer.by{display:none}
+/* v3.43 建議優先補救（總覽最上方、出場摘要最上方）、信心×對錯每列的題幹＋迷思、從這裡點進題目時框出那個誘答 */
+.prio{padding:8px 14px 8px!important;gap:3px!important;border:2px solid var(--zhu)!important;background:linear-gradient(0deg,#fff,#fff8f5)!important}
+.prio h3{font-size:17px;margin:0 0 2px}
+.pr-row{display:grid;grid-template-columns:auto minmax(0,1.45fr) minmax(0,1fr);gap:10px;align-items:baseline;padding:3px 6px;border-radius:8px;cursor:pointer;font-size:15.5px;line-height:1.45}
+.pr-row:hover{background:var(--zhu-l)}
+.pr-no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--zhu);color:#fff;font-size:13px}
+.pr-rem{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-why{min-width:0;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}   /* 理由＋很確定答錯的座號最多兩行（座號不被切掉） */
+.pr-why .mis-code{font-size:13px}
+.pr-seat{margin-left:8px;color:var(--zhu);font-weight:700;white-space:nowrap}
+.pr-rem{color:var(--ink2)}
+.prio.sum{margin:6px 0 8px;flex:none}
+.prio.sum .pr-row{font-size:16px}
+#stage.tport .pr-row{grid-template-columns:auto minmax(0,1fr)}
+#stage.tport .pr-rem{grid-column:2;white-space:normal}
+#stage.tport .pr-why{white-space:normal}
+.ch-lab{fill:var(--ink);font-size:11.5px;font-weight:700;font-family:var(--sans)}
+.zconf .ch-lab{font-size:19px}
+.ch-row.ch-click{cursor:pointer} .ch-row.ch-click:hover .ch-hit{fill:rgba(0,0,0,.05)!important}
+.zconf{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)}
+#l-main .stuck-list.clip{max-height:3.3em;overflow-y:auto}   /* 有優先補救清單時（清單已列出前幾題很確定答錯的座號），這一段最多兩行、可捲動 */
+#stage.tport #l-main .stuck-list.clip{max-height:none}
+.bar-row.pick{outline:4px solid var(--zhu);outline-offset:3px;border-radius:10px}
+.bar-row.pick .bar-txt::after{content:'← 這一題最多人選的誘答';margin-left:10px;color:var(--zhu);font-weight:900;font-family:var(--sans);font-size:15px}
 
 /* 學生頁不載 Google 字型（省下字型下載；iPad 用內建蘋方） */
 body, button, input { font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
@@ -731,7 +755,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.42（2026-11-19）';
+const APP_VERSION = 'v3.43（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -867,6 +891,8 @@ class LocalStore {
   async countResponses(code) { const d = this._get(code); return d ? Object.keys(d.responses || {}).length : 0; }
   async addUsage(rec) { const a = ls.get('fa-usage', []).filter(x => x.code !== rec.code); a.push({ ...rec, ownerUid: this.uid }); ls.set('fa-usage', a); return { saved: 'local' }; }   // 出題紀錄（v3.8）：示範模式存本機，結束場次不會刪
   async listUsage() { return { list: ls.get('fa-usage', []), pending: 0 }; }
+  async saveBank(code, bank) { ls.set('fa-demo-bank:' + code, bank); }   // v3.43 完整題庫的「雲端」：示範模式存在這個瀏覽器的另一個鍵（測試用它模擬另一台電腦讀雲端）
+  async loadBank(code) { return ls.get('fa-demo-bank:' + code, null); }
 }
 
 class FireStore {
@@ -1000,6 +1026,30 @@ class FireStore {
     await F.deleteDoc(this.sref(code));
   }
   async countResponses(code) { const F = this.F; return (await F.getDocs(F.collection(this.db, COL, code, 'responses'))).size; }
+  // v3.43 完整題庫存雲端（老師 2026-11-19：在另一台電腦打開場次，「這台電腦沒有這個場次的完整題庫」，不能匯出本場）
+  //   fa_usage/{建立者 uid}/banks/{代碼}：表頭 {code, ownerUid, n, len, at}＋parts/0..n-1（JSON 字串分段，每段 20 萬字＝最多約 600 KB，在單一文件 1 MiB 上限內）
+  //   規則：只有建立者（Google 登入）與管理者讀寫，學生（匿名）讀不到。放 fa_usage 不放 fa_sessions：結束場次只刪作答，完整題庫和出題紀錄一樣保留；代碼日後被別的老師用到也讀不到
+  //   先寫各段、最後寫表頭（讀到表頭＝各段都已寫好）；讀回時長度不符就報錯，不給不完整的題庫
+  async saveBank(code, bank, ownerUid) {
+    const F = this.F, uid = ownerUid || this.uid, j = JSON.stringify(bank), CH = 200000, n = Math.max(1, Math.ceil(j.length / CH));
+    for (let i = 0; i < n; i++) await F.setDoc(F.doc(this.db, 'fa_usage', uid, 'banks', code, 'parts', String(i)), { j: j.slice(i * CH, (i + 1) * CH), ownerUid: uid });
+    await F.setDoc(F.doc(this.db, 'fa_usage', uid, 'banks', code), { code, ownerUid: uid, n, len: j.length, at: F.serverTimestamp() });
+  }
+  async loadBank(code, ownerUid) {
+    const F = this.F, uid = ownerUid || this.uid;
+    const h = await F.getDoc(F.doc(this.db, 'fa_usage', uid, 'banks', code)); if (!h.exists()) return null;
+    const { n, len } = h.data();
+    const ps = await Promise.all(Array.from({ length: n }, (_, i) => F.getDoc(F.doc(this.db, 'fa_usage', uid, 'banks', code, 'parts', String(i)))));
+    const j = ps.map(x => x.exists() ? x.data().j || '' : '').join('');
+    if (j.length !== len) throw new Error(`雲端的完整題庫不完整（${j.length}／${len} 字）`);
+    return JSON.parse(j);
+  }
+  async deleteBank(code, ownerUid) {   // 環境檢查的測試題庫用完刪掉
+    const F = this.F, uid = ownerUid || this.uid, hr = F.doc(this.db, 'fa_usage', uid, 'banks', code);
+    const h = await F.getDoc(hr); const n = h.exists() ? h.data().n || 1 : 1;
+    for (let i = 0; i < n; i++) await F.deleteDoc(F.doc(this.db, 'fa_usage', uid, 'banks', code, 'parts', String(i)));
+    await F.deleteDoc(hr);
+  }
   // 出題紀錄（v3.8）：fa_usage/{uid}/logs/{場次代碼}，和作答資料分開，結束場次不會刪。規則還沒發布時先存這台電腦，之後讀得到雲端就自動補寫
   uref(code) { return this.F.doc(this.db, 'fa_usage', this.uid, 'logs', code); }
   _pendKey() { return 'fa-usage-pending:' + this.uid; }
