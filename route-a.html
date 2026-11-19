@@ -4472,13 +4472,14 @@ sup .mf{font-size:.9em}
   }
   const mxStrip = T => T.length === 1 && T[0].t === 'grp' && !T[0].sup ? T[0].inner : null;
   function mxPart(T, st, inM) { const s = mxStrip(T); return s !== null ? mxMath(s, st, true) : mxRender(T, st, inM); }
+  let MX_NOWRAP = 0;   // 正在畫已經包成不換行的短括號（v3.42）
   function mxRender(T, st, inM) {
     let h = '';
     for (let k = 0; k < T.length; k++) {
       const t = T[k];
       if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
       else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
-      else if (t.t === 'grp') { const g = MX_ESC(t.o) + mxMath(t.inner, st, inM) + MX_ESC(t.c) + mxSup(t.sup, st); h += t.inner.length <= 24 ? `<span class="mg">${g}</span>` : g; }   // 短括號式不在中間換行
+      else if (t.t === 'grp') { const short = t.inner.length <= 24; if (short) MX_NOWRAP++; let g; try { g = MX_ESC(t.o) + mxMath(t.inner, st, inM) + MX_ESC(t.c) + mxSup(t.sup, st); } finally { if (short) MX_NOWRAP--; } h += short ? `<span class="mg">${g}</span>` : g; }   // 短括號式不在中間換行
       else if (t.t === 'sqrt') {
         if (st) st.n.sqrt++;
         const ri = mxMath(t.rad, st, true); const tall = /class="mf/.test(ri);
@@ -4494,10 +4495,20 @@ sup .mf{font-size:.9em}
         else if (c === '-') {
           // 減號：數學式裡（根號、分數、指數內）一律換；外面只換「一元負號」與明顯的代數減號，課號 1-1、N-7-3、30°-60°-90° 不換
           const P = T[k - 1], N = T[k + 1], PP = T[k - 2];
-          const nextOk = mxOperand(N) || (N && N.t === 'frac');
-          const unary = (!P || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞]$/.test(P.raw))) && nextOk && !(P && P.raw === ' ' && PP && (PP.t === 'num' || PP.t === 'let'));
+          const nextOk = mxOperand(N) || (N && (N.t === 'frac' || N.t === 'mix'));
+          const unary = (!P || P.t === 'cjk' || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞]$/.test(P.raw))) && nextOk && !(P && P.raw === ' ' && PP && (PP.t === 'num' || PP.t === 'let'));
           const binary = P && ((P.t === 'let' && /^[a-zπ]/.test(P.raw) && !(PP && PP.t === 'let')) || P.t === 'grp' || P.t === 'frac' || P.t === 'sqrt' || P.sup) && nextOk;
-          if (inM || unary || binary) { c = '−'; if (st) st.n.minus++; }
+          const toFrac = P && (P.t === 'num' || P.t === 'mix') && N && (N.t === 'frac' || N.t === 'mix');   // v3.42：2-3/4、1又1/2-1/3 是數學（課號 1-1 後面不會接分數）
+          if (inM || unary || binary || toFrac) { c = '−'; if (st) st.n.minus++; }
+        }
+        // v3.42（老師 2026-11-19 截圖：選項的「−」和分數被拆成兩行）：一元負號和後面的數、分數、帶分數、根號、括號包成不換行的一組
+        if (c === '−' && !inM && !MX_NOWRAP) {   // 指數、分數、短括號裡面本來就不會換行；「−5」這種負號接數字瀏覽器也不會拆，只處理分數、帶分數、根號、括號
+          const P = T[k - 1], N = T[k + 1];
+          const un = !P || P.t === 'cjk' || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞≦≧]$/.test(P.raw));
+          if (un && N && !N.sup && (N.t === 'frac' || N.t === 'mix' || N.t === 'sqrt' || N.t === 'grp' || (N.t === 'num' && T[k + 2] && T[k + 2].t === 'sqrt'))) {
+            let e = k + 1; if (N.t === 'num' && T[e + 1] && T[e + 1].t === 'sqrt') e++;   // −2√3
+            h += '<span class="mg">−' + mxRender(T.slice(k + 1, e + 1), st, inM) + '</span>'; k = e; continue;
+          }
         }
         else if (c === '*' && mxOperand(T[k - 1]) && (mxOperand(T[k + 1]) || (T[k + 1] && T[k + 1].t === 'frac'))) { c = '×'; if (st) st.n.star++; }
         h += MX_ESC(c) + mxSup(t.sup, st);
@@ -4527,10 +4538,115 @@ sup .mf{font-size:.9em}
   }
   // @@VIEW-END
 
+  // ---------- v3.42 AI 回來的 LaTeX → 平常的數學寫法（老師 2026-11-19 截圖：題幹顯示 $-\left(\frac{1}{4} - \frac{3}{5}\right)$）----------
+  // \frac{a}{b}→a/b（多項加括號）、2\frac{1}{3}→2又1/3（−2\frac{1}{3}→−2又1/3，驗算器讀成 −(2又1/3)）、\left( \right)→()、\times \cdot→×、\div→÷、
+  // \sqrt{x}→√x（單一數或字母）或 √(x)、x^{n}→x^n（負指數 ^(−n)）、\le \ge→≦ ≧、\neq→≠、\pi→π、^\circ→°、去掉 $ 與多餘空白；½ 這類字元→1/2（前面是整數→又）
+  // 不認得的指令留著（存入題庫前的檢查會擋下並指出哪一題、哪一欄）
+  const LX_SYM = { times: '×', cdot: '×', div: '÷', pm: '±', le: '≦', leq: '≦', leqslant: '≦', ge: '≧', geq: '≧', geqslant: '≧', neq: '≠', ne: '≠', lt: '<', gt: '>',
+    pi: 'π', approx: '≈', infty: '∞', angle: '∠', triangle: '△', perp: '⊥', parallel: '∥', cdots: '…', ldots: '…', dots: '…', circ: '°', degree: '°', prime: '′',
+    quad: ' ', qquad: ' ', ',': '', ';': '', '!': '', ':': '', ' ': ' ', '%': '%', '{': '{', '}': '}', '|': '|', '&': '', 'displaystyle': '', 'textstyle': '', 'Rightarrow': '⇒', 'therefore': '∴', 'because': '∵', 'sim': '∼', 'cong': '≅', 'colon': '：' };
+  const LX_TXT = new Set(['text', 'mathrm', 'textbf', 'mathbf', 'textrm', 'mbox', 'operatorname', 'mathit', 'textit']);
+  const LX_VULGAR = { '½': '1/2', '⅓': '1/3', '⅔': '2/3', '¼': '1/4', '¾': '3/4', '⅕': '1/5', '⅖': '2/5', '⅗': '3/5', '⅘': '4/5', '⅙': '1/6', '⅚': '5/6', '⅛': '1/8', '⅜': '3/8', '⅝': '5/8', '⅞': '7/8' };
+  function lxGroup(s, i) {   // s[i] 是 { → 回傳 [內容, 結束後位置]；不是 { → 取一個字元（\frac12）或一個指令
+    while (s[i] === ' ') i++;
+    if (s[i] === '{') { let d = 0; for (let j = i; j < s.length; j++) { if (s[j] === '{' && s[j - 1] !== '\\') d++; else if (s[j] === '}' && s[j - 1] !== '\\') { d--; if (!d) return [s.slice(i + 1, j), j + 1]; } } return [s.slice(i + 1), s.length]; }
+    if (s[i] === '\\') { const m = /^\\[A-Za-z]+/.exec(s.slice(i)); if (m) return [m[0], i + m[0].length]; }
+    return [s[i] || '', i + 1];
+  }
+  const lxTop = (x, re) => { let d = 0; for (let i = 0; i < x.length; i++) { const c = x[i]; if ('([（'.includes(c)) d++; else if (')]）'.includes(c)) d--; else if (!d && re.test(c) && !(i === 0 && /[−-]/.test(c))) return true; } return false; };
+  const lxWrapped = x => { if (!/^[(（]/.test(x)) return false; let d = 0; for (let i = 0; i < x.length; i++) { if ('([（'.includes(x[i])) d++; else if (')]）'.includes(x[i])) { d--; if (!d && i < x.length - 1) return false; } } return true; };
+  const lxPar = (x, den) => { x = x.trim(); if (!x || lxWrapped(x)) return x; if (lxTop(x, /[+＋−\-×÷·/\s=＝<>]/) || (den && /^[−-]/.test(x))) return '(' + x + ')'; return x; };
+  function lxConv(s) {
+    let out = '';
+    for (let i = 0; i < s.length;) {
+      const c = s[i];
+      if (c === '\\') {
+        const m = /^\\([A-Za-z]+|.)/.exec(s.slice(i)); if (!m) { out += c; i++; continue; }
+        const w = m[1]; let j = i + m[0].length;
+        if (/^[A-Za-z]/.test(w)) while (s[j] === ' ') j++;   // 指令後面的空白不算
+        if (w === 'frac' || w === 'dfrac' || w === 'tfrac') {
+          const [a, j1] = lxGroup(s, j), [b, j2] = lxGroup(s, j1); const A = lxConv(a).trim(), B = lxConv(b).trim();
+          const mw = /(^|[^0-9.])([0-9]+)\s*$/.exec(out);
+          if (mw && /^[0-9]+$/.test(A) && /^[0-9]+$/.test(B) && !/[\^/]\s*$/.test(out.slice(0, out.length - mw[0].length + mw[1].length))) out = out.replace(/\s*$/, '') + '又' + A + '/' + B;   // 2\frac{1}{3} → 2又1/3
+          else out += lxPar(A, false) + '/' + lxPar(B, true);
+          i = j2; continue;
+        }
+        if (w === 'sqrt') {
+          let k = j, idx = '';
+          if (s[k] === '[') { const e = s.indexOf(']', k); idx = s.slice(k + 1, e); k = e + 1; }
+          const [a, j1] = lxGroup(s, k); const A = lxConv(a).trim();
+          out += (idx ? lxConv(idx) : '') + '√' + (/^([0-9]+(\.[0-9]+)?|[A-Za-zπ])$/.test(A) ? A : '(' + A + ')'); i = j1; continue;
+        }
+        if (w === 'left' || w === 'right' || w === 'big' || w === 'Big' || w === 'bigl' || w === 'bigr') {
+          const m2 = /^(\\[{}|]|\\[A-Za-z]+|.)/.exec(s.slice(j)); const d = m2 ? m2[0] : '';
+          out += d === '.' ? '' : d === '\\{' ? '{' : d === '\\}' ? '}' : d === '\\|' ? '‖' : d === '\\langle' ? '〈' : d === '\\rangle' ? '〉' : d; i = j + d.length; continue;
+        }
+        if (LX_TXT.has(w)) { const [a, j1] = lxGroup(s, j); out += lxConv(a); i = j1; continue; }
+        if (LX_SYM[w] !== undefined) { out += LX_SYM[w]; i = j; continue; }
+        // 不認得的指令（\overline{AB}、\vec{v}…）：連同後面的 {…} 原樣留著，存入前的檢查會擋下並顯示原文
+        { let e = i + m[0].length; if (s[e] === '{') e = lxGroup(s, e)[1]; out += s.slice(i, e); i = e; continue; }
+      }
+      if (c === '^') {
+        let [a, j1] = lxGroup(s, i + 1); if (a === '\\circ') { out += '°'; i = j1; continue; }
+        a = lxConv(a).trim(); if (a === '°') { out += '°'; i = j1; continue; }
+        out += '^' + (/^[0-9A-Za-z]+$/.test(a) ? a : '(' + a + ')'); i = j1; continue;
+      }
+      if (c === '_') { const [a, j1] = lxGroup(s, i + 1); out += lxConv(a); i = j1; continue; }
+      if (c === '{' || c === '}') { i++; continue; }
+      if (c === '-') { out += '−'; i++; continue; }
+      if (c === '~') { out += ' '; i++; continue; }
+      out += c; i++;
+    }
+    return out;
+  }
+  function latexToPlain(text) {
+    if (typeof text !== 'string') return text;
+    let t = text;
+    if (/\\[A-Za-z(\[]|\$|\\[{}%,;!]|\^\{/.test(t)) {
+      t = t.replace(/\$\$|\$|\\\(|\\\)|\\\[|\\\]/g, '\u0001');   // 數學段的邊界
+      t = t.split('\u0001').map((seg, k, arr) => {
+        const isMath = arr.length > 1 ? k % 2 === 1 : true;
+        if (!isMath && !/\\[A-Za-z]|\^\{/.test(seg)) return seg;
+        let x = lxConv(seg);
+        x = x.replace(/\s*([−+＋×÷=＝<>≦≧≠±()（）\[\]|,，])\s*/g, '$1').replace(/\s{2,}/g, ' ');   // 運算符號旁的空白去掉
+        return isMath ? x.trim() : x;
+      }).join('');
+    }
+    // ½ 這類字元
+    t = t.replace(/([0-9])?([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞])/g, (m, d, v) => d ? d + '又' + LX_VULGAR[v] : LX_VULGAR[v]);
+    // 數學裡的半形負號：開頭、空白、括號、運算符號後面接數字／分數／根號／括號 → −（課號 1-1、N-7-3 前面是英數字，不換）
+    t = t.replace(/(^|[\s(（=＝,，、:：+＋×÷<>≦≧（「])-(?=[0-9(（√])/g, '$1−');
+    return t;
+  }
+  // 整份題庫（或一題）裡所有學生與老師看得到的文字欄位都轉；回傳改了幾處。check 的字串也轉（轉換後再驗算）；fig（SVG）不動
+  const LX_SKIP = new Set(['id', 'set', 'pair', 'answer', 'key', 'fig', 'code', 'schema', 'route', 'misMode', 'lc', 'bloom', 'type', 'fn', 'want', 'form', 'rel', 'diag', '_src', 'source', 'by']);
+  function latexClean(obj, onlyLatex) {
+    let n = 0;
+    const walk = (o) => {
+      if (Array.isArray(o)) { o.forEach((v, i) => { if (typeof v === 'string') { const w = onlyLatex && !/[\\$]/.test(v) ? v : latexToPlain(v); if (w !== v) { o[i] = w; n++; } } else if (v && typeof v === 'object') walk(v); }); return; }
+      for (const k of Object.keys(o)) {
+        const v = o[k]; if (LX_SKIP.has(k)) continue;
+        if (typeof v === 'string') { const w = onlyLatex && !/[\\$]/.test(v) ? v : latexToPlain(v); if (w !== v) { o[k] = w; n++; } }
+        else if (v && typeof v === 'object') walk(v);
+      }
+    };
+    if (obj && typeof obj === 'object') walk(obj);
+    return n;
+  }
+  // 存入題庫前的把關：學生看得到的文字（題幹、選項、回饋、提示）還有 \ 或 $ → 列出「第幾題（id）哪一欄」
+  function latexLeft(bank) {
+    const bad = []; const chk = (v, where) => { if (typeof v === 'string' && /[\\$]/.test(v)) bad.push(where + '：' + v.slice(0, 40)); };
+    (bank.items || []).forEach((it, i) => { const q = `第 ${i + 1} 題（${it.id || ''}）`;
+      chk(it.stem, q + '題幹'); chk(it.hint, q + '提示');
+      (it.options || []).forEach(o => { chk(o.text, `${q}選項 ${o.key}`); chk(o.feedback, `${q}選項 ${o.key} 的回饋`); }); });
+    (bank.misconceptions || []).forEach(m => { chk(m.name, `迷思 ${m.code} 名稱`); chk(m.remedy, `迷思 ${m.code} 補救`); });
+    return bad;
+  }
+
   G.FAVerify = { pbQuadOf, pbVertex, isQuadFnJudge, paraTruth, shiftTruth, viewCode, netWhy, perpJudge, boxRel, axesOf, triMeasure, triOrderOpt, parCritJudge, pgCritJudge, quadTruth, quadWitness, isPrime, factorize, distinctPrimes, primeFactorCount, divisorCount, evalExpr, evalQ, fmtQ, evalRel, parseProduct, parseSet,
                  parseFracLit, parsePowLit, gcd, lcm,
                  parseNumSet, parseSci, intSolutions, firstNonzeroPlace, intDigits,
-                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, mathScan, MATH_CSS, DIAG_LABEL,
+                 diagnoseFactorization, verifyItem, verifyBank, mathHTML, mathScan, latexToPlain, latexClean, latexLeft, MATH_CSS, DIAG_LABEL,
                  evalV, compileV, sameExprQ, solveLinear, sameIneq, linEq1Kind, quadEq1Kind, parseSolText, safeSVG, evalR, fmtR, radFormOK, factorOK, splitFactors, quadRootsOf, parseRootSet, relR, rootStmt,
                  lineCoefQ, sameLineQ, seqIs, relKindQ, ineqTruth, ineqBoundary, numText, piVal, piFmt, posTruth,
                  geoTruth: GEO14.truth, geoScene: GEO14.scene, congJudge: CONG14.judge, solveTri: CONG14.solveTri, congWhyJudge: CONGW.judge, congScene: CONGW.scene, congName: CONGW.parseName, cexJudge: CEX14.judge, cexInScope: CEX14.inScope,
@@ -13823,7 +13939,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.41（2026-11-19）';
+const APP_VERSION = 'v3.42（2026-11-19）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -14732,8 +14848,15 @@ async function pickUnitBank() {
 }
 const tsMD = t => { const m = tsMs(t); if (!m) return ''; const d = new Date(m); return `${d.getMonth() + 1}/${d.getDate()}`; };
 const resumeLabel = codes => `回到進行中的場次（${codes.slice(0, 3).join('、')}${codes.length > 3 ? ` 等 ${codes.length} 場` : ''}）`;   // 最多列 3 個代碼，避免超出卡片（v3.8.1）
+// v3.42：v3.41 以前存的自助題庫可能有 AI 的 LaTeX → 打開題庫畫面時整理一次（只動含 \ 或 $ 的字串，線上題庫不動）
+function cleanStoredBanks() {
+  if (cleanStoredBanks.done) return; cleanStoredBanks.done = true;
+  const own = ls.get('fa-banks', []); let n = 0;
+  own.forEach(b => { if (b && b._src !== 'online') n += V.latexClean(b, true); });
+  if (n) { ls.set('fa-banks', own); toast(`已整理 ${n} 處數學寫法（自助題庫裡 AI 用的 LaTeX 改成平常寫法，不必重出）`, 5000); }
+}
 async function openBankView() {
-  show('v-tbank'); stopLive();
+  show('v-tbank'); stopLive(); cleanStoredBanks();
   await pickUnitBank();
   const banks = Banks.list();
   if (!T.bankId || !Banks.get(T.bankId)) T.bankId = banks[0] && banks[0].id;
@@ -15565,6 +15688,14 @@ function csv(name, rows) { const t = '﻿' + rows.map(r => r.map(v => { const s 
 // ============================================================
 //  路線 B：AI 生題（Gemini，老師自己的 key，只存在這台電腦）
 // ============================================================
+// v3.42（老師 2026-11-19 截圖：「AI生成的題庫，題幹中分數的寫法不是數學常用的寫法」）：所有送給 Gemini 的提示詞都附這段
+const MATH_RULE = `數學寫法（學生直接看到這些文字，一律用平常的寫法）：
+- 不要用 LaTeX、不要用 $ 符號、不要用 \\frac、\\left、\\times、\\sqrt 這類指令。
+- 分數寫 1/4；負分數寫 −3/5，跟在運算符號後面要加括號寫 (−3/5)；分子或分母是多項時加括號，例如 (x＋1)/2。
+- 帶分數寫 2又1/3，負的寫 −2又1/3。根號寫 √5 或 √(…)，例如 √(2/3)。次方寫 ^，例如 2^3、(−3)^2、10^(−3)。
+- 不等號寫 ≦ ≧ ≠；運算符號用全形 ＋ − × ÷ ＝；負號用 −，不要用半形 -。
+- 正確：計算 −(1/4 − 3/5) 的值是多少？
+- 錯誤：計算 $-\\left(\\frac{1}{4} - \\frac{3}{5}\\right)$ 的值是多少？`;
 const GEN_SCHEMA_DOC = `輸出一個 JSON 物件（不要 Markdown、不要說明文字），格式：
 {
  "schema":"fa-bank/1","title":"…","unit":{"grade":"七上","code":"2-1","name":"…","curriculum":["N-7-2 …"]},
@@ -15616,7 +15747,8 @@ check（驗算設定）只能用下列其中一種，系統會用程式重算正
 - {"type":"factorForm","expr":"6x^2−9x"}：因式分解，選項只有一個「和 expr 相等而且分解完全」（括號裡沒有公因數、每個因式不能再分解）；分解不完全的判錯（一個字母，或兩個字母的齊次式）
 - {"type":"quadRoots","eq":"x^2−2x−1＝0"}：一元二次（或一次）方程式的全部實數解，選項寫「3、−2」「x＝0 或 x＝4」「1±√2」「(1±√5)/2」「x＝3（重根）」「無解」
 - {"type":"manual"}：無法用以上方式驗算的概念題（盡量少用）
-算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。`;
+算式寫法：次方用 ^（2^3、10^-3），乘號用 ×，除號用 ÷，分數用 3/4（整數/整數 視為一個分數，所以 5÷4/5＝5÷(4/5)；負底數或分數底數一定加括號：(−2)^3、(2/3)^2，寫 2/3^2 會被擋下），帶分數寫「1又2/3」（−1又2/3＝−(1＋2/3)），絕對值用 |−4|，負號用 −（−3^2＝−9，(−3)^2＝9）。驗算器全程用精確分數計算。不要用 LaTeX。
+${MATH_RULE}`;
 function genPrompt(unit, note, count, fixedMis, exclude) {
   const misRule = fixedMis && fixedMis.length
     ? `1. 迷思只能用下面這份清單（老師或教科書知識卡提供），用它的代碼，不可以新增、改名或合併：\n${fixedMis.map(m => `   ${m.code} ${m.name}${m.example ? '（例：' + m.example + '）' : ''}`).join('\n')}\n   回傳的 misconceptions 照抄這份清單即可。清單裡用不到的迷思可以不考。`
@@ -15812,16 +15944,17 @@ async function runGen(fixOnly) {
       const bad = T.genBank.items.filter(it => vr[it.id].status === 'fail' || vr[it.id].msgs.some(m => m.startsWith('平行題')));
       prompt = `下面是你先前產生的題庫中，沒有通過程式驗算的題目與驗算訊息。請修正這些題目（可改選項、正解或 check），只回傳修正後的 items 陣列包在 {"items":[…]} 裡，id 保持不變，迷思代碼只能用題庫中已有的：${T.genBank.misconceptions.map(m => m.code + ' ' + m.name).join('；')}。\n\n` +
         bad.map(it => JSON.stringify(it) + '\n驗算訊息：' + vr[it.id].msgs.join('；')).join('\n\n') + '\n\n' + GEN_SCHEMA_DOC;
-      const fixed = parseBankJSON(await callGemini(prompt)).items || [];
+      const fixed = parseBankJSON(await callGemini(prompt)).items || []; T.lxN = V.latexClean(fixed);   // v3.42
       fixed.forEach(f => { const i = T.genBank.items.findIndex(x => x.id === f.id); if (i >= 0) T.genBank.items[i] = { ...f, options: (f.options || []).map(o => ({ ...o, mis: o.mis || null })) }; });
       T.genBank.fixRounds = (T.genBank.fixRounds || 0) + 1;
     } else {
       prompt = genPrompt(unit, note, n, fixedMis, excl);
-      T.genBank = normalizeBank(parseBankJSON(await callGemini(prompt)), unit, fixedMis, mode);
+      const raw = parseBankJSON(await callGemini(prompt)); T.lxN = V.latexClean(raw);   // v3.42：\frac、$ 等 LaTeX → 平常寫法，之後才驗算
+      T.genBank = normalizeBank(raw, unit, fixedMis, mode);
       T.genBank.genSeconds = Math.round((Date.now() - t0) / 1000);
     }
     const s = V.verifyBank(T.genBank).summary;
-    st.innerHTML = `完成（${Math.round((Date.now() - t0) / 1000)} 秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過、${s.manual} 需人工${gemUsedNote()}`;
+    st.innerHTML = `完成（${Math.round((Date.now() - t0) / 1000)} 秒）：${s.total} 題，驗算 ${s.pass} 通過、${s.fail} 未通過、${s.manual} 需人工${gemUsedNote()}${T.lxN ? `（AI 用了 LaTeX：已把 ${T.lxN} 處 LaTeX 改成平常的數學寫法）` : ''}`;
     showGenResult();
   } catch (e) { st.innerHTML = gemErrHTML('失敗：', e); console.error(e); }
   finally { btns.forEach(b => b.disabled = false); }
@@ -15836,7 +15969,7 @@ function showGenResult() {
       ${b.misconceptions.map(m => `<div style="margin:4px 0"><span class="mis-code">${esc(m.code)}</span> <b>${V.mathHTML(m.name)}</b>　${V.mathHTML(m.example || '')}　<span class="muted">補救：${V.mathHTML(m.remedy || '')}</span>　<span class="small" style="${/AI/.test(m.source || '') ? 'color:var(--zhu);font-weight:700' : 'color:var(--muted)'}">出處：${esc(m.source || '未寫')}</span></div>`).join('')}</details>
     <div class="items scroll">${renderItemCards(b, vr, {}, false, true)}</div>`;
   const fx = $('g-fix'); if (fx) fx.onclick = () => runGen(true);
-  $('g-save').onclick = () => { Banks.save(Object.assign(JSON.parse(JSON.stringify(b)), { _src: 'teacher' })); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
+  $('g-save').onclick = () => { { const bad = V.latexLeft(b); if (bad.length) { const st = $('g-status'); if (st) st.innerHTML = `<span style="color:var(--zhu);font-weight:700">不能存入：下面 ${bad.length} 處還有程式看不懂的數學寫法（\\ 或 $），請改題目或按「請 AI 修正」後再存</span><div class="small" style="line-height:1.7">${bad.map(x => esc(x)).join('<br>')}</div>`; toast('有題目的數學寫法沒轉好，不能存入（見下方說明）', 4000); return; } }   /* v3.42：存入前把關 */ Banks.save(Object.assign(JSON.parse(JSON.stringify(b)), { _src: 'teacher' })); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
 }
 
 // ============================================================
@@ -15963,7 +16096,7 @@ function showTplResult() {
                 <div class="trace">學生怎麼算出這個：${V.mathHTML(o.trace || '')}<br><span class="muted">怎麼改：${V.mathHTML(o.fix || '')}</span></div>
                 <label class="small tr-ok"><input type="checkbox" data-ok="${esc(it.id + '|' + o.key)}" ${o.teacherOk ? 'checked' : ''}> 我的學生真的會這樣算</label>
                 <button class="btn sm ghost" data-del="${esc(p.pair + '|' + o.rule)}" style="padding:1px 8px">刪掉，換一個</button></div>`).join('')}</div></div>`; }).join('')}</div>`).join('')}</div>`;
-  $('g-save').onclick = () => { Banks.save(Object.assign(JSON.parse(JSON.stringify(b)), { _src: 'teacher' })); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
+  $('g-save').onclick = () => { { const bad = V.latexLeft(b); if (bad.length) { const st = $('m-status'); if (st) st.innerHTML = `<span style="color:var(--zhu);font-weight:700">不能存入：下面 ${bad.length} 處還有程式看不懂的數學寫法（\\ 或 $），請改題目或按「請 AI 修正」後再存</span><div class="small" style="line-height:1.7">${bad.map(x => esc(x)).join('<br>')}</div>`; toast('有題目的數學寫法沒轉好，不能存入（見下方說明）', 4000); return; } }   /* v3.42：存入前把關 */ Banks.save(Object.assign(JSON.parse(JSON.stringify(b)), { _src: 'teacher' })); T.bankId = b.id; delete T.picked[b.id]; toast('已存入題庫，可以到「題庫與建立場次」選題開課'); };
   $('m-review').querySelectorAll('[data-ok]').forEach(cb => cb.onchange = () => {
     const [id, k] = cb.dataset.ok.split('|'); const o = b.items.find(x => x.id === id).options.find(x => x.key === k);
     if (cb.checked) o.teacherOk = true; else delete o.teacherOk; $('m-okn').textContent = b.items.flatMap(it => it.options).filter(x => x.teacherOk).length;
@@ -16001,13 +16134,14 @@ async function rewriteStem(id, btn) {
   const prompt = `把下面這一題國中數學選擇題的「題幹」改寫得更貼近臺灣國中生的生活情境（繁體中文、臺灣用語），規則：
 1. 題目要問的數學內容、算式、所有數字都不能改，不能多加新的數字（包括次方）；原題的算式要原樣出現在改寫後的題幹裡，次方用 ^ 寫。數字可以在情境敘述和算式裡重複出現。
 2. 不能透露答案或提示解法，不要改成需要更多步驟的應用題。
+${MATH_RULE}
 ${ctxW ? `3. 情境用「${ctxW}」。數字在情境裡要有意義（例如代表錢、分數、溫度、人數、距離），讓學生看得出算式在算情境裡的什麼；不能只在算式前面加一句和數字無關的話。
 4.` : '3.'} 只回傳 JSON：{"stem":"改寫後的題幹"}
 原題幹：${orig}
 選項（不要改，只是讓你知道在問什麼）：${it.options.map(o => o.text).join('／')}`;
   btn.disabled = true; btn.textContent = '改寫中…';
   try {
-    const neu = String(parseBankJSON(await callGemini(prompt)).stem || '').trim();
+    const neu = V.latexToPlain(String(parseBankJSON(await callGemini(prompt)).stem || '').trim());   // v3.42
     if (!neu) throw new Error('AI 沒有回傳題幹');
     const ck = stemCheck(orig, neu);
     if (!ck.ok) { toast(`AI 改寫的題幹沒通過檢查：${ck.msgs.join('；')}，已退回模板題幹`, 5000); it.stem = orig; delete it.stemOrig; delete it.stemCtx; }
@@ -16077,12 +16211,13 @@ async function myAI(f) {
 ${Object.entries(TF).map(([k, t]) => `- ${k}：${t.name}（${t.ex}）`).join('\n')}
 老師的描述：${f.desc || '（沒寫）'}
 老師的例子：${f.expr ? `算式 ${f.expr}${f.wrong ? `，學生算出 ${f.wrong}` : ''}` : '（沒寫，請從描述裡找出算式和學生的答案；描述裡沒有算式就回 {"expr":"","transforms":[]}，不要自己編例子）'}
+${MATH_RULE}
 只回傳 JSON：{"name":"迷思名稱（12 字內）","expr":"例子的算式（次方用 ^，負號用 −）","wrong":"學生算出的答案（數字或分數）","transforms":["變形代碼"],"fix":"給學生的一句改正說明"}${extra ? '\n' + extra : ''}`;
   try {
     let tries = 0, extra = '', r, j;
     while (tries < 2) {
       st.innerHTML = `<span class="spinner"></span> AI 翻譯中…${tries ? '（第 2 次，附上驗證結果）' : ''}`;
-      j = parseBankJSON(await callGemini(ask(extra)));
+      j = parseBankJSON(await callGemini(ask(extra))); V.latexClean(j);   // v3.42
       if (!f.expr && !(j.expr && /\d/.test(j.expr))) { r = { ok: false, msg: FR.my.NOALGO }; T.myDraft = { ...f, by: 'AI（' + callGemini.lastModel + '）' }; break; }
       const g = { ...f, name: f.name || j.name || '', expr: f.expr || j.expr || '', wrong: f.wrong || j.wrong || '', transforms: Array.isArray(j.transforms) ? j.transforms : [], fix: f.fix || j.fix || '' };
       r = FR.my.check(g); tries++;
