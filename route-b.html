@@ -14067,7 +14067,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.58（2026-11-20）';
+const APP_VERSION = 'v3.59（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -15231,7 +15231,7 @@ function renderItemCards(b, vr, picked, withPick, withSet) {
       const d = r.perOption[o.key]; const ok = o.key === it.answer;
       return `<div><b style="color:${OPT_COLOR(o.key)}">${o.key}</b><span class="${ok ? 'ok' : ''}">${M(o.text)}${ok ? ' ✓' : ''}</span>
         ${o.mis ? `<span class="mis-code" title="${esc(mm[o.mis] ? mm[o.mis].name : '迷思表沒有這個代碼')}">${esc(o.mis)} ${esc(mm[o.mis] ? mm[o.mis].name : '?')}</span>` : ''}
-        ${d && !ok ? `<span class="diag">自動判讀：${esc(d.msg)}</span>` : ''}</div>`;
+        ${d && !ok ? `<span class="diag">自動判讀：${M(d.msg)}</span>` : ''}</div>`;
     }).join('');
     const msgs = r.msgs.map(m => `<div class="vmsg ${r.status === 'fail' ? '' : 'w'}">${r.status === 'fail' ? '✗' : '⚠'} ${esc(m)}</div>`).join('');
     const tag = withSet ? `<span class="settag ${it.set === 'B' ? 'b' : 'a'}">${it.set === 'B' ? '第二場' : '第一場'}</span>` : `<span class="muted small">${i + 1}.</span>`;
