@@ -244,7 +244,14 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .sum3-main h3 .n,.sum3-detail h3 .n{font-size:17px}.sum3-focus .code-sm,.sum3-head .code-sm{font-size:17px!important}.sf-rem{font-size:19px}.sum3-focus .code-sm{font-size:17px!important;color:var(--ink3)!important}
 .sum3-head .why{font-size:18px;color:var(--zhu);font-weight:700}
 #stage.tport .sum3-head .dgrp{flex-basis:100%}
-#stage.tsum footer.by{display:none}.sf-rem .nw{white-space:nowrap}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
+#stage.tsum footer.by{display:none}
+/* v3.52 儀表板總覽改成圖（點進去才看細節、字放大） */
+#v-live .irate-wrap{flex:1 1 auto;min-height:0;display:flex;align-items:stretch;cursor:pointer}#v-live .irate-wrap svg{width:100%;height:100%;max-height:420px}
+#v-live .ch-item:hover .ch-ibar{opacity:.8}.irate-leg{font-size:15px}.ch-leg .ch-li i.dash{background:none;border-top:2.5px dashed var(--ink);height:0;width:18px;margin-top:6px}
+#v-live .conf-pic{cursor:pointer;flex:1;display:flex}#v-live .conf-pic .quad{flex:1;gap:10px}#v-live .conf-pic .quad div{padding:10px 18px;font-size:19px}#v-live .conf-pic .quad div b{font-size:44px}
+#v-live .mis-pic .mis-row .t{font-size:20px}#v-live .mis-pic .mis-row .c{font-size:30px}#v-live .mis-pic .mis-row .mis-track{height:18px}#v-live .mis-pic{gap:12px}
+.mis-more{font-size:15px;color:var(--ink3);text-align:right}.exp-menu .gs-cum{font-size:15px}#v-live .mis-pic .mp-l{min-width:3.4em}.exp-menu .exp-prep{font-size:15px;color:var(--ink3);border-style:dashed;margin-top:4px}
+#v-live #l-main h3 .n{font-size:15px}#v-live #l-main .btn.sm{font-size:15px}#v-live .prog-line b{font-size:16px}#v-live .prog .pg{font-size:15px!important}#v-live .prog-line .prog-bar{height:28px}#v-live .seat small{font-size:15px!important}#v-live .mis-pic .mis-code{font-size:15px}#v-live .mis-pic .mp-l{font-size:15px;font-weight:800}#v-live .mis-pic .mp-r b{font-size:22px}#v-live .mis-pic .mp-t{height:16px}#v-live .irate-leg,#v-live .irate-leg .ch-li{font-size:15px!important}.sf-rem .nw{white-space:nowrap}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
 .sum3-head .dgrp{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}.sf-rem{text-wrap:pretty}
 .sum3-one .hint{font-size:17px;color:var(--ink2);margin-top:-4px}.sum3-main h3 .n{color:var(--ink2)}
 .exp-menu .btn{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)!important;box-shadow:none!important}
@@ -14046,7 +14053,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.50（2026-11-20）';
+const APP_VERSION = 'v3.52（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -14714,8 +14721,8 @@ function chProgress(size, done, answering, joined) {
 // ---- 迷思：第一場（斜線）vs 第二場（實心，深色＝很確定）並排長條 ----
 function chMisPair(n1, n2, s2, max) {
   const w = v => (v / Math.max(1, max) * 100).toFixed(1) + '%';
-  return `<div class="mp"><div class="mp-r r1" title="第一場 ${n1} 人"><span class="mp-l">一</span><div class="mp-t"><div class="mp-f r1" data-v="${n1}" style="width:${w(n1)}"></div></div><b>${n1}</b></div>
-    <div class="mp-r r2" title="第二場 ${n2} 人（其中很確定 ${s2} 人）"><span class="mp-l">二</span><div class="mp-t"><div class="mp-f r2" data-v="${n2}" style="width:${w(n2)}"></div><div class="mp-f sure" style="width:${w(s2)}"></div></div><b>${n2}</b></div></div>`;
+  return `<div class="mp"><div class="mp-r r1" title="第一場 ${n1} 人"><span class="mp-l">第一場</span><div class="mp-t"><div class="mp-f r1" data-v="${n1}" style="width:${w(n1)}"></div></div><b>${n1} 人</b></div>
+    <div class="mp-r r2" title="第二場 ${n2} 人（其中很確定 ${s2} 人）"><span class="mp-l">第二場</span><div class="mp-t"><div class="mp-f r2" data-v="${n2}" style="width:${w(n2)}"></div><div class="mp-f sure" style="width:${w(s2)}"></div></div><b>${n2} 人</b></div></div>`;
 }
 
 // ---- 每題作答人數（作答進度放大用）：直條，上面寫「人數／分母」----
@@ -14726,6 +14733,31 @@ function chItemCounts(rows, den, opt) {
     + rows.map((r, i) => { const x = 10 + i * gw + (gw - bw) / 2, h = Math.min(1, r.n / D) * H, y = padT + H - h;
       return `<g class="ch-ic" data-i="${r.no}"><rect x="${x.toFixed(1)}" y="${padT}" width="${bw.toFixed(1)}" height="${H}" fill="var(--paper2)"/><rect class="ch-bar" data-v="${r.n}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" style="fill:${CHC.r2}"/><text x="${(x + bw / 2).toFixed(1)}" y="${(y - 6).toFixed(1)}" text-anchor="middle" class="ch-num">${r.n}/${D}</text><text x="${(x + bw / 2).toFixed(1)}" y="${o.h - 8}" text-anchor="middle" class="ch-ax">第 ${r.no} 題</text></g>`; }).join('')
     + '</svg>';
+}
+
+// ---- v3.52 各題答對率（直條；老師 2026-11-20：「各題作答、信心 × 對錯、迷思分佈都用圖片的方式呈現，點進去才看細節，這樣字體都能放大」）----
+// rows：[{ i, rate(0～1 或 null), n, prev(第一場答對率或 null) }]；veiled＝投影保護：只畫作答人數（灰），不顯示答對率
+// 綠≥80%、黃 50～79%、紅<50%（和座號格同一套）；g.ch-item 帶 data-i（點了放大那一題）、rect 帶 data-v（測試核對）
+function chItemRates(rows, opt) {
+  const o = Object.assign({ w: 720, h: 300, den: 1, veiled: false }, opt || {});
+  const k = Math.max(1, rows.length), padL = 8, padB = 40, padT = 40, H = o.h - padB - padT, gw = (o.w - padL * 2) / k, bw = Math.min(56, gw * 0.62);
+  const col = v => v == null ? 'var(--line)' : v >= 0.8 ? 'var(--qing)' : v >= 0.5 ? '#d79a2b' : 'var(--zhu)';
+  const fs = k > 12 ? 16 : 22;
+  let g = '';
+  rows.forEach((x, j) => {
+    const x0 = padL + j * gw, cx = x0 + gw / 2;
+    const v = o.veiled ? (o.den ? x.n / o.den : 0) : x.rate;
+    const h = v == null ? 0 : Math.max(v > 0 ? 3 : 0, v * H), y = padT + H - h;
+    const lab = o.veiled ? (x.n ? `${x.n}人` : '') : x.rate == null ? '—' : `${Math.round(x.rate * 100)}%`;
+    const pv = !o.veiled && x.prev != null ? padT + H - x.prev * H : null;
+    g += `<g class="ch-item" data-i="${x.i}" style="cursor:pointer"><title>第 ${x.i + 1} 題${o.veiled ? `：${x.n} 人作答` : x.rate == null ? '：還沒有人作答' : `：答對率 ${Math.round(x.rate * 100)}%（${x.n} 人作答）`}${pv != null ? `，第一場 ${Math.round(x.prev * 100)}%` : ''}・點一下放大</title>`
+      + `<rect x="${x0.toFixed(1)}" y="${padT}" width="${gw.toFixed(1)}" height="${H}" fill="transparent"/>`
+      + `<rect class="ch-ibar" data-n="${x.n}" data-v="${o.veiled ? x.n : x.rate == null ? '' : Math.round(x.rate * 100)}" x="${(cx - bw / 2).toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="5" style="fill:${o.veiled ? 'var(--ink3)' : col(x.rate)}"/>`
+      + (pv != null ? `<line x1="${(cx - bw / 2 - 4).toFixed(1)}" x2="${(cx + bw / 2 + 4).toFixed(1)}" y1="${pv.toFixed(1)}" y2="${pv.toFixed(1)}" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="5 3"/>` : '')
+      + `<text x="${cx.toFixed(1)}" y="${(y - 8).toFixed(1)}" text-anchor="middle" class="ch-ilab" style="font-size:${fs}px;font-weight:800;fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round">${lab}</text>`
+      + `<text x="${cx.toFixed(1)}" y="${o.h - 10}" text-anchor="middle" class="ch-ino" style="font-size:${fs + 2}px;font-weight:900;fill:var(--dai)">${x.i + 1}</text></g>`;
+  });
+  return `<svg class="ch-irate" viewBox="0 0 ${o.w} ${o.h}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="各題答對率"><line x1="${padL}" x2="${o.w - padL}" y1="${padT + H}" y2="${padT + H}" stroke="var(--line)" stroke-width="2"/>${g}</svg>`;
 }
 
 // ============================================================
@@ -15265,7 +15297,7 @@ function stopLive() { L.unsubs.forEach(u => u()); L.unsubs = []; clearInterval(L
 function openLive(code, showQR) {
   if (L.snap) { show('v-live'); renderLive(); return; }   // v3.35 離線快照：出場摘要按「回儀表板」
   stopLive();
-  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), bankLoad: null, resp: [], students: [], misZoom: null, detail: null, view: 1, hiOpt: null });
+  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), bankLoad: null, resp: [], students: [], misZoom: null, detail: null, view: 1, hiOpt: null, manualView: false, fromSum: false, chartZoom: null });   // v3.51 重新打開＝跟著最近一場（之前 manualView 沒清，從摘要回來會停在第一場）
   show('v-live');
   $('l-sim').hidden = store.mode !== 'demo';
   L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } bankSync(code, s); if (s.round && L.view !== s.round && !L.manualView) L.view = s.round; checkStale(); renderLive(); }));
@@ -15383,7 +15415,7 @@ function renderLive() {
   if (s.round === 1 && s.phase === 'open') sg.textContent = `學生自己往下作答，交卷 ${doneAll}/${joined.size || s.size} 人。大部分交卷後按「結束第一場」進入討論。`;
   else if (s.round === 1) {   // v3.15.1（老師實際上課後提出）：只寫迷思代碼看不出是哪一題，附上原始題目，點題目直接放大投影
     const top = Object.entries(st.mis).sort((x, y) => y[1].seats.size - x[1].seats.size).slice(0, 2);
-    if (r === 1 && prioOf(st).length) sg.textContent = '討論：從下方「建議優先補救」第 1 條開始（點一條放大投影，框出最多人選的誘答）。討論完按「開始第二場」；沒時間就公布第一場結果或看出場摘要。';   // v3.43：優先補救清單取代原本的兩個迷思（省下高度給清單）
+    if (r === 1 && prioOf(st).length) sg.textContent = '討論：點右下「迷思分布」最長的那一條，或左邊答對率最低（紅色）的那一題，放大投影討論。討論完按「開始第二場」；沒時間就公布第一場結果或看出場摘要。';   // v3.43：優先補救清單取代原本的兩個迷思（省下高度給清單）
     else if (!top.length) sg.textContent = '討論完按「開始第二場」；沒時間就直接看出場摘要。';
     else {
       const its = setOf(1);
@@ -15401,6 +15433,15 @@ function renderLive() {
   L.chartZoom ? renderChartZoom(st, r, veiled, joined) : L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
   $('l-main').querySelectorAll('.chz').forEach(el => el.onclick = ev => { ev.stopPropagation(); L.chartZoom = el.dataset.z; renderLive(); });   // v3.33 每張圖的「放大投影」
 }
+// v3.51 都用「人」：同一迷思跨好幾題時，列各題人數＋有幾人錯不只一題（取代「N 位・M 次」）
+const ZH_N = ['', '一', '兩', '三', '四', '五', '六', '七', '八', '九', '十'];
+function dupTxt(per) {   // per：{座號: 這個人選了幾題}
+  const by = {}; Object.values(per).forEach(k => { if (k > 1) by[k] = (by[k] || 0) + 1; });
+  return Object.keys(by).sort((a, b) => a - b).map(k => `${by[k]} 人錯${ZH_N[k] || k}題`).join('、'); }
+function itemsPeople(items) {   // items：[{i, top:{seats}}]
+  const per = {}; items.forEach(x => x.top.seats.forEach(v => per[v] = (per[v] || 0) + 1));
+  const list = [...items].sort((a, b) => a.i - b.i).map(x => `第 ${x.i + 1} 題 ${x.top.n} 人`).join('、');
+  return { list, dup: dupTxt(per), n: Object.keys(per).length }; }
 // ---------- v3.43 建議優先補救（老師 2026-11-19 19:32 看信心×對錯放大頁：「重點還是在共同迷思題目的呈現，教師看不出要補救哪一題」）----------
 //   每題分數＝很確定答錯×2＋不確定答錯；答對率 < 50% 的題再 ×1.5。每題找「答錯的人最集中的迷思」；
 //   同一個迷思是好幾題的最集中迷思時合併成一條（分數相加）。依分數排序取前 3 條；每條一句理由＋該迷思的補救建議（remedy）
@@ -15431,7 +15472,7 @@ function prioHTML(st, r, veiled, fromSum) {
     if (e.c) {   // 同一迷思跨好幾題：合併成一條
       const m = st.mm[e.c] || { name: '' }, seats = new Set(), sure = new Set();
       e.items.forEach(x => { x.top.seats.forEach(s => seats.add(s)); x.top.sure.forEach(s => sure.add(s)); });
-      const why = `第 ${e.items.map(x => x.i + 1).join('、')} 題：${V.mathHTML(m.name)} ${misTag(e.c)}${veiled ? '' : `，${seats.size} 位・${e.items.reduce((t, x) => t + x.top.n, 0)} 次${sure.size ? `（很確定 ${sure.size} 位）` : ''}`}`;
+      const why = `第 ${e.items.map(x => x.i + 1).join('、')} 題：${V.mathHTML(m.name)} ${misTag(e.c)}${veiled ? '' : (ip => `，${ip.list}${ip.dup ? `（${ip.dup}）` : ''}，共 ${seats.size} 人${sure.size ? `（很確定 ${sure.size} 人）` : ''}`)(itemsPeople(e.items))}`;
       return `<div class="pr-row" data-m="${esc(e.c)}" data-pi="${e.items[0].i}" data-pk="${esc(e.items[0].top.key)}" title="點一下放大這個迷思（${e.items.length} 題）"><b class="pr-no">${k + 1}</b><span class="pr-why">${why}${veiled ? '' : seatsOf([...sure].sort((a, b) => a - b))}</span>${rem(e.c)}</div>`;
     }
     const x = e.items[0], t = x.top;
@@ -15479,13 +15520,15 @@ function renderOverview(st, r, veiled, joined) {
   // 迷思（本場，依人數）
   const ord = misOrderOf(st, prev); const codes = ord.map(x => x.c);
   const mmax = Math.max(1, ...codes.map(c => st.mis[c] ? st.mis[c].seats.size : 0), ...(prev ? codes.map(c => prev.mis[c] ? prev.mis[c].seats.size : 0) : [0]));
-  const misRows = ord.map(({ c, g, p }) => {
+  const MIS_TOP = 5;   // v3.52 總覽只畫前 5 種（字放大）；全部在放大投影
+  const ordN = ord.filter(x => (x.g && x.g.seats.size) || (x.p && x.p.seats.size));   // v3.52 兩場都 0 人的迷思不畫
+  const misRows = ordN.slice(0, MIS_TOP).map(({ c, g, p }) => {
     const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, np = p ? p.seats.size : null; const m = st.mm[c] || { name: '?' };
     if (np != null) return `<div class="mis-row mpair" data-m="${esc(c)}" data-n1="${np}" data-n2="${n}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>${chMisPair(np, n, ns, mmax)}</div></div>`;   // v3.33 第二場：第一場 vs 第二場並排
     return `<div class="mis-row" data-m="${esc(c)}" data-n1="${n}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>
       <div class="mis-track"><div class="mis-fill" style="width:${n / mmax * 100}%"></div><div class="mis-fill sure" style="width:${ns / mmax * 100}%"></div></div>
       </div>
-      <span class="c">${n}</span></div>`;
+      <span class="c">${n} 人</span></div>`;
   }).join('');
   // 座號
   const N = st.items.length; let seatsHTML = '';
@@ -15509,27 +15552,28 @@ function renderOverview(st, r, veiled, joined) {
   const q = st.quad; const stuck = Object.entries(st.seats).filter(([, x]) => x.sure.length).map(([k]) => +k).sort((a, b) => a - b);
   const cd = chartData(st, r, joined), rb = L.rbTab === 'hist' ? 'hist' : 'mis';   // 右下：迷思分布／分數分布切換（1440×900 放不下兩格）
   const veilDiv = veiled ? '<div class="veil">投影保護中</div>' : '';
-  const showPrio = st.nResp > 0 && (s.round !== r || s.phase !== 'open');   // v3.43：這一場結束後才排（作答中數字還在變）
+  const showPrio = false;   // v3.52 老師：「這個畫面最上方的建議優先補救，先移除，在出場摘要的最上方有」（prioHTML 只留在出場摘要）
   $('l-main').style.gridTemplateRows = showPrio ? 'auto auto minmax(0,1fr)' : 'auto minmax(0,1fr)';
   const g0 = showPrio ? 1 : 0;
   $('l-main').innerHTML = (showPrio ? prioHTML(st, r, veiled).replace('class="panel prio"', 'class="panel prio" style="grid-column:1/-1;grid-row:1"') : '') + `
-    <div class="panel" style="grid-row:${1 + g0}/${3 + g0}"><h3>各題作答 <button class="btn sm qing chz mx-btn" data-z="mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button> <span class="n">共 ${N} 題${N > 4 ? '（可上下捲動）' : ''}・點題目放大投影・顏色＝選項・細條＝作答人數${r === 2 ? '・←第一場答對率' : ''}</span></h3>
+    <div class="panel" style="grid-row:${1 + g0}/${3 + g0}"><h3>各題作答 <button class="btn sm qing chz mx-btn" data-z="mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button> <span class="n">${veiled ? '投影保護中：只顯示各題作答人數' : `各題答對率・共 ${N} 題`}</span></h3>
       <div class="prog-line"><b>作答進度</b>${chProgress(cd.size, cd.done, cd.answering, cd.joined)}${chZoomBtn('prog')}</div>
-      <div class="irows scroll">${rows}</div>
-      <h3 style="margin-top:auto">座號 <span class="n">數字＝已答題數・✓＝已交卷　結束後：綠≥80%　黃50–79%　紅<50%，粗框＝有「很確定卻答錯」${netLine}</span></h3>
+      <div class="irate-wrap" id="ch-irate">${chItemRates(st.perItem.map((p, i) => ({ i, rate: p.rate, n: p.n, prev: prev && prev.perItem[i] ? prev.perItem[i].rate : null })), { den, veiled })}</div>
+      <div class="ch-leg sm irate-leg">${veiled ? '' : `<span class="ch-li"><i style="background:var(--qing)"></i>≧80%</span><span class="ch-li"><i style="background:#d79a2b"></i>50～79%</span><span class="ch-li"><i style="background:var(--zhu)"></i>＜50%</span>${r === 2 ? '<span class="ch-li"><i class="dash"></i>第一場</span>' : ''}`}<span class="ch-li muted">點一條看那一題的選項分布</span></div>
+      <h3 style="margin-top:auto">座號 <span class="n">${(s.round === r && s.phase === 'open') || veiled ? '數字＝已答題數・✓＝已交卷' : `數字＝答對題數 / 題數・綠 ≧80%　黃 50～79%　紅 ＜50%・粗框＝有「很確定卻答錯」`}${netLine}</span></h3>
       <div class="seats">${seatsHTML}</div></div>
-    <div class="panel ch-panel" id="ch-conf" style="grid-row:${1 + g0}"><h3>信心 × 對錯 <span class="n">${st.nResp} 題次（每人每題算一次）・${showPrio ? '每題的分布按「放大投影」' : '點一列放大該題'}</span>${chZoomBtn('conf')}</h3>
-      <div class="conf-wrap"><div class="quad"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div>
-      <div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div>
-      ${showPrio ? '' : `<div class="cstack">${chStack(cd.stack, { rowH: cd.stack.length > 8 ? 14 : 17, labels: confLabels(st, false), labH: 14 })}</div>`}</div>
-      ${stuck.length && !showPrio ? `<div class="stuck-list${showPrio ? ' clip' : ''}">很確定卻答錯（${stuck.length} 人）：${stuck.map(x => `${x} 號（第 ${st.seats[x].sure.join('、')} 題）`).join('、')}</div>` : ''}
+    <div class="panel ch-panel" id="ch-conf" style="grid-row:${1 + g0}"><h3>信心 × 對錯 <span class="n">點一下看每一題</span>${chZoomBtn('conf')}</h3>
+      <div class="conf-wrap conf-pic" data-z="conf" title="點一下看每一題的信心 × 對錯"><div class="quad"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div>
+      <div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div></div>
       ${veilDiv}</div>
     <div class="panel ch-panel" id="ch-rb" style="grid-row:${2 + g0}"><h3><span class="tog rb-tab" role="tablist">${[['mis', '迷思分布'], ['hist', '分數分布']].map(([k, t]) => `<button class="btn sm ${rb === k ? 'on' : 'ghost'}" data-rb="${k}" role="tab" aria-selected="${rb === k}">${t}</button>`).join('')}</span>
-      <span class="n">${rb === 'hist' ? `每位學生答對題數的人數${r === 2 ? '・第一場（斜線）與第二場（實心）' : ''}` : `共 ${codes.length} 種${codes.length > 4 ? '（可上下捲動）' : ''}・${r === 2 ? '一＝第一場（斜線）、二＝第二場（深色＝很確定）' : '人數（深紅＝很確定）'}・點一下放大檢視`}</span>${chZoomBtn(rb)}</h3>
-      ${rb === 'hist' ? `<div class="hist-wrap" id="ch-hist">${chHist(cd.N, cd.h1, cd.h2)}</div>` : `<div class="mis-bars scroll" id="ch-mis">${misRows}</div>`}${veilDiv}</div>`;
+      <span class="n">${rb === 'hist' ? `每位學生答對題數的人數${r === 2 ? '・第一場（斜線）與第二場（實心）' : ''}` : `${ordN.length} 種有人選・點一條放大`}</span>${chZoomBtn(rb)}</h3>
+      ${rb === 'hist' ? `<div class="hist-wrap" id="ch-hist">${chHist(cd.N, cd.h1, cd.h2)}</div>` : `<div class="mis-bars mis-pic" id="ch-mis">${misRows}${ordN.length > MIS_TOP ? `<div class="mis-more">還有 ${ordN.length - MIS_TOP} 種，按「放大投影」看全部</div>` : ordN.length ? '' : '<div class="mis-more">還沒有人選到迷思選項</div>'}</div>`}${veilDiv}</div>`;
   $('l-main').querySelectorAll('[data-rb]').forEach(el => el.onclick = () => { L.rbTab = el.dataset.rb; renderLive(); });
   $('l-main').querySelectorAll('.irow').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; L.hiOpt = null; renderLive(); });
   prioBind($('l-main'), r, false); confBind($('l-main'));
+  $('l-main').querySelectorAll('#ch-irate .ch-item').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; L.hiOpt = null; renderLive(); });
+  $('l-main').querySelectorAll('.conf-pic').forEach(el => el.onclick = () => { L.chartZoom = 'conf'; renderLive(); });
   $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misZoom = el.dataset.m; L.detail = null; renderLive(); });
 }
 // v3.44 迷思「題目先、錯答案、再迷思」（老師 2026-11-19 看 BW9S：「GC08 不知道是什麼…應該是先出現題號，再出現迷思編號」）
@@ -15561,12 +15605,13 @@ function renderMisZoom(st, r, veiled) {
   const sureTimes = mxSeats.reduce((t, x) => t + Object.values(mxRow[x]).filter(v => v === 'sure').length, 0);
   // 用當下的數字舉例說明「位」和「次」（老師看圖驗收：抽象說明投影時沒人讀）
   const ex = mxSeats.find(x => Object.keys(mxRow[x]).length > 1);
-  const mxEx = ex != null ? `例：${ex} 號在第 ${Object.keys(mxRow[ex]).map(i => +i + 1).sort((a, b) => a - b).join('、')} 題都選了，算 1 位、${Object.keys(mxRow[ex]).length} 次（「位」不重複，「次」＝各題人數相加）` : '';   // v3.46 只有真的有人跨題時才說明
+  const mxDup = dupTxt(Object.fromEntries(mxSeats.map(x => [x, Object.keys(mxRow[x]).length])));
+  const mxEx = ex != null ? `${mxDup}（例：${ex} 號第 ${Object.keys(mxRow[ex]).map(i => +i + 1).sort((a, b) => a - b).join('、')} 題都選），所以各題人數加起來比 ${mxSeats.length} 人多` : '';   // v3.46 只有真的有人跨題時才說明
   const mxHTML = veiled || !mxSeats.length ? '' : `<div class="mz-sec"><h4>誰選了哪幾題 <span class="n mx-leg">●＝選了這種錯答案，紅●＝很確定；每欄加總＝那一題的人數</span></h4>
     <div class="mz-mxw"><table class="mz-mx"><thead><tr><th class="mx-corner">座號＼第幾題</th>${mxCols.map(i => `<th data-i="${i}" title="第 ${i + 1} 題">${i + 1}</th>`).join('')}<th>選了<br>幾題</th></tr></thead>
     <tbody>${mxSeats.map(st0 => `<tr data-seat="${st0}"><th>${st0} 號</th>${mxCols.map(i => { const v = mxRow[st0][i]; return `<td data-i="${i}" class="${v ? 'on' + (v === 'sure' ? ' sure' : '') : ''}">${v ? '●' : ''}</td>`; }).join('')}<td class="mx-n">${Object.keys(mxRow[st0]).length}</td></tr>`).join('')}</tbody>
-    <tfoot><tr><th>每題人數</th>${mxCols.map(i => `<td data-i="${i}">${mxSeats.filter(x => mxRow[x][i]).length}</td>`).join('')}<td class="mx-tot">${mxSeats.length} 位<br>${times} 次</td></tr></tfoot></table></div></div>`;
-  const sumLine = veiled ? `出現在第 ${nums(pk.map(x => x.i + 1))} 題` : n ? `第${r === 2 ? '二' : '一'}場 <b>${n}</b> 位同學、共 <b>${times}</b> 次選了這種錯答案${ns ? `（很確定 <b class="zhu">${ns}</b> 位）` : ''}${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 位、${ptimes} 次</span>` : ''}${mxEx ? `<span class="mz-note">${mxEx}</span>` : ''}` : `第${r === 2 ? '二' : '一'}場沒有人選這種錯答案${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 位 → 第二場 <b>0</b> 位</span>` : ''}`;
+    <tfoot><tr><th>每題人數</th>${mxCols.map(i => `<td data-i="${i}">${mxSeats.filter(x => mxRow[x][i]).length}</td>`).join('')}<td class="mx-tot">共 ${mxSeats.length} 人</td></tr></tfoot></table></div></div>`;
+  const sumLine = veiled ? `出現在第 ${nums(pk.map(x => x.i + 1))} 題` : n ? `第${r === 2 ? '二' : '一'}場 <b>${n}</b> 人選了這種錯答案${ns ? `（很確定 <b class="zhu">${ns}</b> 人）` : ''}${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 人</span>` : ''}${mxEx ? `<span class="mz-note">${mxEx}</span>` : ''}` : `第${r === 2 ? '二' : '一'}場沒有人選這種錯答案${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 人 → 第二場 <b>0</b> 人</span>` : ''}`;
   const chips = pk.map(x => `<button class="mz-chip${!veiled && !x.n ? ' zero' : ''}" data-i="${x.i}" title="捲到第 ${x.i + 1} 題">第 ${x.i + 1} 題${veiled ? '' : x.n ? ` ${x.n} 人` : ' 沒人選'}</button>`).join('');
   const its = pk.map(x => ({ q: x.p, i: x.i }));
   const cards = its.map(({ q, i }) => { const it = q.it; const max = Math.max(1, q.n);
@@ -15594,7 +15639,8 @@ function renderMisZoom(st, r, veiled) {
     <div class="mz-body"><div class="mz-qs scroll">${cards || '<div class="muted">這一場沒有題目用到這個迷思。</div>'}</div>
       <div class="mz-side scroll">${mxHTML}<div class="mz-sec mz-rem"><h4>補救建議</h4><div class="mz-remedy">${M(m.remedy || '')}</div>${m.card ? `<div class="mz-cardln">備課網頁對應卡：${esc(m.card)}</div>` : ''}</div>${why}${seats}
       ${veiled ? '<div class="small muted">投影保護中：座號、正解與迷思標註已隱藏</div>' : ''}</div></div></div>`;
-  $('mz-back').onclick = () => { L.misZoom = null; renderLive(); };
+  $('mz-back').onclick = () => { L.misZoom = null; if (L.fromSum) { openSummary(); return; } renderLive(); };
+  if (L.fromSum) $('mz-back').textContent = '回出場摘要';
   $('l-main').querySelectorAll('.mz-chip').forEach(el => el.onclick = () => { const cd = $('l-main').querySelector(`.mz-card[data-i="${el.dataset.i}"]`), box = $('l-main').querySelector('.mz-qs');
     if (cd && box) box.scrollTop += cd.getBoundingClientRect().top - box.getBoundingClientRect().top; });
   $('mz-prev').onclick = () => { L.misZoom = order[k - 1]; renderLive(); };
@@ -15617,7 +15663,7 @@ function renderChartZoom(st, r, veiled, joined) {
   const z = L.chartZoom, cd = chartData(st, r, joined), q = st.quad, R = r === 2 ? '第二場' : '第一場';
   let title = '', body = '', back = () => { L.chartZoom = null; renderLive(); };
   if (z === 'prog') { title = `作答進度・${R}`; body = `<div class="zprog">${chProgress(cd.size, cd.done, cd.answering, cd.joined)}</div>${chItemCounts(cd.items, cd.joined || cd.size)}`; }
-  else if (z === 'conf') { title = `信心 × 對錯・${R}　<span class="n">全部作答 ${st.nResp} 筆</span>`; body = `<div class="zconf"><div class="quad big"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div><div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div><div class="cstack">${chStack(cd.stack, { w: 1000, labels: confLabels(st, true), labH: 26, rowH: Math.max(16, Math.min(36, Math.floor(560 / Math.max(1, cd.stack.length)) - 26)) })}</div></div>`; }
+  else if (z === 'conf') { title = `信心 × 對錯・${R}　<span class="n">每一列是一題・點一列看那一題</span>`; body = `<div class="zconf"><div class="quad big"><div class="q-ok">很確定・答對<b>${q.ok}</b></div><div class="q-luck">不確定・答對<b>${q.luck}</b></div><div class="q-learn">不確定・答錯<b>${q.learn}</b></div><div class="q-stuck">很確定・答錯<b>${q.stuck}</b></div></div><div class="cstack">${chStack(cd.stack, { w: 1000, labels: confLabels(st, true), labH: 26, rowH: Math.max(16, Math.min(36, Math.floor(560 / Math.max(1, cd.stack.length)) - 26)) })}</div></div>`; }
   else if (z === 'hist') { title = `分數分布・${r === 2 ? '第一場 vs 第二場' : R}`; body = `<div class="zhist">${chHist(cd.N, cd.h1, cd.h2, { w: 1000, h: 420 })}</div>`; }
   else if (z === 'mis') { const prev = r === 2 ? statRound(1) : null; const ord = misOrderOf(st, prev);
     const mx = Math.max(1, ...ord.map(({ g, p }) => Math.max(g ? g.seats.size : 0, p ? p.seats.size : 0)));
@@ -15756,6 +15802,11 @@ function simulateClass() {
 //  出場摘要（v2：第一場 vs 第二場平行題）
 // ============================================================
 // v3.36 出場摘要連到題目：點題組或迷思的題號 → 儀表板單題放大（第一場／第二場可切換對照），「回出場摘要」回來
+function openMisFromSum(r, c) {
+  openLive(L.code);
+  Object.assign(L, { view: r, manualView: true, detail: null, misZoom: c, chartZoom: null, fromSum: true, hiOpt: null });
+  renderLive();
+}
 function openItemFromSum(r, i) {
   openLive(L.code);
   Object.assign(L, { view: r, manualView: true, detail: i, misZoom: null, chartZoom: null, fromSum: true });
@@ -15803,13 +15854,13 @@ function openSummary() {
     .sort((x, y) => (has2 ? (y.remain.length + y.fresh.length) - (x.remain.length + x.fresh.length) : 0) || y.r1.length - x.r1.length);
   // v3.44 每張迷思卡：題號在前 → 迷思名稱 → 代碼（小字）；底下每題一行「第 8 題 題幹… 選 528（正解 12）3 人」，點一行進題目放大頁、框出那個錯答案
   const rowsOf = (st, r, c) => misPicks(st, c).filter(x => x.n);
-  const pkRow = (x, r) => `<div class="pk" data-q="${r}:${x.i}" data-k="${esc(x.key)}" title="看第${r === 2 ? '二' : '一'}場第 ${x.i + 1} 題（框出這個錯答案）"><span class="pk-q">第 ${x.i + 1} 題</span><span class="pk-stem">${M(stem20(x.p.it.stem))}</span><span class="pk-ans">選 <b>${x.txt}</b><span class="pk-ok">（正解 ${x.ans}）</span></span><span class="pk-n">${x.n} 位</span></div>`;
-  const tx = (r, g) => { const m = (r === 2 ? s2 : s1).mis[g.c]; return `第${r === 2 ? '二' : '一'}場 ${m ? m.seats.size : 0} 位・${m ? m.times : 0} 次`; };   // v3.45 位／次
+  const pkRow = (x, r) => `<div class="pk" data-q="${r}:${x.i}" data-k="${esc(x.key)}" title="看第${r === 2 ? '二' : '一'}場第 ${x.i + 1} 題（框出這個錯答案）"><span class="pk-q">第 ${x.i + 1} 題</span><span class="pk-stem">${M(stem20(x.p.it.stem))}</span><span class="pk-ans">選 <b>${x.txt}</b><span class="pk-ok">（正解 ${x.ans}）</span></span><span class="pk-n">${x.n} 人</span></div>`;
+  const tx = (r, g) => { const m = (r === 2 ? s2 : s1).mis[g.c]; return `第${r === 2 ? '二' : '一'}場 ${m ? m.seats.size : 0} 人`; };   // v3.45 位／次
   const grpHTML = g => { const R = has2 ? 2 : 1, cur = rowsOf(has2 ? s2 : s1, R, g.c), r1 = has2 ? rowsOf(s1, 1, g.c) : [];
     const head = cur.length ? `${has2 ? '第二場' : ''}第 ${nums(cur.map(x => x.i + 1))} 題` : r1.length ? `第一場第 ${nums(r1.map(x => x.i + 1))} 題` : '';
-    return `<div class="grp" data-m="${esc(g.c)}"><h4>${head ? `<span class="grp-qs">${head}</span>` : ''}${V.mathHTML(g.m.name)} ${misTag(g.c)}　<span class="muted small" title="位＝不重複的人數；次＝各題人數加起來（同一位同學可能好幾題都選）">${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}</span></h4>
+    return `<div class="grp" data-m="${esc(g.c)}"><h4>${head ? `<span class="grp-qs">${head}</span>` : ''}${V.mathHTML(g.m.name)} ${misTag(g.c)}　<span class="muted small" title="人數＝選過這種錯答案的學生，同一人選好幾題只算一次">${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}</span></h4>
       ${cur.map(x => pkRow(x, R)).join('') || (has2 ? '<div class="small" style="color:var(--qing);font-weight:700">第二場沒有人選這種錯答案</div>' : '')}
-      ${r1.length ? `<div class="r1line">第一場：${r1.map(x => `<span class="qlink" data-q="1:${x.i}" data-k="${esc(x.key)}" title="看第一場第 ${x.i + 1} 題">第 ${x.i + 1} 題 ${x.n} 位</span>`).join('、')}</div>` : ''}
+      ${r1.length ? `<div class="r1line">第一場：${r1.map(x => `<span class="qlink" data-q="1:${x.i}" data-k="${esc(x.key)}" title="看第一場第 ${x.i + 1} 題">第 ${x.i + 1} 題 ${x.n} 人</span>`).join('、')}</div>` : ''}
       ${has2 ? `<div class="seatsline">仍有：${g.remain.map(x => x + ' 號').join('、') || '—'}${g.fresh.length ? `　第二場新出現：${g.fresh.map(x => x + ' 號').join('、')}` : ''}</div><div class="small" style="color:var(--qing);font-weight:700">已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>`
         : `<div class="seatsline">${g.r1.map(x => x + ' 號').join('、')}</div>`}
       <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`; };
@@ -15830,45 +15881,46 @@ function openSummary() {
   const R0 = has2 ? 2 : 1, foc = prioOf(sL), veil = L.veil;
   const fresh0 = has2 ? [...need].filter(x => !groups.some(g => g.r1.includes(x))).sort((a, b) => a - b) : [];   // 第一場沒有迷思、第二場才出現
   const freshTxt = dP != null && dP < 0 && fresh0.length && !veil ? `<span class="why">${fresh0.join('、')} 號第二場才出現迷思</span>` : '';
-  const headHTML = `<div class="sum3-head"><span class="lab">全班</span><span>答對率 <b class="big">${pct(A1)}</b>${has2 ? ` → <b class="big">${pct(A2)}</b>` : ''}</span>${dTxt || freshTxt ? `<span class="dgrp">${dTxt}${freshTxt}</span>` : ''}<span class="sep"></span><span><b class="big zhu">${need.size}</b>／${seats.length} 位${has2 ? '還有迷思' : '有迷思'}</span>${s.soc ? `<span class="sep"></span><span class="soc" title="學生在結果頁按「和 AI 一起訂正」；完成＝AI 判定學生已說出錯在哪並驗算過">AI 訂正完成 <b id="u-soc-stat">${socStat().d}</b> 題（<span id="u-soc-p">${socStat().p}</span> 人參與）</span>` : ''}</div>`;
+  const headHTML = `<div class="sum3-head"><span class="lab">全班</span><span>答對率 <b class="big">${pct(A1)}</b>${has2 ? ` → <b class="big">${pct(A2)}</b>` : ''}</span>${dTxt || freshTxt ? `<span class="dgrp">${dTxt}${freshTxt}</span>` : ''}<span class="sep"></span><span>${has2 ? '第二場' : '第一場'} ${new Set(L.resp.filter(x => x.round === (has2 ? 2 : 1)).map(x => +x.seat)).size} 人作答，<b class="big zhu">${need.size}</b> 人${has2 ? '還有迷思' : '有迷思'}</span>${s.soc ? `<span class="sep"></span><span class="soc" title="學生在結果頁按「和 AI 一起訂正」；完成＝AI 判定學生已說出錯在哪並驗算過">AI 訂正完成 <b id="u-soc-stat">${socStat().d}</b> 題（<span id="u-soc-p">${socStat().p}</span> 人參與）</span>` : ''}</div>`;
   const optTxt = (it, k) => { const o = it.options.find(y => y.key === k); return o ? M(o.text) : ''; };
   const focRows = foc.map((e, k) => {
     if (e.c) { const m = sL.mm[e.c] || { name: e.c }, seats0 = new Set(), sure = new Set(); e.items.forEach(x => { x.top.seats.forEach(v => seats0.add(v)); x.top.sure.forEach(v => sure.add(v)); });
       const times = e.items.reduce((t, x) => t + x.top.n, 0);
-      return `<div class="pr-row sf" data-m="${esc(e.c)}" data-pi="${e.items[0].i}" data-pk="${esc(e.items[0].top.key)}" title="點一下看第 ${e.items[0].i + 1} 題（框出這個錯答案）"><b class="pr-no">${k + 1}</b>
-        <div class="sf-main"><div class="sf-name">${V.mathHTML(m.name)} ${misTag(e.c)}</div><div class="sf-sub">第 ${e.items.map(x => x.i + 1).join('、')} 題・共 ${times} 次${sure.size ? `・很確定 ${sure.size} 位` : ''}</div><div class="sf-rem">補救：${mNW(m.remedy || '')}</div></div>
-        <div class="sf-num">${veil ? '' : `${seats0.size} 位`}</div></div>`; }
+      return `<div class="pr-row sf" data-m="${esc(e.c)}" data-pi="${e.items[0].i}" data-pk="${esc(e.items[0].top.key)}" title="點一下看這個迷思（${e.items.length} 題一起看）"><b class="pr-no">${k + 1}</b>
+        <div class="sf-main"><div class="sf-name">${V.mathHTML(m.name)} ${misTag(e.c)}</div><div class="sf-sub">${(ip => `${ip.list}${ip.dup ? `・${ip.dup}` : ''}`)(itemsPeople(e.items))}${sure.size ? `・很確定 ${sure.size} 人` : ''}</div><div class="sf-rem">補救：${mNW(m.remedy || '')}</div></div>
+        <div class="sf-num">${veil ? '' : `${seats0.size} 人`}</div></div>`; }
     const x = e.items[0], t = x.top, it = x.p.it;
     return `<div class="pr-row sf" data-i="${x.i}" data-pk="${t ? esc(t.key) : ''}" title="點一下看第 ${x.i + 1} 題"><b class="pr-no">${k + 1}</b>
-      <div class="sf-main"><div class="sf-name">${t ? `${V.mathHTML(t.name)} ${misTag(t.c)}` : `第 ${x.i + 1} 題`}</div><div class="sf-sub">${t ? `第 ${x.i + 1} 題選「${optTxt(it, t.key)}」（正解 ${optTxt(it, it.answer)}）・` : ''}${x.wrong}／${x.p.n} 答錯${x.stuck.length ? `・很確定 ${x.stuck.length} 位` : ''}</div>
-      <div class="sf-rem">${t ? `補救：${mNW((sL.mm[t.c] || {}).remedy || '')}` : '答錯的選項沒有標迷思，請看選項分布'}</div></div><div class="sf-num">${veil ? '' : t ? `${t.n} 位` : `${x.wrong} 位`}</div></div>`; }).join('');
+      <div class="sf-main"><div class="sf-name">${t ? `${V.mathHTML(t.name)} ${misTag(t.c)}` : `第 ${x.i + 1} 題`}</div><div class="sf-sub">${t ? `第 ${x.i + 1} 題選「${optTxt(it, t.key)}」（正解 ${optTxt(it, it.answer)}）・` : ''}${x.wrong}／${x.p.n} 答錯${x.stuck.length ? `・很確定 ${x.stuck.length} 人` : ''}</div>
+      <div class="sf-rem">${t ? `補救：${mNW((sL.mm[t.c] || {}).remedy || '')}` : '答錯的選項沒有標迷思，請看選項分布'}</div></div><div class="sf-num">${veil ? '' : t ? `${t.n} 人` : `${x.wrong} 人`}</div></div>`; }).join('');
   const sev = x => { const v = sL.seats[x.seat]; return (v ? v.sure.length : 0) * 10 + (x.why.some(w => /型態異常/.test(w)) ? 5 : 0) + (x.why.some(w => /只答對/.test(w)) ? 3 : 0); };
   const ones = [...teachPlanOf(sL, mxL, caL).one].sort((a, b) => sev(b) - sev(a) || a.seat - b.seat), ONE_MAX = 5;
-  const oneRows = veil ? (ones.length ? `<div class="so-row"><span class="so-why">${ones.length} 位（投影保護中不顯示座號）</span></div>` : '')
-    : ones.slice(0, ONE_MAX).map(x => `<div class="so-row"><b class="so-seat">${x.seat} 號</b><span class="so-why">${M(x.why.join('；'))}</span></div>`).join('') + (ones.length > ONE_MAX ? `<div class="so-more">另有 ${ones.length - ONE_MAX} 位，看下方「每位學生」</div>` : `<div class="so-more">其他同學不必個別找</div>`);
-  const tabs = [['stu', `每位學生（${stu.length} 位）`], ['item', `各題組（${N} 組）`], ['grp', '依迷思分組'], ['plan', '四類教學調整']];
+  const oneRows = veil ? (ones.length ? `<div class="so-row"><span class="so-why">${ones.length} 人（投影保護中不顯示座號）</span></div>` : '')
+    : ones.slice(0, ONE_MAX).map(x => `<div class="so-row"><b class="so-seat">${x.seat} 號</b><span class="so-why">${M(x.why.join('；'))}</span></div>`).join('') + (ones.length > ONE_MAX ? `<div class="so-more">另有 ${ones.length - ONE_MAX} 人，看下方「每位學生」</div>` : `<div class="so-more">其他同學不必個別找</div>`);
+  const tabs = [['stu', '每位學生'], ['item', `各題組（${N} 組）`], ['grp', '依迷思分組'], ['plan', '四類教學調整']];
   const stuTbl = `<table class="t"><tr><th>座號</th><th>第一場</th><th>第二場</th><th class="l">各段（${has2 ? '第二場' : '第一場'}）</th><th class="l">${has2 ? '第二場的迷思' : '迷思'}</th>${s.soc ? '<th>AI 訂正</th>' : ''}</tr>
           ${stu.map(x => { const m1 = x.a ? [...x.a.mis] : [], m2 = x.b ? [...x.b.mis] : [];
-            return `<tr><td><b>${x.seat}</b></td><td>${x.a ? `${x.a.ok} / ${N}` : '—'}${x.a && x.a.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
-            <td>${x.b ? `${x.b.ok} / ${N}` : '—'}${x.b && x.b.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
-            <td class="l mx-ab">${mxL.cell[x.seat] ? abilityOf(mxL, segsL, x.seat).map(abBar).join('') : '—'}</td><td class="l small" style="color:var(--zhu);font-weight:700">${(has2 ? m2 : m1).map(c => `<span title="${esc(mm[c] ? mm[c].name : '')}">${esc(mm[c] ? mm[c].name.slice(0, 10) : c)}</span>`).join('、')}</td>${s.soc ? `<td class="small${socTxt(x.seat) !== '—' ? ' qlink' : ''}" data-socseat="${x.seat}" title="看這位學生的 AI 訂正過程（每題階段與對話）">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table><div class="small muted">!＝有「很確定卻答錯」的題目</div>`;
+            return `<tr><td><b>${x.seat}</b></td><td>${x.a ? `${x.a.ok} / ${N}` : (has2 ? '<span class="muted">沒考</span>' : '—')}${x.a && x.a.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
+            <td>${x.b ? `${x.b.ok} / ${N}` : (has2 ? '<span class="muted">沒考</span>' : '—')}${x.b && x.b.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
+            <td class="l mx-ab">${mxL.cell[x.seat] ? abilityOf(mxL, segsL, x.seat).map(abBar).join('') : '—'}</td><td class="l small" style="color:var(--zhu);font-weight:700">${(has2 ? m2 : m1).map(c => `<span title="${esc(mm[c] ? mm[c].name : '')}">${V.mathHTML(mm[c] ? mm[c].name : c)}</span>`).join('、')}</td>${s.soc ? `<td class="small${socTxt(x.seat) !== '—' ? ' qlink' : ''}" data-socseat="${x.seat}" title="看這位學生的 AI 訂正過程（每題階段與對話）">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table><div class="small muted">!＝有「很確定卻答錯」的題目</div>`;
   const itemTbl = `<table class="t"><tr><th>組</th><th class="l">第一場題目</th><th>第一場</th><th>第二場</th><th>變化（百分點）</th></tr>
           ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const d = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
-            return `<tr><td>${i + 1}</td><td class="l"><span class="qlink" data-q="1:${i}" title="看第一場第 ${i + 1} 題（題目、選項分布、迷思）">${M(p.it.stem.length > 22 ? p.it.stem.slice(0, 22) + '…' : p.it.stem)}</span></td><td>${pct(p.rate)}<span class="muted small"> (${p.n} 位)</span></td>
-            <td>${has2 && q ? `<span class="qlink" data-q="2:${i}" title="看第二場（平行題）第 ${i + 1} 題">${pct(q.rate)}</span>` + `<span class="muted small"> (${q.n} 位)</span>` : '—'}</td><td style="font-weight:700;color:${d > 0 ? 'var(--qing)' : d < 0 ? 'var(--zhu)' : 'inherit'}">${d == null ? '—' : d > 0 ? '+' + d : d < 0 ? '−' + (-d) : '0'}</td></tr>`; }).join('')}</table>`;
+            return `<tr><td>${i + 1}</td><td class="l"><span class="qlink" data-q="1:${i}" title="看第一場第 ${i + 1} 題（題目、選項分布、迷思）">${M(p.it.stem.length > 22 ? p.it.stem.slice(0, 22) + '…' : p.it.stem)}</span></td><td>${pct(p.rate)}<span class="muted small"> (${p.n} 人)</span></td>
+            <td>${has2 && q ? `<span class="qlink" data-q="2:${i}" title="看第二場（平行題）第 ${i + 1} 題">${pct(q.rate)}</span>` + `<span class="muted small"> (${q.n} 人)</span>` : '—'}</td><td style="font-weight:700;color:${d > 0 ? 'var(--qing)' : d < 0 ? 'var(--zhu)' : 'inherit'}">${d == null ? '—' : d > 0 ? '+' + d : d < 0 ? '−' + (-d) : '0'}</td></tr>`; }).join('')}</table>`;
   const detailBody = sumTab === 'stu' ? stuTbl : sumTab === 'item' ? itemTbl : sumTab === 'grp' ? (groups.map(g => grpHTML(g)).join('') || '<div class="muted">沒有學生出現迷思選項。</div>') : teachPlanHTML(teachPlanOf(sL, mxL, caL), false);
   $('v-sum').innerHTML = `<div class="sum3-bar"><h2>本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2><span class="sp"></span>
-    <button class="btn sm ghost" id="u-mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button><span class="exp"><button class="btn sm" id="u-exp-btn" aria-haspopup="true" aria-expanded="false">匯出 ▾</button><div class="exp-menu" id="u-exp" hidden><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv" title="開啟報表後，印表機選「另存為 PDF」">學生報表 PDF</button><button class="btn sm" id="u-csv2" title="開啟報表後，印表機選「另存為 PDF」">作答明細 PDF</button>
-    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm dai" id="u-xlsx" title="課後分析用：說明、試題分析（難度、鑑別度、選項分布）、迷思、學生、作答明細；只有座號沒有姓名。Excel、Google 試算表都能直接開">下載 Excel</button><span class="gs-box"><button class="btn sm dai" id="u-gs" title="用登入教師端的 Google 帳號，在你的雲端硬碟建立試算表（只要求「這個系統建立的檔案」權限）">存到 Google 試算表</button><label class="small gs-cum" title="同一份「課堂形成性評量_累積總表」的累積作答明細、累積試題分析往下加；同一場不重複加"><input type="checkbox" id="u-gs-cum"> 加到我的累積總表</label></span></div></span><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div>
+    <button class="btn sm ghost" id="u-mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button><span class="exp"><button class="btn sm" id="u-exp-btn" aria-haspopup="true" aria-expanded="false">匯出 ▾</button><div class="exp-menu" id="u-exp" hidden><button class="btn sm qing" id="u-pdf" title="一份 PDF：出場摘要、每位學生、迷思代碼對照、每位學生的作答明細（開啟後印表機選「另存為 PDF」）">PDF 報告（摘要＋每位學生＋作答明細）</button>
+    <button class="btn sm dai" id="u-xlsx" title="課後分析用：說明、試題分析（難度、鑑別度、選項分布）、迷思、學生、作答明細；只有座號沒有姓名。Excel、Google 試算表都能直接開">下載 Excel</button><span class="gs-box"><button class="btn sm dai" id="u-gs" title="用登入教師端的 Google 帳號，在你的雲端硬碟建立試算表（只要求「這個系統建立的檔案」權限）">存到 Google 試算表</button><label class="small gs-cum" title="同一份「課堂形成性評量_累積總表」的累積作答明細、累積試題分析往下加；同一場不重複加"><input type="checkbox" id="u-gs-cum"> 加到我的累積總表</label></span><button class="btn sm ghost exp-prep" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">給備課網頁的檔案（匯出給明日備課）</button></div></span><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div>
     <div class="gs-msg" id="u-gs-msg" aria-live="polite"></div>
     ${headHTML}
     <div class="sum3-main"><div class="panel sum3-focus"><h3>${foc.length > 1 ? `明天先教這 ${foc.length} 件事` : '明天先教'} <span class="n">${has2 ? '第二場' : '第一場'}結果・點一條看題目</span></h3>${focRows || '<div class="muted">這一場沒有人答錯。</div>'}</div>
-      <div class="panel sum3-one"><h3>這幾位要個別找</h3><div class="hint">很確定卻答錯 2 題以上、作答型態異常、答對不到一半</div>${oneRows || '<div class="muted">沒有需要個別找的同學。</div>'}</div></div>
+      <div class="panel sum3-one"><h3>要個別找的學生</h3><div class="hint">很確定卻答錯 2 題以上、作答型態異常、答對不到一半</div>${oneRows || '<div class="muted">沒有需要個別找的同學。</div>'}</div></div>
     <div class="sum3-detail"><h3>細節 <span class="tog" role="tablist">${tabs.map(([k, t]) => `<button class="btn sm ${sumTab === k ? 'on' : 'ghost'}" data-sumtab="${k}" role="tab" aria-selected="${sumTab === k}">${t}</button>`).join('')}</span></h3>
       <div class="sum3-dbody" id="u-left">${detailBody}</div></div>
     <div class="sum3-foot">蘇恭弘。數學王子。台南市忠孝國中製作　${esc(APP_VERSION)}</div>`;
   $('u-exp-btn').onclick = ev => { ev.stopPropagation(); const m = $('u-exp'); m.hidden = !m.hidden; $('u-exp-btn').setAttribute('aria-expanded', String(!m.hidden)); };
-  $('v-sum').querySelectorAll('.sum3-focus .pr-row').forEach(el => el.onclick = () => { const i = +(el.dataset.i != null ? el.dataset.i : el.dataset.pi); openItemFromSum(R0, i); L.hiOpt = el.dataset.pk || null; renderLive(); });
+  $('v-sum').querySelectorAll('.sum3-focus .pr-row').forEach(el => el.onclick = () => { if (el.dataset.m && el.dataset.pi != null) { openMisFromSum(R0, el.dataset.m); return; }   // v3.51 合併多題那條 → 迷思放大頁（幾題一起看）
+    const i = +(el.dataset.i != null ? el.dataset.i : el.dataset.pi); openItemFromSum(R0, i); L.hiOpt = el.dataset.pk || null; renderLive(); });
   $('u-back').onclick = () => openLive(L.code);
   $('u-mx').onclick = () => { openLive(L.code); Object.assign(L, { view: has2 ? 2 : 1, manualView: true, chartZoom: 'mx', detail: null, misZoom: null, fromSum: true }); renderLive(); };
   document.querySelectorAll('#v-sum [data-sumtab]').forEach(el => el.onclick = () => { L.sumTab = el.dataset.sumtab; openSummary(); });
@@ -15878,7 +15930,7 @@ function openSummary() {
     document.querySelectorAll('[data-socseat]').forEach(td => td.textContent = socTxt(+td.dataset.socseat));
     const z = socStat(); if ($('u-soc-stat')) { $('u-soc-stat').textContent = z.d; $('u-soc-p').textContent = z.p; } }));
   // v3.6：匯出改成 PDF——開一頁 A4 報表（完整內容、表頭每頁重複、列不切半），自動叫出列印，目的地選「另存為 PDF」
-  const rate = (st, x) => st ? `${st.ok}/${st.n}` : '—';
+  const rate = (st, x) => st ? `${st.ok} / ${st.n}` : '沒考';   // v3.52 沒考的寫「沒考」
   const misTxt = set => [...set].map(c => `<b>${esc(c)}</b> ${esc(mm[c] ? mm[c].name : '')}`).join('<br>');
   const respRows = () => { const all = [...setOf(1).map((it, i) => [1, i, it]), ...setOf(2).map((it, i) => [2, i, it])];
     return [...L.resp].map(r => { const f = all.find(([rr, , it]) => rr === r.round && it.id === r.itemId); if (!f) return null; const [, i, it] = f; const o = it.options.find(x => x.key === r.choice);
@@ -15887,13 +15939,14 @@ function openSummary() {
   const usedMis = codes => codes.filter(c => mm[c]).map(c => `<tr><td><b>${esc(c)}</b></td><td class="l">${V.mathHTML(mm[c].name)}</td><td class="l">${V.mathHTML(mm[c].remedy || '')}</td></tr>`).join('');
   const reportHTML = kind => {
     const d = new Date(), pad = n => String(n).padStart(2, '0'), day = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    const name = { stu: '學生報表', detail: '作答明細', sum: '出場摘要' }[kind];
+    const name = { stu: '學生報表', detail: '作答明細', sum: '出場摘要', all: '課堂報告' }[kind];
     const fname = `${s.label}_${s.code}_${name}`.replace(/[\\/:*?"<>|\s]+/g, '');
-    let body = '';
+    const codesTbl = `<h2>迷思代碼對照</h2><table><thead><tr><th>代碼</th><th class="l">迷思</th><th class="l">補救做法</th></tr></thead><tbody>${usedMis(codes) || '<tr><td colspan="3">沒有學生出現迷思選項。</td></tr>'}</tbody></table>`;
+    const bodyOf = kind => { let body = '';
     if (kind === 'sum') {
       body = `<div class="stats"><div><b>${seats.length}</b>參與人數</div><div><b>${N}</b>每場題數</div><div><b>${pct(avg(s1))}</b>第一場平均答對率</div><div><b>${has2 ? pct(avg(s2)) : '—'}</b>第二場平均答對率</div><div><b class="zhu">${need.size}</b>${has2 ? '第二場仍有迷思' : '第一場有迷思'}的學生</div></div>
       <h2>依迷思分組補救</h2>${groups.map(g => { const R = has2 ? 2 : 1, cur = rowsOf(has2 ? s2 : s1, R, g.c), r1 = has2 ? rowsOf(s1, 1, g.c) : [];
-        return `<div class="grp"><h3>${cur.length ? `<span class="code">${has2 ? '第二場' : ''}第 ${nums(cur.map(x => x.i + 1))} 題</span>` : ''}${V.mathHTML(g.m.name)} <small>${esc(g.c)}</small>　<small>${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}（位＝不重複人數，次＝各題人數相加）</small></h3>
+        return `<div class="grp"><h3>${cur.length ? `<span class="code">${has2 ? '第二場' : ''}第 ${nums(cur.map(x => x.i + 1))} 題</span>` : ''}${V.mathHTML(g.m.name)} <small>${esc(g.c)}</small>　<small>${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}</small></h3>
         ${cur.map(x => `<div>第 ${x.i + 1} 題 ${M(stem20(x.p.it.stem))} → 選 <b class="zhu">${x.txt}</b>（正解 ${x.ans}）<b>${x.n} 人</b></div>`).join('')}${r1.length ? `<div><small>第一場：${r1.map(x => `第 ${x.i + 1} 題 ${x.n} 人`).join('、')}</small></div>` : ''}
         ${has2 ? `<div>仍有：<b class="zhu">${g.remain.map(x => x + ' 號').join('、') || '—'}</b>${g.fresh.length ? `　第二場新出現：<b class="zhu">${g.fresh.map(x => x + ' 號').join('、')}</b>` : ''}　已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>` : `<div>座號：<b>${g.r1.map(x => x + ' 號').join('、')}</b></div>`}
         <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`; }).join('') || '<p>沒有學生出現迷思選項。</p>'}
@@ -15906,18 +15959,21 @@ function openSummary() {
       body += `<table><thead><tr><th>座號</th><th>第一場<br>答對／作答</th>${has2 ? '<th>第二場<br>答對／作答</th>' : ''}<th class="l">第一場迷思</th>${has2 ? '<th class="l">第二場迷思</th>' : ''}<th>很確定卻答錯<br>（題號）</th></tr></thead><tbody>
       ${stu.map(x => `<tr><td><b>${x.seat}</b></td><td>${rate(x.a)}</td>${has2 ? `<td>${rate(x.b)}</td>` : ''}<td class="l">${x.a ? misTxt(x.a.mis) : ''}</td>${has2 ? `<td class="l zhu">${x.b ? misTxt(x.b.mis) : ''}</td>` : ''}
         <td>${[x.a && x.a.sure.length ? `第一場 ${x.a.sure.join('、')}` : '', x.b && x.b.sure.length ? `第二場 ${x.b.sure.join('、')}` : ''].filter(Boolean).join('<br>') || '—'}</td></tr>`).join('')}</tbody></table>`;
-      if (kind === 'stu') body += `<h2>迷思代碼對照</h2><table><thead><tr><th>代碼</th><th class="l">迷思</th><th class="l">補救做法</th></tr></thead><tbody>${usedMis(codes) || '<tr><td colspan="3">沒有學生出現迷思選項。</td></tr>'}</tbody></table>`;
+      if (kind === 'stu') body += codesTbl;
     }
     if (kind === 'detail') {
       const rr = respRows(); const bySeat = {}; rr.forEach(r => (bySeat[r.seat] = bySeat[r.seat] || []).push(r));
       body = Object.keys(bySeat).sort((a, b) => a - b).map(st => { const rs = bySeat[st]; const ok = r => rs.filter(x => x.round === r && x.ok).length, n = r => rs.filter(x => x.round === r).length;
-        return `<section class="seat"><h3>${st} 號　<small>第一場 ${ok(1)}/${n(1)}${has2 && n(2) ? `　第二場 ${ok(2)}/${n(2)}` : ''}</small></h3>
+        return `<section class="seat"><h3>${st} 號　<small>第一場 ${n(1) ? `${ok(1)} / ${n(1)}` : '沒考'}${has2 ? `　第二場 ${n(2) ? `${ok(2)} / ${n(2)}` : '沒考'}` : ''}</small></h3>
         <table><thead><tr>${has2 ? '<th>場次</th>' : ''}<th>題號</th><th class="l stem">題目</th><th>作答</th><th>對錯</th><th class="l mis">迷思</th><th>信心</th><th>秒數</th></tr></thead><tbody>
         ${rs.map(r => `<tr class="${r.ok ? '' : 'wrong'}">${has2 ? `<td>${r.round === 1 ? '一' : '二'}</td>` : ''}<td>${r.no}</td><td class="l stem">${M(r.stem)}</td><td>${esc(r.choice)}</td><td>${r.ok ? '○' : '<b class="zhu">✕</b>'}</td>
           <td class="l mis">${r.mis ? `<b>${esc(r.mis)}</b> ${esc(mm[r.mis] ? mm[r.mis].name : '')}` : ''}</td><td>${esc(r.conf)}${r.conf === '很確定' && !r.ok ? '<b class="zhu">！</b>' : ''}</td><td>${r.sec}</td></tr>`).join('')}</tbody></table></section>`; }).join('') || '<p>還沒有作答紀錄。</p>';
     }
+    return body; };
+    // v3.52 一份 PDF：出場摘要（含每位學生）→ 迷思代碼對照 → 作答明細（每位學生一節，換頁）
+    const body = kind === 'all' ? `${bodyOf('sum')}${codesTbl}<h2 class="part">作答明細（每位學生每一題）</h2>${bodyOf('detail')}` : bodyOf(kind);
     const unit = L.bank ? shownT(L.bank.title || '') : '';
-    const sumInfo = kind === 'sum' ? `<div>題庫：${esc(unit || shownT(s.bankTitle || ''))}　用到的組：${esc([...new Set(setOf(1).map(it => it.pair || it.id))].join('、'))}</div>` : '';
+    const sumInfo = kind === 'sum' || kind === 'all' ? `<div>題庫：${esc(unit || shownT(s.bankTitle || ''))}　用到的組：${esc([...new Set(setOf(1).map(it => it.pair || it.id))].join('、'))}</div>` : '';
     return { fname, html: `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>${esc(fname)}</title><style>
 @page{size:A4;margin:14mm 12mm 16mm}
 *{box-sizing:border-box}body{margin:0;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;color:#2b2420;font-size:12.5px;line-height:1.5;background:#fff}
@@ -15941,8 +15997,8 @@ tr.wrong td{background:#fbf0ec}.zhu{color:#b5432f}
 section.seat{margin-bottom:10px}section.seat h3{border-bottom:1px solid #cdbf9f}
 .math{font-family:'Times New Roman',serif}
 ${V.MATH_CSS || ''}
-footer.f{margin-top:14px;color:#8a7c6c;font-size:11px;text-align:right}@media print{footer.f{position:fixed;right:0;bottom:-10mm;margin:0}}
-@media print{.bar{display:none}main{max-width:none;padding:0}}
+footer.f{margin-top:14px;color:#8a7c6c;font-size:11px;text-align:right}@media print{footer.f{position:static;margin-top:10px}}   /* v3.52 fixed 頁尾在第 2 頁以後壓到表頭，改成只印在最後 */
+@media print{.bar{display:none}main{max-width:none;padding:0}h2.part{break-before:page}}
 </style></head><body><div class="bar"><button onclick="print()">列印／存成 PDF</button><span>印表機（目的地）選「另存為 PDF」或「Microsoft Print to PDF」，就會存成 PDF。</span></div>
 <main><header class="h"><h1>課堂形成性評量・${name}</h1><div>${esc(unit)}　班級 ${esc(s.label || '')}　場次 ${esc(s.code || L.code)}　${day}${has2 ? '　（含第二場平行題）' : '　（只做第一場）'}</div>${sumInfo}</header>
 ${body}<footer class="f">蘇恭弘。數學王子。台南市忠孝國中製作　${esc(APP_VERSION)}</footer></main>
@@ -15954,10 +16010,8 @@ ${body}<footer class="f">蘇恭弘。數學王子。台南市忠孝國中製作�
     w.document.open(); w.document.write(html); w.document.close(); L.exported = true;
   };
   window.__FA_report = reportHTML;   // 測試用
-  $('u-print').onclick = () => openReport('sum');
+  $('u-pdf').onclick = () => openReport('all');   // v3.52 老師：「匯出太複雜…合併一個 pdf 檔」
   $('u-prep').onclick = () => { const d = prepClassData(); download(`prep_class_${d.unit || '單元'}_${d.class.replace(/[\\/:*?"<>|\s]+/g, '') || '班級'}_${d.date.replace(/-/g, '')}.json`, JSON.stringify(d, null, 2), 'application/json'); toast('已下載，請放進 115-教科書/_網頁素材暫存/，再跑 mkprep.py'); };
-  $('u-csv').onclick = () => openReport('stu');
-  $('u-csv2').onclick = () => openReport('detail');
   wireSheets();   // v3.32 匯出試算表（sheets.js）
   $('u-end').onclick = async () => {
     if (!L.exported && !confirm('還沒有匯出（PDF 或試算表）。結束後作答資料會從雲端刪除，之後就不能再匯出。確定要結束嗎？')) return;
@@ -16706,10 +16760,10 @@ function insightsOf(st, mx, ca, veiled) {
   its.filter(x => avg - x.rate >= 0.3 && x.j !== (out[0] || {}).j).slice(0, 1).forEach(x => out.push({ t: `第 ${x.j + 1} 題答對率 ${Math.round(x.rate * 100)}%，比全部題目平均（${Math.round(avg * 100)}%）低很多`, j: x.j }));
   // 3. 最多人的迷思集中在哪幾位
   const top = Object.entries(st.mis).sort((a, b) => b[1].seats.size - a[1].seats.size)[0];
-  if (top && top[1].seats.size >= 2) out.push({ t: `${(st.mm[top[0]] || {}).name || top[0]}（${top[0]}）${veiled ? `共 ${top[1].seats.size} 位` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')} 號`}`, m: top[0] });
+  if (top && top[1].seats.size >= 2) out.push({ t: `${(st.mm[top[0]] || {}).name || top[0]}（${top[0]}）${veiled ? `共 ${top[1].seats.size} 人` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')} 號`}`, m: top[0] });
   // 4. 作答型態異常
   const odd = mx.seats.filter(s => ca.stu[s] >= CAUTION_HI && mx.S[s] > 0 && mx.S[s] < mx.N);
-  if (odd.length) out.push({ t: `${odd.length} 位作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')} 號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
+  if (odd.length) out.push({ t: `${odd.length} 人作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')} 號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
   return out.slice(0, 4);
 }
 
@@ -16733,12 +16787,12 @@ function teachPlanOf(st, mx, ca) {
   return plan;
 }
 function teachPlanHTML(plan, veiled) {
-  const S = a => veiled ? `${a.length} 位` : `${a.join('、')} 號`;
+  const S = a => veiled ? `${a.length} 人` : `${a.join('、')} 號`;
   const box = (k, t, sub, rows) => `<div class="tp tp-${k}"><h4>${t} <span class="n">${sub}</span></h4>${rows || '<div class="muted small">這一類沒有</div>'}</div>`;
   return `<div class="tplan">
     ${box('whole', '全班重教', '全班答對率低於 50% 的段', plan.whole.map(x => `<div class="tp-r">「${M(x.name)}」答對率 <b>${Math.round(x.rate * 100)}%</b>（第 ${x.js.map(j => j + 1).join('、')} 題）</div>`).join(''))}
-    ${box('group', '小組補救', '同一個迷思 3 位以上', plan.group.map(x => `<div class="tp-r"><b>${V.mathHTML(x.name)}</b> ${misTag(x.c)}：${S(x.seats)}<div class="tp-rem">${V.mathHTML(x.remedy)}</div></div>`).join(''))}
-    ${box('one', '個別補救', '很確定卻答錯 2 題以上、作答型態異常、答對不到一半', veiled ? (plan.one.length ? `<div class="tp-r">${plan.one.length} 位（投影保護中不顯示座號）</div>` : '') : plan.one.map(x => `<div class="tp-r"><b>${x.seat} 號</b>：${x.why.join('；')}</div>`).join(''))}
+    ${box('group', '小組補救', '同一個迷思 3 人以上', plan.group.map(x => `<div class="tp-r"><b>${V.mathHTML(x.name)}</b> ${misTag(x.c)}：${S(x.seats)}<div class="tp-rem">${V.mathHTML(x.remedy)}</div></div>`).join(''))}
+    ${box('one', '個別補救', '很確定卻答錯 2 題以上、作答型態異常、答對不到一半', veiled ? (plan.one.length ? `<div class="tp-r">${plan.one.length} 人（投影保護中不顯示座號）</div>` : '') : plan.one.map(x => `<div class="tp-r"><b>${x.seat} 號</b>：${x.why.join('；')}</div>`).join(''))}
     ${box('diff', '差異練習', '依各段能力分組，全對的給挑戰', plan.diff.map(x => `<div class="tp-r">${M(x.label)}：${S(x.seats)}</div>`).join(''))}
   </div>`;
 }
@@ -16762,7 +16816,7 @@ function renderMatrix(st, r, veiled) {
     <tr><th title="題目注意係數 ≥ 0.5：高分的錯、低分的對，題目可能有問題">題目注意</th>${cols.map(x => { const v = ca.item[x.j] || 0; return `<td data-j="${x.j}" class="${v >= CAUTION_HI ? 'hi' : ''}">${v.toFixed(2)}</td>`; }).join('')}<td colspan="${one ? 2 : 3}"></td></tr>`;
   const ins = insightsOf(st, mx, ca, veiled);
   const segAvg = segs.map(g => { const tot = g.js.reduce((t, j) => t + mx.items[j].n, 0), ok = g.js.reduce((t, j) => t + mx.items[j].ok, 0); return { ...g, ok, n: tot, lv: !tot ? 'mid' : ok === tot ? 'good' : ok / tot < 0.5 ? 'need' : 'mid' }; });
-  return { title: `作答矩陣・${R}　<span class="n">${mx.seats.length} 位・${mx.N} 題${mx.seats.length < CAUTION_MIN_N ? '・人數少於 15，注意係數僅供參考' : ''}</span>`,
+  return { title: `作答矩陣・${R}　<span class="n">${mx.seats.length} 人・${mx.N} 題${mx.seats.length < CAUTION_MIN_N ? '・人數少於 15，注意係數僅供參考' : ''}</span>`,
     body: `<div class="mx-top"><div class="tog" role="group"><button class="btn sm ${sp ? 'on' : 'ghost'}" data-mxo="sp">依答對多寡排（S-P 表）</button>${veiled ? '<span class="small">投影保護中：同分的順序打亂、不標異常與紅框</span>' : `<button class="btn sm ${sp ? 'ghost' : 'on'}" data-mxo="seat">座號、題號原順序</button>`}</div>
       <div class="mx-leg">○ 答對　✕ 答錯（小字＝迷思代碼）　<span class="lg-sure">紅框＝很確定卻答錯</span>　· 未答${sp ? '　<span class="lg-s">藍線＝S 曲線（每位學生答對題數）</span>　<span class="lg-p">綠線＝P 曲線（每題答對人數）</span>' : ''}</div></div>
       ${ins.length ? `<ul class="mx-ins">${ins.map(x => `<li${x.j != null ? ` data-j="${x.j}"` : ''}${x.m ? ` data-m="${esc(x.m)}"` : ''}>${M(x.t)}</li>`).join('')}</ul>` : ''}
