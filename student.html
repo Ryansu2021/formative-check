@@ -211,7 +211,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 #qr{background:#fff;padding:12px;border-radius:10px}
 
 /* ---------- 出場摘要 ---------- */
-#v-sum{gap:14px;overflow-y:auto;padding-bottom:56px}
+#v-sum{gap:14px;overflow-y:auto;padding-bottom:20px}
 /* v3.48 出場摘要＝三個問題：大字、數字與迷思為主 */
 #v-sum>*{flex:none}
 .sum3-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.sum3-bar h2{font-size:30px;margin:0}.sum3-bar .sp{flex:1}
@@ -242,6 +242,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .sum3-main h3 .n,.sum3-detail h3 .n{font-size:17px}.sum3-focus .code-sm,.sum3-head .code-sm{font-size:17px!important}.sf-rem{font-size:19px}.sum3-focus .code-sm{font-size:17px!important;color:var(--ink3)!important}
 .sum3-head .why{font-size:18px;color:var(--zhu);font-weight:700}
 #stage.tport .sum3-head .dgrp{flex-basis:100%}
+#stage.tsum footer.by{display:none}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
 .sum3-head .dgrp{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}.sf-rem{text-wrap:pretty}
 .sum3-one .hint{font-size:17px;color:var(--ink2);margin-top:-4px}.sum3-main h3 .n{color:var(--ink2)}
 .exp-menu .btn{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)!important;box-shadow:none!important}
@@ -816,7 +817,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.48（2026-11-20）';
+const APP_VERSION = 'v3.49（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -891,7 +892,12 @@ function fit() {
     const s = innerWidth / 860, h = innerHeight / s;
     st.style.width = '860px'; st.style.height = h + 'px'; st.classList.add('tport'); st.style.transform = `translate(-50%,-50%) scale(${s})`; return;
   }
-  st.classList.remove('tport'); st.style.width = ''; st.style.height = '';
+  st.classList.remove('tport');
+  // v3.49 出場摘要（整頁往下捲）橫式：舞台寬 1280～1600、高度跟螢幕，iPad 橫拿縮放 0.74 → 0.92、1280 寬 0.8 → 1（頁尾改寫在摘要最下面）
+  st.classList.toggle('tsum', !!sum);
+  if (sum) { const s = Math.max(Math.min(innerWidth / 1600, innerHeight / 900), Math.min(1, innerWidth / 1280, innerHeight / 760));
+    st.style.width = Math.min(1600, innerWidth / s) + 'px'; st.style.height = innerHeight / s + 'px'; st.style.transform = `translate(-50%,-50%) scale(${s})`; return; }
+  st.style.width = ''; st.style.height = '';
   const s = Math.min(innerWidth / 1600, innerHeight / 900); st.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener('resize', fit); fit();
