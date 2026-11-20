@@ -711,6 +711,17 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
             <div class="row" style="gap:8px;flex-wrap:wrap"><input type="text" id="sw-url" style="flex:1;min-width:260px;font-family:monospace;font-size:14px" placeholder="https://…workers.dev"><button class="btn sm qing" id="sw-save">儲存</button><button class="btn sm ghost" id="sw-default">用預設</button></div>
             <div id="sw-msg" class="small"></div>
           </div>
+          <div class="prc-set">
+            <h3 style="font-size:19px">學生自主練習班（AI 指導）</h3>
+            <div class="small muted" style="line-height:1.7">學生在「自主練習」頁做完、答錯的題目可以和 AI 一起想（蘇格拉底式提問，不直接給答案）。AI 費用用上面 Worker 的 Gemini 金鑰，所以要有練習班代碼才能用，並限制每人、全班每天的次數。要用 Google 帳號登入教師端（預設的 Firebase 專案）。</div>
+            <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center"><label class="small">名稱 <input type="text" id="prc-label" placeholder="例如 701" style="width:150px"></label>
+              <label class="small">每人每天 <input type="number" id="prc-lim" value="20" min="1" max="60" style="width:64px"> 次</label>
+              <label class="small">全班每天 <input type="number" id="prc-cap" value="400" min="1" max="2000" style="width:80px"> 次</label>
+              <label class="small">從今天起有效 <input type="number" id="prc-days" value="30" min="1" max="120" style="width:64px"> 天</label>
+              <button class="btn sm qing" id="prc-new">建立練習班</button><button class="btn sm ghost" id="prc-load">重新整理清單</button></div>
+            <div id="prc-msg" class="small" aria-live="polite"></div>
+            <div id="prc-list" class="small"></div>
+          </div>
         </div>
         <div class="card col scroll" style="flex:1;gap:8px;max-height:100%">
           <h3 style="font-size:20px">設定步驟（第一次約 10 分鐘）</h3>
@@ -14056,7 +14067,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.56（2026-11-20）';
+const APP_VERSION = 'v3.57（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -14852,11 +14863,50 @@ const SOC_LS = 'fa-soc-worker', SOC_WORKER_DEFAULT = 'https://socratic-chat.ghsg
 function socWorker() { const v = ls.get(SOC_LS, null); return v == null ? SOC_WORKER_DEFAULT : String(v); }
 function socWorkerOk(u) { try { const x = new URL(u); return x.protocol === 'https:' && !x.search && !x.hash; } catch (e) { return false; } }
 function renderSocSet(msg) { $('sw-url').value = socWorker(); $('sw-msg').innerHTML = msg || (socWorker() ? `目前：${esc(socWorker())}${socWorker() === SOC_WORKER_DEFAULT ? '（預設）' : ''}` : '目前：<b>沒有設定</b>（學生不會看到 AI 訂正按鈕）'); }
+// ---------- 學生自主練習班（v3.57）：老師用 Google 登入的 idToken 向 Worker 建立、列出、停用；代碼與連結給學生 ----------
+const PRAC_URL = 'https://ryansu2021.github.io/formative-check/practice.html';
+async function pracToken() {
+  if (window.__FA_pracTokenHook) return window.__FA_pracTokenHook();   // 測試用
+  const u = store && store.auth && store.auth.currentUser;
+  if (!u || u.isAnonymous) throw new Error('要先用 Google 帳號登入教師端（示範模式不能建立練習班）');
+  return u.getIdToken();
+}
+async function pracCall(body) {
+  const sw = socWorker(); if (!sw) throw new Error('上面「AI 訂正服務」沒有 Worker 網址');
+  let res; try { res = await fetch(sw, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, idToken: await pracToken() }) }); }
+  catch (e) { if (/Google 帳號/.test(e.message)) throw e; throw new Error('連不上 AI 訂正服務（Worker），請檢查網路'); }
+  let j = null; try { j = await res.json(); } catch (e) { }
+  if (!res.ok || !j) throw new Error((j && j.error) || (res.status === 404 || res.status === 400 ? 'Worker 還是舊版（沒有練習班功能），請先部署新版 worker.js' : `Worker 回應錯誤（${res.status}）`));
+  return j;
+}
+const pracLink = c => `${PRAC_URL}?pc=${encodeURIComponent(c)}`;
+async function renderPrac(msg) {
+  if (!$('prc-list')) return;
+  if (msg != null) $('prc-msg').innerHTML = msg;
+  $('prc-list').innerHTML = '<span class="muted">讀取中…</span>';
+  try {
+    const j = await pracCall({ action: 'pracList' }); const now = Date.now();
+    $('prc-list').innerHTML = j.classes.length ? `<table class="t" style="font-size:14px"><tr><th>代碼</th><th class="l" style="white-space:nowrap">名稱</th><th style="white-space:nowrap">每人／全班每天</th><th style="white-space:nowrap">到期</th><th class="l">學生連結</th><th></th></tr>${j.classes.map(c => { const live = c.active && now < c.expires; const d = new Date(c.expires);
+      return `<tr><td><b style="font-family:monospace;font-size:17px">${esc(c.code)}</b></td><td class="l">${esc(c.label)}</td><td>${c.lim}／${c.cap} 次</td><td>${live ? `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()} 前` : `<span class="muted">${c.active ? '已過期' : '已停用'}</span>`}</td>
+        <td class="l">${live ? `<a href="${esc(pracLink(c.code))}" target="_blank" rel="noopener">${esc(pracLink(c.code))}</a> <button class="btn sm ghost" data-prc-qr="${esc(c.code)}">QR</button>` : ''}</td><td>${live ? `<button class="btn sm ghost" data-prc-end="${esc(c.code)}">停用</button>` : ''}</td></tr>`; }).join('')}</table><div id="prc-qr" style="margin-top:8px"></div>` : '<span class="muted">還沒有練習班。</span>';
+    document.querySelectorAll('[data-prc-end]').forEach(b => b.onclick = async () => { if (!confirm(`停用練習班 ${b.dataset.prcEnd}？學生就不能再用 AI 指導（自主練習本身仍可用）。`)) return;
+      try { await pracCall({ action: 'pracEnd', code: b.dataset.prcEnd }); renderPrac(`已停用 ${esc(b.dataset.prcEnd)}`); } catch (e) { $('prc-msg').innerHTML = `<span class="fb-bad">${esc(e.message)}</span>`; } });
+    document.querySelectorAll('[data-prc-qr]').forEach(b => b.onclick = () => { const q = $('prc-qr'); q.innerHTML = `<div class="small">練習班 <b>${esc(b.dataset.prcQr)}</b>：學生用平板掃描</div><div id="prc-qr-img" style="background:#fff;padding:8px;display:inline-block"></div>`;
+      try { new QRCode($('prc-qr-img'), { text: pracLink(b.dataset.prcQr), width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M }); } catch (e) { $('prc-qr-img').textContent = pracLink(b.dataset.prcQr); } });
+  } catch (e) { $('prc-list').innerHTML = `<span class="fb-bad">${esc(e.message)}</span>`; }
+}
+if ($('prc-new')) {
+  $('prc-new').onclick = async () => { $('prc-msg').textContent = '建立中…';
+    try { const j = await pracCall({ action: 'pracNew', label: $('prc-label').value.trim(), lim: +$('prc-lim').value, cap: +$('prc-cap').value, days: +$('prc-days').value });
+      renderPrac(`✓ 已建立練習班 <b style="font-family:monospace;font-size:18px">${esc(j.code)}</b>：把下面的連結或 QR Code 給學生（每人每天 ${j.cls.lim} 次、全班每天 ${j.cls.cap} 次）`); }
+    catch (e) { $('prc-msg').innerHTML = `<span class="fb-bad">${esc(e.message)}</span>`; } };
+  $('prc-load').onclick = () => renderPrac('');
+}
 $('sw-save').onclick = () => { const v = $('sw-url').value.trim().replace(/\/+$/, ''); if (v && !socWorkerOk(v)) { $('sw-msg').innerHTML = '<span class="fb-bad">網址要是 https:// 開頭，不能帶 ? 或 #</span>'; return; } ls.set(SOC_LS, v); renderSocSet(v ? '已儲存。之後產生的 QR Code 會帶這個網址。' : '已清空：學生不會看到 AI 訂正按鈕。'); };
 $('sw-default').onclick = () => { ls.del(SOC_LS); renderSocSet('已改回預設。'); };
 let fbFrom = 'login';
 function openFbSet(from) {
-  fbFrom = from || 'login'; show('v-fbset'); renderSocSet();
+  fbFrom = from || 'login'; show('v-fbset'); renderSocSet(); renderPrac('');
   const c = activeFbConfig(), own = ls.get(FB_LS, null);
   $('fb-now').innerHTML = isDefaultFb(c) ? `目前：<b>預設專案（展示用）</b> ${esc(FB_DEFAULT.projectId)}` : `目前：<b>你的專案</b> ${esc(c.projectId)}（存在這台電腦的瀏覽器）`;
   if (own && !$('fb-text').value) $('fb-text').value = JSON.stringify(fbPublic(own), null, 2);
@@ -14919,7 +14969,7 @@ $('fb-test').onclick = async () => {
 //  環境檢查（v3.35，2026-11-19；老師在教室發現的「規則沒發布、Sheets API 沒開、Worker 沒部署、香港機房 Gemini 400」改成上課前自己查）
 //  每項：ok（綠）／warn（黃）／bad（紅）＋紅黃燈時一句怎麼修。impl 可換成模擬（tests/test_envcheck.js）
 // ============================================================
-const WORKER_WANT = 'w2026-11-19';   // 這一版學生頁需要的 Worker 版本（＝蘇格拉底訂正_Worker版/worker.js 的 WORKER_VERSION）
+const WORKER_WANT = 'w2026-11-20';   // 這一版學生頁需要的 Worker 版本（＝蘇格拉底訂正_Worker版/worker.js 的 WORKER_VERSION）
 const ENV_RULES_FIX = '到 Firebase 主控台 → Firestore Database → 規則，整份貼上最新的規則（設定頁「複製規則」，或 formative-check 的 firestore.rules）→「發布」。';
 async function envFirebase(cfg, log, impl) {
   const T = (impl && impl.teacher) || new FireStore(Object.assign({}, cfg, { _test: true }));
