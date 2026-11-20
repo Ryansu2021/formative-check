@@ -235,6 +235,9 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 .sum3-one .so-row{display:flex;align-items:baseline;gap:12px;padding:6px 4px;border-bottom:1px solid var(--line)}
 .so-seat{font-family:var(--serif);font-size:30px;color:var(--zhu);white-space:nowrap;min-width:78px}.so-why{font-size:18px;font-weight:700;line-height:1.45}
 .so-more{font-size:16px;color:var(--ink2);margin-top:4px}
+.sum3-zoom{position:fixed;inset:0;z-index:60;background:var(--bg,#eef3f8);display:flex;flex-direction:column}
+.sz-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 24px;border-bottom:1.5px solid var(--line);background:var(--card)}.sz-bar .sz-t{font-size:22px}.sz-bar .sp{flex:1}.sz-bar .btn{font-size:18px}.sz-bar .sz-close{font-size:20px;padding:8px 18px}
+.sz-body{flex:1;overflow:auto;padding:18px 28px 60px}.sz-in table.t th,.sz-in table.t td:nth-child(n+3):not(.l){white-space:nowrap}.sum3-detail.sz-in{zoom:1.35;border:none;background:none;padding:0}#stage.tport .sum3-detail.sz-in{zoom:1.15}#stage.tport .sz-body{padding:12px 14px}
 .sum3-detail{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 18px;display:flex;flex-direction:column;gap:10px}
 .sum3-detail h3{font-size:20px;margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.sum3-dbody{display:flex;flex-direction:column;gap:10px}
 #stage.narrow .sum3-main{grid-template-columns:1fr}
@@ -824,7 +827,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.53（2026-11-20）';
+const APP_VERSION = 'v3.54（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
