@@ -213,7 +213,42 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 #qr{background:#fff;padding:12px;border-radius:10px}
 
 /* ---------- 出場摘要 ---------- */
-#v-sum{gap:14px}
+#v-sum{gap:14px;overflow-y:auto;padding-bottom:56px}
+/* v3.48 出場摘要＝三個問題：大字、數字與迷思為主 */
+#v-sum>*{flex:none}
+.sum3-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.sum3-bar h2{font-size:30px;margin:0}.sum3-bar .sp{flex:1}
+.exp{position:relative;display:inline-block}.exp-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1.5px solid var(--line);border-radius:12px;box-shadow:var(--sh2);padding:10px;display:flex;flex-direction:column;gap:8px;min-width:260px}
+.exp-menu .btn{width:100%;text-align:left}.exp-menu .gs-box{flex-direction:column;align-items:stretch}
+.sum3-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 18px;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 22px;font-size:24px;font-weight:700}
+.sum3-head .lab{font-size:18px;color:#fff;background:var(--ink);border-radius:8px;padding:2px 10px;align-self:center}
+.sum3-head .big{font-family:var(--serif);font-size:48px;line-height:1}.sum3-head .sep{width:1.5px;align-self:stretch;background:var(--line)}
+.sum3-head .dlt{font-size:22px;padding:2px 12px;border-radius:999px;background:var(--paper2)}.sum3-head .dlt.down{background:var(--zhu-l);color:var(--zhu)}.sum3-head .dlt.up{background:#e3f4ec;color:var(--qing)}
+.sum3-head .soc{font-size:18px;color:var(--ink2)}.sum3-head .soc b{color:var(--qing);font-size:26px}
+.sum3-main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+.sum3-main .panel{gap:10px}.sum3-main h3{font-size:22px;margin:0}
+.sum3-focus{border:2px solid var(--zhu)!important}
+.sum3-focus .sf{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--zhu-l);cursor:pointer}
+.sum3-focus .sf:hover{outline:2px solid var(--zhu)}
+.sum3-focus .pr-no{width:40px;height:40px;border-radius:50%;background:var(--zhu);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sf-name{font-size:28px;font-weight:900;line-height:1.25}.sf-name .code-sm{vertical-align:6px}
+.sf-sub{font-size:18px;font-weight:700;color:var(--ink2);margin-top:2px}
+.sf-rem{font-size:16px;color:var(--ink2);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sf-num{font-family:var(--serif);font-size:40px;font-weight:900;color:var(--zhu);white-space:nowrap}
+.sum3-one .so-row{display:flex;align-items:baseline;gap:12px;padding:6px 4px;border-bottom:1px solid var(--line)}
+.so-seat{font-family:var(--serif);font-size:30px;color:var(--zhu);white-space:nowrap;min-width:78px}.so-why{font-size:18px;font-weight:700;line-height:1.45}
+.so-more{font-size:16px;color:var(--ink2);margin-top:4px}
+.sum3-detail{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 18px;display:flex;flex-direction:column;gap:10px}
+.sum3-detail h3{font-size:20px;margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.sum3-dbody{display:flex;flex-direction:column;gap:10px}
+#stage.narrow .sum3-main{grid-template-columns:1fr}
+#stage.tport #v-sum{padding:14px 16px}#stage.tport .sum3-main{grid-template-columns:1fr}#stage.tport .sum3-bar h2{font-size:24px}
+.sum3-main h3 .n,.sum3-detail h3 .n{font-size:17px}.sum3-focus .code-sm,.sum3-head .code-sm{font-size:17px!important}.sf-rem{font-size:19px}.sum3-focus .code-sm{font-size:17px!important;color:var(--ink3)!important}
+.sum3-head .why{font-size:18px;color:var(--zhu);font-weight:700}
+#stage.tport .sum3-head .dgrp{flex-basis:100%}
+.sum3-head .dgrp{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}.sf-rem{text-wrap:pretty}
+.sum3-one .hint{font-size:17px;color:var(--ink2);margin-top:-4px}.sum3-main h3 .n{color:var(--ink2)}
+.exp-menu .btn{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)!important;box-shadow:none!important}
+.sum3-detail{font-size:17px}.sum3-detail table.t{font-size:18px}.sum3-detail .small,.sum3-detail small,.sum3-detail .muted.small,.sum3-detail .n,.sum3-detail .pk-ok,.sum3-detail .r1line,.sum3-detail .tp h4 .n{font-size:16px!important}
+.sum3-detail .tp-r,.sum3-detail .tp-rem,.sum3-detail .grp .rem,.sum3-detail .grp .pk{font-size:17px}.sum3-detail .mx-ab{font-size:16px}.sum3-detail .ab b,.sum3-detail .ab em{font-size:16px!important}.sum3-detail h3 .btn{font-size:17px}
 .gs-box{display:inline-flex;align-items:center;gap:6px}.gs-cum{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;color:var(--ink2)}
 .gs-msg{font-size:15px;line-height:1.6;min-height:0}.gs-msg:empty{display:none}.gs-msg.ok{color:var(--qing);font-weight:700}.gs-msg.err{color:var(--zhu);font-weight:700;background:var(--zhu-l);border-radius:10px;padding:8px 12px}
 .sum-grid{flex:1;display:grid;grid-template-columns:1fr 1.15fr;gap:16px;min-height:0}
@@ -575,6 +610,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .prio.sum{margin:6px 0 8px;flex:none}
 .prio.sum .pr-row{font-size:16px}
 #stage.tport .pr-row{grid-template-columns:auto minmax(0,1fr)}
+#stage.tport .sum3-focus .pr-row.sf,.sum3-focus .pr-row.sf{grid-template-columns:44px minmax(0,1fr) auto;align-items:center}#stage.tport .sum3-head .sep{display:none}
 #stage.tport .pr-rem{grid-column:2;white-space:normal}
 #stage.tport .pr-why{white-space:normal}
 .ch-lab{fill:var(--ink);font-size:11.5px;font-weight:700;font-family:var(--sans)}
@@ -14009,7 +14045,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.47（2026-11-19）';
+const APP_VERSION = 'v3.48（2026-11-20）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -14079,8 +14115,8 @@ function fit() {
     return;
   }
   // v3.40：教師即時儀表板在直式螢幕（iPad 直式）改用 860 寬、高度依螢幕的舞台（iPad 直式縮放約 0.95）（.tport，一欄往下捲）；其他畫面與橫式照舊 1600×900
-  const live = $('v-live') && !$('v-live').hidden;
-  if (live && innerHeight > innerWidth * 1.05) {
+  const live = $('v-live') && !$('v-live').hidden, sum = $('v-sum') && !$('v-sum').hidden;   // v3.48 出場摘要（整頁往下捲）直式也用這個舞台
+  if ((live || sum) && innerHeight > innerWidth * 1.05) {
     const s = innerWidth / 860, h = innerHeight / s;
     st.style.width = '860px'; st.style.height = h + 'px'; st.classList.add('tport'); st.style.transform = `translate(-50%,-50%) scale(${s})`; return;
   }
@@ -15770,46 +15806,63 @@ function openSummary() {
       <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`; };
   const need = has2 ? new Set(groups.flatMap(g => [...g.remain, ...g.fresh])) : new Set(groups.flatMap(g => g.r1));
   const stu = seats.map(seat => { const a = s1.seats[seat], b = s2.seats[seat]; return { seat, a, b, d1: s1.done.has(seat), d2: s2.done.has(seat) }; });
-  const sumTab = L.sumTab === 'grp' ? 'grp' : 'plan', sL = has2 ? s2 : s1, mxL = mxOf(sL), caL = cautionOf(mxL), segsL = segsOf(sL);   // v3.47 教學調整、各段能力
+  const sumTab = ['stu', 'item', 'grp', 'plan'].includes(L.sumTab) ? L.sumTab : 'stu', sL = has2 ? s2 : s1, mxL = mxOf(sL), caL = cautionOf(mxL), segsL = segsOf(sL);   // v3.47 教學調整、各段能力
   show('v-sum'); stopLive();
   // v3.34 AI 訂正進度：學生座號文件的 soc＝{題目:{stage,done,n}}；摘要開著時即時更新
   const socTxt = seat => { const st = L.students.find(x => +x.seat === seat), m = st && st.soc && typeof st.soc === 'object' ? Object.values(st.soc) : [];
     const d = m.filter(x => x && x.done).length, g = m.filter(x => x && !x.done && x.n > 0).length;
     return !m.length ? '—' : [d ? `完成 ${d} 題` : '', g ? `進行中 ${g} 題` : ''].filter(Boolean).join('・') || '—'; };
   const socStat = () => { let d = 0, p = 0; L.students.forEach(st => { const m = st.soc && typeof st.soc === 'object' ? Object.values(st.soc) : []; const k = m.filter(x => x && x.done).length; d += k; if (m.some(x => x && (x.done || x.n > 0))) p++; }); return { d, p }; };
-  $('v-sum').innerHTML = `<div class="row" style="justify-content:space-between"><h2 style="font-size:30px">本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2>
-    <div class="row" style="gap:8px"><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv" title="開啟報表後，印表機選「另存為 PDF」">學生報表 PDF</button><button class="btn sm" id="u-csv2" title="開啟報表後，印表機選「另存為 PDF」">作答明細 PDF</button>
-    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm dai" id="u-xlsx" title="課後分析用：說明、試題分析（難度、鑑別度、選項分布）、迷思、學生、作答明細；只有座號沒有姓名。Excel、Google 試算表都能直接開">下載 Excel</button><span class="gs-box"><button class="btn sm dai" id="u-gs" title="用登入教師端的 Google 帳號，在你的雲端硬碟建立試算表（只要求「這個系統建立的檔案」權限）">存到 Google 試算表</button><label class="small gs-cum" title="同一份「課堂形成性評量_累積總表」的累積作答明細、累積試題分析往下加；同一場不重複加"><input type="checkbox" id="u-gs-cum"> 加到我的累積總表</label></span><button class="btn sm qing" id="u-mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div></div>
-    <div class="stat-row"><div class="stat"><b>${seats.length}</b><span>參與人數</span></div><div class="stat"><b>${N}</b><span>每場題數</span></div>
-      <div class="stat"><b>${pct(avg(s1))}</b><span>第一場平均答對率</span></div><div class="stat"><b>${has2 ? pct(avg(s2)) : '—'}</b><span>第二場（平行題）平均答對率</span></div>
-      <div class="stat"><b style="color:var(--zhu)">${need.size}</b><span>${has2 ? '第二場仍有迷思的學生' : '第一場有迷思的學生'}</span></div>${s.soc ? `<div class="stat" title="學生在結果頁按「和 AI 一起訂正」；完成＝AI 判定學生已說出錯在哪並驗算過"><b style="color:var(--qing)" id="u-soc-stat">${socStat().d}</b><span>AI 訂正完成題數（<span id="u-soc-p">${socStat().p}</span> 人參與）</span></div>` : ''}</div>
-    <div class="gs-msg" id="u-gs-msg" aria-live="polite"></div>
-    ${prioHTML(has2 ? s2 : s1, has2 ? 2 : 1, L.veil, true)}
-    <div class="sum-grid">
-      <div class="col" style="min-height:0">
-        <h3 style="font-size:20px"><span class="tog" role="tablist">${[['plan', '下一步怎麼教'], ['grp', '依迷思分組補救']].map(([k, t]) => `<button class="btn sm ${sumTab === k ? 'on' : 'ghost'}" data-sumtab="${k}" role="tab" aria-selected="${sumTab === k}">${t}</button>`).join('')}</span>
-          <span class="muted small" style="font-family:var(--sans)">${sumTab === 'plan' ? `依${has2 ? '第二場' : '第一場'}結果` : has2 ? '紅字＝第二場仍有（優先補救）' : ''}</span></h3>
-        <div class="col scroll" style="gap:10px;flex:1" id="u-left">${sumTab === 'plan' ? teachPlanHTML(teachPlanOf(sL, mxL, caL), false) : groups.map(g => grpHTML(g)).join('') || '<div class="muted">沒有學生出現迷思選項。</div>'}</div>
-      </div>
-      <div class="col sum-right" style="min-height:0">
-        <h3 style="font-size:20px">各題組 <span class="muted small" style="font-family:var(--sans)">共 ${N} 組・表格可上下捲動</span></h3>
-        <div class="scroll sum-half"><table class="t"><tr><th>組</th><th class="l">第一場題目</th><th>第一場</th><th>第二場</th><th>變化</th></tr>
-          ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const d = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
-            return `<tr><td>${i + 1}</td><td class="l"><span class="qlink" data-q="1:${i}" title="看第一場第 ${i + 1} 題（題目、選項分布、迷思）">${M(p.it.stem.length > 22 ? p.it.stem.slice(0, 22) + '…' : p.it.stem)}</span></td><td>${pct(p.rate)}<span class="muted small"> (${p.n})</span></td>
-            <td>${has2 && q ? `<span class="qlink" data-q="2:${i}" title="看第二場（平行題）第 ${i + 1} 題">${pct(q.rate)}</span>` + `<span class="muted small"> (${q.n})</span>` : '—'}</td><td style="font-weight:700;color:${d > 0 ? 'var(--qing)' : d < 0 ? 'var(--zhu)' : 'inherit'}">${d == null ? '—' : (d > 0 ? '+' : '') + d}</td></tr>`; }).join('')}</table></div>
-        <h3 style="font-size:20px;margin-top:6px">每位學生 <span class="muted small" style="font-family:var(--sans)">共 ${stu.length} 位・表格可上下捲動</span></h3>
-        <div class="scroll sum-half"><table class="t"><tr><th>座號</th><th>第一場</th><th>第二場</th><th class="l">各段（${has2 ? '第二場' : '第一場'}）</th><th class="l">${has2 ? '第二場仍有的迷思' : '迷思'}</th>${s.soc ? '<th>AI 訂正</th>' : ''}</tr>
+  // v3.48 出場摘要＝三個問題（老師 2026-11-20：「這個頁面內容仍然太多…字體變大，突顯重點，以數字、哪個迷思為主」）
+  //   ① 全班怎樣（一行大字）② 明天先教這幾件事（迷思名稱＋人數大數字，來自 prioOf）③ 這幾位要個別找（teachPlanOf 的個別補救，最多 5 位）
+  //   每位學生、各題組、依迷思分組、四類教學調整收進「細節」分頁（整頁往下捲，不再擠在小框裡）；匯出收進一個選單
+  const A1 = avg(s1), A2 = has2 ? avg(s2) : null, P1 = A1 == null ? null : Math.round(A1 * 100), P2 = A2 == null ? null : Math.round(A2 * 100), dP = P1 != null && P2 != null ? P2 - P1 : null;
+  const dTxt = dP == null ? '' : dP < 0 ? `<span class="dlt down">退步 ${-dP} 個百分點</span>` : dP > 0 ? `<span class="dlt up">進步 ${dP} 個百分點</span>` : '<span class="dlt">持平</span>';
+  const R0 = has2 ? 2 : 1, foc = prioOf(sL), veil = L.veil;
+  const fresh0 = has2 ? [...need].filter(x => !groups.some(g => g.r1.includes(x))).sort((a, b) => a - b) : [];   // 第一場沒有迷思、第二場才出現
+  const freshTxt = dP != null && dP < 0 && fresh0.length && !veil ? `<span class="why">${fresh0.join('、')} 號第二場才出現迷思</span>` : '';
+  const headHTML = `<div class="sum3-head"><span class="lab">全班</span><span>答對率 <b class="big">${pct(A1)}</b>${has2 ? ` → <b class="big">${pct(A2)}</b>` : ''}</span>${dTxt || freshTxt ? `<span class="dgrp">${dTxt}${freshTxt}</span>` : ''}<span class="sep"></span><span><b class="big zhu">${need.size}</b>／${seats.length} 位${has2 ? '還有迷思' : '有迷思'}</span>${s.soc ? `<span class="sep"></span><span class="soc" title="學生在結果頁按「和 AI 一起訂正」；完成＝AI 判定學生已說出錯在哪並驗算過">AI 訂正完成 <b id="u-soc-stat">${socStat().d}</b> 題（<span id="u-soc-p">${socStat().p}</span> 人參與）</span>` : ''}</div>`;
+  const optTxt = (it, k) => { const o = it.options.find(y => y.key === k); return o ? M(o.text) : ''; };
+  const focRows = foc.map((e, k) => {
+    if (e.c) { const m = sL.mm[e.c] || { name: e.c }, seats0 = new Set(), sure = new Set(); e.items.forEach(x => { x.top.seats.forEach(v => seats0.add(v)); x.top.sure.forEach(v => sure.add(v)); });
+      const times = e.items.reduce((t, x) => t + x.top.n, 0);
+      return `<div class="pr-row sf" data-m="${esc(e.c)}" data-pi="${e.items[0].i}" data-pk="${esc(e.items[0].top.key)}" title="點一下看第 ${e.items[0].i + 1} 題（框出這個錯答案）"><b class="pr-no">${k + 1}</b>
+        <div class="sf-main"><div class="sf-name">${V.mathHTML(m.name)} ${misTag(e.c)}</div><div class="sf-sub">第 ${e.items.map(x => x.i + 1).join('、')} 題・共 ${times} 次${sure.size ? `・很確定 ${sure.size} 位` : ''}</div><div class="sf-rem">補救：${V.mathHTML(m.remedy || '')}</div></div>
+        <div class="sf-num">${veil ? '' : `${seats0.size} 位`}</div></div>`; }
+    const x = e.items[0], t = x.top, it = x.p.it;
+    return `<div class="pr-row sf" data-i="${x.i}" data-pk="${t ? esc(t.key) : ''}" title="點一下看第 ${x.i + 1} 題"><b class="pr-no">${k + 1}</b>
+      <div class="sf-main"><div class="sf-name">${t ? `${V.mathHTML(t.name)} ${misTag(t.c)}` : `第 ${x.i + 1} 題`}</div><div class="sf-sub">${t ? `第 ${x.i + 1} 題選「${optTxt(it, t.key)}」（正解 ${optTxt(it, it.answer)}）・` : ''}${x.wrong}／${x.p.n} 答錯${x.stuck.length ? `・很確定 ${x.stuck.length} 人` : ''}</div>
+      <div class="sf-rem">${t ? `補救：${V.mathHTML((sL.mm[t.c] || {}).remedy || '')}` : '答錯的選項沒有標迷思，請看選項分布'}</div></div><div class="sf-num">${veil ? '' : t ? `${t.n} 人` : `${x.wrong} 人`}</div></div>`; }).join('');
+  const sev = x => { const v = sL.seats[x.seat]; return (v ? v.sure.length : 0) * 10 + (x.why.some(w => /型態異常/.test(w)) ? 5 : 0) + (x.why.some(w => /只答對/.test(w)) ? 3 : 0); };
+  const ones = [...teachPlanOf(sL, mxL, caL).one].sort((a, b) => sev(b) - sev(a) || a.seat - b.seat), ONE_MAX = 5;
+  const oneRows = veil ? (ones.length ? `<div class="so-row"><span class="so-why">${ones.length} 位（投影保護中不顯示座號）</span></div>` : '')
+    : ones.slice(0, ONE_MAX).map(x => `<div class="so-row"><b class="so-seat">${x.seat} 號</b><span class="so-why">${M(x.why.join('；'))}</span></div>`).join('') + (ones.length > ONE_MAX ? `<div class="so-more">另有 ${ones.length - ONE_MAX} 位，看下方「每位學生」</div>` : '');
+  const tabs = [['stu', `每位學生（${stu.length} 位）`], ['item', `各題組（${N} 組）`], ['grp', '依迷思分組'], ['plan', '四類教學調整']];
+  const stuTbl = `<table class="t"><tr><th>座號</th><th>第一場</th><th>第二場</th><th class="l">各段（${has2 ? '第二場' : '第一場'}）</th><th class="l">${has2 ? '第二場仍有的迷思' : '迷思'}</th>${s.soc ? '<th>AI 訂正</th>' : ''}</tr>
           ${stu.map(x => { const m1 = x.a ? [...x.a.mis] : [], m2 = x.b ? [...x.b.mis] : [];
             return `<tr><td><b>${x.seat}</b></td><td>${x.a ? `${x.a.ok}/${N}` : '—'}${x.a && x.a.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
             <td>${x.b ? `${x.b.ok}/${N}` : '—'}${x.b && x.b.sure.length ? '<span style="color:var(--zhu)">!</span>' : ''}</td>
-            <td class="l mx-ab">${mxL.cell[x.seat] ? abilityOf(mxL, segsL, x.seat).map(abBar).join('') : '—'}</td><td class="l small" style="color:var(--zhu);font-weight:700">${(has2 ? m2 : m1).map(c => `<span title="${esc(mm[c] ? mm[c].name : '')}">${esc(mm[c] ? mm[c].name.slice(0, 10) : c)}</span>`).join('、')}</td>${s.soc ? `<td class="small${socTxt(x.seat) !== '—' ? ' qlink' : ''}" data-socseat="${x.seat}" title="看這位學生的 AI 訂正過程（每題階段與對話）">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table></div>
-        <div class="small muted" style="flex:none">!＝有「很確定卻答錯」的題目</div>
-      </div></div>`;
+            <td class="l mx-ab">${mxL.cell[x.seat] ? abilityOf(mxL, segsL, x.seat).map(abBar).join('') : '—'}</td><td class="l small" style="color:var(--zhu);font-weight:700">${(has2 ? m2 : m1).map(c => `<span title="${esc(mm[c] ? mm[c].name : '')}">${esc(mm[c] ? mm[c].name.slice(0, 10) : c)}</span>`).join('、')}</td>${s.soc ? `<td class="small${socTxt(x.seat) !== '—' ? ' qlink' : ''}" data-socseat="${x.seat}" title="看這位學生的 AI 訂正過程（每題階段與對話）">${socTxt(x.seat)}</td>` : ''}</tr>`; }).join('')}</table><div class="small muted">!＝有「很確定卻答錯」的題目</div>`;
+  const itemTbl = `<table class="t"><tr><th>組</th><th class="l">第一場題目</th><th>第一場</th><th>第二場</th><th>變化</th></tr>
+          ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const d = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
+            return `<tr><td>${i + 1}</td><td class="l"><span class="qlink" data-q="1:${i}" title="看第一場第 ${i + 1} 題（題目、選項分布、迷思）">${M(p.it.stem.length > 22 ? p.it.stem.slice(0, 22) + '…' : p.it.stem)}</span></td><td>${pct(p.rate)}<span class="muted small"> (${p.n})</span></td>
+            <td>${has2 && q ? `<span class="qlink" data-q="2:${i}" title="看第二場（平行題）第 ${i + 1} 題">${pct(q.rate)}</span>` + `<span class="muted small"> (${q.n})</span>` : '—'}</td><td style="font-weight:700;color:${d > 0 ? 'var(--qing)' : d < 0 ? 'var(--zhu)' : 'inherit'}">${d == null ? '—' : d > 0 ? '+' + d : d < 0 ? '−' + (-d) : '0'}</td></tr>`; }).join('')}</table>`;
+  const detailBody = sumTab === 'stu' ? stuTbl : sumTab === 'item' ? itemTbl : sumTab === 'grp' ? (groups.map(g => grpHTML(g)).join('') || '<div class="muted">沒有學生出現迷思選項。</div>') : teachPlanHTML(teachPlanOf(sL, mxL, caL), false);
+  $('v-sum').innerHTML = `<div class="sum3-bar"><h2>本堂出場摘要・${esc(s.label)}・${esc(s.code)}</h2><span class="sp"></span>
+    <button class="btn sm ghost" id="u-mx" title="每位學生每一題的對錯（S-P 表）、各段能力">作答矩陣</button><span class="exp"><button class="btn sm" id="u-exp-btn" aria-haspopup="true" aria-expanded="false">匯出 ▾</button><div class="exp-menu" id="u-exp" hidden><button class="btn sm qing" id="u-prep" title="只有人數、沒有座號；下載後放進 115-教科書/_網頁素材暫存/">匯出給明日備課</button><button class="btn sm" id="u-csv" title="開啟報表後，印表機選「另存為 PDF」">學生報表 PDF</button><button class="btn sm" id="u-csv2" title="開啟報表後，印表機選「另存為 PDF」">作答明細 PDF</button>
+    <button class="btn sm" id="u-print" title="整份出場摘要（迷思分組、各題組、每位學生），可存成 PDF">摘要 PDF／列印</button><button class="btn sm dai" id="u-xlsx" title="課後分析用：說明、試題分析（難度、鑑別度、選項分布）、迷思、學生、作答明細；只有座號沒有姓名。Excel、Google 試算表都能直接開">下載 Excel</button><span class="gs-box"><button class="btn sm dai" id="u-gs" title="用登入教師端的 Google 帳號，在你的雲端硬碟建立試算表（只要求「這個系統建立的檔案」權限）">存到 Google 試算表</button><label class="small gs-cum" title="同一份「課堂形成性評量_累積總表」的累積作答明細、累積試題分析往下加；同一場不重複加"><input type="checkbox" id="u-gs-cum"> 加到我的累積總表</label></span></div></span><button class="btn sm ghost" id="u-back">回儀表板</button><button class="btn sm zhu" id="u-end">結束場次</button></div>
+    <div class="gs-msg" id="u-gs-msg" aria-live="polite"></div>
+    ${headHTML}
+    <div class="sum3-main"><div class="panel sum3-focus"><h3>${foc.length > 1 ? `明天先教這 ${foc.length} 件事` : '明天先教'} <span class="n">${has2 ? '第二場' : '第一場'}結果・點一條看題目</span></h3>${focRows || '<div class="muted">這一場沒有人答錯。</div>'}</div>
+      <div class="panel sum3-one"><h3>這幾位要個別找</h3><div class="hint">很確定卻答錯 2 題以上、作答型態異常、答對不到一半</div>${oneRows || '<div class="muted">沒有需要個別找的同學。</div>'}</div></div>
+    <div class="sum3-detail"><h3>細節 <span class="tog" role="tablist">${tabs.map(([k, t]) => `<button class="btn sm ${sumTab === k ? 'on' : 'ghost'}" data-sumtab="${k}" role="tab" aria-selected="${sumTab === k}">${t}</button>`).join('')}</span></h3>
+      <div class="sum3-dbody" id="u-left">${detailBody}</div></div>`;
+  $('u-exp-btn').onclick = ev => { ev.stopPropagation(); const m = $('u-exp'); m.hidden = !m.hidden; $('u-exp-btn').setAttribute('aria-expanded', String(!m.hidden)); };
+  $('v-sum').querySelectorAll('.sum3-focus .pr-row').forEach(el => el.onclick = () => { const i = +(el.dataset.i != null ? el.dataset.i : el.dataset.pi); openItemFromSum(R0, i); L.hiOpt = el.dataset.pk || null; renderLive(); });
   $('u-back').onclick = () => openLive(L.code);
   $('u-mx').onclick = () => { openLive(L.code); Object.assign(L, { view: has2 ? 2 : 1, manualView: true, chartZoom: 'mx', detail: null, misZoom: null, fromSum: true }); renderLive(); };
   document.querySelectorAll('#v-sum [data-sumtab]').forEach(el => el.onclick = () => { L.sumTab = el.dataset.sumtab; openSummary(); });
   document.querySelectorAll('#v-sum [data-q]').forEach(el => el.onclick = () => { openItemFromSum(...el.dataset.q.split(':').map(Number)); if (el.dataset.k) { L.hiOpt = el.dataset.k; renderLive(); } });   // v3.44 迷思卡那一行：框出那個錯答案   // v3.36 點題號看題目
-  prioBind($('v-sum'), has2 ? 2 : 1, true);   // v3.43 建議優先補救：點一條進題目放大頁（框出誘答）
   document.querySelectorAll('#v-sum [data-socseat]').forEach(el => el.onclick = () => openSocView(+el.dataset.socseat));   // v3.38 看 AI 訂正過程
   if (s.soc) L.unsubs.push(store.watchStudents(L.code, st => { L.students = st; if ($('v-sum').hidden) return;
     document.querySelectorAll('[data-socseat]').forEach(td => td.textContent = socTxt(+td.dataset.socseat));
