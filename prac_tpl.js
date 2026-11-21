@@ -3668,7 +3668,8 @@ sup .mf{font-size:.9em}
 .mp>.mp-s:last-child{right:.03em}
 .ma .mf,.mp .mf{top:0}
 .mb{margin:0 .15em}
-.mq{margin:0 .08em}`;
+.mq{margin:0 .08em}
+.mt{margin:0 .12em}`;
   const MX_ESC = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const MX_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ⁻⁺';
   const MX_UNIT_A = '(?:km|cm|mm|kg|mL|min|m|g|L|s|h)';
@@ -3855,6 +3856,9 @@ sup .mf{font-size:.9em}
           }
         }
         else if (c === '*' && mxOperand(T[k - 1]) && (mxOperand(T[k + 1]) || (T[k + 1] && T[k + 1].t === 'frac'))) { c = '×'; if (st) st.n.star++; }
+        // v3.65（老師 2026-11-21：「x 兩側也加一點空隙」）：式子裡的 ×、÷ 兩側加間距；前後是空格（已經有空隙）就不加
+        const sp = x => !x || (x.t === 'op' && /^\s$/.test(x.raw));
+        if ((c === '×' || c === '÷') && !sp(T[k - 1]) && !sp(T[k + 1])) { h += `<span class="mt">${c}</span>` + mxSup(t.sup, st); continue; }
         h += MX_ESC(c) + mxSup(t.sup, st);
       }
     }
