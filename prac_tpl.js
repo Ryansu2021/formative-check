@@ -3659,7 +3659,16 @@ var __PV = window.FAVerify;
 .mr.mr-t>.mr-i{padding-top:.14em}
 .mr .mf{top:0}
 sup .mf{font-size:.9em}
-.mg{white-space:nowrap}`;
+.mg{white-space:nowrap}
+.mx{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ma{display:inline-block;position:relative;border-left:max(1.5px,.08em) solid currentColor;border-right:max(1.5px,.08em) solid currentColor;padding:0 .12em;margin:0 .16em;line-height:1.15;white-space:nowrap;vertical-align:baseline}
+.mp{display:inline-block;position:relative;padding:0 .34em;line-height:1.15;white-space:nowrap;vertical-align:baseline}
+.mp>.mp-s{position:absolute;top:0;height:100%;width:.3em;overflow:visible;fill:none;stroke:currentColor;stroke-width:max(1.1px,.07em);stroke-linecap:round}
+.mp>.mp-s:first-child{left:.03em}
+.mp>.mp-s:last-child{right:.03em}
+.ma .mf,.mp .mf{top:0}
+.mb{margin:0 .15em}
+.mq{margin:0 .08em}`;
   const MX_ESC = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const MX_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ⁻⁺';
   const MX_UNIT_A = '(?:km|cm|mm|kg|mL|min|m|g|L|s|h)';
@@ -3694,6 +3703,20 @@ sup .mf{font-size:.9em}
     }
     return -1;
   }
+  // v3.64 絕對值：s[i] 是 |；回傳配對的右直線位置，沒有就 -1（前一個字是數、字母、右括號、上標或右直線＝右直線，否則是左直線）
+  function mxAbsEnd(s, i) {
+    if (!s[i + 1] || /\s/.test(s[i + 1])) return -1;
+    let d = 1, prevClose = false;
+    for (let j = i + 1; j < s.length; j++) {
+      const c = s[j];
+      if (c === '(' || c === '[') { const k = mxGroupEnd(s, j); if (k > 0) { j = k; prevClose = false; continue; } }
+      if (c !== '|') { prevClose = false; continue; }
+      const p = s[j - 1];
+      if (j > i + 1 && (/[0-9A-Za-zπα-ωθ□○)\]⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ′'.%°¼½¾⅐-⅞]/.test(p) || (p === '|' && prevClose))) { d--; prevClose = true; if (!d) return j; }
+      else { d++; prevClose = false; }
+    }
+    return -1;
+  }
   const MX_LET = /[A-Za-zπα-ωθ□○]/;
   const MX_CJK = /[\u4e00-\u9fff]/;
   const MX_WORD = /^(?:和|或|及|與|且|是|否|對|錯|有|無|男|女|上|下|左|右)$/;   // 斜線兩邊是這些字＝文字的「或」，不排成分數
@@ -3705,6 +3728,7 @@ sup .mf{font-size:.9em}
       if (/[0-9]/.test(c)) { const m = /^[0-9]+(?:\.[0-9]+)?/.exec(s.slice(i)); T.push({ t: 'num', raw: m[0] }); i += m[0].length; continue; }
       if (MX_LET.test(c)) { const m = /^.[₀-₉]*[′']*/u.exec(s.slice(i)); T.push({ t: 'let', raw: m[0] }); i += m[0].length; continue; }
       if (c === '(' || c === '[') { const j = mxGroupEnd(s, i); if (j > 0) { T.push({ t: 'grp', o: c, c: s[j], inner: s.slice(i + 1, j) }); i = j + 1; continue; } }
+      if (c === '|') { const j = mxAbsEnd(s, i); if (j > 0) { T.push({ t: 'abs', inner: s.slice(i + 1, j) }); i = j + 1; continue; } }   // v3.64
       if (c === '√') {
         let j = i + 1, rad = null;
         if (s[j] === '(' || s[j] === '[') { const k = mxGroupEnd(s, j); if (k > 0) { rad = s.slice(j + 1, k); j = k + 1; } }
@@ -3725,7 +3749,12 @@ sup .mf{font-size:.9em}
     }
     return T;
   }
-  const mxOperand = t => t && (t.t === 'num' || t.t === 'let' || t.t === 'grp' || t.t === 'sqrt');
+  const mxOperand = t => t && (t.t === 'num' || t.t === 'let' || t.t === 'grp' || t.t === 'sqrt' || t.t === 'abs');
+  // v3.64：減號前面是這些＝二元減號（式子裡的減法），左右加間距；一元負號不加
+  const mxBinLeft = t => !!t && (mxOperand(t) || t.t === 'frac' || t.t === 'mix' || (t.t === 'op' && /^[°%′″)\]]$/.test(t.raw)));
+  // v3.64：括號裡有上下式（分數、帶分數）時，括號用 SVG 畫、跟著內容長高；隱藏的 ( ) 讓複製與報讀不變
+  const MX_PS = d => `<svg class="mp-s" viewBox="0 0 10 40" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" vector-effect="non-scaling-stroke"/></svg>`;
+  const MX_PL = MX_PS('M8 1 Q1 20 8 39'), MX_PR = MX_PS('M2 1 Q9 20 2 39');
   function mxCombine(T, st, src) {
     // 1) 分數：左邊連續的數、字母、括號、根號＝分子；右邊一個數（1/2x＝(1/2)x，和驗算器一致）、一個括號、一個根號或一串字母＝分母
     for (let k = 0; k < T.length; k++) {
@@ -3784,7 +3813,15 @@ sup .mf{font-size:.9em}
       const t = T[k];
       if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
       else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
-      else if (t.t === 'grp') { const short = t.inner.length <= 24; if (short) MX_NOWRAP++; let g; try { g = MX_ESC(t.o) + mxMath(t.inner, st, inM) + MX_ESC(t.c) + mxSup(t.sup, st); } finally { if (short) MX_NOWRAP--; } h += short ? `<span class="mg">${g}</span>` : g; }   // 短括號式不在中間換行
+      else if (t.t === 'grp') {
+        const short = t.inner.length <= 24; if (short) MX_NOWRAP++; let g, tall = false;
+        try { const inner = mxMath(t.inner, st, inM); tall = t.o === '(' && /class="mf/.test(inner); g = tall ? `<span class="mp">${MX_PL}<span class="mx">(</span>${inner}<span class="mx">)</span>${MX_PR}</span>` : MX_ESC(t.o) + inner + MX_ESC(t.c); g += mxSup(t.sup, st); } finally { if (short) MX_NOWRAP--; }
+        h += (short && !tall) || (tall && t.sup) ? `<span class="mg">${g}</span>` : g;   // 短括號式不在中間換行；長高的括號本身不換行，有次方才包
+      }
+      else if (t.t === 'abs') {   // v3.64 絕對值：左右直線是框線，跟著內容（上下式分數）長高；外側留 0.1em
+        MX_NOWRAP++; let g; try { g = `<span class="ma"><span class="mx">|</span>${mxMath(t.inner, st, inM)}<span class="mx">|</span></span>`; } finally { MX_NOWRAP--; }
+        h += t.sup ? `<span class="mg">${g}${mxSup(t.sup, st)}</span>` : g;
+      }
       else if (t.t === 'sqrt') {
         if (st) st.n.sqrt++;
         const ri = mxMath(t.rad, st, true); const tall = /class="mf/.test(ri);
@@ -3807,10 +3844,12 @@ sup .mf{font-size:.9em}
           if (inM || unary || binary || toFrac) { c = '−'; if (st) st.n.minus++; }
         }
         // v3.42（老師 2026-11-19 截圖：選項的「−」和分數被拆成兩行）：一元負號和後面的數、分數、帶分數、根號、括號包成不換行的一組
+        if (c === '−' && mxBinLeft(T[k - 1]) && T[k + 1] && !(T[k + 1].t === 'op' && /^\s$/.test(T[k + 1].raw))) { h += '<span class="mb">−</span>' + mxSup(t.sup, st); continue; }   // v3.64 二元減號加間距
+        if (/^[＜＞≦≧<>]$/.test(c)) { h += `<span class="mq">${MX_ESC(c)}</span>` + mxSup(t.sup, st); continue; }   // v3.64 不等號兩側補間距（上標不貼著）
         if (c === '−' && !inM && !MX_NOWRAP) {   // 指數、分數、短括號裡面本來就不會換行；「−5」這種負號接數字瀏覽器也不會拆，只處理分數、帶分數、根號、括號
           const P = T[k - 1], N = T[k + 1];
           const un = !P || P.t === 'cjk' || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞≦≧]$/.test(P.raw));
-          if (un && N && !N.sup && (N.t === 'frac' || N.t === 'mix' || N.t === 'sqrt' || N.t === 'grp' || (N.t === 'num' && T[k + 2] && T[k + 2].t === 'sqrt'))) {
+          if (un && N && !N.sup && (N.t === 'frac' || N.t === 'mix' || N.t === 'sqrt' || N.t === 'grp' || N.t === 'abs' || (N.t === 'num' && T[k + 2] && T[k + 2].t === 'sqrt'))) {
             let e = k + 1; if (N.t === 'num' && T[e + 1] && T[e + 1].t === 'sqrt') e++;   // −2√3
             h += '<span class="mg">−' + mxRender(T.slice(k + 1, e + 1), st, inM) + '</span>'; k = e; continue;
           }
