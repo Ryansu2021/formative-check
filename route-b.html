@@ -526,8 +526,9 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .pg.join{background:#fff;color:var(--ink2);box-shadow:inset 0 0 0 2px var(--line)} .pg.out{background:var(--paper2);color:var(--ink3)}
 .sbw{display:flex;flex-direction:column;gap:3px;min-width:0}
 .icnt{height:5px;border-radius:9px;background:var(--paper2);overflow:hidden} .icnt i{display:block;height:100%;background:var(--dai);transition:width .4s}
-.mp{display:flex;flex-direction:column;gap:2px}
-.mp-r{display:grid;grid-template-columns:18px 1fr 30px;gap:6px;align-items:center;font-size:12px;color:var(--ink2)} .mp-r b{font-family:var(--serif);font-size:17px;color:var(--ink);text-align:right}
+.mpw{display:flex;flex-direction:column;gap:2px}   /* v3.73 原本叫 .mp，和 v3.64 數學式的括號 .mp 撞名（變成行內、長條寬 0） */
+.mp-r{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center;font-size:12px;color:var(--ink2)} .mp-r b{font-family:var(--serif);font-size:17px;color:var(--ink);text-align:right;white-space:nowrap;min-width:2.6em} .mp-l{white-space:nowrap}
+.mis-row.mpair .mp-r{cursor:pointer;border-radius:8px;padding:1px 4px}.mis-row.mpair .mp-r:hover{background:var(--paper2)}
 .mp-t{height:13px;background:var(--paper2);border-radius:999px;overflow:hidden;position:relative}
 .mp-f{position:absolute;left:0;top:0;bottom:0;transition:width .4s} .mp-f.r1{background:repeating-linear-gradient(45deg,var(--ink3) 0 4px,#fff 4px 7px)} .mp-f.r2{background:#f08a80} .mp-f.sure{background:var(--zhu)}
 .mis-row.mpair{grid-template-columns:1fr}
@@ -543,7 +544,7 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .quad.big div{padding:20px;font-size:21px} .quad.big div b{font-size:46px}
 .zconf .ch-ax{font-size:18px} .zconf .ch-in.sm{font-size:16px} .zconf .ch-leg.sm{font-size:17px}
 .zhist svg{width:100%;max-height:58vh} .zhist .ch-ax,.zhist .ch-num{font-size:20px} .zhist .ch-leg{font-size:19px}
-.zmis{display:flex;flex-direction:column;gap:14px;overflow:auto} .zmis .t{font-size:21px} .zmis .mp-t{height:22px} .zmis .mp-r{font-size:16px;grid-template-columns:24px 1fr 44px} .zmis .mp-r b{font-size:24px} .zmis .mis-track{height:34px}
+.zmis{display:flex;flex-direction:column;gap:14px;overflow:auto} .zmis .t{font-size:21px} .zmis .mp-t{height:22px} .zmis .mp-r{font-size:16px} .zmis .mp-r b{font-size:24px} .zmis .mis-track{height:34px}
 .zpie{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
 .zpie-c{display:flex;flex-direction:column;align-items:center;gap:10px} .zpie .live-stem{font-size:34px} .zpie .ch-pie{width:min(440px,46vh);height:min(440px,46vh)} .zpie .ch-leg{font-size:20px;display:grid;grid-template-columns:auto auto;gap:4px 20px}
 @media (max-width:1100px){.det-body,.zpie,.zconf{grid-template-columns:1fr}}
@@ -579,9 +580,21 @@ table.t th,table.t td{border-bottom:1px solid var(--line)}
 .mxt td.o{color:var(--qing);font-weight:900}.mxt td.x{color:var(--zhu);font-weight:900;background:#fff3f0}.mxt td.x small{display:block;font-size:12px;font-weight:700;line-height:1}
 .mxt td.x.sure{box-shadow:inset 0 0 0 2px var(--zhu)}.mxt td.none{color:var(--ink3);background:#f4f4f2}
 .mxt.sp td.se{border-right:3px solid #2f6fd6}.mxt.sp td.pe{border-bottom:3px solid var(--qing)}
-.mxt .mx-k{font-weight:900}.mxt .mx-ca{font-size:14px;color:var(--ink3)}.mxt .mx-ca.hi,.mxt tfoot td.hi{color:var(--zhu);font-weight:900}.mxt .mx-ca small{display:block;font-size:12px}
+.mxt .mx-k{font-weight:900}.mxt .mx-ca{font-size:15px;color:var(--ink3)}.mxt .mx-ca.hi,.mxt tfoot td.hi{color:var(--zhu);font-weight:900}.mxt .mx-ca small{display:block;font-size:12px}
 .mxt tfoot td,.mxt tfoot th{background:var(--paper2);font-weight:700}.mxt tfoot td.low{background:var(--zhu-l);color:var(--zhu)}
 .mxt td.mx-ab{text-align:left;white-space:normal;min-width:260px}
+/* v3.73 第一場 vs 第二場：點哪一場的長條就到哪一場的題目；跨好幾題時先選題 */
+.mis-pick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 2px;padding:8px 10px;background:var(--paper2);border:1px solid var(--line);border-radius:10px;cursor:default}
+.mis-pick .mpk-h{font-weight:900;font-size:17px;color:var(--ink)}.mis-pick .btn{font-size:17px}.mis-pick .mpk-x{margin-left:auto}
+.zmis .mis-pick .mpk-h,.zmis .mis-pick .btn{font-size:20px}
+/* v3.73 作答矩陣兩場並列：每人兩列（第一場、第二場），點格子進那一場的那一題 */
+.mxt td[data-r]{cursor:pointer}.mxt td[data-r]:hover{outline:2px solid #2f6fd6;outline-offset:-2px}
+.mxt.two tbody th.mx-rl{font-size:15px;font-weight:700;color:var(--ink2);left:auto;position:static;text-align:center;padding:2px 6px}
+.mxt.two tbody tr.r1 th.mx-rl{color:var(--ink2)}.mxt.two tbody tr.r2 > *{border-bottom:2px solid var(--ink3)}
+.mxt.two tbody tr.r1 td{background-image:linear-gradient(rgba(0,0,0,.025),rgba(0,0,0,.025))}
+.mxt.two td.up{background:#e3f4ea}.mxt.two td.down{background:#fde4df}
+.mxt tfoot td.small{font-size:15px}.mxt .mx-k .dlt{display:block;font-size:14px;font-weight:700;color:var(--ink3)}.mxt .mx-k.nx{color:var(--ink3);font-weight:700}
+.mx-leg .lg-up,.mx-leg .lg-down,.mx-leg .lg-sure{white-space:nowrap}.mx-leg .lg-up{background:#e3f4ea;padding:0 4px;border-radius:4px}.mx-leg .lg-down{background:#fde4df;padding:0 4px;border-radius:4px}
 .tplan{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tp{border-radius:12px;padding:10px 12px;background:#fff;border:1.5px solid var(--line);border-top:5px solid var(--line)}
 .tp h4{margin:0 0 6px;font-size:18px;font-family:var(--serif)}.tp h4 .n{font-size:12px;font-family:var(--sans);color:var(--ink3);font-weight:400}
@@ -15227,7 +15240,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.72（2026-11-22）';
+const APP_VERSION = 'v3.73（2026-11-22）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -15895,7 +15908,7 @@ function chProgress(size, done, answering, joined) {
 // ---- 迷思：第一場（斜線）vs 第二場（實心，深色＝很確定）並排長條 ----
 function chMisPair(n1, n2, s2, max) {
   const w = v => (v / Math.max(1, max) * 100).toFixed(1) + '%';
-  return `<div class="mp"><div class="mp-r r1" title="第一場 ${n1} 人"><span class="mp-l">第一場</span><div class="mp-t"><div class="mp-f r1" data-v="${n1}" style="width:${w(n1)}"></div></div><b>${n1} 人</b></div>
+  return `<div class="mpw"><div class="mp-r r1" title="第一場 ${n1} 人"><span class="mp-l">第一場</span><div class="mp-t"><div class="mp-f r1" data-v="${n1}" style="width:${w(n1)}"></div></div><b>${n1} 人</b></div>
     <div class="mp-r r2" title="第二場 ${n2} 人（其中很確定 ${s2} 人）"><span class="mp-l">第二場</span><div class="mp-t"><div class="mp-f r2" data-v="${n2}" style="width:${w(n2)}"></div><div class="mp-f sure" style="width:${w(s2)}"></div></div><b>${n2} 人</b></div></div>`;
 }
 
@@ -16511,7 +16524,7 @@ function stopLive() { L.unsubs.forEach(u => u()); L.unsubs = []; clearInterval(L
 function openLive(code, showQR) {
   if (L.snap) { show('v-live'); renderLive(); return; }   // v3.35 離線快照：出場摘要按「回儀表板」
   stopLive();
-  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), bankLoad: null, resp: [], students: [], misZoom: null, detail: null, view: 1, hiOpt: null, manualView: false, fromSum: false, chartZoom: null });   // v3.51 重新打開＝跟著最近一場（之前 manualView 沒清，從摘要回來會停在第一場）
+  Object.assign(L, { code, bank: ls.get('fa-tbank:' + code, null), bankLoad: null, resp: [], students: [], misZoom: null, detail: null, view: 1, hiOpt: null, manualView: false, fromSum: false, chartZoom: null, ret: null });   // v3.51 重新打開＝跟著最近一場（之前 manualView 沒清，從摘要回來會停在第一場）
   show('v-live');
   $('l-sim').hidden = store.mode !== 'demo';
   L.unsubs.push(store.watchSession(code, s => { L.session = s; if (!s) { toast('這個場次已不存在'); openBankView(); return; } bankSync(code, s); if (s.round && L.view !== s.round && !L.manualView) L.view = s.round; checkStale(); renderLive(); }));
@@ -16643,6 +16656,7 @@ function renderLive() {
     || (st.nResp > 0 && (s.round !== r || s.phase !== 'open') && prioOf(st).length > 0);   // v3.46 整理雜訊：有「建議優先補救」時不再用提示框重複說   // v3.40：放大投影（題目／迷思／圖）時不顯示建議框，空出高度給題目、選項與圖（之前附圖題只看得到 A 選項）
   const veiled = L.veil;   // v3.40（老師：「全修」）：第二場結束後也遮（v3.23～v3.39 第二場結束後不遮，投影迷思放大頁會露出正解與座號）
   if (L.misZoom != null && !misOrderOf(st, r === 2 ? statRound(1) : null).some(x => x.c === L.misZoom)) L.misZoom = null;
+  if (L.ret && ((L.detail == null && L.misZoom == null) || L.chartZoom)) L.ret = null;   // v3.73 返回點只在從放大投影點進題目／迷思時有效
   $('l-main').style.gridTemplateRows = '';
   L.chartZoom ? renderChartZoom(st, r, veiled, joined) : L.misZoom != null ? renderMisZoom(st, r, veiled) : L.detail != null ? renderDetail(st, r, veiled) : renderOverview(st, r, veiled, joined);
   $('l-main').querySelectorAll('.chz').forEach(el => el.onclick = ev => { ev.stopPropagation(); L.chartZoom = el.dataset.z; renderLive(); });   // v3.33 每張圖的「放大投影」
@@ -16788,7 +16802,7 @@ function renderOverview(st, r, veiled, joined) {
   prioBind($('l-main'), r, false); confBind($('l-main'));
   $('l-main').querySelectorAll('#ch-irate .ch-item').forEach(el => el.onclick = () => { L.detail = +el.dataset.i; L.misZoom = null; L.hiOpt = null; renderLive(); });
   $('l-main').querySelectorAll('.conf-pic').forEach(el => el.onclick = () => { L.chartZoom = 'conf'; renderLive(); });
-  $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = () => { L.misZoom = el.dataset.m; L.detail = null; renderLive(); });
+  $('l-main').querySelectorAll('.mis-row').forEach(el => el.onclick = ev => { if (misBarClick(el, ev)) return; L.misZoom = el.dataset.m; L.detail = null; renderLive(); });
 }
 // v3.44 迷思「題目先、錯答案、再迷思」（老師 2026-11-19 看 BW9S：「GC08 不知道是什麼…應該是先出現題號，再出現迷思編號」）
 //   某一場某個迷思：哪些題有人選、選了哪個錯答案、幾人（人多的在前）；同一題兩個誘答同代碼時錯答案用「／」連起來
@@ -16800,6 +16814,31 @@ function misPicks(st, c) {
     .filter(Boolean).sort((a, b) => b.n - a.n || a.i - b.i);
 }
 const misTag = c => `<span class="mis-code code-sm">${esc(c)}</span>`;
+// ---------- v3.73 第一場 vs 第二場：點哪一場就到哪一場的題目（老師 2026-11-22：「在比較第一場與第二場時，點選第一場就要連到第一場的題目，
+//   點選第二場就要連到第二場的題目」）。那一場只有一題有人選＝直接進那題並框出那個錯答案；好幾題＝先選題（或一起看＝那一場的迷思放大頁）；
+//   L.ret 記住從哪裡點進來（迷思放大投影、作答矩陣、總覽），題目頁「回…」回到原處、原本那一場
+const retHere = () => ({ view: L.view, chartZoom: L.chartZoom || null, misZoom: null, detail: null, hiOpt: null, fromSum: !!L.fromSum });
+const RET_NAME = { mis: '迷思分布', mx: '作答矩陣' };
+const retLabel = () => L.ret ? '回' + (RET_NAME[L.ret.chartZoom] || '總覽') : null;
+function goRet() { const r0 = L.ret; L.ret = null; Object.assign(L, r0, { manualView: true }); renderLive(); }
+function goItem(R, i, key, ret) { Object.assign(L, { view: R, manualView: true, detail: i, hiOpt: key || null, misZoom: null, chartZoom: null, ret: ret || null }); renderLive(); }
+function misBarClick(row, ev) {   // 點到 .mp-r（第一場／第二場那條）→ true
+  const bar = ev.target.closest('.mp-r'); if (!bar || !row.contains(bar)) return false;
+  if (ev.target.closest('.mis-pick')) return true;
+  ev.stopPropagation(); const R = bar.classList.contains('r1') ? 1 : 2, c = row.dataset.m;
+  const pk = misPicks(statRound(R), c), hit = pk.filter(x => x.n), list = hit.length ? hit : pk;
+  const old = $('l-main').querySelector('.mis-pick'); const same = old && old.dataset.m === c && +old.dataset.r === R; if (old) old.remove();
+  if (same || !list.length) return true;
+  if (list.length === 1) { goItem(R, list[0].i, list[0].n ? list[0].key : null, retHere()); return true; }
+  const box = document.createElement('div'); box.className = 'mis-pick'; box.dataset.m = c; box.dataset.r = R;
+  box.innerHTML = `<span class="mpk-h">第${R === 2 ? '二' : '一'}場哪一題？</span>${list.map(x => `<button class="btn sm" data-i="${x.i}" data-k="${x.n ? esc(x.key) : ''}">第 ${x.i + 1} 題${L.veil ? '' : x.n ? ` ${x.n} 人` : ' 沒人選'}</button>`).join('')}<button class="btn sm ghost" data-all>這幾題一起看</button><button class="btn sm ghost mpk-x" data-x title="關閉">✕</button>`;
+  bar.after(box);
+  box.onclick = e => { e.stopPropagation(); const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.x != null) { box.remove(); return; }
+    if (b.dataset.all != null) { Object.assign(L, { view: R, manualView: true, misZoom: c, detail: null, chartZoom: null, hiOpt: null, ret: retHere() }); renderLive(); return; }
+    goItem(R, +b.dataset.i, b.dataset.k || null, retHere()); };
+  return true;
+}
 const nums = a => [...a].sort((x, y) => x - y).join('、');
 // 迷思放大檢視（v3.23，老師：「點了右邊迷思分布cx10後，應該放大出現題目與補救建議，而不是只有補救的文字」）
 function renderMisZoom(st, r, veiled) {
@@ -16853,8 +16892,8 @@ function renderMisZoom(st, r, veiled) {
     <div class="mz-body"><div class="mz-qs scroll">${cards || '<div class="muted">這一場沒有題目用到這個迷思。</div>'}</div>
       <div class="mz-side scroll">${mxHTML}<div class="mz-sec mz-rem"><h4>補救建議</h4><div class="mz-remedy">${M(m.remedy || '')}</div>${m.card ? `<div class="mz-cardln">備課網頁對應卡：${esc(m.card)}</div>` : ''}</div>${why}${seats}
       ${veiled ? '<div class="small muted">投影保護中：座號、正解與迷思標註已隱藏</div>' : ''}</div></div></div>`;
-  $('mz-back').onclick = () => { L.misZoom = null; if (L.fromSum) { openSummary(); return; } renderLive(); };
-  if (L.fromSum) $('mz-back').textContent = '回出場摘要';
+  $('mz-back').onclick = () => { if (L.ret) { goRet(); return; } L.misZoom = null; if (L.fromSum) { openSummary(); return; } renderLive(); };
+  if (L.ret) $('mz-back').textContent = retLabel(); else if (L.fromSum) $('mz-back').textContent = '回出場摘要';
   $('l-main').querySelectorAll('.mz-chip').forEach(el => el.onclick = () => { const cd = $('l-main').querySelector(`.mz-card[data-i="${el.dataset.i}"]`), box = $('l-main').querySelector('.mz-qs');
     if (cd && box) box.scrollTop += cd.getBoundingClientRect().top - box.getBoundingClientRect().top; });
   $('mz-prev').onclick = () => { L.misZoom = order[k - 1]; renderLive(); };
@@ -16881,7 +16920,7 @@ function renderChartZoom(st, r, veiled, joined) {
   else if (z === 'hist') { title = `分數分布・${r === 2 ? '第一場 vs 第二場' : R}`; body = `<div class="zhist">${chHist(cd.N, cd.h1, cd.h2, { w: 1000, h: 420 })}</div>`; }
   else if (z === 'mis') { const prev = r === 2 ? statRound(1) : null; const ord = misOrderOf(st, prev);
     const mx = Math.max(1, ...ord.map(({ g, p }) => Math.max(g ? g.seats.size : 0, p ? p.seats.size : 0)));
-    title = `迷思分布・${r === 2 ? '第一場 vs 第二場' : R}`;
+    title = `迷思分布・${r === 2 ? '第一場 vs 第二場' : R}　<span class="n">${prev ? '斜線＝第一場、紅色＝第二場（深紅＝很確定）・點第一場那條看第一場的題目、點第二場那條看第二場的題目' : '深色＝很確定・點迷思名稱看題目'}</span>`;
     body = `<div class="zmis">${ord.map(({ c, g, p }) => { const n = g ? g.seats.size : 0, ns = g ? g.sure.size : 0, m = st.mm[c] || { name: '?' };
       return `<div class="mis-row ${prev ? 'mpair' : ''}" data-m="${esc(c)}"><div><div class="t"><span class="mis-code">${esc(c)}</span>${V.mathHTML(m.name)}</div>${prev ? chMisPair(p ? p.seats.size : 0, n, ns, mx) : `<div class="mis-track"><div class="mis-fill" style="width:${n / mx * 100}%"></div><div class="mis-fill sure" style="width:${ns / mx * 100}%"></div></div>`}</div>${prev ? '' : `<span class="c">${n}</span>`}</div>`; }).join('')}</div>`; }
   else if (/^pie:\d+$/.test(z)) { const i = Math.min(+z.slice(4), st.perItem.length - 1), p = st.perItem[i]; title = `${R}・第 ${i + 1} 題　<span class="n">${p.n} 人作答</span>`;
@@ -16893,6 +16932,8 @@ function renderChartZoom(st, r, veiled, joined) {
   $('l-main').innerHTML = `<div class="panel chzoom" style="grid-column:1/3;grid-row:1/-1"><div class="row" style="justify-content:space-between"><h3 style="font-size:24px">${title}</h3><button class="btn sm dai" id="chz-back">${/^pie:/.test(z) ? '回題目' : '回總覽'}</button></div>
     <div class="chz-body">${body}</div>${veilIt ? '<div class="veil">投影保護中</div>' : ''}</div>`;
   $('chz-back').onclick = back; confBind($('l-main'));
+  if (z === 'mis') $('l-main').querySelectorAll('.zmis .mis-row').forEach(el => el.onclick = ev => { if (misBarClick(el, ev)) return;   // v3.73 點迷思名稱＝那一場的迷思放大頁
+    Object.assign(L, { misZoom: el.dataset.m, detail: null, chartZoom: null, hiOpt: null, ret: retHere() }); renderLive(); });
   if (z === 'mx' && L._mxBind) { L._mxBind($('l-main')); if (L.fromSum) $('chz-back').textContent = '回出場摘要'; }
   $('l-main').querySelectorAll('[data-pk]').forEach(el => el.onclick = () => { L.pieKind = el.dataset.pk; renderLive(); });
 }
@@ -16909,7 +16950,7 @@ function renderDetail(st, r, veiled) {
   const sure = p.a.filter(x => x.choice !== it.answer && x.conf === 'high').map(x => x.seat).sort((a, b) => a - b);
   $('l-main').innerHTML = `<div class="panel det" style="grid-column:1/3;grid-row:1/3">
     <div class="row" style="justify-content:space-between"><h3>第${r === 2 ? '二' : '一'}場・第 ${i + 1} 題 <span class="n">${p.n} 人作答</span></h3>
-      <div class="row" style="gap:8px"><button class="btn sm" id="d-prev" ${i === 0 ? 'disabled' : ''}>◀ 上一題</button><button class="btn sm" id="d-next" ${i >= st.perItem.length - 1 ? 'disabled' : ''}>下一題 ▶</button><button class="btn sm dai" id="d-back">${L.fromSum ? '回出場摘要' : '回總覽'}</button></div></div>
+      <div class="row" style="gap:8px"><button class="btn sm" id="d-prev" ${i === 0 ? 'disabled' : ''}>◀ 上一題</button><button class="btn sm" id="d-next" ${i >= st.perItem.length - 1 ? 'disabled' : ''}>下一題 ▶</button><button class="btn sm dai" id="d-back">${retLabel() || (L.fromSum ? '回出場摘要' : '回總覽')}</button></div></div>
     <div class="det-q${it.fig ? ' has-fig' : ''}"><div class="live-stem" style="font-size:34px">${M(it.stem)}</div>${FIG(it, "fig-live")}</div>
     <div class="det-body"><div class="bars">${bars}</div>
       <div class="det-chart"><div class="row" style="gap:6px;justify-content:space-between"><div class="tog" role="group" aria-label="圖的樣式">${[['donut', '甜甜圈圖'], ['pie', '圓餅圖']].map(([k, t]) => `<button class="btn sm ${(L.pieKind || 'donut') === k ? 'on' : 'ghost'}" data-pk="${k}">${t}</button>`).join('')}</div>${chZoomBtn('pie:' + i)}</div>
@@ -16918,7 +16959,7 @@ function renderDetail(st, r, veiled) {
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
     ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${V.mathHTML(mm[o.mis].name)}：${V.mathHTML(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
     ${veiled ? '<div class="small muted">投影保護中：正解與迷思標註已隱藏</div>' : ''}</div>`;
-  $('d-back').onclick = () => { L.detail = null; L.misZoom = null; L.hiOpt = null; if (L.fromSum) { openSummary(); return; } renderLive(); };
+  $('d-back').onclick = () => { if (L.ret) { goRet(); return; } L.detail = null; L.misZoom = null; L.hiOpt = null; if (L.fromSum) { openSummary(); return; } renderLive(); };
   $('l-main').querySelectorAll('[data-pk]').forEach(el => el.onclick = () => { L.pieKind = el.dataset.pk; renderLive(); });
   $('d-prev').onclick = () => { L.detail = i - 1; L.hiOpt = null; renderLive(); };
   $('d-next').onclick = () => { L.detail = i + 1; L.hiOpt = null; renderLive(); };
@@ -18009,10 +18050,10 @@ function insightsOf(st, mx, ca, veiled) {
   its.filter(x => avg - x.rate >= 0.3 && x.j !== (out[0] || {}).j).slice(0, 1).forEach(x => out.push({ t: `第 ${x.j + 1} 題答對率 ${Math.round(x.rate * 100)}%，比全部題目平均（${Math.round(avg * 100)}%）低很多`, j: x.j }));
   // 3. 最多人的迷思集中在哪幾位
   const top = Object.entries(st.mis).sort((a, b) => b[1].seats.size - a[1].seats.size)[0];
-  if (top && top[1].seats.size >= 2) out.push({ t: `${(st.mm[top[0]] || {}).name || top[0]}（${top[0]}）${veiled ? `共 ${top[1].seats.size} 人` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')} 號`}`, m: top[0] });
+  if (top && top[1].seats.size >= 2) out.push({ t: `${veiled ? '「' : ''}${(st.mm[top[0]] || {}).name || top[0]}${veiled ? '」' : `（${top[0]}）`}${veiled ? `共 ${top[1].seats.size} 人` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')} 號`}`, m: top[0] });
   // 4. 作答型態異常
   const odd = mx.seats.filter(s => ca.stu[s] >= CAUTION_HI && mx.S[s] > 0 && mx.S[s] < mx.N);
-  if (odd.length) out.push({ t: `${odd.length} 人作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')} 號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
+  if (odd.length && !veiled) out.push({ t: `${odd.length} 人作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')} 號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
   return out.slice(0, 4);
 }
 
@@ -18047,7 +18088,52 @@ function teachPlanHTML(plan, veiled) {
 }
 
 // 作答矩陣（S-P 表）畫面：儀表板「作答矩陣」與出場摘要共用
+const mxCanTwo = () => !!(L.session && L.session.round >= 2 && statRound(1).nResp > 0 && statRound(2).nResp > 0);
+const mxTwoBtns = r => mxCanTwo() ? `<div class="tog" role="group" aria-label="幾場"><button class="btn sm ${L.mxBoth !== false ? 'on' : 'ghost'}" data-mxb="two">兩場並列</button><button class="btn sm ${L.mxBoth === false ? 'on' : 'ghost'}" data-mxb="one">只看第${r === 2 ? '二' : '一'}場（S-P 表）</button></div>` : '';
+// 格子、題號、一句話重點都可以點：進那一場的那一題（L.ret 記住回作答矩陣、原本那一場）
+function mxBind(root, r) {
+  root.querySelectorAll('[data-mxo]').forEach(el => el.onclick = () => { L.mxOrder = el.dataset.mxo; renderLive(); });
+  root.querySelectorAll('[data-mxb]').forEach(el => el.onclick = () => { L.mxBoth = el.dataset.mxb === 'two'; renderLive(); });
+  root.querySelectorAll('.mxt td[data-r]').forEach(el => el.onclick = () => goItem(+el.dataset.r, +el.dataset.j, el.dataset.k || null, retHere()));
+  root.querySelectorAll('.mx-ins li[data-j], .mxt thead th[data-j]').forEach(el => el.onclick = () => goItem(r, +el.dataset.j, null, retHere()));
+  root.querySelectorAll('.mx-ins li[data-m]').forEach(el => el.onclick = () => { Object.assign(L, { chartZoom: null, misZoom: el.dataset.m, detail: null, hiOpt: null, ret: retHere() }); renderLive(); });
+}
+// v3.73 有考兩場：每人兩列（第一場、第二場）同時列出（老師 2026-11-22：「選了各題作答作答矩陣後，若有考二場要，將每一人兩場的作答情形同時列出，
+//   同時可讓人點選對應的考題」）。欄＝第幾題（A、B 卷同一組平行題同一欄）；列的順序依目前這一場答對數（同分看另一場；投影保護時同分打亂、不露座號）；
+//   第二場那列：綠底＝第一場錯、第二場對，紅底＝第一場對、第二場錯；答對欄寫和第一場的差。S、P 曲線與題目注意係數只在「只看本場」
+function renderMatrix2(st, r, veiled) {
+  const S1 = r === 1 ? st : statRound(1), S2 = r === 2 ? st : statRound(2), o = r === 2 ? 1 : 2;
+  const MX = { 1: mxOf(S1), 2: mxOf(S2) }, C = { 1: cautionOf(MX[1]), 2: cautionOf(MX[2]) }, SG = { 1: segsOf(S1), 2: segsOf(S2) };
+  const mx = MX[r], ca = C[r], one = SG[1].length <= 1 && SG[2].length <= 1, N = Math.max(MX[1].N, MX[2].N), cols = [...Array(N).keys()];
+  const has = (R, s) => MX[R].seats.includes(s), sc = (R, s) => has(R, s) ? MX[R].S[s] : -1;
+  const sp = veiled || L.mxOrder !== 'seat';
+  const seats = [...new Set([...MX[1].seats, ...MX[2].seats])].sort((a, b) => sp ? (sc(r, b) - sc(r, a) || sc(o, b) - sc(o, a) || (veiled ? (a * 7919 % 101) - (b * 7919 % 101) : 0) || a - b) : a - b);
+  const RN = R => R === 2 ? '第二場' : '第一場', its = R => (R === 2 ? S2 : S1).perItem;
+  const head = `<tr><th class="mx-c" title="${sp ? `依${RN(r)}答對數排` : '依座號排'}">座號</th><th>場</th><th>答對</th>${cols.map(j => `<th data-j="${j}" title="${esc(String((its(r)[j] || its(o)[j]).it.stem).slice(0, 40))}">${j + 1}</th>`).join('')}<th title="注意係數 ≥ 0.5：簡單題錯、難題對">注意</th>${one ? '' : '<th class="l">各段</th>'}</tr>`;
+  const body = seats.map(s => [1, 2].map(R => { const m = MX[R], c = m.cell[s] || {}, h = has(R, s), k = m.S[s], cs = C[R].stu[s];
+    const tds = cols.map(j => { const v = c[j], pv = R === 2 && MX[1].cell[s] ? MX[1].cell[s][j] : null;
+      const chg = R === 2 && v && pv ? (!pv.ok && v.ok ? ' up' : pv.ok && !v.ok ? ' down' : '') : '';
+      const cls = (v ? (v.ok ? 'o' : 'x' + (v.sure && !veiled ? ' sure' : '')) : 'none') + chg;
+      return `<td class="${cls}" data-j="${j}" data-r="${R}" data-k="${v && !v.ok ? esc(v.key) : ''}" title="${RN(R)}第 ${j + 1} 題：點一下看題目">${v ? (v.ok ? '○' : `✕${v.mis && !veiled ? `<small>${esc(v.mis)}</small>` : ''}`) : '·'}</td>`; }).join('');
+    const d = R === 2 && h && has(1, s) ? k - MX[1].S[s] : null;
+    const odd = h && !veiled && cs >= CAUTION_HI && k > 0 && k < m.N;
+    return `<tr data-seat="${s}" data-r="${R}" class="r${R}">${R === 1 ? `<th rowspan="2">${veiled ? '＊' : s + ' 號'}</th>` : ''}<th class="mx-rl">${RN(R)}</th>`
+      + `<td class="mx-k${h ? '' : ' nx'}">${h ? `${k}/${m.N}${d != null ? `<span class="dlt">${d > 0 ? '＋' + d : d < 0 ? '−' + (-d) : '±0'}</span>` : ''}` : '沒考'}</td>${tds}`
+      + `<td class="mx-ca${odd ? ' hi' : ''}">${h ? cs.toFixed(2) + (odd ? '<small>異常</small>' : '') : ''}</td>${one ? '' : `<td class="l mx-ab">${h ? abilityOf(m, SG[R], s).map(abBar).join('') : ''}</td>`}</tr>`; }).join('')).join('');
+  const foot = [1, 2].map(R => `<tr><th colspan="3">${RN(R)}答對率</th>${cols.map(j => { const x = MX[R].items[j]; return `<td class="${x && x.rate != null && x.rate < 0.5 ? 'low' : ''}">${!x || x.rate == null ? '—' : Math.round(x.rate * 100) + '%'}</td>`; }).join('')}<td colspan="${one ? 1 : 2}" class="l small">${R === 1 ? '紅底＝答對率低於 50%' : '題目注意係數與 S、P 曲線：按「只看本場」'}</td></tr>`).join('');
+  const ins = insightsOf(st, mx, ca, veiled);
+  const segAvg = SG[r].map(g => { const tot = g.js.reduce((t, j) => t + mx.items[j].n, 0), ok = g.js.reduce((t, j) => t + mx.items[j].ok, 0); return { ...g, ok, n: tot, lv: !tot ? 'mid' : ok === tot ? 'good' : ok / tot < 0.5 ? 'need' : 'mid' }; });
+  const n1 = MX[1].seats.length, n2 = MX[2].seats.length;
+  return { title: `作答矩陣・第一場與第二場　<span class="n">第一場 ${n1} 人、第二場 ${n2} 人作答・${N} 題・點格子看那一場的那一題${Math.max(n1, n2) < CAUTION_MIN_N ? '・人數少於 15，注意係數僅供參考' : ''}</span>`,
+    body: `<div class="mx-top"><div class="row" style="gap:10px;flex-wrap:wrap">${mxTwoBtns(r)}<div class="tog" role="group"><button class="btn sm ${sp ? 'on' : 'ghost'}" data-mxo="sp">依答對多寡排</button>${veiled ? '<span class="small" style="margin-left:10px">投影保護中：同分的順序打亂、不露座號、不標異常與紅框</span>' : `<button class="btn sm ${sp ? 'ghost' : 'on'}" data-mxo="seat">座號順序</button>`}</div></div>
+      <div class="mx-leg">○ 答對　✕ 答錯${veiled ? '' : '（小字＝迷思代碼）　<span class="lg-sure">紅框＝很確定卻答錯</span>'}　· 未答　<span class="lg-up">綠底＝第一場錯、第二場對</span>　<span class="lg-down">紅底＝第一場對、第二場錯</span></div></div>
+      ${ins.length ? `<ul class="mx-ins">${ins.map(x => `<li${x.j != null ? ` data-j="${x.j}"` : ''}${x.m ? ` data-m="${esc(x.m)}"` : ''}>${RN(r)}：${M(x.t)}</li>`).join('')}</ul>` : ''}
+      <div class="mx-seg">全班各段（${RN(r)}）：${segAvg.map(abBar).join('')}</div>
+      <div class="mx-wrap"><table class="mxt two"><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table></div>`,
+    bind: root => mxBind(root, r), mx, ca, segs: SG[r], ins };
+}
 function renderMatrix(st, r, veiled) {
+  if (L.mxBoth !== false && mxCanTwo()) return renderMatrix2(st, r, veiled);
   const mx = mxOf(st), ca = cautionOf(mx), segs = segsOf(st), R = r === 2 ? '第二場' : '第一場';
   const sp = veiled || L.mxOrder !== 'seat', one = segs.length <= 1;
   const rows = sp ? [...mx.seats].sort((a, b) => mx.S[b] - mx.S[a] || (veiled ? (a * 7919 % 101) - (b * 7919 % 101) : 0) || a - b) : mx.seats;
@@ -18058,7 +18144,7 @@ function renderMatrix(st, r, veiled) {
   const body = rows.map((s, i) => { const c = mx.cell[s] || {}, k = mx.S[s], cs = ca.stu[s];
     const tds = cols.map((x, q) => { const v = c[x.j]; const sEdge = sp && q === k - 1, pEdge = sp && i === nOk(x.j) - 1;
       const cls = (v ? (v.ok ? 'o' : 'x' + (v.sure && !veiled ? ' sure' : '')) : 'none') + (sEdge ? ' se' : '') + (pEdge ? ' pe' : '');
-      return `<td class="${cls}" data-j="${x.j}">${v ? (v.ok ? '○' : `✕${v.mis && !veiled ? `<small>${esc(v.mis)}</small>` : ''}`) : '·'}</td>`; }).join('');
+      return `<td class="${cls}" data-j="${x.j}" data-r="${r}" data-k="${v && !v.ok ? esc(v.key) : ''}">${v ? (v.ok ? '○' : `✕${v.mis && !veiled ? `<small>${esc(v.mis)}</small>` : ''}`) : '·'}</td>`; }).join('');
     const odd = !veiled && cs >= CAUTION_HI && k > 0 && k < mx.N;
     return `<tr data-seat="${s}"><th>${veiled ? '＊' : s + ' 號'}</th>${tds}<td class="mx-k">${k}/${mx.N}</td><td class="mx-ca${odd ? ' hi' : ''}">${cs.toFixed(2)}${odd ? '<small>異常</small>' : ''}</td>${one ? '' : `<td class="l mx-ab">${abilityOf(mx, segs, s).map(abBar).join('')}</td>`}</tr>`; }).join('');
   const foot = `<tr><th>答對率</th>${cols.map(x => `<td data-j="${x.j}" class="${x.rate != null && x.rate < 0.5 ? 'low' : ''}">${x.rate == null ? '—' : Math.round(x.rate * 100) + '%'}</td>`).join('')}<td colspan="${one ? 2 : 3}" class="l small">${mx.items.some(x => x.rate != null && x.rate < 0.5) ? '紅底＝答對率低於 50%（偏低）' : ''}</td></tr>
@@ -18066,14 +18152,12 @@ function renderMatrix(st, r, veiled) {
   const ins = insightsOf(st, mx, ca, veiled);
   const segAvg = segs.map(g => { const tot = g.js.reduce((t, j) => t + mx.items[j].n, 0), ok = g.js.reduce((t, j) => t + mx.items[j].ok, 0); return { ...g, ok, n: tot, lv: !tot ? 'mid' : ok === tot ? 'good' : ok / tot < 0.5 ? 'need' : 'mid' }; });
   return { title: `作答矩陣・${R}　<span class="n">${mx.seats.length} 人・${mx.N} 題${mx.seats.length < CAUTION_MIN_N ? '・人數少於 15，注意係數僅供參考' : ''}</span>`,
-    body: `<div class="mx-top"><div class="tog" role="group"><button class="btn sm ${sp ? 'on' : 'ghost'}" data-mxo="sp">依答對多寡排（S-P 表）</button>${veiled ? '<span class="small">投影保護中：同分的順序打亂、不標異常與紅框</span>' : `<button class="btn sm ${sp ? 'ghost' : 'on'}" data-mxo="seat">座號、題號原順序</button>`}</div>
-      <div class="mx-leg">○ 答對　✕ 答錯（小字＝迷思代碼）　<span class="lg-sure">紅框＝很確定卻答錯</span>　· 未答${sp ? '　<span class="lg-s">藍線＝S 曲線（每位學生答對題數）</span>　<span class="lg-p">綠線＝P 曲線（每題答對人數）</span>' : ''}</div></div>
+    body: `<div class="mx-top"><div class="row" style="gap:10px;flex-wrap:wrap">${mxTwoBtns(r)}<div class="tog" role="group"><button class="btn sm ${sp ? 'on' : 'ghost'}" data-mxo="sp">依答對多寡排（S-P 表）</button>${veiled ? '<span class="small" style="margin-left:10px">投影保護中：同分的順序打亂、不標異常與紅框</span>' : `<button class="btn sm ${sp ? 'ghost' : 'on'}" data-mxo="seat">座號、題號原順序</button>`}</div></div>
+      <div class="mx-leg">○ 答對　✕ 答錯${veiled ? '' : '（小字＝迷思代碼）　<span class="lg-sure">紅框＝很確定卻答錯</span>'}　· 未答${sp ? '　<span class="lg-s">藍線＝S 曲線（每位學生答對題數）</span>　<span class="lg-p">綠線＝P 曲線（每題答對人數）</span>' : ''}</div></div>
       ${ins.length ? `<ul class="mx-ins">${ins.map(x => `<li${x.j != null ? ` data-j="${x.j}"` : ''}${x.m ? ` data-m="${esc(x.m)}"` : ''}>${M(x.t)}</li>`).join('')}</ul>` : ''}
       <div class="mx-seg">全班各段：${segAvg.map(abBar).join('')}</div>
       <div class="mx-wrap"><table class="mxt${sp ? ' sp' : ''}"><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table></div>`,
-    bind: root => { root.querySelectorAll('[data-mxo]').forEach(el => el.onclick = () => { L.mxOrder = el.dataset.mxo; renderLive(); });
-      root.querySelectorAll('.mx-ins li[data-j], .mxt thead th[data-j]').forEach(el => el.onclick = () => { Object.assign(L, { chartZoom: null, detail: +el.dataset.j, hiOpt: null }); renderLive(); });
-      root.querySelectorAll('.mx-ins li[data-m]').forEach(el => el.onclick = () => { Object.assign(L, { chartZoom: null, misZoom: el.dataset.m }); renderLive(); }); },
+    bind: root => mxBind(root, r),
     mx, ca, segs, ins };
 }
 
