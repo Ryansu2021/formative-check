@@ -254,7 +254,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 #v-live .conf-pic{cursor:pointer;flex:1;display:flex}#v-live .conf-pic .quad{flex:1;gap:10px}#v-live .conf-pic .quad div{padding:10px 18px;font-size:19px}#v-live .conf-pic .quad div b{font-size:44px}
 #v-live .mis-pic .mis-row .t{font-size:20px}#v-live .mis-pic .mis-row .c{font-size:30px}#v-live .mis-pic .mis-row .mis-track{height:18px}#v-live .mis-pic{gap:12px}
 .mis-more{font-size:15px;color:var(--ink3);text-align:right}.exp-menu .gs-cum{font-size:15px}#v-live .mis-pic .mp-l{min-width:3.4em}.exp-menu .exp-prep{font-size:15px;color:var(--ink3);border-style:dashed;margin-top:4px}
-#v-live #l-main h3 .n{font-size:15px}#v-live #l-main .btn.sm{font-size:15px}#v-live .prog-line b{font-size:16px}#v-live .prog .pg{font-size:15px!important}#v-live .prog-line .prog-bar{height:28px}#v-live .seat small{font-size:15px!important}#v-live .mis-pic .mis-code{font-size:15px}#v-live .mis-pic .mp-l{font-size:15px;font-weight:800}#v-live .mis-pic .mp-r b{font-size:22px}#v-live .mis-pic .mp-t{height:16px}#v-live .irate-leg,#v-live .irate-leg .ch-li{font-size:15px!important}.sf-rem .nw{white-space:nowrap}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
+#v-live #l-main h3 .n{font-size:15px}#v-live #l-main .btn.sm{font-size:15px}#v-live .prog-line b{font-size:16px}#v-live .prog .pg{font-size:15px!important}#v-live .prog-line .prog-bar{height:28px}#v-live .seat small{font-size:15px!important}#v-live .mis-pic .mis-code{font-size:15px}#v-live .mis-pic .mp-l{font-size:15px;font-weight:800}#v-live .mis-pic .mp-r b{font-size:22px}#v-live .mis-pic .mp-t{height:16px}#v-live .irate-leg,#v-live .irate-leg .ch-li{font-size:15px!important}.sf-rem .nw{white-space:nowrap}.seat-ls{white-space:nowrap}/* v3.76 老師「全部修正」：迷思代碼小標籤放大加深、「這一類沒有」看得清楚、行尾不只剩一兩個字 */.tplan .code-sm{font-size:15px!important;color:var(--ink2)!important;border-color:var(--ink3)!important}.tp-none{font-size:16px;color:var(--ink2);margin-top:4px}.tp h4 .n,.tp-r,.tp-rem{text-wrap:balance}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
 .sum3-head .dgrp{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}.sf-rem{text-wrap:pretty}
 .sum3-one .hint{font-size:17px;color:var(--ink2);margin-top:-4px}.sum3-main h3 .n{color:var(--ink2)}
 .exp-menu .btn{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)!important;box-shadow:none!important}
@@ -4659,9 +4659,29 @@ sup .mf{font-size:.9em}
   const mxStrip = T => T.length === 1 && T[0].t === 'grp' && !T[0].sup ? T[0].inner : null;
   function mxPart(T, st, inM) { const s = mxStrip(T); return s !== null ? mxMath(s, st, true) : mxRender(T, st, inM); }
   let MX_NOWRAP = 0;   // 正在畫已經包成不換行的短括號（v3.42）
-  function mxRender(T, st, inM) {
+  // v3.76（老師 2026-11-22：「91=7x13 和座號不換行也修一下」）：沒有空格的短式子（數、字母、分數、根號、括號＋運算符號，至少一個運算符號）整串不換行
+  const MX_RUN_OP = /^[＝=×÷＋+−\-*<>＜＞≤≥≦≧]$/;
+  function mxRuns(T) {
+    const isOpd = x => x && /^(num|let|frac|mix|sqrt|grp|abs)$/.test(x.t), isOp = x => x && x.t === 'op' && MX_RUN_OP.test(x.raw);
+    const len = x => x.t === 'frac' ? 3 : x.t === 'mix' ? 3 : String(x.raw || '').length + (x.inner ? String(x.inner).length : 0) + (x.rad ? String(x.rad).length : 0) + 1;
+    const runs = new Map();
+    for (let k = 0; k < T.length;) {
+      if (!(isOpd(T[k]) || (isOp(T[k]) && isOpd(T[k + 1])))) { k++; continue; }
+      let e = k, L = 0; while (e < T.length && (isOpd(T[e]) || isOp(T[e]))) { L += len(T[e]); e++; }
+      let last = e - 1; while (last > k && isOp(T[last])) last--;
+      let ops = 0; for (let j = k + 1; j < last; j++) if (isOp(T[j]) && T[j].raw !== '-' && isOpd(T[j - 1]) && isOpd(T[j + 1])) ops++;   // 兩邊都是數的運算符號才算；一元負號、半形 -（課號 1-1）不算
+      if (ops >= 1 && last > k && L <= 22) runs.set(k, last);
+      k = e;
+    }
+    return runs;
+  }
+  function mxRender(T, st, inM) { const nw0 = MX_NOWRAP; try { return mxRender0(T, st, inM); } finally { MX_NOWRAP = nw0; } }
+  function mxRender0(T, st, inM) {
     let h = '';
+    const runs = inM || MX_NOWRAP ? null : mxRuns(T); let runEnd = -1;
     for (let k = 0; k < T.length; k++) {
+      if (runEnd >= 0 && k > runEnd) { h += '</span>'; runEnd = -1; }
+      if (runEnd < 0 && runs && runs.has(k)) { h += '<span class="mg mgr">'; runEnd = runs.get(k); }   // 裡面的排版照舊（不動 MX_NOWRAP），只在外面包一層
       const t = T[k];
       if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
       else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
@@ -4713,6 +4733,7 @@ sup .mf{font-size:.9em}
         h += MX_ESC(c) + mxSup(t.sup, st);
       }
     }
+    if (runEnd >= 0) h += '</span>';
     return h;
   }
   function mxMath(s, st, inM) { return mxRender(mxCombine(mxTok(s), st, s), st, inM); }
@@ -15255,7 +15276,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.75（2026-11-22）';
+const APP_VERSION = 'v3.76（2026-11-22）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -16732,7 +16753,7 @@ function prioOf(st) {
 }
 function prioHTML(st, r, veiled, fromSum) {
   const list = prioOf(st); const R = r === 2 ? '第二場' : '第一場';
-  const seatsOf = a => a.length ? `<span class="pr-seat">很確定答錯：${a.join('、')} 號</span>` : '';
+  const seatsOf = a => a.length ? `<span class="pr-seat">很確定答錯：${a.join('、')}\u00a0號</span>` : '';
   const tip = h => esc(String(h).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'));   // 一行放不下時，滑鼠移上去看全文
   const rem = c => { const m = c && st.mm[c], h = m && m.remedy ? V.mathHTML(m.remedy) : '這題答錯的選項沒有標迷思，請看選項分布討論'; return `<span class="pr-rem" title="${tip(m && m.remedy ? m.remedy : h)}">補救建議：${h}</span>`; };
   const rows = list.map((e, k) => {
@@ -16898,10 +16919,10 @@ function renderMisZoom(st, r, veiled) {
   // 用當下的數字舉例說明「位」和「次」（老師看圖驗收：抽象說明投影時沒人讀）
   const ex = mxSeats.find(x => Object.keys(mxRow[x]).length > 1);
   const mxDup = dupTxt(Object.fromEntries(mxSeats.map(x => [x, Object.keys(mxRow[x]).length])));
-  const mxEx = ex != null ? `${mxDup}（例：${ex} 號第 ${Object.keys(mxRow[ex]).map(i => +i + 1).sort((a, b) => a - b).join('、')} 題都選），所以各題人數加起來比 ${mxSeats.length} 人多` : '';   // v3.46 只有真的有人跨題時才說明
+  const mxEx = ex != null ? `${mxDup}（例：${ex}\u00a0號第 ${Object.keys(mxRow[ex]).map(i => +i + 1).sort((a, b) => a - b).join('、')} 題都選），所以各題人數加起來比 ${mxSeats.length} 人多` : '';   // v3.46 只有真的有人跨題時才說明
   const mxHTML = veiled || !mxSeats.length ? '' : `<div class="mz-sec"><h4>誰選了哪幾題 <span class="n mx-leg">●＝選了這種錯答案，紅●＝很確定；每欄加總＝那一題的人數</span></h4>
     <div class="mz-mxw"><table class="mz-mx"><thead><tr><th class="mx-corner">座號＼第幾題</th>${mxCols.map(i => `<th data-i="${i}" title="第 ${i + 1} 題">${i + 1}</th>`).join('')}<th>選了<br>幾題</th></tr></thead>
-    <tbody>${mxSeats.map(st0 => `<tr data-seat="${st0}"><th>${st0} 號</th>${mxCols.map(i => { const v = mxRow[st0][i]; return `<td data-i="${i}" class="${v ? 'on' + (v === 'sure' ? ' sure' : '') : ''}">${v ? '●' : ''}</td>`; }).join('')}<td class="mx-n">${Object.keys(mxRow[st0]).length}</td></tr>`).join('')}</tbody>
+    <tbody>${mxSeats.map(st0 => `<tr data-seat="${st0}"><th>${st0}\u00a0號</th>${mxCols.map(i => { const v = mxRow[st0][i]; return `<td data-i="${i}" class="${v ? 'on' + (v === 'sure' ? ' sure' : '') : ''}">${v ? '●' : ''}</td>`; }).join('')}<td class="mx-n">${Object.keys(mxRow[st0]).length}</td></tr>`).join('')}</tbody>
     <tfoot><tr><th>每題人數</th>${mxCols.map(i => `<td data-i="${i}">${mxSeats.filter(x => mxRow[x][i]).length}</td>`).join('')}<td class="mx-tot">共 ${mxSeats.length} 人</td></tr></tfoot></table></div></div>`;
   const sumLine = veiled ? `出現在第 ${nums(pk.map(x => x.i + 1))} 題` : n ? `第${r === 2 ? '二' : '一'}場 <b>${n}</b> 人選了這種錯答案${ns ? `（很確定 <b class="zhu">${ns}</b> 人）` : ''}${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 人</span>` : ''}${mxEx ? `<span class="mz-note">${mxEx}</span>` : ''}` : `第${r === 2 ? '二' : '一'}場沒有人選這種錯答案${r === 2 ? `<span class="mz-chg">第一場 <b>${pn}</b> 人 → 第二場 <b>0</b> 人</span>` : ''}`;
   const chips = pk.map(x => `<button class="mz-chip${!veiled && !x.n ? ' zero' : ''}" data-i="${x.i}" title="捲到第 ${x.i + 1} 題">第 ${x.i + 1} 題${veiled ? '' : x.n ? ` ${x.n} 人` : ' 沒人選'}</button>`).join('');
@@ -16919,7 +16940,7 @@ function renderMisZoom(st, r, veiled) {
     seats = mxHTML ? `<div class="mz-sec">` : `<div class="mz-sec"><h4>選到的座號 <span class="n">紅字＝很確定</span></h4><div class="mz-seats">${g ? sortN(g.seats).map(x => `<span class="${sure.has(x) ? 'sure' : ''}">${x}</span>`).join('') : '—'}</div>`;
     if (r === 2) { const ps = p ? p.seats : new Set(), gs = g ? g.seats : new Set();
       const improved = sortN([...ps].filter(x => !gs.has(x))), remain = sortN([...ps].filter(x => gs.has(x))), fresh = sortN([...gs].filter(x => !ps.has(x)));
-      const hao = a => a.length ? a.map(x => x + ' 號').join('、') : '—';
+      const hao = a => a.length ? a.map(x => x + '\u00a0號').join('、') : '—';
       seats += `${mxHTML ? '<h4>和第一場比</h4>' : ''}<div class="mz-trend">已改善：${hao(improved)}<br>仍有：<b class="zhu">${hao(remain)}</b><br>新出現：${hao(fresh)}</div>`; }
     seats += '</div>';
   }
@@ -16994,7 +17015,7 @@ function renderDetail(st, r, veiled) {
     <div class="det-body"><div class="bars">${bars}</div>
       <div class="det-chart"><div class="row" style="gap:6px;justify-content:space-between"><div class="tog" role="group" aria-label="圖的樣式">${[['donut', '甜甜圈圖'], ['pie', '圓餅圖']].map(([k, t]) => `<button class="btn sm ${(L.pieKind || 'donut') === k ? 'on' : 'ghost'}" data-pk="${k}">${t}</button>`).join('')}</div>${chZoomBtn('pie:' + i)}</div>
         ${chPie(pieSlices(p, veiled), { hole: (L.pieKind || 'donut') === 'donut', veiled, size: 230 })}</div></div>
-    ${!veiled && sure.length ? `<div class="suggest" style="background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c">很確定卻答錯：${sure.map(x => x + ' 號').join('、')}</div>` : ''}
+    ${!veiled && sure.length ? `<div class="suggest" style="background:var(--zhu-l);border-color:var(--zhu);color:#7d2a1c">很確定卻答錯：${sure.map(x => x + '\u00a0號').join('、')}</div>` : ''}
     ${twin && !veiled ? `<div class="small muted">平行題（第${r === 2 ? '一' : '二'}場）：${M(twin.it.stem)}　答對率 ${twin.rate == null ? '—' : Math.round(twin.rate * 100) + '%'}</div>` : ''}
     ${!veiled ? `<div class="small" style="line-height:1.7">${it.options.filter(o => o.mis && mm[o.mis]).map(o => `<b>${o.key}</b> ${V.mathHTML(mm[o.mis].name)}：${V.mathHTML(mm[o.mis].remedy || '')}`).join('<br>')}</div>` : ''}
     ${veiled ? '<div class="small muted">投影保護中：正解與迷思標註已隱藏</div>' : ''}</div>`;
@@ -17125,7 +17146,7 @@ function openSocView(seat) {
   }).join('') || '<div class="socv-none">這位學生還沒有使用 AI 訂正。</div>';
   let bg = $('socv-bg'); if (!bg) { bg = document.createElement('div'); bg.id = 'socv-bg'; bg.className = 'socv-bg'; $('stage').appendChild(bg); }
   bg.hidden = false;
-  bg.innerHTML = `<div class="socv"><div class="socv-h"><h3>${seat} 號・AI 訂正過程</h3><button class="btn sm dai" id="socv-x">關閉</button></div><div class="socv-b">${body}</div></div>`;
+  bg.innerHTML = `<div class="socv"><div class="socv-h"><h3>${seat}\u00a0號・AI 訂正過程</h3><button class="btn sm dai" id="socv-x">關閉</button></div><div class="socv-b">${body}</div></div>`;
   const close = () => { bg.hidden = true; bg.innerHTML = ''; };
   $('socv-x').onclick = close; bg.onclick = e => { if (e.target === bg) close(); };
   bg.querySelectorAll('[data-q]').forEach(el => el.onclick = () => { close(); openItemFromSum(...el.dataset.q.split(':').map(Number)); });
@@ -17159,8 +17180,8 @@ function openSummary() {
     return `<div class="grp" data-m="${esc(g.c)}"><h4>${head ? `<span class="grp-qs">${head}</span>` : ''}${V.mathHTML(g.m.name)} ${misTag(g.c)}　<span class="muted small" title="人數＝選過這種錯答案的學生，同一人選好幾題只算一次">${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}</span></h4>
       ${cur.map(x => pkRow(x, R)).join('') || (has2 ? '<div class="small" style="color:var(--qing);font-weight:700">第二場沒有人選這種錯答案</div>' : '')}
       ${r1.length ? `<div class="r1line">第一場：${r1.map(x => `<span class="qlink" data-q="1:${x.i}" data-k="${esc(x.key)}" title="看第一場第 ${x.i + 1} 題">第 ${x.i + 1} 題 ${x.n} 人</span>`).join('、')}</div>` : ''}
-      ${has2 ? `<div class="seatsline">仍有：${g.remain.map(x => x + ' 號').join('、') || '—'}${g.fresh.length ? `　第二場新出現：${g.fresh.map(x => x + ' 號').join('、')}` : ''}</div><div class="small" style="color:var(--qing);font-weight:700">已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>`
-        : `<div class="seatsline">${g.r1.map(x => x + ' 號').join('、')}</div>`}
+      ${has2 ? `<div class="seatsline">仍有：${g.remain.map(x => x + '\u00a0號').join('、') || '—'}${g.fresh.length ? `　第二場新出現：${g.fresh.map(x => x + '\u00a0號').join('、')}` : ''}</div><div class="small" style="color:var(--qing);font-weight:700">已改善：${g.fixed.map(x => x + '\u00a0號').join('、') || '—'}</div>`
+        : `<div class="seatsline">${g.r1.map(x => x + '\u00a0號').join('、')}</div>`}
       <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`; };
   const need = has2 ? new Set(groups.flatMap(g => [...g.remain, ...g.fresh])) : new Set(groups.flatMap(g => g.r1));
   const stu = seats.map(seat => { const a = s1.seats[seat], b = s2.seats[seat]; return { seat, a, b, d1: s1.done.has(seat), d2: s2.done.has(seat) }; });
@@ -17178,7 +17199,7 @@ function openSummary() {
   const dTxt = dP == null ? '' : dP < 0 ? `<span class="dlt down">退步 ${-dP} 個百分點</span>` : dP > 0 ? `<span class="dlt up">進步 ${dP} 個百分點</span>` : '<span class="dlt">持平</span>';
   const R0 = has2 ? 2 : 1, foc = prioOf(sL), veil = L.veil;
   const fresh0 = has2 ? [...need].filter(x => !groups.some(g => g.r1.includes(x))).sort((a, b) => a - b) : [];   // 第一場沒有迷思、第二場才出現
-  const freshTxt = dP != null && dP < 0 && fresh0.length && !veil ? `<span class="why">${fresh0.join('、')} 號第二場才出現迷思</span>` : '';
+  const freshTxt = dP != null && dP < 0 && fresh0.length && !veil ? `<span class="why">${fresh0.join('、')}\u00a0號第二場才出現迷思</span>` : '';
   const headHTML = `<div class="sum3-head"><span class="lab">全班</span><span>答對率 <b class="big">${pct(A1)}</b>${has2 ? ` → <b class="big">${pct(A2)}</b>` : ''}</span>${dTxt || freshTxt ? `<span class="dgrp">${dTxt}${freshTxt}</span>` : ''}<span class="sep"></span><span>${has2 ? '第二場' : '第一場'} ${new Set(L.resp.filter(x => x.round === (has2 ? 2 : 1)).map(x => +x.seat)).size} 人作答，<b class="big zhu">${need.size}</b> 人${has2 ? '還有迷思' : '有迷思'}</span>${s.soc ? `<span class="sep"></span><span class="soc" title="學生在結果頁按「和 AI 一起訂正」；完成＝AI 判定學生已說出錯在哪並驗算過">AI 訂正完成 <b id="u-soc-stat">${socStat().d}</b> 題（<span id="u-soc-p">${socStat().p}</span> 人參與）</span>` : ''}</div>`;
   const optTxt = (it, k) => { const o = it.options.find(y => y.key === k); return o ? M(o.text) : ''; };
   const focRows = foc.map((e, k) => {
@@ -17194,7 +17215,7 @@ function openSummary() {
   const sev = x => { const v = sL.seats[x.seat]; return (v ? v.sure.length : 0) * 10 + (x.why.some(w => /型態異常/.test(w)) ? 5 : 0) + (x.why.some(w => /只答對/.test(w)) ? 3 : 0); };
   const ones = [...teachPlanOf(sL, mxL, caL).one].sort((a, b) => sev(b) - sev(a) || a.seat - b.seat), ONE_MAX = 5;
   const oneRows = veil ? (ones.length ? `<div class="so-row"><span class="so-why">${ones.length} 人（投影保護中不顯示座號）</span></div>` : '')
-    : ones.slice(0, ONE_MAX).map(x => `<div class="so-row"><b class="so-seat">${x.seat} 號</b><span class="so-why">${M(x.why.join('；'))}</span></div>`).join('') + (ones.length > ONE_MAX ? `<div class="so-more">另有 ${ones.length - ONE_MAX} 人，看下方「每位學生」</div>` : `<div class="so-more">其他同學不必個別找</div>`);
+    : ones.slice(0, ONE_MAX).map(x => `<div class="so-row"><b class="so-seat">${x.seat}\u00a0號</b><span class="so-why">${M(x.why.join('；'))}</span></div>`).join('') + (ones.length > ONE_MAX ? `<div class="so-more">另有 ${ones.length - ONE_MAX} 人，看下方「每位學生」</div>` : `<div class="so-more">其他同學不必個別找</div>`);
   const tabs = [['stu', '每位學生'], ['item', `各題組（${N} 組）`], ['grp', '依迷思分組'], ['plan', '四類教學調整']];
   const stuTbl = `<table class="t"><tr><th>座號</th><th>第一場</th><th>第二場</th><th class="l">各段（${has2 ? '第二場' : '第一場'}）</th><th class="l">${has2 ? '第二場的迷思' : '迷思'}</th>${s.soc ? '<th>AI 訂正</th>' : ''}</tr>
           ${stu.map(x => { const m1 = x.a ? [...x.a.mis] : [], m2 = x.b ? [...x.b.mis] : [];
@@ -17206,7 +17227,7 @@ function openSummary() {
             return `<tr><td>${i + 1}</td><td class="l"><span class="qlink" data-q="1:${i}" title="看第一場第 ${i + 1} 題（題目、選項分布、迷思）">${M(p.it.stem.length > 22 ? p.it.stem.slice(0, 22) + '…' : p.it.stem)}</span></td><td>${pct(p.rate)}<span class="muted small">（${p.n} 人作答）</span></td>
             <td>${has2 && q ? `<span class="qlink" data-q="2:${i}" title="看第二場（平行題）第 ${i + 1} 題">${pct(q.rate)}</span>` + `<span class="muted small">（${q.n} 人作答）</span>` : '—'}</td><td style="font-weight:700;color:${d > 0 ? 'var(--qing)' : d < 0 ? 'var(--zhu)' : 'inherit'}">${d == null ? '—' : d > 0 ? '+' + d : d < 0 ? '−' + (-d) : '0'}</td></tr>`; }).join('')}</table>`;
   // v3.54 四個分頁的內容都先算好：放大視窗、整頁匯出 HTML 共用
-  const bodies = { stu: () => stuTbl + (joinOnly.length ? `<div class="join-only hint">${joinOnly.map(v => v + ' 號').join('、')}加入了但沒有作答，不列入統計。</div>` : ''), item: () => itemTbl,
+  const bodies = { stu: () => stuTbl + (joinOnly.length ? `<div class="join-only hint">${joinOnly.map(v => v + '\u00a0號').join('、')}加入了但沒有作答，不列入統計。</div>` : ''), item: () => itemTbl,
     grp: () => groups.map(g => grpHTML(g)).join('') || '<div class="muted">沒有學生出現迷思選項。</div>', plan: () => teachPlanHTML(teachPlanOf(sL, mxL, caL), false) };
   const detailBody = bodies[sumTab]();
   const tabBtns = () => tabs.map(([k, t]) => `<button class="btn sm ${sumTab === k ? 'on' : 'ghost'}" data-sumtab="${k}" role="tab" aria-selected="${sumTab === k}">${t}</button>`).join('');
@@ -17256,7 +17277,7 @@ function openSummary() {
       <h2>依迷思分組補救</h2>${groups.map(g => { const R = has2 ? 2 : 1, cur = rowsOf(has2 ? s2 : s1, R, g.c), r1 = has2 ? rowsOf(s1, 1, g.c) : [];
         return `<div class="grp"><h3>${cur.length ? `<span class="code">${has2 ? '第二場' : ''}第 ${nums(cur.map(x => x.i + 1))} 題</span>` : ''}${V.mathHTML(g.m.name)} <small>${esc(g.c)}</small>　<small>${tx(1, g)}${has2 ? ` → ${tx(2, g)}` : ''}</small></h3>
         ${cur.map(x => `<div>第 ${x.i + 1} 題 ${M(stem20(x.p.it.stem))} → 選 <b class="zhu">${x.txt}</b>（正解 ${x.ans}）<b>${x.n} 人</b></div>`).join('')}${r1.length ? `<div><small>第一場：${r1.map(x => `第 ${x.i + 1} 題 ${x.n} 人`).join('、')}</small></div>` : ''}
-        ${has2 ? `<div>仍有：<b class="zhu">${g.remain.map(x => x + ' 號').join('、') || '—'}</b>${g.fresh.length ? `　第二場新出現：<b class="zhu">${g.fresh.map(x => x + ' 號').join('、')}</b>` : ''}　已改善：${g.fixed.map(x => x + ' 號').join('、') || '—'}</div>` : `<div>座號：<b>${g.r1.map(x => x + ' 號').join('、')}</b></div>`}
+        ${has2 ? `<div>仍有：<b class="zhu">${g.remain.map(x => x + '\u00a0號').join('、') || '—'}</b>${g.fresh.length ? `　第二場新出現：<b class="zhu">${g.fresh.map(x => x + '\u00a0號').join('、')}</b>` : ''}　已改善：${g.fixed.map(x => x + '\u00a0號').join('、') || '—'}</div>` : `<div>座號：<b>${g.r1.map(x => x + '\u00a0號').join('、')}</b></div>`}
         <div class="rem">補救：${V.mathHTML(g.m.remedy || '')}</div></div>`; }).join('') || '<p>沒有學生出現迷思選項。</p>'}
       <h2>各題組</h2><table><thead><tr><th>組</th><th class="l">第一場題目</th><th>第一場答對率</th><th>第二場答對率</th><th>變化（百分點）</th></tr></thead><tbody>
       ${s1.perItem.map((p, i) => { const q = s2.perItem[i]; const dd = q && q.rate != null && p.rate != null ? Math.round((q.rate - p.rate) * 100) : null;
@@ -17272,7 +17293,7 @@ function openSummary() {
     if (kind === 'detail') {
       const rr = respRows(); const bySeat = {}; rr.forEach(r => (bySeat[r.seat] = bySeat[r.seat] || []).push(r));
       body = Object.keys(bySeat).sort((a, b) => a - b).map(st => { const rs = bySeat[st]; const ok = r => rs.filter(x => x.round === r && x.ok).length, n = r => rs.filter(x => x.round === r).length;
-        return `<section class="seat"><h3>${st} 號　<small>第一場 ${n(1) ? `${ok(1)} / ${n(1)}` : '沒考'}${has2 ? `　第二場 ${n(2) ? `${ok(2)} / ${n(2)}` : '沒考'}` : ''}</small></h3>
+        return `<section class="seat"><h3>${st}\u00a0號　<small>第一場 ${n(1) ? `${ok(1)} / ${n(1)}` : '沒考'}${has2 ? `　第二場 ${n(2) ? `${ok(2)} / ${n(2)}` : '沒考'}` : ''}</small></h3>
         <table><thead><tr>${has2 ? '<th>場次</th>' : ''}<th>題號</th><th class="l stem">題目</th><th>作答</th><th>對錯</th><th class="l mis">迷思</th><th>信心</th><th>秒數</th></tr></thead><tbody>
         ${rs.map(r => `<tr class="${r.ok ? '' : 'wrong'}">${has2 ? `<td>${r.round === 1 ? '一' : '二'}</td>` : ''}<td>${r.no}</td><td class="l stem">${M(r.stem)}</td><td>${esc(r.choice)}</td><td>${r.ok ? '○' : '<b class="zhu">✕</b>'}</td>
           <td class="l mis">${r.mis ? `<b>${esc(r.mis)}</b> ${esc(mm[r.mis] ? mm[r.mis].name : '')}` : ''}</td><td>${esc(r.conf)}${r.conf === '很確定' && !r.ok ? '<b class="zhu">！</b>' : ''}</td><td>${r.sec}</td></tr>`).join('')}</tbody></table></section>`; }).join('') || '<p>還沒有作答紀錄。</p>';
@@ -18089,10 +18110,10 @@ function insightsOf(st, mx, ca, veiled) {
   its.filter(x => avg - x.rate >= 0.3 && x.j !== (out[0] || {}).j).slice(0, 1).forEach(x => out.push({ t: `第 ${x.j + 1} 題答對率 ${Math.round(x.rate * 100)}%，比全部題目平均（${Math.round(avg * 100)}%）低很多`, j: x.j }));
   // 3. 最多人的迷思集中在哪幾位
   const top = Object.entries(st.mis).sort((a, b) => b[1].seats.size - a[1].seats.size)[0];
-  if (top && top[1].seats.size >= 2) out.push({ t: `${veiled ? '「' : ''}${(st.mm[top[0]] || {}).name || top[0]}${veiled ? '」' : `（${top[0]}）`}${veiled ? `共 ${top[1].seats.size} 人` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')} 號`}`, m: top[0] });
+  if (top && top[1].seats.size >= 2) out.push({ t: `${veiled ? '「' : ''}${(st.mm[top[0]] || {}).name || top[0]}${veiled ? '」' : `（${top[0]}）`}${veiled ? `共 ${top[1].seats.size} 人` : `集中在 ${[...top[1].seats].sort((a, b) => a - b).join('、')}\u00a0號`}`, m: top[0] });
   // 4. 作答型態異常
   const odd = mx.seats.filter(s => ca.stu[s] >= CAUTION_HI && mx.S[s] > 0 && mx.S[s] < mx.N);
-  if (odd.length && !veiled) out.push({ t: `${odd.length} 人作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')} 號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
+  if (odd.length && !veiled) out.push({ t: `${odd.length} 人作答型態異常（簡單題錯、難題對，可能粗心或猜）${veiled ? '' : `：${odd.join('、')}\u00a0號`}${mx.seats.length < CAUTION_MIN_N ? '（人數少，僅供參考）' : ''}`, seats: odd });
   return out.slice(0, 4);
 }
 
@@ -18111,17 +18132,22 @@ function teachPlanOf(st, mx, ca) {
     if (why.length) plan.one.push({ seat: s, why }); });
   // 差異練習：全對的給挑戰；其他依「需要補／還不穩」的段分組練習
   const all = mx.seats.filter(s => mx.S[s] === mx.N && mx.N);
-  if (all.length) plan.diff.push({ kind: 'up', label: '全對：給挑戰題', seats: all });
+  if (all.length) plan.diff.push({ kind: 'up', label: '全對，給挑戰題', seats: all });
   segs.forEach(g => { const weak = mx.seats.filter(s => !all.includes(s) && abilityOf(mx, [g], s)[0].lv !== 'good'); if (weak.length) plan.diff.push({ kind: 'seg', label: `再練「${g.name}」`, seats: weak, sid: g.sid }); });
   return plan;
 }
+// v3.76（老師 2026-11-22：「座號不換行也修一下」）：數字和「號」中間用不換行空白；6 人以內的座號清單整串不換行（再多才在「、」後換行）
+function seatsHTML(a) { const t = a.join('、') + '\u00a0號'; return a.length <= 6 ? `<span class="seat-ls">${t}</span>` : t; }
+// v3.76 第三輪看圖驗收：迷思名稱最後一個字（「留下合數就／停」）不單獨掉到下一行 → 名稱最後兩個字和代碼標籤包成不換行
+function nameTag(name, tag) { const n = String(name || ''), m = /^([\s\S]*?)([\u4e00-\u9fff]{2})$/.exec(n);
+  return m ? `<b>${V.mathHTML(m[1])}</b><span class="seat-ls"><b>${esc(m[2])}</b> ${tag}</span>` : `<b>${V.mathHTML(n)}</b> ${tag}`; }
 function teachPlanHTML(plan, veiled) {
-  const S = a => veiled ? `${a.length} 人` : `${a.join('、')} 號`;
-  const box = (k, t, sub, rows) => `<div class="tp tp-${k}"><h4>${t} <span class="n">${sub}</span></h4>${rows || '<div class="muted small">這一類沒有</div>'}</div>`;
+  const S = a => veiled ? `${a.length} 人` : seatsHTML(a);
+  const box = (k, t, sub, rows) => `<div class="tp tp-${k}"><h4>${t} <span class="n">${sub}</span></h4>${rows || '<div class="tp-none">這一類沒有</div>'}</div>`;
   return `<div class="tplan">
     ${box('whole', '全班重教', '全班答對率不到 50% 的概念（同一個概念的題目合起來算）', plan.whole.map(x => `<div class="tp-r">「${M(x.name)}」答對率 <b>${Math.round(x.rate * 100)}%</b>（第 ${x.js.map(j => j + 1).join('、')} 題）</div>`).join(''))}
-    ${box('group', '小組補救', '同一個迷思 3 人以上', plan.group.map(x => `<div class="tp-r"><b>${V.mathHTML(x.name)}</b> ${misTag(x.c)}：${S(x.seats)}<div class="tp-rem">${V.mathHTML(x.remedy)}</div></div>`).join(''))}
-    ${box('one', '個別補救', '很確定卻答錯 2 題以上、作答型態異常、答對不到一半', veiled ? (plan.one.length ? `<div class="tp-r">${plan.one.length} 人（投影保護中不顯示座號）</div>` : '') : plan.one.map(x => `<div class="tp-r"><b>${x.seat} 號</b>：${x.why.join('；')}</div>`).join(''))}
+    ${box('group', '小組補救', '同一個迷思 3 人以上', plan.group.map(x => `<div class="tp-r">${nameTag(x.name, misTag(x.c))}：${S(x.seats)}<div class="tp-rem">${V.mathHTML(x.remedy)}</div></div>`).join(''))}
+    ${box('one', '個別補救', '很確定卻答錯 2 題以上、作答型態異常、答對不到一半', veiled ? (plan.one.length ? `<div class="tp-r">${plan.one.length} 人（投影保護中不顯示座號）</div>` : '') : plan.one.map(x => `<div class="tp-r"><b>${x.seat}\u00a0號</b>：${x.why.join('；')}</div>`).join(''))}
     ${box('diff', '差異練習', '依各概念的答對情形分組，全對的給挑戰', plan.diff.map(x => `<div class="tp-r">${M(x.label)}：${S(x.seats)}</div>`).join(''))}
   </div>`;
 }
@@ -18156,7 +18182,7 @@ function renderMatrix2(st, r, veiled) {
       return `<td class="${cls}" data-j="${j}" data-r="${R}" data-k="${v && !v.ok ? esc(v.key) : ''}" title="${RN(R)}第 ${j + 1} 題：點一下看題目">${v ? (v.ok ? '○' : `✕${v.mis && !veiled ? `<small>${esc(v.mis)}</small>` : ''}`) : '·'}</td>`; }).join('');
     const d = R === 2 && h && has(1, s) ? k - MX[1].S[s] : null;
     const odd = h && !veiled && cs >= CAUTION_HI && k > 0 && k < m.N;
-    return `<tr data-seat="${s}" data-r="${R}" class="r${R}">${R === 1 ? `<th rowspan="2">${veiled ? '＊' : s + ' 號'}</th>` : ''}<th class="mx-rl">${RN(R)}</th>`
+    return `<tr data-seat="${s}" data-r="${R}" class="r${R}">${R === 1 ? `<th rowspan="2">${veiled ? '＊' : s + '\u00a0號'}</th>` : ''}<th class="mx-rl">${RN(R)}</th>`
       + `<td class="mx-k${h ? '' : ' nx'}">${h ? `${k}/${m.N}${d != null ? `<span class="dlt">${d > 0 ? '＋' + d : d < 0 ? '−' + (-d) : '±0'}</span>` : ''}` : '沒考'}</td>${tds}`
       + `<td class="mx-ca${odd ? ' hi' : ''}">${h ? cs.toFixed(2) + (odd ? '<small>異常</small>' : '') : ''}</td>${one ? '' : `<td class="l mx-ab">${h ? abilityOf(m, SG[R], s).map(abBar).join('') : ''}</td>`}</tr>`; }).join('')).join('');
   const foot = [1, 2].map(R => `<tr><th colspan="3">${RN(R)}答對率</th>${cols.map(j => { const x = MX[R].items[j]; return `<td class="${x && x.rate != null && x.rate < 0.5 ? 'low' : ''}">${!x || x.rate == null ? '—' : Math.round(x.rate * 100) + '%'}</td>`; }).join('')}<td colspan="${one ? 1 : 2}" class="l small">${R === 1 ? '紅底＝答對率低於 50%' : '題目注意係數與 S、P 曲線：按「只看本場」'}</td></tr>`).join('');
@@ -18185,7 +18211,7 @@ function renderMatrix(st, r, veiled) {
       const cls = (v ? (v.ok ? 'o' : 'x' + (v.sure && !veiled ? ' sure' : '')) : 'none') + (sEdge ? ' se' : '') + (pEdge ? ' pe' : '');
       return `<td class="${cls}" data-j="${x.j}" data-r="${r}" data-k="${v && !v.ok ? esc(v.key) : ''}">${v ? (v.ok ? '○' : `✕${v.mis && !veiled ? `<small>${esc(v.mis)}</small>` : ''}`) : '·'}</td>`; }).join('');
     const odd = !veiled && cs >= CAUTION_HI && k > 0 && k < mx.N;
-    return `<tr data-seat="${s}"><th>${veiled ? '＊' : s + ' 號'}</th>${tds}<td class="mx-k">${k}/${mx.N}</td><td class="mx-ca${odd ? ' hi' : ''}">${cs.toFixed(2)}${odd ? '<small>異常</small>' : ''}</td>${one ? '' : `<td class="l mx-ab">${abilityOf(mx, segs, s).map(abBar).join('')}</td>`}</tr>`; }).join('');
+    return `<tr data-seat="${s}"><th>${veiled ? '＊' : s + '\u00a0號'}</th>${tds}<td class="mx-k">${k}/${mx.N}</td><td class="mx-ca${odd ? ' hi' : ''}">${cs.toFixed(2)}${odd ? '<small>異常</small>' : ''}</td>${one ? '' : `<td class="l mx-ab">${abilityOf(mx, segs, s).map(abBar).join('')}</td>`}</tr>`; }).join('');
   const foot = `<tr><th>答對率</th>${cols.map(x => `<td data-j="${x.j}" class="${x.rate != null && x.rate < 0.5 ? 'low' : ''}">${x.rate == null ? '—' : Math.round(x.rate * 100) + '%'}</td>`).join('')}<td colspan="${one ? 2 : 3}" class="l small">${mx.items.some(x => x.rate != null && x.rate < 0.5) ? '紅底＝答對率低於 50%（偏低）' : ''}</td></tr>
     <tr><th title="題目注意係數 ≥ 0.5：高分的錯、低分的對，題目可能有問題">題目注意</th>${cols.map(x => { const v = ca.item[x.j] || 0; return `<td data-j="${x.j}" class="${v >= CAUTION_HI ? 'hi' : ''}">${v.toFixed(2)}</td>`; }).join('')}<td colspan="${one ? 2 : 3}"></td></tr>`;
   const ins = insightsOf(st, mx, ca, veiled);

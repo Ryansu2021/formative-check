@@ -3808,9 +3808,29 @@ sup .mf{font-size:.9em}
   const mxStrip = T => T.length === 1 && T[0].t === 'grp' && !T[0].sup ? T[0].inner : null;
   function mxPart(T, st, inM) { const s = mxStrip(T); return s !== null ? mxMath(s, st, true) : mxRender(T, st, inM); }
   let MX_NOWRAP = 0;   // 正在畫已經包成不換行的短括號（v3.42）
-  function mxRender(T, st, inM) {
+  // v3.76（老師 2026-11-22：「91=7x13 和座號不換行也修一下」）：沒有空格的短式子（數、字母、分數、根號、括號＋運算符號，至少一個運算符號）整串不換行
+  const MX_RUN_OP = /^[＝=×÷＋+−\-*<>＜＞≤≥≦≧]$/;
+  function mxRuns(T) {
+    const isOpd = x => x && /^(num|let|frac|mix|sqrt|grp|abs)$/.test(x.t), isOp = x => x && x.t === 'op' && MX_RUN_OP.test(x.raw);
+    const len = x => x.t === 'frac' ? 3 : x.t === 'mix' ? 3 : String(x.raw || '').length + (x.inner ? String(x.inner).length : 0) + (x.rad ? String(x.rad).length : 0) + 1;
+    const runs = new Map();
+    for (let k = 0; k < T.length;) {
+      if (!(isOpd(T[k]) || (isOp(T[k]) && isOpd(T[k + 1])))) { k++; continue; }
+      let e = k, L = 0; while (e < T.length && (isOpd(T[e]) || isOp(T[e]))) { L += len(T[e]); e++; }
+      let last = e - 1; while (last > k && isOp(T[last])) last--;
+      let ops = 0; for (let j = k + 1; j < last; j++) if (isOp(T[j]) && T[j].raw !== '-' && isOpd(T[j - 1]) && isOpd(T[j + 1])) ops++;   // 兩邊都是數的運算符號才算；一元負號、半形 -（課號 1-1）不算
+      if (ops >= 1 && last > k && L <= 22) runs.set(k, last);
+      k = e;
+    }
+    return runs;
+  }
+  function mxRender(T, st, inM) { const nw0 = MX_NOWRAP; try { return mxRender0(T, st, inM); } finally { MX_NOWRAP = nw0; } }
+  function mxRender0(T, st, inM) {
     let h = '';
+    const runs = inM || MX_NOWRAP ? null : mxRuns(T); let runEnd = -1;
     for (let k = 0; k < T.length; k++) {
+      if (runEnd >= 0 && k > runEnd) { h += '</span>'; runEnd = -1; }
+      if (runEnd < 0 && runs && runs.has(k)) { h += '<span class="mg mgr">'; runEnd = runs.get(k); }   // 裡面的排版照舊（不動 MX_NOWRAP），只在外面包一層
       const t = T[k];
       if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
       else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
@@ -3862,6 +3882,7 @@ sup .mf{font-size:.9em}
         h += MX_ESC(c) + mxSup(t.sup, st);
       }
     }
+    if (runEnd >= 0) h += '</span>';
     return h;
   }
   function mxMath(s, st, inM) { return mxRender(mxCombine(mxTok(s), st, s), st, inM); }

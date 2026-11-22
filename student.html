@@ -252,7 +252,7 @@ sup{font-size:.62em;line-height:0;position:relative;top:-.15em;vertical-align:su
 #v-live .conf-pic{cursor:pointer;flex:1;display:flex}#v-live .conf-pic .quad{flex:1;gap:10px}#v-live .conf-pic .quad div{padding:10px 18px;font-size:19px}#v-live .conf-pic .quad div b{font-size:44px}
 #v-live .mis-pic .mis-row .t{font-size:20px}#v-live .mis-pic .mis-row .c{font-size:30px}#v-live .mis-pic .mis-row .mis-track{height:18px}#v-live .mis-pic{gap:12px}
 .mis-more{font-size:15px;color:var(--ink3);text-align:right}.exp-menu .gs-cum{font-size:15px}#v-live .mis-pic .mp-l{min-width:3.4em}.exp-menu .exp-prep{font-size:15px;color:var(--ink3);border-style:dashed;margin-top:4px}
-#v-live #l-main h3 .n{font-size:15px}#v-live #l-main .btn.sm{font-size:15px}#v-live .prog-line b{font-size:16px}#v-live .prog .pg{font-size:15px!important}#v-live .prog-line .prog-bar{height:28px}#v-live .seat small{font-size:15px!important}#v-live .mis-pic .mis-code{font-size:15px}#v-live .mis-pic .mp-l{font-size:15px;font-weight:800}#v-live .mis-pic .mp-r b{font-size:22px}#v-live .mis-pic .mp-t{height:16px}#v-live .irate-leg,#v-live .irate-leg .ch-li{font-size:15px!important}.sf-rem .nw{white-space:nowrap}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
+#v-live #l-main h3 .n{font-size:15px}#v-live #l-main .btn.sm{font-size:15px}#v-live .prog-line b{font-size:16px}#v-live .prog .pg{font-size:15px!important}#v-live .prog-line .prog-bar{height:28px}#v-live .seat small{font-size:15px!important}#v-live .mis-pic .mis-code{font-size:15px}#v-live .mis-pic .mp-l{font-size:15px;font-weight:800}#v-live .mis-pic .mp-r b{font-size:22px}#v-live .mis-pic .mp-t{height:16px}#v-live .irate-leg,#v-live .irate-leg .ch-li{font-size:15px!important}.sf-rem .nw{white-space:nowrap}.seat-ls{white-space:nowrap}/* v3.76 老師「全部修正」：迷思代碼小標籤放大加深、「這一類沒有」看得清楚、行尾不只剩一兩個字 */.tplan .code-sm{font-size:15px!important;color:var(--ink2)!important;border-color:var(--ink3)!important}.tp-none{font-size:16px;color:var(--ink2);margin-top:4px}.tp h4 .n,.tp-r,.tp-rem{text-wrap:balance}.sum3-foot{text-align:right;font-size:14px;color:var(--ink3);padding:4px 6px 0}
 .sum3-head .dgrp{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}.sf-rem{text-wrap:pretty}
 .sum3-one .hint{font-size:17px;color:var(--ink2);margin-top:-4px}.sum3-main h3 .n{color:var(--ink2)}
 .exp-menu .btn{background:#fff!important;color:var(--ink)!important;border:1.5px solid var(--line)!important;box-shadow:none!important}
@@ -773,9 +773,29 @@ sup .mf{font-size:.9em}
   const mxStrip = T => T.length === 1 && T[0].t === 'grp' && !T[0].sup ? T[0].inner : null;
   function mxPart(T, st, inM) { const s = mxStrip(T); return s !== null ? mxMath(s, st, true) : mxRender(T, st, inM); }
   let MX_NOWRAP = 0;   // 正在畫已經包成不換行的短括號（v3.42）
-  function mxRender(T, st, inM) {
+  // v3.76（老師 2026-11-22：「91=7x13 和座號不換行也修一下」）：沒有空格的短式子（數、字母、分數、根號、括號＋運算符號，至少一個運算符號）整串不換行
+  const MX_RUN_OP = /^[＝=×÷＋+−\-*<>＜＞≤≥≦≧]$/;
+  function mxRuns(T) {
+    const isOpd = x => x && /^(num|let|frac|mix|sqrt|grp|abs)$/.test(x.t), isOp = x => x && x.t === 'op' && MX_RUN_OP.test(x.raw);
+    const len = x => x.t === 'frac' ? 3 : x.t === 'mix' ? 3 : String(x.raw || '').length + (x.inner ? String(x.inner).length : 0) + (x.rad ? String(x.rad).length : 0) + 1;
+    const runs = new Map();
+    for (let k = 0; k < T.length;) {
+      if (!(isOpd(T[k]) || (isOp(T[k]) && isOpd(T[k + 1])))) { k++; continue; }
+      let e = k, L = 0; while (e < T.length && (isOpd(T[e]) || isOp(T[e]))) { L += len(T[e]); e++; }
+      let last = e - 1; while (last > k && isOp(T[last])) last--;
+      let ops = 0; for (let j = k + 1; j < last; j++) if (isOp(T[j]) && T[j].raw !== '-' && isOpd(T[j - 1]) && isOpd(T[j + 1])) ops++;   // 兩邊都是數的運算符號才算；一元負號、半形 -（課號 1-1）不算
+      if (ops >= 1 && last > k && L <= 22) runs.set(k, last);
+      k = e;
+    }
+    return runs;
+  }
+  function mxRender(T, st, inM) { const nw0 = MX_NOWRAP; try { return mxRender0(T, st, inM); } finally { MX_NOWRAP = nw0; } }
+  function mxRender0(T, st, inM) {
     let h = '';
+    const runs = inM || MX_NOWRAP ? null : mxRuns(T); let runEnd = -1;
     for (let k = 0; k < T.length; k++) {
+      if (runEnd >= 0 && k > runEnd) { h += '</span>'; runEnd = -1; }
+      if (runEnd < 0 && runs && runs.has(k)) { h += '<span class="mg mgr">'; runEnd = runs.get(k); }   // 裡面的排版照舊（不動 MX_NOWRAP），只在外面包一層
       const t = T[k];
       if (t.t === 'num' && !t.sup && T[k + 1] && T[k + 1].t === 'sqrt') { h += '<span class="mg">' + MX_ESC(t.raw) + mxRender([T[k + 1]], st, inM) + '</span>'; k++; }   // 2√3：係數和根號不分行
       else if (t.t === 'num' || t.t === 'let' || t.t === 'cjk' || t.t === 'you') h += MX_ESC(t.raw) + mxSup(t.sup, st);
@@ -827,6 +847,7 @@ sup .mf{font-size:.9em}
         h += MX_ESC(c) + mxSup(t.sup, st);
       }
     }
+    if (runEnd >= 0) h += '</span>';
     return h;
   }
   function mxMath(s, st, inM) { return mxRender(mxCombine(mxTok(s), st, s), st, inM); }
@@ -870,7 +891,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.75（2026-11-22）';
+const APP_VERSION = 'v3.76（2026-11-22）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
