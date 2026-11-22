@@ -870,7 +870,7 @@ const FIREBASE_CONFIG = {
 const ADMIN_EMAILS = ["ghsghs1@gmail.com"];          // v3.3：任何 Google 帳號都能當教師；管理者可清理所有場次（firestore.rules 的 faAdmin）
 const FB_V = '10.12.2';
 const COL = 'fa_sessions';
-const APP_VERSION = 'v3.74（2026-11-22）';
+const APP_VERSION = 'v3.75（2026-11-22）';
 // ---------- 使用自己的 Firebase（v3.3）----------
 // 預設專案（蘇老師的 prime-challenge-9dafb）是展示用；老師可貼上自己專案的 firebaseConfig，存在這台電腦的瀏覽器。
 // 學生端不用設定：QR Code／網址帶 fb＝公開欄位的編碼，學生打開就連到老師的專案。
@@ -1450,6 +1450,30 @@ async function bootStudent() {
   }
   openJoin();
 }
+
+// ---------- v3.75 有新版本提示（老師 2026-11-22：部署 v3.73 後打開仍是舊版，「文字有重疊，同時點下去沒有題目可查看」→「好，加提示」）----------
+//   sw.js（v3.37）先給快取的舊版、背景向伺服器拿新版存進快取。教師頁打開後隔幾秒讀快取裡同一個檔案的 APP_VERSION，
+//   比畫面上的新就在上方提示「按這裡重新整理」（不再多下載一次網頁）。學生頁不提示（作答中不打斷，下一次打開自然是新版）
+const verNum = v => { const m = /v(\d+)\.(\d+)(?:\.(\d+))?/.exec(v || ''); return m ? [+m[1], +m[2], +(m[3] || 0)] : null; };
+const verNewer = (a, b) => { const x = verNum(a), y = verNum(b); if (!x || !y) return false; for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false; };
+function showNewVer(v) {
+  if (document.getElementById('fa-newver')) return;
+  const b = document.createElement('div'); b.id = 'fa-newver'; b.setAttribute('role', 'status');
+  b.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);box-sizing:border-box;padding:10px 16px;border-radius:14px;background:#1f3b63;color:#fff;font:700 18px/1.4 system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
+  b.innerHTML = `<span>系統有新版本 ${esc(v.split('（')[0])}（這個畫面是 ${esc(APP_VERSION.split('（')[0])}）</span><button type="button" style="font:inherit;padding:6px 16px;border:0;border-radius:10px;background:#ffd34d;color:#1f2d3d;cursor:pointer">按這裡重新整理</button><button type="button" aria-label="先不要" title="先不要" style="font:inherit;padding:6px 10px;border:1px solid rgba(255,255,255,.5);border-radius:10px;background:transparent;color:#fff;cursor:pointer">✕</button>`;
+  const [go, no] = b.querySelectorAll('button'); go.onclick = () => location.reload(); no.onclick = () => b.remove();
+  document.body.appendChild(b);
+}
+(function newVerWatch() {
+  if (window.__STU_ONLY || location.protocol === 'file:' || !('caches' in window) || !navigator.serviceWorker) return;
+  const key = location.origin + location.pathname; let done = false;
+  const check = async () => { if (done) return; try {
+    for (const k of await caches.keys()) { const r = await (await caches.open(k)).match(key); if (!r) continue;
+      const m = /const APP_VERSION = '([^']*)'/.exec(await r.text()); if (m && verNewer(m[1], APP_VERSION)) { done = true; showNewVer(m[1]); return; } }
+  } catch (e) { } };
+  [4000, 10000, 25000, 60000, 180000].forEach(ms => setTimeout(check, ms));
+})();
+
 
 bootStudent();
 window.__FA = { get S() { return S; }, get store() { return store; }, stuApply, netCompatOn, FireStore, LocalStore, student: true };
