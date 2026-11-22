@@ -6503,7 +6503,7 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
 
 /* ============================================================
    七上1-1：數與數線（v3.10，模板擴充第 1 批）
-   迷思代碼沿用路線 A 題庫 題庫_七上1-1_數與數線_路線A.json（NL01～NL11）
+   迷思代碼沿用路線 A 題庫 題庫_七上1-1_數與數線_路線A.json（NL01～NL11；v3.71 加 NL13～NL21）
    ============================================================ */
 (function (G) {
   'use strict';
@@ -6523,7 +6523,8 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
   add('nlMin', K.num, {
     NL02: { mis: 'NL02', name: '負數小數描點位置錯', fn: ({ m, d }) => ({ value: -m, trace: `把 ${pos(-(m + d))} 畫在 −${m} 與 −${m - 1} 之間（−${m} 的右邊），就以為 −${m} 最小`, fix: `${pos(-(m + d))} 在 −${m} 與 −${m + 1} 之間，在 −${m} 的左邊，所以 ${pos(-(m + d))} 最小` }) },
     NL01a: { mis: 'NL01', name: '負數只看數字部分', fn: ({ k1 }) => ({ value: -k1, trace: `只看數字部分 ${k1} 最小，就以為 −${k1} 最小`, fix: `負數離 0 愈近愈大：−${k1} 最靠近 0，反而是最大的` }) },
-    NL01b: { mis: 'NL01', name: '負數只看數字部分', fn: ({ k2, m, d }) => ({ value: -(k2 + d), trace: `只看數字部分 ${pos(k2 + d)}＜${pos(m + d)}，就以為 ${pos(-(k2 + d))} 比 ${pos(-(m + d))} 小`, fix: `負數離 0 愈遠愈小：${pos(-(m + d))} 在 ${pos(-(k2 + d))} 的左邊，${pos(-(m + d))} 比較小` }) }
+    NL01b: { mis: 'NL01', name: '負數只看數字部分', fn: ({ k2, m, d }) => ({ value: -(k2 + d), trace: `只看數字部分 ${pos(k2 + d)}＜${pos(m + d)}，就以為 ${pos(-(k2 + d))} 比 ${pos(-(m + d))} 小`, fix: `負數離 0 愈遠愈小：${pos(-(m + d))} 在 ${pos(-(k2 + d))} 的左邊，${pos(-(m + d))} 比較小` }) },
+    NL17: { mis: 'NL17', name: '以為 0 是最小的數', fn: ({ m, d, k1 }) => ({ value: 0, trace: `以為 0 是最小的數，0＜−${k1}、0＜${pos(-(m + d))}，就選 0`, fix: `負數都比 0 小：數線上 −${k1}、${pos(-(m + d))} 都在 0 的左邊；最小的是最左邊的 ${pos(-(m + d))}` }) }   // v3.71
   });
   // 絕對值小於 n 的整數有幾個（選項「5 個」）
   add('nlCntAbs', K.unitNum, {
@@ -6574,11 +6575,230 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     NL11: { mis: 'NL11', name: '相反數與倒數混淆', fn: ({ j }) => ({ text: `−${j} 與 −1/${j}`, trace: `把倒數當成相反數：−${j} 與 −1/${j} 互為倒數`, fix: `相反數是和為 0：−${j} 的相反數是 ${j}` }) },
     NL08: { mis: 'NL08', name: '以為 −a 一定是負數', fn: ({ h }) => ({ text: `−(−${h}) 與 ${h}`, trace: `以為 −(−${h}) 前面有負號就是負數，和 ${h} 互為相反數`, fix: `−(−${h})＝${h}，兩數相等，不互為相反數` }) }
   });
+  // ---------- v3.71：現成題庫擴充後的新迷思（NL13～NL21，題庫 P09～P26 的題型） ----------
+  const { frMix } = F.util;
+  const rec = v => v > 0 ? `＋${v}` : sgn(v);                                       // 正負數記錄：＋12、−12、0
+  const dir = v => v < 0 ? '少' : '多';
+  // 以基準記錄的情境：s＝0 成績、1 身高、2 重量（一包）、3 體重
+  const NL1C = [
+    { u: '分', B: [60, 70, 80], who: '小美', q: '她考幾分' },
+    { u: '公分', B: [150, 155, 160], who: '小明', q: '他身高幾公分' },
+    { u: '公克', B: [250, 300, 500], who: '一包', q: '重幾公克' },
+    { u: '公斤', B: [40, 45, 50], who: '小華', q: '他體重幾公斤' }
+  ];
+  const cu = s => NL1C[s].u;
+  F.registerFn('nl1Rec', v => rec(v));
+  F.registerFn('nl1U', s => NL1C[s].u);
+  F.registerFn('nl1B', (s, i) => NL1C[s].B[i]);
+  F.registerFn('nl1Who', s => NL1C[s].who);
+  F.registerFn('nl1Q', s => NL1C[s].q);
+  // 相反意義的量：w＝0 存入／提出、1 收入／支出、2 上升／下降、3 向東走／向西走、4 增加／減少（人數）
+  const NL1W = [['存入', '提出', '元'], ['收入', '支出', '元'], ['上升', '下降', '公尺'], ['向東走', '向西走', '公尺'], ['增加', '減少', '人']];
+  F.registerFn('nl1W', (w, i) => NL1W[w][i]);
+  // 整數列表：lo～hi（skip0＝不列 0）
+  const lst = (lo, hi, skip0) => { const a = []; for (let x = lo; x <= hi; x++) if (!(skip0 && x === 0)) a.push(sgn(x)); return a.join('、'); };
+  F.registerFn('nl1L', (lo, hi) => lst(lo, hi));
+  const tickT = (n, k) => n === 10 ? sgn(k / 10) : frMix(k, n);                    // 坐標的寫法：n＝10 用小數，其他用分數（超過 1 寫帶分數）
+  F.registerFn('nl1Tick', (n, k) => tickT(n, -k));
+
+  // 以 B 為基準（例：B＋E 記作 E，E 可正可負），x 要記作多少：正解 x−B
+  add('nlRecBase', K.num, {
+    NL15: { mis: 'NL15', name: '正負的意義弄反', fn: ({ s, B, x }) => x === B ? null : ({ text: rec(B - x), value: B - x,
+      trace: `${x} ${cu(s)}比基準 ${B} ${cu(s)}${dir(x - B)} ${Math.abs(x - B)}，卻把正負弄反，記成 ${rec(B - x)}`, fix: `題目說比基準多記正：${x} ${cu(s)}比 ${B} ${cu(s)}${dir(x - B)} ${Math.abs(x - B)}，記作 ${rec(x - B)}` }) },
+    NL14: { mis: 'NL14', name: '忘了基準，把原量當記錄', fn: ({ s, B, x }) => ({ value: x,
+      trace: `沒有和基準比，直接把原來的 ${x} ${cu(s)}寫成記錄 ${x}`, fix: `記錄的是「和基準 ${B} ${cu(s)}差多少」：${x}−${B}＝${sgn(x - B)}，記作 ${rec(x - B)}` }) },
+    NL16: { mis: 'NL16', name: '把例子的量當基準', fn: ({ s, B, E, x }) => ({ text: rec(x - B - E), value: x - B - E,
+      trace: `把例子的 ${B + E} ${cu(s)}當成基準：${x}−${B + E}＝${sgn(x - B - E)}，記作 ${rec(x - B - E)}`, fix: `「${B + E} ${cu(s)}記作${E < 0 ? ' ' : ''}${rec(E)}」只是示範記法，基準是 ${B} ${cu(s)}：${x}−${B}＝${sgn(x - B)}，記作 ${rec(x - B)}` }) }
+  });
+  // 以 B 為基準，記作 r 的原來的量：正解 B＋r
+  add('nlRecBack', K.unitNum, {
+    NL14: { mis: 'NL14', name: '忘了基準，把原量當記錄', fn: ({ s, B, r }) => ({ text: `${rec(r)} ${cu(s)}`, value: r,
+      trace: `把記錄的 ${rec(r)} 直接當成原來的量，寫成 ${rec(r)} ${cu(s)}`, fix: `${rec(r)} 表示比基準 ${B} ${cu(s)}${dir(r)} ${Math.abs(r)} ${cu(s)}：${B}${r < 0 ? '−' : '＋'}${Math.abs(r)}＝${B + r} ${cu(s)}` }) },
+    NL15: { mis: 'NL15', name: '正負的意義弄反', fn: ({ s, B, r }) => ({ text: `${B - r} ${cu(s)}`, value: B - r,
+      trace: `把 ${rec(r)} 的意思讀反，以為比基準${dir(-r)} ${Math.abs(r)}：${B}${r < 0 ? '＋' : '−'}${Math.abs(r)}＝${B - r}`, fix: `比基準多記正、少記負：${rec(r)} 表示比 ${B} ${cu(s)}${dir(r)} ${Math.abs(r)}，是 ${B + r} ${cu(s)}` }) },
+    NL16: { mis: 'NL16', name: '把例子的量當基準', fn: ({ s, B, E, r }) => ({ text: `${B + E + r} ${cu(s)}`, value: B + E + r,
+      trace: `把例子的 ${B + E} ${cu(s)}當成基準：${B + E}${r < 0 ? '−' : '＋'}${Math.abs(r)}＝${B + E + r}`, fix: `「${B + E} ${cu(s)}記作${E < 0 ? ' ' : ''}${rec(E)}」只是示範記法，要和基準 ${B} ${cu(s)}比：${B}${r < 0 ? '−' : '＋'}${Math.abs(r)}＝${B + r} ${cu(s)}` }) }
+  });
+  // 改用 B2 當基準，x 要記作多少：正解 x−B2
+  add('nlRebase', K.num, {
+    NL19: { mis: 'NL19', name: '以為換基準記錄不變', fn: ({ s, B1, B2, x }) => ({ text: rec(x - B1), value: x - B1,
+      trace: `以為換了基準記錄不用改，還是記作 ${rec(x - B1)}`, fix: `記錄是和「現在的基準」比：${x}−${B2}＝${sgn(x - B2)}，改用 ${B2} ${cu(s)}當基準要記作 ${rec(x - B2)}` }) },
+    NL14: { mis: 'NL14', name: '忘了基準，把原量當記錄', fn: ({ s, B2, x }) => ({ value: x,
+      trace: `沒有和基準比，直接把原來的 ${x} ${cu(s)}寫成記錄 ${x}`, fix: `記錄的是和基準 ${B2} ${cu(s)}差多少：${x}−${B2}＝${sgn(x - B2)}，記作 ${rec(x - B2)}` }) },
+    NL15: { mis: 'NL15', name: '正負的意義弄反', fn: ({ s, B2, x }) => x === B2 ? null : ({ text: rec(B2 - x), value: B2 - x,
+      trace: `${x} ${cu(s)}比新基準 ${B2} ${cu(s)}${dir(x - B2)} ${Math.abs(x - B2)}，卻把正負弄反，記成 ${rec(B2 - x)}`, fix: `比基準多記正、少記負：${x} ${cu(s)}比 ${B2} ${cu(s)}${dir(x - B2)} ${Math.abs(x - B2)}，記作 ${rec(x - B2)}` }) }
+  });
+  // 「w1 a」記作＋a，「w2 b」記作多少：正解 −b（題庫 P14）
+  add('nlRecWord', K.num, {
+    NL14: { mis: 'NL14', name: '忘了基準，把原量當記錄', fn: ({ w, b }) => ({ value: b,
+      trace: `直接把 ${b} ${NL1W[w][2]}寫成 ${b}，沒有用負號表示和「${NL1W[w][0]}」相反`, fix: `「${NL1W[w][0]}」記正，相反的「${NL1W[w][1]}」記負：${NL1W[w][1]} ${b} ${NL1W[w][2]}記作 −${b}` }) },
+    NL16: { mis: 'NL16', name: '把例子的量當基準', fn: ({ w, a, b }) => ({ value: b - a,
+      trace: `拿例子的 ${a} 來比：${b} 比 ${a} ${dir(b - a)} ${Math.abs(a - b)}，記作 ${rec(b - a)}`, fix: `「＋${a}」只是示範「${NL1W[w][0]}記正」；${NL1W[w][1]} ${b} ${NL1W[w][2]}本身就記作 −${b}，不用和 ${a} 比` }) },
+    NL13: { mis: 'NL13', name: '把負號念成「減」', fn: ({ w, a, b }) => ({ value: a - b,
+      trace: `把 −${b} 的負號當成「減 ${b}」，就用 ${a} 去減：${a}−${b}＝${sgn(a - b)}`, fix: `−${b} 的「−」是負號（念「負 ${b}」），表示和「${NL1W[w][0]}」相反的意義，不是拿 ${a} 去減；${NL1W[w][1]} ${b} ${NL1W[w][2]}記作 −${b}` }) }
+  });
+  // 1 個單位長平分成 n 格，原點左邊第 k 格（k≠n、k＜2n）的坐標：正解 −k/n（題庫 P17）
+  add('nlTick', K.num, {
+    NL20: { mis: 'NL20', name: '把格數當成坐標', fn: ({ n, k }) => ({ value: -k,
+      trace: `把格數當成坐標：原點左邊第 ${k} 格就寫成 −${k}`, fix: `1 個單位長平分成 ${n} 格，每格是 ${tickT(n, 1)}；${k} 格是 ${k}×${tickT(n, 1)}＝${tickT(n, k)}，在原點左邊，坐標是 ${tickT(n, -k)}` }) },
+    NL01: { mis: 'NL01', name: '忽略負號', fn: ({ n, k }) => ({ text: tickT(n, k), value: k / n,
+      trace: `算出 ${k} 格是 ${tickT(n, k)}，只看數字部分，忘了 P 在原點左邊`, fix: `原點左邊的點是負數：坐標是 ${tickT(n, -k)}` }) },
+    NL02: { mis: 'NL02', name: '負數小數描點位置錯', fn: ({ n, k }) => { const t = tickT(n, -(2 * n - k));
+      return { text: t, value: -(2 * n - k) / n, trace: k < n ? `看到 P 和 −1 差 ${n - k} 格，就把它當成在 −1 的左邊，寫成 ${t}` : `看到 P 和 −1 差 ${k - n} 格，就把它當成在 −1 的右邊，寫成 ${t}`,
+        fix: k < n ? `P 在原點左邊第 ${k} 格，還沒走到 −1（−1 在第 ${n} 格），在 −1 與 0 之間，坐標是 ${tickT(n, -k)}` : `P 在原點左邊第 ${k} 格，已經過了 −1（−1 在第 ${n} 格），在 −2 與 −1 之間，坐標是 ${tickT(n, -k)}` }; } }
+  });
+  // 大於（或等於）−a 且小於 b 的整數有哪些（e＝1：大於或等於）：正解 −a＋1（或 −a）～b−1（題庫 P18）
+  add('nlList', K.text, {
+    NL10: { mis: 'NL10', name: '「小於」含端點', fn: ({ a, b, e }) => ({ text: lst(-a, b),
+      trace: e ? `「小於 ${b}」卻把 ${b} 也列進去` : `把 −${a} 和 ${b} 也列進去`, fix: e ? `「小於 ${b}」不含 ${b}；要列 ${lst(-a, b - 1)}` : `「大於 −${a}」「小於 ${b}」都不含端點；要列 ${lst(-a + 1, b - 1)}` }) },
+    NL07: { mis: 'NL07', name: '0 的歸屬不清', fn: ({ a, b, e }) => { const t = lst(e ? -a : -a + 1, b - 1, true); return t ? { text: t,
+      trace: `漏掉 0，以為 0 不算在裡面`, fix: `0 也是整數，而且在 −${a} 與 ${b} 之間；要列 ${lst(e ? -a : -a + 1, b - 1)}` } : null; } },
+    NL18: { mis: 'NL18', name: '以為整數不含負數', fn: ({ a, b, e }) => ({ text: lst(0, b - 1),
+      trace: `以為整數只有 0、1、2、…，只列出 ${lst(0, b - 1)}，漏掉負整數`, fix: `負整數也是整數：要列 ${lst(e ? -a : -a + 1, b - 1)}` }) },
+    NL21: { mis: 'NL21', name: '「小於或等於」漏掉端點', fn: ({ a, b, e }) => e ? ({ text: lst(-a + 1, b - 1),
+      trace: `條件是「大於或等於 −${a}」，卻把 −${a} 排除`, fix: `「或等於」要包含端點：x＝−${a} 時條件成立；要列 ${lst(-a, b - 1)}` }) : null }
+  });
+  // 絕對值小於或等於 n 的整數有哪些：正解 −n～n（題庫 P26）
+  add('nlListAbs', K.text, {
+    NL21: { mis: 'NL21', name: '「小於或等於」漏掉端點', fn: ({ n }) => ({ text: lst(-n + 1, n - 1),
+      trace: `條件是「小於或等於 ${n}」，卻把絕對值等於 ${n} 的 ${n}、−${n} 排除`, fix: `「或等於」要包含端點：|${n}|＝${n}、|−${n}|＝${n} 都符合；要列 ${lst(-n, n)}` }) },
+    NL05: { mis: 'NL05', name: '由絕對值求數只取正的', fn: ({ n }) => ({ text: lst(1, n),
+      trace: `只想到正的 ${lst(1, n)}`, fix: `負數的絕對值也可能小於或等於 ${n}，0 也是；要列 ${lst(-n, n)}` }) },
+    NL07: { mis: 'NL07', name: '0 的歸屬不清', fn: ({ n }) => ({ text: lst(-n, n, true),
+      trace: `正的、負的都列了，漏掉 0`, fix: `|0|＝0，也小於或等於 ${n}；要列 ${lst(-n, n)}` }) },
+    NL18: { mis: 'NL18', name: '以為整數不含負數', fn: ({ n }) => ({ text: lst(0, n),
+      trace: `以為整數只有 0、1、2、…，只列出 ${lst(0, n)}，漏掉負整數`, fix: `負整數也是整數：−${n}～−1 的絕對值也小於或等於 ${n}；要列 ${lst(-n, n)}` }) }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ============================================================
+   七上1-2：整數的加減、兩點距離（v3.71：現成題庫擴充新增迷思 AS11～AS19 的錯誤規則）
+   迷思代碼沿用路線 A 題庫 題庫_七上1-2_整數的加減_路線A.json；AS01～AS10 的舊規則在 rules.js（asAdd 等題型），這裡只新增題型，不動舊題型
+   ============================================================ */
+(function (G) {
+  'use strict';
+  const F = G.FARules, V = G.FAVerify, K = F.keys, { sgn, negP } = F.util;
+  const add = (kind, key, rules) => F.registerKind(kind, { key }, rules);
+  const ab = Math.abs;
+  // 「11、−5」這種坐標集合：順序不同算同一個；看不懂照文字比
+  const setKey = t => { try { return 'S:' + String(t).split('、').map(x => V.fmtQ(V.evalQ(x.trim()))).sort().join(','); } catch (e) { return K.text(t); } };
+
+  // AS-less：下列哪一個算式的結果比 x 小？（正解 x＋(−e) 或 x−|−e|；選項是算式，check: range lt）
+  add('asLess', K.num, {
+    AS11: { mis: 'AS11', name: '以為減去一定變小', fn: ({ x, b }) => ({ text: `${sgn(x)}−(−${b})`,
+      trace: `以為減去一個數，結果一定比原數小，所以 ${sgn(x)}−(−${b}) 比 ${sgn(x)} 小；其實 ${sgn(x)}−(−${b})＝${sgn(x)}＋${b}＝${sgn(x + b)}`,
+      fix: `減去負數等於加上它的相反數，結果反而變大：${sgn(x)}−(−${b})＝${sgn(x + b)}，比 ${sgn(x)} 大` }) },
+    AS06: { mis: 'AS06', name: '把絕對值當成括號', fn: ({ x, c }) => ({ text: `${sgn(x)}＋|−${c}|`,
+      trace: `把 |−${c}| 當成括號 (−${c})，以為 ${sgn(x)}＋(−${c}) 會比 ${sgn(x)} 小；其實 |−${c}|＝${c}，${sgn(x)}＋${c}＝${sgn(x + c)}`,
+      fix: `先算絕對值：|−${c}|＝${c} 是正數，加上正數會變大` }) },
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: ({ x, g, h }) => (g <= h || g - h < x) ? null : ({ text: `${g}＋(−${h})`,
+      trace: `${g}＋(−${h}) 的正負號判斷錯，算成 −${g - h}，以為比 ${sgn(x)} 小；其實 ${g} 的絕對值比較大，${g}＋(−${h})＝${g - h}`,
+      fix: `異號相加，正負號跟絕對值大的數（${g}）：${g}＋(−${h})＝${g - h}，不比 ${sgn(x)} 小` }) }
+  });
+
+  // AS-two：A(a)，B 和 A 相距 d，B 的坐標（找出所有可能；0＜a＜d，check: solveSet）
+  add('asTwo', setKey, {
+    AS12a: { mis: 'AS12', excl: 'AS12', name: '求坐標只找一邊（只找右邊）', fn: ({ a, d }) => ({ text: `${a + d}`,
+      trace: `只往 A 的右邊找：${a}＋${d}＝${a + d}，漏了 A 左邊的點`,
+      fix: `相距 ${d} 的點有兩個：右邊 ${a}＋${d}＝${a + d}，左邊 ${a}−${d}＝${sgn(a - d)}` }) },
+    AS12b: { mis: 'AS12', excl: 'AS12', name: '求坐標只找一邊（只找左邊）', fn: ({ a, d }) => ({ text: `${sgn(a - d)}`,
+      trace: `只往 A 的左邊找：${a}−${d}＝${sgn(a - d)}，漏了 A 右邊的點`,
+      fix: `相距 ${d} 的點有兩個：左邊 ${a}−${d}＝${sgn(a - d)}，右邊 ${a}＋${d}＝${a + d}` }) },
+    AS18: { mis: 'AS18', name: '把距離當成坐標', fn: ({ a, d }) => ({ text: `${d}、−${d}`,
+      trace: `把距離 ${d} 直接當成 B 的坐標，寫成 ${d} 或 −${d}`,
+      fix: `要從 A(${a}) 出發，往右、往左各走 ${d} 格：${a + d} 或 ${sgn(a - d)}` }) },
+    AS03: { mis: 'AS03', name: '小減大漏了負號', fn: ({ a, d }) => a >= d ? null : ({ text: `${a + d}、${d - a}`,
+      trace: `右邊 ${a}＋${d}＝${a + d} 對了；左邊 ${a}−${d} 小減大漏了負號，寫成 ${d - a}`,
+      fix: `小減大結果是負的：${a}−${d}＝−${d - a}` }) }
+  });
+
+  // AS-far：A(−p)、B(bq)，A 離原點比 B 遠（p＞q），哪一個大小關係正確（check: trueStmt）；w＝正解寫法（−p＜bq 或 bq＞−p）
+  const bT = (bq) => sgn(bq);
+  add('asFar', K.text, {
+    AS13: { mis: 'AS13', name: '離原點遠就以為較大', fn: ({ p, bq, w }) => ({ text: w ? `${bT(bq)}＜−${p}` : `−${p}＞${bT(bq)}`,
+      trace: `A 離原點比 B 遠（AO＞BO），就以為 A 的坐標比較大：−${p}＞${bT(bq)}`,
+      fix: `離原點遠不代表比較大：A 在原點左邊${bq < 0 ? '更遠的地方' : '、B 在右邊'}，數線上 −${p} 在 ${bT(bq)} 的左邊，−${p}＜${bT(bq)}` }) },
+    AS06: { mis: 'AS06', name: '把絕對值當成括號', fn: ({ p, bq }) => ({ text: `|−${p}|＜${bq < 0 ? '|' + bT(bq) + '|' : bT(bq)}`,
+      trace: `把 |−${p}| 當成 (−${p})，以為 −${p}＜${bT(bq)} 就是 |−${p}|＜${bq < 0 ? '|' + bT(bq) + '|' : bT(bq)}；其實 |−${p}|＝${p}${bq < 0 ? `、|${bT(bq)}|＝${-bq}` : ''}`,
+      fix: `|−${p}| 是 −${p} 到原點的距離 ${p}，一定是正的：${p}＞${ab(bq)}` }) },
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: ({ p, q }) => p <= q ? null : ({ text: `(−${p})＋${q}＞0`,
+      trace: `(−${p})＋${q} 的正負號判斷錯，算成 ${p - q}，以為比 0 大；其實 −${p} 的絕對值比較大，(−${p})＋${q}＝−${p - q}`,
+      fix: `異號相加，正負號跟絕對值大的數（−${p}）：(−${p})＋${q}＝−${p - q}，比 0 小` }) }
+  });
+
+  // AS-chain：a−y−z（y、z 至少一個是負數，負數加括號）
+  const chainT = (a, y, z) => `${a}−${negP(y)}−${negP(z)}`;
+  const plusT = (a, y, z) => `${a}${y < 0 ? '＋' + (-y) : '−' + y}${z < 0 ? '＋' + (-z) : '−' + z}`;   // 去掉「減負數」後的寫法
+  add('asChain', K.num, {
+    AS14: { mis: 'AS14', name: '以為減法有結合律', fn: ({ a, y, z }) => { const v = a - (y - z);
+      return { value: v, trace: `先算後面兩個數，把 ${chainT(a, y, z)} 當成 ${a}−(${negP(y)}−${negP(z)})：${negP(y)}−${negP(z)}＝${sgn(y - z)}，${a}−${negP(y - z)}＝${sgn(v)}`,
+        fix: `連減要由左往右算：${a}−${negP(y)}＝${sgn(a - y)}，${sgn(a - y)}−${negP(z)}＝${sgn(a - y - z)}` }; } },
+    AS08: { mis: 'AS08', name: '減負數沒改成加相反數', fn: ({ a, y, z }) => { if (y > 0 && z > 0) return null; const v = a - ab(y) - ab(z);
+      return { value: v, trace: `把減去負數看成減去正數：${a}−${ab(y)}−${ab(z)}＝${sgn(v)}`,
+        fix: `減去一個數等於加上它的相反數：${chainT(a, y, z)}＝${plusT(a, y, z)}＝${sgn(a - y - z)}` }; } },
+    AS04: { mis: 'AS04', name: '以為減法有交換律', fn: ({ a, y, z }) => { const v = y - a - z;
+      return { value: v, trace: `把 ${a}−${negP(y)} 前後對調成 ${negP(y)}−${a}＝${sgn(y - a)}，再減 ${negP(z)}：${sgn(v)}`,
+        fix: `減法不能交換，要用 ${a} 去減：${a}−${negP(y)}＝${sgn(a - y)}，再減 ${negP(z)}＝${sgn(a - y - z)}` }; } }
+  });
+
+  // AS-negsum：(−a)＋b＋(−c) 和哪一個算式同值（a＞b；check: sameValue）；正解用交換律、結合律先合併兩個負數
+  add('asNegSum', K.num, {
+    AS15: { mis: 'AS15', name: '負數相加變成正數', fn: ({ a, b, c }) => ({ text: `${a + c}＋${b}`,
+      trace: `把負負得正用到加法：(−${a})＋(−${c})＝${a + c}，寫成 ${a + c}＋${b}`,
+      fix: `兩個負數相加還是負的：(−${a})＋(−${c})＝−${a + c}，從 −${a} 再往左走 ${c} 格` }) },
+    AS10: { mis: 'AS10', name: '異號相加把數字相加', fn: ({ a, b, c }) => ({ text: `(−${a + b})＋(−${c})`,
+      trace: `把 (−${a})＋${b} 的數字相加得 −${a + b}，寫成 (−${a + b})＋(−${c})`,
+      fix: `異號相加要相減：${a}−${b}＝${a - b}，(−${a})＋${b}＝−${a - b}` }) },
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: ({ a, b, c }) => a <= b ? null : ({ text: `${a - b}＋(−${c})`,
+      trace: `(−${a})＋${b} 算出 ${a - b}，正負號取錯了，寫成 ${a - b}＋(−${c})`,
+      fix: `−${a} 的絕對值比較大，(−${a})＋${b}＝−${a - b}` }) }
+  });
+
+  // AS-mid：A(A0)、B(B0) 的中點（L＜0＜R、|L|＞R、L＋R 是偶數；o＝0 時 A 在左邊，o＝1 時 A 在右邊）
+  const midOf = P => { const { L, R, o } = P, A0 = o ? R : L, B0 = o ? L : R, h = (R - L) / 2; return { A0, B0, h, M: (L + R) / 2, toB: o ? '左' : '右' }; };
+  add('asMid', K.num, {
+    AS16: { mis: 'AS16', name: '中點當成距離一半', fn: P => { const { A0, B0, h, M, toB } = midOf(P);
+      return { value: h, trace: `算出 AB＝${P.R}−${negP(P.L)}＝${P.R - P.L}，就把一半 ${h} 當成中點的坐標`,
+        fix: `${h} 是中點到 A 的距離，要從 A(${sgn(A0)}) 往${toB}走 ${h} 格：(${sgn(A0)}＋${negP(B0)})÷2＝${sgn(M)}` }; } },
+    AS10: { mis: 'AS10', name: '異號相加把數字相加', fn: P => { const { A0, B0, M } = midOf(P), s = -(ab(P.L) + P.R);
+      return { value: s / 2, trace: `把 ${sgn(A0)}＋${negP(B0)} 的數字相加得 ${sgn(s)}，再除以 2 得 ${sgn(s / 2)}`,
+        fix: `異號相加要相減：${sgn(A0)}＋${negP(B0)}＝${sgn(P.L + P.R)}，再除以 2，中點是 ${sgn(M)}` }; } },
+    AS19: { mis: 'AS19', name: '數線左右方向弄反', fn: P => { const { A0, h, M, toB } = midOf(P), back = P.o ? '右' : '左', v = P.o ? A0 + h : A0 - h;
+      return { value: v, trace: `AB 的一半是 ${h} 對了，但從 A 往${back}走：${sgn(A0)}${P.o ? '＋' : '−'}${h}＝${sgn(v)}`,
+        fix: `B 在 A 的${toB}邊，要往${toB}走：${sgn(A0)}${P.o ? '−' : '＋'}${h}＝${sgn(M)}` }; } }
+  });
+
+  // AS-move：A(a)，B 在 A 的右邊（dir＝0）或左邊（dir＝1）d 個單位長；a 和 ±d 異號（題目是異號相加）
+  const mv = ({ a, d, dir }) => ({ ans: dir ? a - d : a + d, way: dir ? '左' : '右', op: dir ? '−' : '＋', opp: dir ? '＋' : '−', sum: `${sgn(a)}＋${negP(dir ? -d : d)}` });
+  add('asMove', K.num, {
+    AS19: { mis: 'AS19', name: '數線左右方向弄反', fn: P => { const { ans, way, op, opp } = mv(P), v = P.dir ? P.a + P.d : P.a - P.d;
+      return { value: v, trace: `往${way}走卻用${P.dir ? '加' : '減'}，算成 ${sgn(P.a)}${opp}${P.d}＝${sgn(v)}`,
+        fix: `往右是變大、用加；往左是變小、用減：${sgn(P.a)}${op}${P.d}＝${sgn(ans)}` }; } },
+    AS18: { mis: 'AS18', name: '把距離當成坐標', fn: P => { const { ans, way, op } = mv(P);
+      return { value: P.d, trace: `把 ${P.d} 個單位長直接當成 B 的坐標，寫成 ${P.d}`,
+        fix: `要從 A(${sgn(P.a)}) 往${way}走 ${P.d} 格：${sgn(P.a)}${op}${P.d}＝${sgn(ans)}` }; } },
+    AS02: { mis: 'AS02', name: '和的正負號判斷錯', fn: P => { const { ans, sum } = mv(P); if (!ans) return null;
+      return { value: -ans, trace: `${sum} 的大小 ${ab(ans)} 算對了，正負號卻弄反，寫成 ${sgn(-ans)}`,
+        fix: `異號相加，正負號跟絕對值大的數（${ab(P.a) > P.d ? sgn(P.a) : (P.dir ? '−' : '') + P.d}）：${sum}＝${sgn(ans)}` }; } }
+  });
+
+  // AS-temp：溫度計（直立的數線）上 lo°C 和 hi°C 相距幾度（lo＜hi）
+  add('asTemp', K.num, {
+    AS17: { mis: 'AS17', name: '數距離時連端點也算', fn: ({ lo, hi }) => ({ value: hi - lo + 1,
+      trace: `從 ${sgn(lo)} 數到 ${sgn(hi)}，數的是經過幾個刻度（兩端都算），數成 ${hi - lo + 1}`,
+      fix: `距離是走了幾格，出發的刻度不算：${sgn(hi)}−${negP(lo)}＝${hi - lo}` }) },
+    AS09: { mis: 'AS09', name: '兩點距離把坐標相加', fn: ({ lo, hi }) => ({ value: lo + hi,
+      trace: `把兩個讀數相加：${negP(lo)}＋${negP(hi)}＝${sgn(lo + hi)}`,
+      fix: `兩個刻度的距離要相減，上面減下面：${sgn(hi)}−${negP(lo)}＝${hi - lo}` }) },
+    AS07: { mis: 'AS07', name: '兩點距離寫成負數', fn: ({ lo, hi }) => ({ value: lo - hi,
+      trace: `用下面減上面：${sgn(lo)}−${negP(hi)}＝${sgn(lo - hi)}，距離寫成負數`,
+      fix: `距離不會是負的，要上面減下面：${sgn(hi)}−${negP(lo)}＝${hi - lo}` }) }
+  });
 })(typeof window !== 'undefined' ? window : globalThis);
 
 /* ============================================================
    七上1-3：整數的乘除、四則運算（v3.10，模板擴充第 1 批）
-   迷思代碼沿用路線 A 題庫 題庫_七上1-3_整數的乘除_路線A.json（MD01～MD09）
+   迷思代碼沿用路線 A 題庫 題庫_七上1-3_整數的乘除_路線A.json（MD01～MD09；v3.71 加 MD10～MD13）
    ============================================================ */
 (function (G) {
   'use strict';
@@ -6634,6 +6854,267 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
       return { value: v, trace: `由左到右先算 −${a}−(−${b})＝${sgn(-a + b)}，再 ×${c}＝${sgn(v)}`, fix: `先乘除後加減：(−${b})×${c}＝−${b * c}，−${a}−(−${b * c})＝${sgn(-a + b * c)}` }; } },
     MD09b: { mis: 'MD09', name: '運算順序錯（減號也沒變加）', fn: ({ a, b, c }) => { const v = (-a - b) * c;
       return { value: v, trace: `由左到右先算 −${a}−${b}＝−${a + b}（減負數也沒變加），再 ×${c}＝${sgn(v)}`, fix: `先乘除後加減，減去負數要變成加：−${a}−(−${b * c})＝${sgn(-a + b * c)}` }; } }
+  });
+  // ---------- v3.71：現成題庫擴充後的新迷思（MD10～MD13，題庫 P14、P20～P26 的題型） ----------
+  // M×|(−b)＋c|−(−d)，M＝−a（o＝0）或 a（o＝1）：正解 M×|c−b|＋d（題庫 P14）
+  const mA = (a, o) => o ? `${a}` : `(−${a})`;
+  add('mdAbs', K.num, {
+    MD10: { mis: 'MD10', name: '絕對值內沒先算', fn: ({ a, b, c, d, o }) => { const M = o ? a : -a, w = Math.abs(c - b), v = M * (b + c) + d;
+      return { value: v, trace: `絕對值內沒先算，把每個數各自取絕對值：|(−${b})＋${c}|＝${b}＋${c}＝${b + c}，${mA(a, o)}×${b + c}−(−${d})＝${sgn(M * (b + c))}＋${d}＝${sgn(v)}`, fix: `先算絕對值內：(−${b})＋${c}＝${sgn(c - b)}，|${sgn(c - b)}|＝${w}；${mA(a, o)}×${w}＝${sgn(M * w)}，${sgn(M * w)}−(−${d})＝${sgn(M * w + d)}` }; } },
+    MD08: { mis: 'MD08', name: '減號負號並存沒變加', fn: ({ a, b, c, d, o }) => { const M = o ? a : -a, w = Math.abs(c - b), v = M * w - d;
+      return { value: v, trace: `${mA(a, o)}×|(−${b})＋${c}|＝${mA(a, o)}×${w}＝${sgn(M * w)} 算對了，減去 (−${d}) 卻沒變成加：${sgn(M * w)}−${d}＝${sgn(v)}`, fix: `減去負數要變成加：${sgn(M * w)}−(−${d})＝${sgn(M * w)}＋${d}＝${sgn(M * w + d)}` }; } },
+    MD09: { mis: 'MD09', name: '運算順序錯（沒有先乘）', fn: ({ a, b, c, d, o }) => { const M = o ? a : -a, w = Math.abs(c - b), v = M * (w + d);
+      return { value: v, trace: `沒有先乘，先算 |(−${b})＋${c}|−(−${d})＝${w}＋${d}＝${w + d}，再乘 ${mA(a, o)}：${sgn(v)}`, fix: `先乘除後加減：${mA(a, o)}×${w}＝${sgn(M * w)}，再減 (−${d})：${sgn(M * w)}＋${d}＝${sgn(M * w + d)}` }; } }
+  });
+  // 哪一個分配律的寫法是對的（選項是等式；題庫 P22）
+  add('mdDistOk', K.text, {
+    MD02: { mis: 'MD02', name: '分配律用在除法', fn: ({ x, p, q }) => ({ text: `${x}÷(${p}＋${q})＝${x}÷${p}＋${x}÷${q}`,
+      trace: `把除法分配到括號裡：${x}÷(${p}＋${q}) 寫成 ${x}÷${p}＋${x}÷${q}`, fix: `除數是兩數的和時不能拆開分別除：${x}÷(${p}＋${q}) 要先算 ${p}＋${q}＝${p + q}，再算 ${x}÷${p + q}；${x}÷${p}＋${x}÷${q}＝${x / p + x / q}，兩邊不相等` }) },
+    MD11: { mis: 'MD11', name: '分配律只乘到第一項', fn: ({ a, b, c }) => ({ text: `(−${a})×(${b}＋${c})＝(−${a})×${b}＋${c}`,
+      trace: `拆括號時 (−${a}) 只乘到第一項 ${b}，後面的 ${c} 照抄`, fix: `括號外的 (−${a}) 要乘到每一項：(−${a})×(${b}＋${c})＝(−${a})×${b}＋(−${a})×${c}＝${-a * (b + c)}` }) },
+    MD12: { mis: 'MD12', name: '提公因數沒處理符號', fn: ({ g, h, k }) => ({ text: `(−${g})×${h}＋${g}×${k}＝${g}×(${h}＋${k})`,
+      trace: `(−${g})×${h} 和 ${g}×${k} 的公因數一個是 −${g}、一個是 ${g}，直接提出 ${g}，沒有先把 (−${g})×${h} 改寫成 ${g}×(−${h})`, fix: `先改寫成 ${g}×(−${h})＋${g}×${k}，再提出 ${g}：${g}×(−${h}＋${k})` }) },
+    MD13: { mis: 'MD13', name: '提公因數漏了 1', fn: ({ t, nn }) => ({ text: `${t}×${nn}＋${t}＝${t}×${nn}`,
+      trace: `提出 ${t} 之後，單獨的那一項 ${t} 剩下的 1 漏掉了`, fix: `把 ${t} 寫成 ${t}×1：${t}×${nn}＋${t}×1＝${t}×(${nn}＋1)` }) }
+  });
+  // (−a)×n−a（s＝0）或 (−a)×(−n)−a（s＝1）用分配律簡算（題庫 P24）
+  add('mdFac1', K.num, {
+    MD13: { mis: 'MD13', name: '提公因數漏了 1', fn: ({ a, n, s }) => s ? { value: a * n, trace: `(−${a})×(−${n})−${a}＝${a}×${n}−${a}，提出 ${a} 時，−${a} 剩下的 −1 漏掉了，寫成 ${a}×${n}＝${a * n}`, fix: `把 −${a} 寫成 ${a}×(−1)：${a}×${n}＋${a}×(−1)＝${a}×(${n}−1)＝${a * (n - 1)}` }
+      : { value: -a * n, trace: `提出 (−${a}) 時，單獨的 −${a} 剩下的 1 漏掉了，寫成 (−${a})×${n}＝${sgn(-a * n)}`, fix: `把 −${a} 寫成 (−${a})×1：(−${a})×${n}＋(−${a})×1＝(−${a})×(${n}＋1)＝${sgn(-a * (n + 1))}` } },
+    MD12: { mis: 'MD12', name: '提公因數沒處理符號', fn: ({ a, n, s }) => s ? { value: a * (n + 1), trace: `(−${a})×(−${n}) 寫成 ${a}×${n}，後面的 −${a} 卻沒處理負號，提出 ${a} 寫成 ${a}×(${n}＋1)＝${a * (n + 1)}`, fix: `−${a} 要寫成 ${a}×(−1)，提出後是 ${a}×(${n}−1)＝${a * (n - 1)}` }
+      : { value: -a * (n - 1), trace: `提出 (−${a}) 時，−${a} 那一項沒先改寫成 (−${a})×1，照抄成 −1，寫成 (−${a})×(${n}−1)＝${sgn(-a * (n - 1))}`, fix: `−${a}＝(−${a})×1，提出 (−${a}) 後括號裡是 ${n}＋1：(−${a})×(${n}＋1)＝${sgn(-a * (n + 1))}` } },
+    MD06: { mis: 'MD06', name: '符號規則錯', fn: ({ a, n, s }) => s ? { value: -a * (n - 1), trace: `以為負數乘負數還是負的：(−${a})×(−${n})−${a}＝(−${a})×(${n}−1)＝${sgn(-a * (n - 1))}`, fix: `負負得正：(−${a})×(−${n})＝${a}×${n}，再提出 ${a}：${a}×(${n}−1)＝${a * (n - 1)}` }
+      : { value: a * (n + 1), trace: `(−${a})×(${n}＋1) 數字部分算對了 ${a * (n + 1)}，正負號卻寫成正的`, fix: `負數乘正數是負的：(−${a})×(${n}＋1)＝${sgn(-a * (n + 1))}` } }
+  });
+  // (p−q)÷(−k)（f＝0）或 (−p−q)÷(−k)（f＝1）用分配律計算，p＝k·i、q＝k·j：正解 j−i（f＝0）、i＋j（f＝1）（題庫 P25）
+  const pT = (k, i, f) => f ? `−${k * i}` : `${k * i}`, q1 = (i, f) => f ? i : -i;       // 第一項與它除以 (−k) 的商
+  add('mdDivDist', K.num, {
+    MD11: { mis: 'MD11', name: '分配律只除到第一項', fn: ({ k, i, j, f }) => { const v = q1(i, f) - k * j;
+      return { value: v, trace: `(−${k}) 只除到第一項：${pT(k, i, f)}÷(−${k})−${k * j}＝${sgn(q1(i, f))}−${k * j}＝${sgn(v)}`, fix: `每一項都要除以 (−${k})：${pT(k, i, f)}÷(−${k})−${k * j}÷(−${k})＝${sgn(q1(i, f))}−(−${j})＝${sgn(q1(i, f) + j)}` }; } },
+    MD08: { mis: 'MD08', name: '減號負號並存沒變加', fn: ({ k, i, j, f }) => { const v = q1(i, f) - j;
+      return { value: v, trace: `${pT(k, i, f)}÷(−${k})＝${sgn(q1(i, f))}、${k * j}÷(−${k})＝−${j} 算對了，${sgn(q1(i, f))}−(−${j}) 卻寫成 ${sgn(q1(i, f))}−${j}＝${sgn(v)}`, fix: `減去負數要變成加：${sgn(q1(i, f))}−(−${j})＝${sgn(q1(i, f))}＋${j}＝${sgn(q1(i, f) + j)}` }; } },
+    MD09: { mis: 'MD09', name: '運算順序錯（沒先算括號）', fn: ({ k, i, j, f }) => { const v = (f ? -k * i : k * i) + j;
+      return { value: v, trace: `沒有先算括號，算成 ${pT(k, i, f)}−${k * j}÷(−${k})＝${pT(k, i, f)}＋${j}＝${sgn(v)}`, fix: `括號要整個除以 (−${k})：先算括號 ${pT(k, i, f)}−${k * j}＝${sgn((f ? -k * i : k * i) - k * j)}，再 ÷(−${k})＝${sgn(q1(i, f) + j)}` }; } }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ============================================================
+   七上1-4：指數記法、10 的負次方、科學記號（v3.71：現成題庫擴充新增迷思 EX12～EX16 的錯誤規則）
+   迷思代碼沿用路線 A 題庫 題庫_七上1-4_指數與科學記號_路線A.json；EX01～EX11 的舊規則在 rules.js（exPow 等題型），這裡只新增題型，不動舊題型
+   ============================================================ */
+(function (G) {
+  'use strict';
+  const F = G.FARules, K = F.keys, { sgn, sup, pow, dec, shift } = F.util;
+  const add = (kind, key, rules) => F.registerKind(kind, { key }, rules);
+  const len = n => String(Math.abs(n)).length;
+  // 整數 N 除以 10^s 的小數寫法（精確，不經過浮點數）：decS(10101, 2)＝101.01、decS(−1, 2)＝−0.01
+  const decS = (N, s) => { const neg = N < 0, t = String(Math.abs(N)).padStart(s + 1, '0'), i = t.length - s;
+    const w = s ? (t.slice(0, i) + '.' + t.slice(i)).replace(/0+$/, '').replace(/\.$/, '') : t; return (neg ? '−' : '') + w; };
+  // EX-zero：f＝0「10^p＋10^0＋10^-q」、f＝1「10^0−10^-q」；z＝10^0 當成多少、m＝10^-q 當成多少（都用 10^S 為單位的整數）
+  const S = 9;   // q ≤ 4，S＝9 夠放 10^-(q+1)
+  const zv = (f, p, z, m) => f ? z - m : pow(10, p + S) + z + m;
+  const zT = ({ f, p, q }) => f ? `${sup('10^0')}−${sup('10^-' + q)}` : `${sup('10^' + p)}＋${sup('10^0')}＋${sup('10^-' + q)}`;
+  F.registerFn('exZans', (f, p, q) => decS(zv(f, p, pow(10, S), pow(10, S - q)), S));
+  add('exZero', K.num, {
+    EX12a: { mis: 'EX12', excl: 'EX12', name: '10⁰ 當成 10', fn: ({ f, p, q }) => { const v = decS(zv(f, p, pow(10, S + 1), pow(10, S - q)), S);
+      return { text: v, trace: `照抄底數，以為 ${sup('10^0')}＝10：${zT({ f, p, q })}＝${f ? '10−' + dec(q) : pow(10, p) + '＋10＋' + dec(q)}＝${v}`,
+        fix: `從 ${sup('10^2')}＝100、${sup('10^1')}＝10 往下再 ÷10，${sup('10^0')}＝1：答案是 ${decS(zv(f, p, pow(10, S), pow(10, S - q)), S)}` }; } },
+    EX12b: { mis: 'EX12', excl: 'EX12', name: '10⁰ 當成 0', fn: ({ f, p, q }) => { const v = decS(zv(f, p, 0, pow(10, S - q)), S);
+      return { text: v, trace: f ? `以為 ${sup('10^0')}＝0（沒有乘就是 0）：0−${dec(q)}＝${v}` : `以為 ${sup('10^0')}＝0（沒有乘就是 0）：${sup('10^' + p)}＋${sup('10^0')}＝${pow(10, p)}，再加 ${dec(q)} 得 ${v}`,
+        fix: `${sup('10^1')}＝10，再 ÷10 得 ${sup('10^0')}＝1，不是 0：答案是 ${decS(zv(f, p, pow(10, S), pow(10, S - q)), S)}` }; } },
+    EX06: { mis: 'EX06', name: '負指數就是負數', fn: ({ f, p, q }) => { const v = decS(zv(f, p, pow(10, S), -pow(10, S + q)), S);
+      return { text: v, trace: `以為 ${sup('10^-' + q)}＝−${pow(10, q)}（負指數就是負數），算成 ${f ? '1＋' + pow(10, q) : pow(10, p) + '＋1−' + pow(10, q)}＝${v}`,
+        fix: `負指數不是負數：${sup('10^-' + q)}＝1/${sup('10^' + q)}＝${dec(q)}` }; } },
+    EX07a: { mis: 'EX07', excl: 'EX07', name: '小數點後多一位', fn: ({ f, p, q }) => { const v = decS(zv(f, p, pow(10, S), pow(10, S - q - 1)), S);
+      return { text: v, trace: `以為 ${sup('10^-' + q)}＝${dec(q + 1)}，小數點後多補了一個 0，算成 ${v}`,
+        fix: `${sup('10^-' + q)} 的 1 在小數點後第 ${q} 位，等於 ${dec(q)}` }; } },
+    EX07b: { mis: 'EX07', excl: 'EX07', name: '小數點後少一位', fn: ({ f, p, q }) => { if (q < 2) return null; const v = decS(zv(f, p, pow(10, S), pow(10, S - q + 1)), S);
+      return { text: v, trace: `以為 ${sup('10^-' + q)}＝${dec(q - 1)}，小數點後少補了一個 0，算成 ${v}`,
+        fix: `${sup('10^-' + q)} 的 1 在小數點後第 ${q} 位，等於 ${dec(q)}` }; } }
+  });
+
+  // EX-swap：c−k×a^n（a≠n，a^n≠n^a）
+  add('exSwap', K.num, {
+    EX13: { mis: 'EX13', name: '底數與指數對調', fn: ({ c, k, a, n }) => { const w = pow(n, a), v = c - k * w;
+      return { value: v, trace: `底數和指數對調，以為 ${sup(a + '^' + n)}＝${w}（算成 ${n} 的 ${a} 次方 ${sup(n + '^' + a)}）：${c}−${k}×${w}＝${sgn(v)}`,
+        fix: `${sup(a + '^' + n)} 是 ${n} 個 ${a} 相乘＝${pow(a, n)}：${c}−${k}×${pow(a, n)}＝${sgn(c - k * pow(a, n))}` }; } },
+    EX05: { mis: 'EX05', name: '含乘方的運算順序錯', fn: ({ c, k, a, n }) => { const w = pow(k * a, n), v = c - w;
+      return { value: v, trace: `沒有先算次方，先算 ${k}×${a}＝${k * a} 再 ${n} 次方得 ${w}：${c}−${w}＝${sgn(v)}`,
+        fix: `次方只管 ${a}：先算 ${sup(a + '^' + n)}＝${pow(a, n)}，再乘 ${k}，最後 ${c}−${k * pow(a, n)}＝${sgn(c - k * pow(a, n))}` }; } },
+    EX02: { mis: 'EX02', name: '把乘方當成乘法', fn: ({ c, k, a, n }) => { const v = c - k * a * n;
+      return { value: v, trace: `以為 ${sup(a + '^' + n)}＝${a * n}（把次方當成 ${a}×${n}）：${c}−${k}×${a * n}＝${sgn(v)}`,
+        fix: `${sup(a + '^' + n)} 是 ${n} 個 ${a} 相乘＝${pow(a, n)}：${c}−${k}×${pow(a, n)}＝${sgn(c - k * pow(a, n))}` }; } }
+  });
+
+  // EX-toNum：a×10^n 寫成一般的數（a＝M 移小數點 d 位，d＝M 的位數−1，n＞d）
+  const tn = ({ M, n }) => { const d = len(M) - 1; return { d, a: shift(M, d), ans: String(M) + '0'.repeat(n - d) }; };
+  add('exToNum', K.num, {
+    EX14: { mis: 'EX14', name: 'a 有小數仍補 n 個 0', fn: P => { const { d, a, ans } = tn(P), v = String(P.M) + '0'.repeat(P.n);
+      return { text: v, trace: `在 ${P.M} 後面直接補了 ${P.n} 個 0，寫成 ${v}；沒有扣掉 ${a} 本身的 ${d} 位小數`,
+        fix: `用小數點移位：${a} 的小數點往右移 ${P.n} 位，${d} 位小數先移過去，只要再補 ${P.n - d} 個 0：${ans}` }; } },
+    EX10: { mis: 'EX10', name: '整數位數當成指數', fn: P => { const { d, a, ans } = tn(P); if (P.n - d - 1 < 0) return null; const v = String(P.M) + '0'.repeat(P.n - d - 1);
+      return { text: v, trace: `以為 ×${sup('10^' + P.n)} 就是 ${P.n} 位數，寫成 ${v}`,
+        fix: `${a}×${sup('10^' + P.n)} 是 ${P.n + 1} 位數（位數比指數多 1）：${ans}` }; } },
+    EX15: { mis: 'EX15', name: '指數正負方向弄反', fn: P => { const { a, ans } = tn(P), v = '0.' + '0'.repeat(P.n - 1) + String(P.M);
+      return { text: v, trace: `把 ${a} 的小數點往左移 ${P.n} 位，寫成 ${v}`,
+        fix: `指數是正的，數比 ${a} 大，小數點要往右移 ${P.n} 位：${ans}` }; } }
+  });
+
+  // EX-sciS：比 1 小的數 N＝0.00…M 寫成科學記號（N＝a×10^-k，a＝M 移小數點 d 位）
+  const ss = ({ M, k }) => { const d = len(M) - 1; return { d, a: shift(M, d), N: '0.' + '0'.repeat(k - 1) + String(M), first: String(M)[0] }; };
+  F.registerFn('sciSmall', (M, k) => ss({ M, k }).N);
+  add('exSciS', K.text, {
+    EX15: { mis: 'EX15', name: '指數正負方向弄反', fn: P => { const { a, N } = ss(P);
+      return { text: `${a}×10^${P.k}`, trace: `${N} 比 1 小，卻寫成正指數 ${a}×${sup('10^' + P.k)}（這是 ${a} 的小數點往右移 ${P.k} 位，比 1 大）`,
+        fix: `比 1 小的數，指數是負的：小數點往右移 ${P.k} 位得 ${a}，所以是 ${a}×${sup('10^-' + P.k)}` }; } },
+    EX07: { mis: 'EX07', name: '小數點後位數多或少一', fn: P => { const { a, N, first } = ss(P); if (P.k < 2) return null;
+      return { text: `${a}×10^-${P.k - 1}`, trace: `數了 ${N} 小數點後有 ${P.k - 1} 個 0，就把指數寫成 −${P.k - 1}`,
+        fix: `${first} 在小數點後第 ${P.k} 位，指數是 −${P.k}：${a}×${sup('10^-' + P.k)}` }; } },
+    EX08: { mis: 'EX08', name: '科學記號 a 的範圍錯', fn: P => { const { d, a } = ss(P); if (d < 1) return null;
+      return { text: `${P.M}×10^-${P.k + d}`, trace: `寫成 ${P.M}×${sup('10^-' + (P.k + d))}，值是對的，但 ${P.M} 不在 1 到 10 之間`,
+        fix: `科學記號 a×10ⁿ 的 a 要 1≤a＜10：${a}×${sup('10^-' + P.k)}` }; } }
+  });
+
+  // EX-rel：下列哪一個大小關係正確（check: trueStmt）；正解 u×10^h＞v×10^(h−1)（s＝1 時是負指數），w＝1 時寫成 v…＜u…
+  add('exRel', K.text, {
+    EX16: { mis: 'EX16', excl: 'EX16', name: '沒化成 1～10 就比指數（a 大於 10）', fn: ({ B, e, c }) => B <= c * 10 ? null : ({ text: `${B}×10^${e}＜${c}×10^${e + 1}`,
+      trace: `${B} 不在 1 到 10 之間，沒有先化成科學記號，就直接比指數：${e}＜${e + 1}，以為 ${B}×${sup('10^' + e)}＜${c}×${sup('10^' + (e + 1))}`,
+      fix: `先化成科學記號：${B}×${sup('10^' + e)}＝${shift(B, 1)}×${sup('10^' + (e + 1))}，指數一樣再比前面的數：${shift(B, 1)}＞${c}，所以 ${B}×${sup('10^' + e)} 比較大` }) },
+    EX16b: { mis: 'EX16', excl: 'EX16', name: '沒化成 1～10 就比指數（a 小於 1）', fn: ({ g, e, c }) => g * 10 >= c ? null : ({ text: `${g}×10^${e + 1}＞${c}×10^${e}`,
+      trace: `${g} 不在 1 到 10 之間，沒有先化成科學記號，就直接比指數：${e + 1}＞${e}，以為 ${g}×${sup('10^' + (e + 1))}＞${c}×${sup('10^' + e)}`,
+      fix: `先化成科學記號：${g}×${sup('10^' + (e + 1))}＝${+(g * 10).toFixed(6)}×${sup('10^' + e)}，指數一樣再比前面的數：${+(g * 10).toFixed(6)}＜${c}，所以 ${g}×${sup('10^' + (e + 1))} 比較小` }) },
+    EX09: { mis: 'EX09', name: '比大小只看係數', fn: ({ x, y, f }) => x <= y ? null : ({ text: `${x}×10^${f}＞${y}×10^${f + 1}`,
+      trace: `只比了係數 ${x}＞${y}，就以為 ${x}×${sup('10^' + f)}＞${y}×${sup('10^' + (f + 1))}`,
+      fix: `科學記號比大小要先比指數：${f}＜${f + 1}，所以 ${x}×${sup('10^' + f)} 比較小` }) },
+    EX11: { mis: 'EX11', name: '忽略負指數的方向', fn: ({ z, t }) => ({ text: `${z}×10^-${t}＞${z}×10^-${t - 2}`,
+      trace: `以為 −${t} 比 −${t - 2} 大（只看 ${t}＞${t - 2}），就以為 ${z}×${sup('10^-' + t)} 比較大`,
+      fix: `−${t} 比 −${t - 2} 小，${sup('10^-' + t)} 比 ${sup('10^-' + (t - 2))} 小（小數點後位數比較多），所以 ${z}×${sup('10^-' + t)} 比較小` }) }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ============================================================
+   七上2-1：質因數分解（v3.71：現成題庫擴充後新迷思的錯誤規則）
+   迷思代碼沿用路線 A 題庫 題庫_七上2-1_質因數分解_路線A.json
+   舊的規則（PF01～PF14 的 factorize、pfValue、pfCount、pfSet、pfIsFactor、pfIsPrime）在 rules.js；
+   registerKind 會整個取代同名題型，而且已上線模板要逐字回歸（tests/fixtures_b1112～b19 的 tpl_out.json），所以新迷思一律開新題型＋新模板：
+     pf21Div　　不用直式除法判因數（3、4、9、11 的倍數判別）：PF15、PF16、PF17、PF20、PF21，備用 PF19、PF24
+     pf21Cnt　　正因數共有幾個（題幹給一組乘法）：PF18、PF13、PF22、PF23、PF19
+     pf21NotF　 用標準分解式判「不是」因數：PF10、PF13、PF06
+     pf21FacOf　下列哪一個數是 N 的因數：PF19、PF24、PF11
+     pf21Prime　下列哪一個是質數：PF25、PF12、PF01
+   ============================================================ */
+(function (G) {
+  'use strict';
+  const F = G.FARules, V = G.FAVerify, K = F.keys, { sup, pow, pw, facText, divisors, digitSum, smallestFactor } = F.util;
+  const add = (kind, key, rules) => F.registerKind(kind, { key }, rules);
+  const fac = n => sup(facText(V.factorize(n)));
+  const L2 = N => String(N % 100).padStart(2, '0');                       // 末兩位（寫成 09、36）
+  const dg = N => String(N).split('').map(Number);
+  // 11 的倍數判別：奇數位（個位、百位…）數字和與偶數位（十位、千位…）數字和的差
+  const alt11 = N => { const d = dg(N).reverse(); const o = d.filter((x, i) => i % 2 === 0), e = d.filter((x, i) => i % 2 === 1);
+    const so = o.reduce((s, x) => s + x, 0), se = e.reduce((s, x) => s + x, 0);
+    return { t: `(${o.join('＋')})−(${e.join('＋')})＝${so}−${se}＝${so - se < 0 ? '−' + (se - so) : so - se}`, d: so - se }; };
+
+  // ---------- 不用直式除法判因數（選項是 3、4、9、11、0 或 2N；check: isFactor want:true） ----------
+  // 各規則先確認「學生的判法說是、其實不是」才回傳（真的整除就回 null，不會出現第二個正解）
+  const T9a = N => digitSum(N) % 3 === 0 && N % 9 !== 0;                  // PF15：數字和是 3 的倍數就當成 9 的倍數
+  const T9b = N => N % 100 !== 0 && (N % 100) % 9 === 0 && N % 9 !== 0;     // PF17：末兩位是 9 的倍數（末兩位 00 不算，學生不會這樣看）
+  const T4 = N => N % 10 % 4 === 0 && N % 4 !== 0;                          // PF16：個位 0、4、8
+  const T3 = N => [3, 6, 9].includes(N % 10) && N % 3 !== 0;                 // PF20：個位 3、6、9
+  const T11 = N => digitSum(N) % 11 === 0 && N % 11 !== 0;                   // PF21：數字和是 11 的倍數
+  // 模板 when 用：z（A、B 卷相同）指定這一組一定要有哪一種誘答（0 PF15、1 PF17、2 PF16、3 PF20、4 PF21），每種迷思都常出現（不指定時 PF20、PF21 很少）
+  // N 的取法（不用 when 篩：抽樣是整組參數一起篩，會偏到容易成立的那幾種）：依「正解 dv＋哪幾種誘答成立」分組（至少兩種，9 的兩種算一種），
+  //   c 選第幾組（A、B 卷相同 → 兩卷的誘答規則一樣，不必常靠備用的 0、2N 補），j 取組裡第幾個數（繞回）。共 14 組（依「dv:誘答成立情形」字串排序）；模板的 c 表挑其中 10 組、6 和 12 放兩次，讓 PF15、16、17、20、21 每一種都出現在約 4～6 成的題目裡
+  //   （練習頁 genForMis 一次出 2 組、試 4 次，這樣找不到同迷思模板題的機率約 1%）
+  const HAS = [T9a, T9b, T4, T3, T11], DIVG = {};
+  [3, 4, 11].forEach(dv => { for (let N = Math.ceil(1000 / dv) * dv; N <= 9999; N += dv) { const m = HAS.map(f => f(N) ? 1 : 0);
+    if (((m[0] || m[1]) ? 1 : 0) + m[2] + m[3] + m[4] < 2) continue; const k = dv + ':' + m.join(''); (DIVG[k] = DIVG[k] || []).push(N); } });
+  const DIVC = Object.keys(DIVG).sort().map(k => ({ dv: +k.split(':')[0], L: DIVG[k] }));
+  F.registerFn('pf21Dv', c => DIVC[c % DIVC.length].dv);
+  F.registerFn('pf21N', (c, j) => { const L = DIVC[c % DIVC.length].L; return L[j % L.length]; });
+  F.registerFn('pf21Why', (N, dv) => dv === 3 ? `${N} 的數字和 ${dg(N).join('＋')}＝${digitSum(N)} 是 3 的倍數，所以 3 是 ${N} 的因數`
+    : dv === 4 ? `${N} 的末兩位 ${L2(N)} 是 4 的倍數，所以 4 是 ${N} 的因數`
+    : dv === 9 ? `${N} 的數字和 ${digitSum(N)} 是 9 的倍數，所以 9 是 ${N} 的因數`
+    : `${N} 的 ${alt11(N).t}，是 11 的倍數，所以 11 是 ${N} 的因數`);
+  const sumT = N => `${dg(N).join('＋')}＝${digitSum(N)}`;
+  add('pf21Div', K.num, {
+    PF15: { mis: 'PF15', excl: 'd9', name: '數字和是 3 的倍數就當成 9 的倍數', fn: ({ N }) => !T9a(N) ? null : ({ text: '9',
+      trace: `${N} 的數字和 ${digitSum(N)} 是 3 的倍數，就以為 ${N} 也是 9 的倍數，選了 9`, fix: `9 的倍數要看數字和是不是 9 的倍數：${sumT(N)} 不是 9 的倍數，所以 9 不是 ${N} 的因數` }) },
+    PF17: { mis: 'PF17', excl: 'd9', name: '用末兩位判 9 的倍數', fn: ({ N }) => !T9b(N) ? null : ({ text: '9',
+      trace: `看 ${N} 的末兩位 ${L2(N)} 是 9 的倍數，就以為 ${N} 是 9 的倍數，選了 9`, fix: `「看末兩位」是判別 4 的倍數的方法，不能用在 9；9 的倍數要看數字和：${sumT(N)} 不是 9 的倍數，所以 9 不是 ${N} 的因數` }) },
+    PF16: { mis: 'PF16', name: '只看個位判 4 的倍數', fn: ({ N }) => !T4(N) ? null : ({ text: '4',
+      trace: `${N} 的個位是 ${N % 10}，是 4 的倍數，就以為 ${N} 是 4 的倍數，選了 4`, fix: `4 的倍數要看末兩位：末兩位 ${L2(N)} 不是 4 的倍數，所以 4 不是 ${N} 的因數` }) },
+    PF20: { mis: 'PF20', name: '只看個位判 3 的倍數', fn: ({ N }) => !T3(N) ? null : ({ text: '3',
+      trace: `${N} 的個位是 ${N % 10}，是 3 的倍數，就以為 ${N} 是 3 的倍數，選了 3`, fix: `3 的倍數要看數字和，不是看個位：${sumT(N)} 不是 3 的倍數，所以 3 不是 ${N} 的因數` }) },
+    PF21: { mis: 'PF21', name: '用數字和判 11 的倍數', fn: ({ N }) => !T11(N) ? null : ({ text: '11',
+      trace: `${N} 的數字和 ${digitSum(N)} 是 11 的倍數，就以為 ${N} 是 11 的倍數，選了 11`, fix: `11 的倍數要看奇數位數字和與偶數位數字和的差：${alt11(N).t}，不是 11 的倍數（差是 0 或 11 的倍數才是），所以 11 不是 ${N} 的因數` }) },
+    PF19: { mis: 'PF19', name: '以為 0 是因數', fn: ({ N }) => ({ text: '0',
+      trace: `把「0 是任何數的倍數」記成「0 是任何數的因數」，以為 0 是 ${N} 的因數，選了 0`, fix: `0 不能當除數，${N}÷0 沒有意義；0 是 ${N} 的倍數（${N}×0＝0），不是因數` }) },
+    PF24: { mis: 'PF24', name: '把倍數當成因數', fn: ({ N }) => ({ text: `${2 * N}`,
+      trace: `${2 * N}＝${N}×2，和 ${N} 有整除關係就選了；其實 ${2 * N} 是 ${N} 的倍數`, fix: `因數要能整除 ${N}，不會比 ${N} 大；${2 * N}÷${N}＝2，${2 * N} 是 ${N} 的倍數，不是因數` }) }
+  });
+
+  // ---------- 正因數共有幾個（題幹「N＝u×v」；check: value fn divisorCount） ----------
+  const pairsOf = N => divisors(N).filter(d => d * d <= N).map(d => [d, N / d]);
+  const pairT = N => pairsOf(N).map(([a, b]) => `${a}×${b}`).join('、');
+  F.registerFn('pf21Pairs', N => pairT(N));
+  // 題幹的「N＝u×v」：sq＝1 從平方數表取（PF23 只有平方數才有；用 when 篩的話平方數只佔一成），sq＝0 從非平方數表取；j 取表中第幾個（超過表長就繞回）
+  const CNT_SQ = [[2, 8], [2, 18], [3, 12], [4, 9], [2, 32], [4, 16], [3, 27], [2, 50], [4, 25], [5, 20]];
+  const CNT_NS = [[3, 4], [2, 9], [4, 5], [4, 6], [4, 7], [5, 6], [4, 8], [5, 8], [6, 7], [4, 11], [5, 9], [6, 8], [5, 10], [4, 13], [6, 9],
+    [7, 8], [6, 10], [7, 9], [6, 11], [7, 10], [8, 9], [5, 15], [6, 13], [8, 10], [7, 12], [8, 11], [9, 10], [8, 12], [7, 14], [9, 11]];
+  const cntRow = (sq, j) => { const L = sq ? CNT_SQ : CNT_NS; return L[j % L.length]; };
+  F.registerFn('pf21U', (sq, j) => cntRow(sq, j)[0]); F.registerFn('pf21V', (sq, j) => cntRow(sq, j)[1]);
+  add('pf21Cnt', K.num, {
+    PF18: { mis: 'PF18', name: '因數只有題目那一組乘法的兩個', fn: ({ N, u, v }) => ({ value: 2,
+      trace: `看到 ${N}＝${u}×${v}，就以為 ${N} 的因數只有 ${u} 和 ${v} 兩個`, fix: `${u}×${v} 只是其中一組；一對一對找：${pairT(N)}，共 ${divisors(N).length} 個` }) },
+    PF13: { mis: 'PF13', name: '漏了自己', fn: ({ N }) => { const d = divisors(N).filter(x => x !== N);
+      return { value: d.length, trace: `以為 ${N} 不是 ${N} 的因數，只數 ${d.join('、')}，共 ${d.length} 個`, fix: `${N}÷${N}＝1，${N} 是自己的因數；${N} 的正因數有 ${d.length + 1} 個` }; } },
+    PF22: { mis: 'PF22', name: '成對找因數只記一半', fn: ({ N }) => { const P = pairsOf(N), sm = P.map(p => p[0]), bg = P.map(p => p[1]).filter(b => !sm.includes(b));
+      if (!bg.length) return null;
+      return { value: sm.length, trace: `一對一對找 ${pairT(N)}，只記了左邊的 ${sm.join('、')}，共 ${sm.length} 個`, fix: `每一對的兩個數都是因數，右邊的 ${bg.join('、')} 也要記；共 ${divisors(N).length} 個` }; } },
+    PF23: { mis: 'PF23', name: '平方數中間的因數算兩次', fn: ({ N }) => { const r = Math.round(Math.sqrt(N)); if (r * r !== N) return null;
+      const c = divisors(N).length;
+      return { value: c + 1, trace: `一對一對找 ${pairT(N)}，${r}×${r} 這一對把 ${r} 算了兩次，得 ${c + 1} 個`, fix: `${r}×${r} 只有一個因數 ${r}；${N} 的正因數有 ${c} 個` }; } },
+    PF19: { mis: 'PF19', name: '把 0 也算成因數', fn: ({ N }) => { const d = divisors(N); if (Math.round(Math.sqrt(N)) ** 2 === N) return null;   // 平方數時和 PF23 一樣是「多 1 個」，留給 PF23
+      return { value: d.length + 1, trace: `把 0 也算成因數：0、${d.join('、')}，共 ${d.length + 1} 個`, fix: `0 不能當除數（${N}÷0 沒有意義），0 不是因數；${N} 的正因數有 ${d.length} 個` }; } }
+  });
+
+  // ---------- 用標準分解式判「不是」因數（M＝p^a×q^b×r；選項是 M 的真因數＋一個次方太大的數；check: isFactor want:false） ----------
+  add('pf21NotF', K.num, {
+    PF10a: { mis: 'PF10', excl: 'PF10', name: '以為因數要含有全部的質因數（只有第一個質因數）', fn: ({ N, p, a }) => { const rest = V.factorize(N).filter(([x]) => x !== p).map(([x]) => x);
+      return { text: `${pow(p, a)}`, trace: `${pow(p, a)}＝${sup(pw(p, a))}，裡面沒有 ${rest.join('、')}，就以為 ${pow(p, a)} 不是 M 的因數`,
+        fix: `M＝${sup(pw(p, a))}×${fac(N / pow(p, a))}，${sup(pw(p, a))} 直接是乘數之一，所以 ${pow(p, a)} 是 M 的因數；因數不必含有 M 全部的質因數` }; } },
+    PF10b: { mis: 'PF10', excl: 'PF10', name: '以為因數要含有全部的質因數（少了第一個質因數）', fn: ({ N, p, a }) => { const o = N / pow(p, a), t = facText(V.factorize(o));
+      if (V.factorize(o).length < 2) return null;                           // 只剩一個質數時和 PF10a 同一種樣子
+      return { text: t, trace: `${sup(t)} 裡面沒有 ${p}，就以為 ${sup(t)} 不是 M 的因數`, fix: `M＝${sup(pw(p, a))}×${sup(t)}，${sup(t)} 直接是乘數之一，所以是 M 的因數；因數不必含有 M 全部的質因數` }; } },
+    PF13: { mis: 'PF13', name: '以為一個數不是自己的因數', fn: ({ N }) => ({ text: facText(V.factorize(N)),
+      trace: `${fac(N)} 就是 M（＝${N}），以為 ${N} 不是 ${N} 的因數`, fix: `M÷M＝1，整除，所以 M 是自己的因數` }) },
+    PF06: { mis: 'PF06', name: '把次方當成乘法算 M，比較大的因數就說不是', fn: ({ N, p }) => {
+      const f = V.factorize(N), bad = f.filter(([x, e]) => e > 1 && x * e !== pow(x, e)); if (!bad.length) return null;
+      const Mw = f.reduce((s, [x, e]) => s * (e > 1 ? x * e : x), 1), Fv = N / p; if (!(Mw < Fv)) return null;
+      return { text: `${Fv}`, trace: `把 ${bad.map(([x, e]) => `${sup(x + '^' + e)} 算成 ${x}×${e}＝${x * e}`).join('、')}，以為 M＝${Mw}；${Fv} 比 ${Mw} 大，就以為 ${Fv} 不是 M 的因數`,
+        fix: `次方是連乘：M＝${fac(N)}＝${N}；${Fv}＝M÷${p}，是 M 的因數` }; } }
+  });
+
+  // ---------- 下列哪一個數是 N 的因數（N＝x×y，正解 y；check: isFactor want:true） ----------
+  // PF11 的誘答：和 N 一樣是 x 的倍數、比 N 小、但不整除 N 的數；s＝1 取比正解 y 大的最小一個，s＝0 取比 y 小的最大一個（正解不會固定排第二小）
+  const pf11Of = (N, x, y, s) => { if (s) { for (let k = Math.floor(y / x) + 1; k * x < N; k++) if (N % (k * x)) return k * x; return null; }
+    for (let k = Math.ceil(y / x) - 1; k >= 2; k--) if (N % (k * x)) return k * x; return null; };
+  add('pf21FacOf', K.num, {
+    PF19: { mis: 'PF19', name: '以為 0 是因數', fn: ({ N }) => ({ text: '0',
+      trace: `把「0 是任何數的倍數」記成「0 是任何數的因數」，以為 0 是 ${N} 的因數`, fix: `0 不能當除數，${N}÷0 沒有意義；0 是 ${N} 的倍數（${N}×0＝0），不是因數` }) },
+    PF24: { mis: 'PF24', name: '把倍數當成因數', fn: ({ N }) => ({ text: `${2 * N}`,
+      trace: `${2 * N}＝${N}×2，和 ${N} 有關係就選了，以為 ${2 * N} 是 ${N} 的因數`, fix: `因數、倍數的方向弄反了：${2 * N}÷${N}＝2，${2 * N} 是 ${N} 的倍數；${N} 的因數不會比 ${N} 大` }) },
+    PF11: { mis: 'PF11', name: '數值比較小就當成因數', fn: ({ N, x, y, s }) => { const c = pf11Of(N, x, y, s); if (!c) return null;
+      return { text: `${c}`, trace: `${c} 比 ${N} 小，沒有試除就以為 ${c} 是 ${N} 的因數`, fix: `因數要能整除：${N}÷${c}＝${Math.floor(N / c)}…${N % c}，除不盡，${c} 不是 ${N} 的因數` }; } }
+  });
+
+  // ---------- 下列哪一個是質數（選項：質數、小的奇合數、看似質數的合數、1；check: isPrime want:true） ----------
+  add('pf21Prime', K.num, {
+    PF25: { mis: 'PF25', name: '把奇數當成質數', fn: ({ c4 }) => { const s = smallestFactor(c4);
+      return { text: `${c4}`, trace: `${c4} 不是 2 的倍數（是奇數），就以為 ${c4} 是質數；其實 ${c4}＝${fac(c4)}`, fix: `奇數不一定是質數：${c4}÷${s}＝${c4 / s}，${c4} 是合數；質數除了 2 都是奇數，但奇數不一定是質數` }; } },
+    PF12: { mis: 'PF12', name: '看似質數的合數', fn: ({ c5 }) => F.R.pfIsPrime.PF12a.fn({ c1: c5 }) },   // 和 rules.js PF-isPrime 同一種寫法（完全分解）
+    PF01: { mis: 'PF01', name: '把 1 當成質數', fn: () => ({ text: '1', trace: '以為 1 是質數', fix: '質數要有「恰好兩個」正因數；1 只有一個正因數' }) }
   });
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -6721,6 +7202,154 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     FR02: { mis: 'FR02', name: '負帶分數讀錯', fn: ({ a, b, c }) => ({ text: `−${a}又${b}/${c}＝−${a}＋${b}/${c}`, trace: `把 −${a}又${b}/${c} 讀成 −${a} 加上 ${b}/${c}`, fix: `負號管整個帶分數：−${a}又${b}/${c}＝−${a}−${b}/${c}` }) },
     FR07: { mis: 'FR07', name: '分子加分子、分母加分母', fn: ({ g, h, i, j }) => ({ text: `${g}/${h}＋${i}/${j}＝${g + i}/${h + j}`, trace: `以為分數相加是分子加分子、分母加分母`, fix: `分母不同要先通分：${g}/${h}＋${i}/${j}＝${frT(g * j + i * h, h * j)}` }) }
   });
+  // ============ v3.71：現成題庫擴充後的新迷思 FR13～FR17（題庫 P09、P11、P21、P22、P25～P27） ============
+  // 同一個迷思代碼的誘答一題只出一個（互斥組＝迷思代碼）
+  const add2 = (kind, key, rules) => { Object.values(rules).forEach(r => { if (!r.excl) r.excl = r.mis; }); add(kind, key, rules); };
+  const MX = q => frMix(q[0], q[1]);
+  const sgT = (o, t) => (o < 0 ? '−' : '＋') + t;                       // ＋r/s、−r/s
+  // (sg·n)×(W又p/q ± r/s)：n 是 q、s 的公倍數；sg＝−1 是負數乘進括號（FR17），sg＝1 只用在重現 example
+  const dInfo = ({ sg, n, W, p, q, o, r, s }) => { const F1 = Q(W * q + p, q), F2 = Q(o * r, s), t1 = qm(F1, Q(sg * n)), t2 = qm(F2, Q(sg * n));
+    return { F1, F2, t1, t2, v: qa(t1, t2), FT: W ? `${W}又${p}/${q}` : `${p}/${q}`, Mf: sg < 0 ? `(−${n})` : `${n}` }; };
+  add2('frDist', K.frac, {
+    FR13: { mis: 'FR13', name: '分配律只乘第一項', fn: P => { const { FT, Mf, t1, F2, t2, v } = dInfo(P), w = qa(t1, F2);
+      return { text: MX(w), trace: `只把 ${Mf} 乘到第一項，後面的 ${P.r}/${P.s} 照抄：${FT}×${Mf}${sgT(P.o, P.r + '/' + P.s)}＝${T(t1)}${sgT(P.o, P.r + '/' + P.s)}＝${MX(w)}`,
+        fix: `${P.r}/${P.s} 也要乘 ${Mf}：${P.o < 0 ? `(−${P.r}/${P.s})` : `${P.r}/${P.s}`}×${Mf}＝${T(t2)}，答案是 ${T(v)}` }; } },
+    FR17: { mis: 'FR17', name: '乘負數分配時符號錯', fn: P => { if (P.sg > 0) return null; const { FT, Mf, t1, t2, v } = dInfo(P), m = Math.abs(t2[0] / t2[1]), w = qa(t1, Q(P.o * m));
+      return { text: T(w), trace: `負數乘進括號，第一項 ${FT}×${Mf}＝${T(t1)} 有變號，第二項卻照括號裡原來的「${P.o < 0 ? '−' : '＋'}」寫成 ${P.o < 0 ? '−' : '＋'}${m}：${T(t1)}${P.o < 0 ? '−' : '＋'}${m}＝${T(w)}`,
+        fix: `第二項也要用一次正負號規則：${Mf}×(${P.o < 0 ? '−' : ''}${P.r}/${P.s})＝${T(t2)}，${P.o < 0 ? '負負得正' : '異號得負'}，答案是 ${T(v)}` }; } },
+    FR08: { mis: 'FR08', name: '帶分數乘法沒化假分數', fn: P => { if (!P.W) return null; const { Mf, t2, v } = dInfo(P), k = Q(P.p * P.n, P.q), w = qa(Q(P.sg * P.W), qa(Q(P.sg * k[0], k[1]), t2));
+      return { text: T(w), trace: `整數 ${P.W} 照抄、只把 ${P.p}/${P.q} 乘 ${P.n} 得 ${T(k)}，算成 ${P.sg < 0 ? '−' : ''}(${P.W}＋${T(k)})${t2[0] < 0 ? '−' : '＋'}${T([Math.abs(t2[0]), t2[1]])}＝${T(w)}`,
+        fix: `${P.W}又${P.p}/${P.q}＝${P.W * P.q + P.p}/${P.q}，整數部分也要乘：${P.W * P.q + P.p}/${P.q}×${Mf}＝${T(qm(Q(P.W * P.q + P.p, P.q), Q(P.sg * P.n)))}，答案是 ${T(v)}` }; } },
+    FR07: { mis: 'FR07', name: '括號裡分子、分母各自相加減', fn: P => { if (P.W) return null; const { Mf, v } = dInfo(P), op = P.o < 0 ? '−' : '＋';
+      if (P.o < 0 && !(P.p > P.r && P.q > P.s)) return null; const nn = P.p + P.o * P.r, dd = P.q + P.o * P.s; if (!nn) return null;
+      const inner = Q(nn, dd), w = qm(inner, Q(P.sg * P.n));
+      return { text: T(w), trace: `括號裡分子${P.o < 0 ? '減' : '加'}分子、分母${P.o < 0 ? '減' : '加'}分母：(${P.p}${op}${P.r})/(${P.q}${op}${P.s})＝${T(inner)}，再乘 ${Mf} 得 ${T(w)}`,
+        fix: `括號裡分母不同要先通分：${P.p}/${P.q}${op}${P.r}/${P.s}＝${T(qa(Q(P.p, P.q), Q(P.o * P.r, P.s)))}；也可以用分配律，每一項都乘 ${Mf}，答案是 ${T(v)}` }; } }
+  });
+  // a/b ± c/d ×(÷) C，C＝ng·e/f（f＝1 是整數）：沒先乘除後加減（FR14）
+  const oInfo = ({ a, b, o1, c, d, o2, e, f, ng }) => { const A = Q(a, b), B = Q(c, d), C = Q(ng * e, f), X = o2 ? qd(B, C) : qm(B, C);
+    const CT = ng < 0 ? `(−${f === 1 ? e : e + '/' + f})` : (f === 1 ? `${e}` : `${e}/${f}`), op1 = o1 < 0 ? '−' : '＋', op2 = o2 ? '÷' : '×';
+    return { A, B, C, X, v: qa(A, Q(o1 * X[0], X[1])), CT, op1, op2, BC: `${c}/${d}${op2}${CT}` }; };
+  add2('frOrdMix', K.frac, {
+    FR14: { mis: 'FR14', name: '沒先乘除後加減', fn: P => { const I = oInfo(P), L = qa(I.A, Q(P.o1 * I.B[0], I.B[1])), w = P.o2 ? qd(L, I.C) : qm(L, I.C);
+      return { text: T(w), trace: `沒有先算${P.o2 ? '除' : '乘'}法，由左而右先算加減，等於算成 (${P.a}/${P.b}${I.op1}${P.c}/${P.d})${I.op2}${I.CT}＝${fr(L[0], L[1])}${I.op2}${I.CT}＝${T(w)}`,
+        fix: `先乘除後加減：先算 ${I.BC}＝${T(I.X)}，再算 ${P.a}/${P.b}${I.op1}${fr(I.X[0], I.X[1])}＝${T(I.v)}` }; } },
+    FR12: { mis: 'FR12', name: '除以分數沒乘倒數', fn: P => { if (!P.o2) return null; const I = oInfo(P), m = qm(I.B, I.C), w = qa(I.A, Q(P.o1 * m[0], m[1]));
+      return { text: T(w), trace: `把 ÷${I.CT} 直接當成 ×${I.CT}：${P.c}/${P.d}×${I.CT}＝${T(m)}，${P.a}/${P.b}${I.op1}${fr(m[0], m[1])}＝${T(w)}`,
+        fix: `除以一個數要乘它的倒數：÷${I.CT} 改成 ×${(rc => fr(rc[0], rc[1]))(Q(I.C[1], I.C[0]))}，${I.BC}＝${T(I.X)}，答案是 ${T(I.v)}` }; } },
+    FR11: { mis: 'FR11', name: '倒數與相反數混淆', fn: P => { if (!P.o2 || P.ng > 0) return null; const I = oInfo(P), rc = Q(P.f, P.e), m = qm(I.B, rc), w = qa(I.A, Q(P.o1 * m[0], m[1]));
+      return { text: T(w), trace: `把 ${I.CT} 的倒數寫成 ${T(rc)}（順手變了號），算成 ${P.c}/${P.d}×${T(rc)}＝${T(m)}，${P.a}/${P.b}${I.op1}${T(m)}＝${T(w)}`,
+        fix: `倒數不變號：${I.CT} 的倒數是 ${T(Q(-P.f, P.e))}，${I.BC}＝${T(I.X)}，答案是 ${T(I.v)}` }; } },
+    FR07: { mis: 'FR07', name: '分子加分子、分母加分母', fn: P => { const I = oInfo(P), S = Q(P.o1 * I.X[0], I.X[1]), nn = P.a + S[0], dd = P.b + S[1]; if (!nn) return null; const w = Q(nn, dd);
+      return { text: T(w), trace: `先算 ${I.BC}＝${T(I.X)} 對了，最後 ${P.a}/${P.b}${I.op1}${fr(I.X[0], I.X[1])} 卻把分子、分母各自相加：(${P.a}${S[0] < 0 ? '−' : '＋'}${Math.abs(S[0])})/(${P.b}＋${S[1]})＝${T(w)}`,
+        fix: `分母不同要先通分：${P.a}/${P.b}${I.op1}${fr(I.X[0], I.X[1])}＝${T(I.v)}` }; } },
+    FR10: { mis: 'FR10', name: '沒有約到最簡分數', fn: P => { const I = oInfo(P), dd = P.b * I.X[1], nn = P.a * I.X[1] + P.o1 * I.X[0] * P.b; if (!nn || frIsRed(nn, dd)) return null;
+      return { text: frRaw(nn, dd), trace: `先算 ${I.BC}＝${T(I.X)}，再用分母相乘 ${P.b}×${I.X[1]}＝${dd} 通分，得 ${frRaw(nn, dd)} 後沒有約分`, fix: `${frRaw(nn, dd)} 的分子分母還有公因數 ${igcd(nn, dd)}，最簡分數是 ${T(I.v)}` }; } }
+  });
+  // 下列哪一個數最小？（選項：−u/v 正解、(−p)/(−q)、−(x/y−z/w)、−s/t）
+  add2('frMin', K.text, {
+    FR15: { mis: 'FR15', name: '分子分母負號判斷錯', fn: ({ p, q, u, v }) => ({ text: `(−${p})/(−${q})`, trace: `把 (−${p})/(−${q}) 當成 −${p}/${q}；−${p}/${q} 比 −${u}/${v} 離原點遠，就以為它最小`,
+      fix: `(−${p})/(−${q})＝(−${p})÷(−${q})，同號相除為正，等於 ${p}/${q}，比 −${u}/${v} 大` }) },
+    FR01: { mis: 'FR01', name: '去括號只改第一項', fn: ({ x, y, z, w, u, v }) => { const bad = qs(Q(-x, y), Q(z, w)), val = qs(Q(z, w), Q(x, y));
+      return { text: `−(${x}/${y}−${z}/${w})`, trace: `去括號只改第一項，寫成 −${x}/${y}−${z}/${w}＝${T(bad)}，比 −${u}/${v} 還小`, fix: `括號裡每一項都要變號：−${x}/${y}＋${z}/${w}＝${T(val)}，是正數` }; } },
+    FR09: { mis: 'FR09', name: '負分數比大小弄反', fn: ({ s, t, u, v }) => ({ text: `−${s}/${t}`, trace: `${s}/${t}＜${u}/${v}，就以為 −${s}/${t} 也比 −${u}/${v} 小`, fix: `負數離原點愈遠愈小：${s}/${t}＜${u}/${v}，所以 −${s}/${t}＞−${u}/${v}` }) }
+  });
+  // A−B±C，A＝sA·(w又a/b)：以為減法有結合律（FR16）
+  const sInfo = ({ sA, w, a, b, c, d, o, e, f }) => { const A = Q(sA * (w * b + a), b), B = Q(c, d), C = Q(o * e, f);
+    return { A, B, C, v: qa(qs(A, B), C), AT: (sA < 0 ? '−' : '') + (w ? `${w}又` : '') + `${a}/${b}`, op: o < 0 ? '−' : '＋', L: lcm(lcm(b, d), f) }; };
+  add2('frSub3', K.frac, {
+    FR16: { mis: 'FR16', name: '以為減法有結合律', fn: P => { const I = sInfo(P), g = qa(I.B, I.C), wv = qs(I.A, g);
+      return { text: T(wv), trace: `沒有由左而右，把減號後面兩項先合起來：${I.AT}−(${P.c}/${P.d}${I.op}${P.e}/${P.f})＝${I.AT}−${fr(g[0], g[1])}＝${T(wv)}`,
+        fix: `加減要由左而右：先算 ${I.AT}−${P.c}/${P.d}＝${T(qs(I.A, I.B))}，再${P.o < 0 ? '減' : '加'} ${P.e}/${P.f}，答案是 ${T(I.v)}；或改成加上相反數 ${I.AT}＋(−${P.c}/${P.d})${I.op}${P.e}/${P.f}` }; } },
+    FR07: { mis: 'FR07', name: '分子加分子、分母加分母', fn: P => { const I = sInfo(P), n0 = P.sA * (P.w * P.b + P.a), nn = n0 - P.c + P.o * P.e, dd = P.b + P.d + P.f; if (!nn) return null; const wv = Q(nn, dd);
+      return { text: T(wv), trace: `${P.w ? `${I.AT} 化成 ${frRaw(n0, P.b)} 後，` : ''}把分子、分母各自相加：(${n0}−${P.c}${I.op}${P.e})/(${P.b}＋${P.d}＋${P.f})＝${T(wv)}`,
+        fix: `分母不同要先通分成 ${I.L}，再算分子，答案是 ${T(I.v)}` }; } },
+    FR10: { mis: 'FR10', name: '沒有約到最簡分數', fn: P => { const I = sInfo(P), nn = I.v[0] * I.L / I.v[1]; if (!nn || frIsRed(nn, I.L)) return null;
+      return { text: frRaw(nn, I.L), trace: `通分成分母 ${I.L} 都算對了，得 ${frRaw(nn, I.L)} 後沒有約分`, fix: `${frRaw(nn, I.L)} 還可以約分（同除以 ${igcd(nn, I.L)}），最簡分數是 ${T(I.v)}` }; } },
+    FR02: { mis: 'FR02', name: '負帶分數讀錯', fn: P => { if (!(P.sA < 0 && P.w)) return null; const I = sInfo(P), A2 = Q(-P.w * P.b + P.a, P.b), wv = qa(qs(A2, I.B), I.C);
+      return { text: T(wv), trace: `把 ${I.AT} 讀成 −${P.w}＋${P.a}/${P.b}＝${T(A2)}，再算 ${T(A2)}−${P.c}/${P.d}${I.op}${P.e}/${P.f}＝${T(wv)}`,
+        fix: `負號管整個帶分數：${I.AT}＝−${P.w}−${P.a}/${P.b}＝${T(I.A)}，答案是 ${T(I.v)}` }; } }
+  });
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* ============================================================
+   七上2-4：指數律（v3.71：現成題庫擴充後新迷思的錯誤規則）
+   迷思代碼沿用路線 A 題庫 題庫_七上2-4_指數律_路線A.json
+   舊的規則（elMul、elDiv、elPowPow、elProd、elFrac、elZero）在 rules.js；registerKind 會整個取代同名題型，
+   而且已上線模板要逐字回歸，所以新迷思一律開新題型＋新模板：
+     el24Mix　(a×b)²−(a＋b)² 求值：EL12、EL13、EL11、EL07
+     el24Eq 　哪一個算式的值等於 bⁿ：EL15、EL09、EL01、EL02、EL08、EL10
+     el24Cmp　哪一個數最小（0＜底數＜1 的次方）：EL05、EL07、EL08
+   ============================================================ */
+(function (G) {
+  'use strict';
+  const F = G.FARules, V = G.FAVerify, K = F.keys, { sup, sgn } = F.util;
+  const add = (kind, key, rules) => F.registerKind(kind, { key }, rules);
+  const n = x => x < 0 ? `(−${-x})` : `${x}`;                               // 算式裡的負數加括號
+  const nm = x => x < 0 ? `−${-x}` : `${x}`;                                // 括號裡第一個數（−2×3）不再加括號
+  F.registerFn('el24Nm', x => nm(x));
+
+  // ---------- (sa×b)^2−(sa＋b)^2（sa＝sg×a；check: value） ----------
+  const mixV = (sa, b) => (sa * b) ** 2 - (sa + b) ** 2;
+  F.registerFn('el24MixOk', (sa, b) => `(${nm(sa)}×${b})²＝${n(sa * b)}²＝${(sa * b) ** 2}；(${nm(sa)}＋${b})² 先算括號：${n(sa + b)}²＝${(sa + b) ** 2}；${(sa * b) ** 2}−${(sa + b) ** 2}＝${sgn(mixV(sa, b))}`);
+  add('el24Mix', K.num, {
+    EL12: { mis: 'EL12', name: '和的次方拆開算', fn: ({ sg, a, b }) => { const sa = sg * a, s2 = sa * sa + b * b, v = (sa * b) ** 2 - s2;
+      return { value: v, trace: `把 (${nm(sa)}＋${b})² 拆成 ${n(sa)}²＋${b}²＝${sa * sa}＋${b * b}＝${s2}，得 ${(sa * b) ** 2}−${s2}＝${sgn(v)}`,
+        fix: `和的次方不能拆開：先算括號 ${nm(sa)}＋${b}＝${sgn(sa + b)}，再平方＝${(sa + b) ** 2}；答案是 ${sgn(mixV(sa, b))}` }; } },
+    EL13: { mis: 'EL13', name: '積的次方漏乘因數', fn: ({ sg, a, b }) => { const sa = sg * a, w = sa * b * b, v = w - (sa + b) ** 2;
+      return { value: v, trace: `(${nm(sa)}×${b})² 只把 ${b} 平方：${nm(sa)}×${b}²＝${sgn(w)}，得 ${sgn(w)}−${(sa + b) ** 2}＝${sgn(v)}`,
+        fix: `積的次方，每個因數都要乘方：(${nm(sa)}×${b})²＝${n(sa)}²×${b}²＝${sa * sa}×${b * b}＝${(sa * b) ** 2}；答案是 ${sgn(mixV(sa, b))}` }; } },
+    EL11: { mis: 'EL11', name: '把平方當成乘以 2', fn: ({ sg, a, b }) => { const sa = sg * a, x = sa * b, y = sa + b, v = x * 2 - y * 2;
+      return { value: v, trace: `把平方當成乘以 2：${n(x)}×2−${n(y)}×2＝${sgn(x * 2)}−${n(y * 2)}＝${sgn(v)}`,
+        fix: `平方是自己乘自己：${n(x)}²＝${n(x)}×${n(x)}＝${x * x}，${n(y)}²＝${y * y}；答案是 ${sgn(mixV(sa, b))}` }; } },
+    EL07: { mis: 'EL07', name: '負號在次方內外不分', fn: ({ sg, a, b }) => { if (sg > 0) return null; const sa = -a, x = a * b, v = -(x * x) - (sa + b) ** 2;
+      return { value: v, trace: `把 (−${a}×${b})² 的負號放到次方外：−(${a}×${b})²＝−${x * x}，得 −${x * x}−${(sa + b) ** 2}＝${sgn(v)}`,
+        fix: `負號在括號裡，要一起平方：(−${a}×${b})²＝(−${x})²＝${x * x}；答案是 ${sgn(mixV(sa, b))}` }; } }
+  });
+
+  // ---------- 哪一個算式的值等於 bⁿ（選項是算式；check: sameValue） ----------
+  const bt = bs => String(bs).includes('/') ? `(${bs})` : String(bs);       // 分數底數加括號
+  const P = (bs, e) => `${bt(bs)}^${e}`;
+  F.registerFn('el24Bt', bs => bt(bs));
+  // 正解的寫法（f＝0：b^x×b^y×b；1：b^(n+k)÷b^k；2：b^x×b^(n−x)）
+  F.registerFn('el24Ans', (bs, nn, f, x, k) => f === 0 ? `${P(bs, x)}×${P(bs, nn - 1 - x)}×${bt(bs)}` : f === 1 ? `${P(bs, nn + k)}÷${P(bs, k)}` : `${P(bs, x)}×${P(bs, nn - x)}`);
+  F.registerFn('el24Why', (bs, nn, f, x, k) => { const B = bt(bs);
+    return f === 0 ? `單獨的 ${B} 是 ${sup(B + '^1')}，指數相加 ${x}＋${nn - 1 - x}＋1＝${nn}` : f === 1 ? `同底數相除，指數相減 ${nn + k}−${k}＝${nn}` : `同底數相乘，指數相加 ${x}＋${nn - x}＝${nn}`; });
+  add('el24Eq', K.num, {
+    EL15: { mis: 'EL15', name: '漏算沒寫指數的底數', fn: ({ bs, n: nn, x }) => { const y = nn - x; if (y < 2) return null; const B = bt(bs);
+      return { text: `${P(bs, x)}×${P(bs, y)}×${B}`, trace: `只把看得到的指數相加：${x}＋${y}＝${nn}，漏了單獨的 ${B}（就是 ${sup(B + '^1')}），以為 ${sup(P(bs, x))}×${sup(P(bs, y))}×${B}＝${sup(P(bs, nn))}`,
+        fix: `單獨的 ${B} 是 ${sup(B + '^1')}，指數要加 1：${x}＋${y}＋1＝${nn + 1}，所以這個算式是 ${sup(P(bs, nn + 1))}` }; } },
+    EL09: { mis: 'EL09', name: '把加法也套指數律', fn: ({ bs, n: nn }) => { const u = Math.floor(nn / 2), w = nn - u;
+      return { text: `${P(bs, u)}＋${P(bs, w)}`, trace: `把加法也用指數律，指數相加：${u}＋${w}＝${nn}，以為 ${sup(P(bs, u))}＋${sup(P(bs, w))}＝${sup(P(bs, nn))}`,
+        fix: `指數律只能用在乘、除；${sup(P(bs, u))}＋${sup(P(bs, w))} 要各自算出來再相加，不等於 ${sup(P(bs, nn))}` }; } },
+    EL01: { mis: 'EL01', name: '同底數相乘指數相乘', fn: ({ bs, n: nn }) => { let u = 0; for (let d = 2; d * d <= nn; d++) if (nn % d === 0) u = d; if (!u) return null;
+      const w = nn / u; if (u + w === nn) return null;
+      return { text: `${P(bs, u)}×${P(bs, w)}`, trace: `同底數相乘卻把指數相乘：${u}×${w}＝${nn}，以為 ${sup(P(bs, u))}×${sup(P(bs, w))}＝${sup(P(bs, nn))}`,
+        fix: `同底數相乘，指數相加：${u}＋${w}＝${u + w}，這個算式是 ${sup(P(bs, u + w))}` }; } },
+    EL02: { mis: 'EL02', name: '同底數相除指數相除', fn: ({ bs, n: nn, k }) => ({ text: `${P(bs, nn * k)}÷${P(bs, k)}`,
+      trace: `同底數相除卻把指數相除：${nn * k}÷${k}＝${nn}，以為 ${sup(P(bs, nn * k))}÷${sup(P(bs, k))}＝${sup(P(bs, nn))}`,
+      fix: `同底數相除，指數相減：${nn * k}−${k}＝${nn * k - k}，這個算式是 ${sup(P(bs, nn * k - k))}` }) },
+    EL10: { mis: 'EL10', name: '乘除的指數律弄混', fn: ({ bs, n: nn, k }) => { if (nn - k <= k) return null;
+      return { text: `${P(bs, nn - k)}÷${P(bs, k)}`, trace: `把相除當成相乘，指數相加：${nn - k}＋${k}＝${nn}，以為 ${sup(P(bs, nn - k))}÷${sup(P(bs, k))}＝${sup(P(bs, nn))}`,
+        fix: `同底數相除，指數相減：${nn - k}−${k}＝${nn - 2 * k}，這個算式是 ${sup(P(bs, nn - 2 * k))}` }; } },
+    EL08: { mis: 'EL08', name: '以為零次方是底數本身', fn: ({ bs, n: nn }) => { const B = bt(bs);
+      return { text: `${P(bs, nn - 1)}×${P(bs, 0)}`, trace: `以為 ${sup(P(bs, 0))}＝${B}，${sup(P(bs, nn - 1))}×${sup(P(bs, 0))} 就等於 ${sup(P(bs, nn))}`,
+        fix: `不是 0 的數，0 次方都是 1：${sup(P(bs, nn - 1))}×${sup(P(bs, 0))}＝${sup(P(bs, nn - 1))}×1＝${sup(P(bs, nn - 1))}` }; } }
+  });
+
+  // ---------- 哪一個數最小：(p/q)^hi 和次方較小的、負底數偶次方、0 次方比（check: extreme min） ----------
+  // 比對鍵用文字：(−2/3)² 和 (2/3)² 值相同、寫法不同，是兩個不同的選項（兩個都不是最小，不影響正解唯一）
+  const fq = (p, q) => `${p}/${q}`, val = (p, q, e) => V.fmtQ(V.evalQ(`(${p}/${q})^${e}`));
+  add('el24Cmp', K.text, {
+    EL05: { mis: 'EL05', name: '以為次方愈高愈大', fn: ({ p, q, lo, hi }) => ({ text: `(${fq(p, q)})^${lo}`,
+      trace: `以為次方愈高愈大，(${fq(p, q)})${sup('^' + lo)} 的次方最小，就以為它最小`,
+      fix: `0 和 1 之間的數，次方愈高愈小：(${fq(p, q)})${sup('^' + lo)}＝${val(p, q, lo)}，比 (${fq(p, q)})${sup('^' + hi)}＝${val(p, q, hi)} 大` }) },
+    EL07: { mis: 'EL07', name: '負號在次方內外不分', fn: ({ p, q, ev }) => ({ text: `(−${fq(p, q)})^${ev}`,
+      trace: `看到負號就以為 (−${fq(p, q)})${sup('^' + ev)} 是負的，所以最小`,
+      fix: `負號在括號裡，偶數個負數相乘是正的：(−${fq(p, q)})${sup('^' + ev)}＝${val(p, q, ev)}` }) },
+    EL08: { mis: 'EL08', name: '以為零次方是 0', fn: ({ p, q }) => ({ text: `(${fq(p, q)})^0`,
+      trace: `以為 (${fq(p, q)})⁰＝0，0 最小`, fix: `不是 0 的數，0 次方都是 1：(${fq(p, q)})⁰＝1，是四個數裡最大的` }) }
+  });
 })(typeof window !== 'undefined' ? window : globalThis);
 
 /* ============================================================
@@ -6753,7 +7382,8 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
   add('alComb1', K.expr, {
     AL05: { mis: 'AL05', name: '不同類項也合併', fn: ({ a, b }) => ({ text: polyT(a - 1 + b, 0), trace: `${a}x−x＝${polyT(a - 1, 0)} 對了，又把常數 ${b} 也併進去：${polyT(a - 1 + b, 0)}`, fix: `${b} 不含 x，和 ${polyT(a - 1, 0)} 不是同類項，不能合併：${polyT(a - 1, b)}` }) },
     AL02: { mis: 'AL02', name: '看不到 x 的係數', fn: ({ a, b }) => ({ text: polyT(a, b), trace: `看不到 x 前面的係數，以為 −x 是 0，${a}x−x 還是 ${a}x`, fix: `x 的係數是 1：${a}x−x＝(${a}−1)x＝${polyT(a - 1, 0)}` }) },
-    AL06: { mis: 'AL06', name: '合併時正負號錯', fn: ({ a, b }) => ({ text: polyT(a + 1, b), trace: `合併時把 −x 當成 ＋x：${a}x＋x＝${polyT(a + 1, 0)}`, fix: `−x 的係數是 −1：${a}x−x＝${polyT(a - 1, 0)}` }) }
+    AL06: { mis: 'AL06', name: '合併時正負號錯', fn: ({ a, b }) => ({ text: polyT(a + 1, b), trace: `合併時把 −x 當成 ＋x：${a}x＋x＝${polyT(a + 1, 0)}`, fix: `−x 的係數是 −1：${a}x−x＝${polyT(a - 1, 0)}` }) },
+    AL16: { mis: 'AL16', name: '合併後漏掉字母', fn: ({ a, b }) => ({ text: sgn(a - 1 + b), trace: `合併 ${a}x−x 時只算係數 ${a}−1＝${sgn(a - 1)}，把 x 丟掉了：${sgn(a - 1)}＋${b}＝${sgn(a - 1 + b)}`, fix: `${a} 個 x 減 1 個 x 剩 ${sgn(a - 1)} 個 x，字母要留著：${polyT(a - 1, b)}；可以代 x＝10 檢查` }) }   // v3.71：只給 AL-comb1d（小數係數）用
   });
   // 化簡 a−x＋cx−d
   add('alComb2', K.expr, {
@@ -6786,11 +7416,101 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     AL08: { mis: 'AL08', name: '分配律只乘第一項', fn: ({ a, b, c }) => ({ text: polyT(a + b, c), trace: `${b}(x＋${c}) 只乘到 x，寫成 ${b}x＋${c}：${polyT(a + b, c)}`, fix: `${b} 要乘到括號裡每一項：${b}(x＋${c})＝${b}x＋${b * c}` }) },
     AL05: { mis: 'AL05', name: '不同類項也合併', fn: ({ a, b, c }) => ({ text: polyT(a + b + b * c, 0), trace: `算到 ${polyT(a + b, b * c)} 對了，又把 ${b * c} 併進 x 項：${polyT(a + b + b * c, 0)}`, fix: `${b * c} 不含 x，不能和 ${polyT(a + b, 0)} 合併` }) }
   });
+  // ============ v3.71：現成題庫擴充後的新迷思 AL13～AL19（題庫 P09～P11、P14～P18、P21、P23、P26、P27） ============
+  // 同一個迷思代碼的誘答一題只出一個（互斥組＝迷思代碼）
+  const add2 = (kind, key, rules) => { Object.values(rules).forEach(r => { if (!r.excl) r.excl = r.mis; }); add(kind, key, rules); };
+  const { frT, igcd } = F.util;
+  const cx = (n, d) => { const g = igcd(n, d), N = n / g, D = d / g; return D === 1 ? coefX(N) : (N === 1 ? '' : N === -1 ? '−' : sgn(N)) + 'x/' + D; };   // 係數 n/d 的 x 項：5x/6、x/3、7x
+  const op = o => o < 0 ? '−' : '＋';
+  // 化簡 cx−(akx−bk)÷k
+  add2('alDivSub', K.expr, {
+    AL13: { mis: 'AL13', name: '除以數只除第一項', fn: ({ c, a, k, b }) => ({ text: polyT(c - a, b * k), trace: `只把 ${a * k}x 除以 ${k}：(${a * k}x−${b * k})÷${k} 寫成 ${polyT(a, -b * k)}，${c}x−(${polyT(a, -b * k)})＝${c}x−${a}x＋${b * k}＝${polyT(c - a, b * k)}`,
+      fix: `括號裡每一項都要除以 ${k}：${a * k}x÷${k}＝${a}x、${b * k}÷${k}＝${b}，(${a * k}x−${b * k})÷${k}＝${polyT(a, -b)}，答案 ${polyT(c - a, b)}` }) },
+    AL07: { mis: 'AL07', name: '去括號沒變號', fn: ({ c, a, k, b }) => ({ text: polyT(c - a, -b), trace: `(${a * k}x−${b * k})÷${k}＝${polyT(a, -b)} 對了，去括號時只把 ${a}x 變號：${c}x−${a}x−${b}＝${polyT(c - a, -b)}`,
+      fix: `括號前是減號，括號裡每一項都要變號：${c}x−(${polyT(a, -b)})＝${c}x−${a}x＋${b}＝${polyT(c - a, b)}` }) },
+    AL16: { mis: 'AL16', name: '合併後漏掉字母', fn: ({ c, a, b }) => ({ text: sgn(c - a + b), trace: `${c}x−${a}x 只算係數 ${c}−${a}＝${c - a}，把 x 丟掉了，再加 ${b}：${c - a}＋${b}＝${c - a + b}`,
+      fix: `${c}x−${a}x＝${polyT(c - a, 0)}，字母要留著：${polyT(c - a, b)}` }) },
+    AL05: { mis: 'AL05', name: '不同類項也合併', fn: ({ c, a, b }) => ({ text: polyT(c - a + b, 0), trace: `算到 ${polyT(c - a, b)} 對了，又把常數 ${b} 併進 x 項：${polyT(c - a + b, 0)}`,
+      fix: `${b} 不含 x，不能和 ${polyT(c - a, 0)} 合併：${polyT(c - a, b)}` }) }
+  });
+  // 下列哪一個式子和 (x±ak)/k 相等？
+  add2('alEqForm', K.expr, {
+    AL13a: { mis: 'AL13', name: '除以數只除第一項（只除 x）', fn: ({ k, a, o }) => ({ text: `x/${k}${op(o)}${a * k}`, trace: `只把 x 除以 ${k}，${a * k} 沒有除：(x${op(o)}${a * k})/${k} 寫成 x/${k}${op(o)}${a * k}`,
+      fix: `分子每一項都要除以 ${k}：${a * k}÷${k}＝${a}，答案 x/${k}${op(o)}${a}；可以代 x＝${k} 檢查兩邊的值` }) },
+    AL13b: { mis: 'AL13', name: '除以數只除一項（只除常數）', fn: ({ k, a, o }) => ({ text: `x${op(o)}${a}`, trace: `只把 ${a * k} 除以 ${k}，x 沒有除：(x${op(o)}${a * k})/${k} 寫成 x${op(o)}${a}`,
+      fix: `分子每一項都要除以 ${k}：x÷${k}＝x/${k}，答案 x/${k}${op(o)}${a}` }) },
+    AL10: { mis: 'AL10', name: '化簡時漏寫分母', fn: ({ k, a, o }) => ({ text: `x${op(o)}${a * k}`, trace: `把分母 ${k} 丟掉，以為 (x${op(o)}${a * k})/${k} 就是 x${op(o)}${a * k}`,
+      fix: `這是化簡式子不是解方程式，分母不能丟：代 x＝${2 * a * k} 時 (x${op(o)}${a * k})/${k}＝${(2 * a * k + o * a * k) / k}，x${op(o)}${a * k}＝${2 * a * k + o * a * k}，不一樣；答案 x/${k}${op(o)}${a}` }) },
+    AL19: { mis: 'AL19', name: '除號簡記成乘法', fn: ({ k, a, o }) => ({ text: polyT(k, o * a * k * k), trace: `把分數線（÷${k}）當成 ×${k}：${k}(x${op(o)}${a * k})＝${polyT(k, o * a * k * k)}`,
+      fix: `分數線是除以 ${k}，不是乘以 ${k}：(x${op(o)}${a * k})/${k}＝x/${k}${op(o)}${a}` }) }
+  });
+  // 文字列式：t0「x 與 a 的和除以 k」、t1「比 x 的 m 倍少 b」、t2「x 個平分給 k 人後每人再少 b 個」
+  const QW = w => ['顆', '張', '元'][w], VW = w => ['吃掉', '送出', '花掉'][w];
+  add2('alPhrase', K.expr, {
+    AL14: { mis: 'AL14', name: '括號、分數線範圍錯', fn: ({ t, a, k, m, b, w }) => t === 0
+      ? { text: `x＋${a}/${k}`, trace: `寫成 x＋${a}/${k}，分數線只管到 ${a}，變成 x 加上 ${a}/${k}`, fix: `要先算和再除，分子加括號：(x＋${a})/${k}` }
+      : t === 1 ? { text: `${m}(x−${b})`, trace: `寫成 ${m}(x−${b})，變成先把 x 少 ${b} 再乘 ${m}`, fix: `題目是先算 x 的 ${m} 倍再少 ${b}，不用加括號：${polyT(m, -b)}；代 x＝10 檢查：比 ${10 * m} 少 ${b} 是 ${10 * m - b}` }
+      : { text: `(x−${b})/${k}`, trace: `寫成 (x−${b})/${k}，變成先${VW(w)} ${b} ${QW(w)}再平分`, fix: `題目是先平分（每人 x/${k} ${QW(w)}），再每人少 ${b} ${QW(w)}：x/${k}−${b}` } },
+    AL19: { mis: 'AL19', name: '除號簡記成乘法', fn: ({ t, a, k, b }) => t === 0
+      ? { text: `${k}(x＋${a})`, trace: `把 (x＋${a})÷${k} 的除號省略成 ${k}(x＋${a})，變成乘以 ${k}`, fix: `只有乘號能省略，除以 ${k} 要寫成分數：(x＋${a})/${k}` }
+      : t === 2 ? { text: polyT(k, -b), trace: `把 x÷${k} 的除號省略寫成 ${k}x，變成乘以 ${k}，得到 ${polyT(k, -b)}`, fix: `平分給 ${k} 人是除以 ${k}，寫成 x/${k}：答案 x/${k}−${b}` } : null },
+    AL01: { mis: 'AL01', name: '把不同運算硬簡記', fn: ({ t, a, k, m, b }) => t === 0
+      ? { text: `${a}x/${k}`, trace: `把 x＋${a} 簡記成 ${a}x，再除以 ${k} 得到 ${a}x/${k}`, fix: `加號不能省略，和要寫成 x＋${a}，答案 (x＋${a})/${k}` }
+      : t === 1 && m !== b ? { text: polyT(m - b, 0), trace: `先寫 ${m}x−${b}，再把 ${m}−${b}＝${m - b} 併成 ${polyT(m - b, 0)}`, fix: `${m}x 和 ${b} 不是同一種，減號不能省略，答案停在 ${polyT(m, -b)}` } : null },
+    AL12: { mis: 'AL12', name: '列式時多少關係顛倒', fn: ({ t, k, m, b, w }) => t === 1
+      ? { text: `${b}−${m}x`, trace: `寫成 ${b}−${m}x，把被減數和減數對調了`, fix: `用 x＝10 想：比 ${10 * m} 少 ${b} 是 ${10 * m}−${b}，所以是 ${polyT(m, -b)}` }
+      : t === 2 ? { text: `${b}−x/${k}`, trace: `寫成 ${b}−x/${k}，被減數和減數對調了`, fix: `是每人的 x/${k} ${QW(w)}拿走 ${b} ${QW(w)}：x/${k}−${b}` } : null }
+  });
+  // t0：ax±b−cx 化簡後 x 項的係數；t1：a−bx/c 的 x 項係數
+  add2('alCoef', K.num, {
+    AL15: { mis: 'AL15', name: '係數漏了負號', fn: ({ t, a, b, c, o }) => t === 0
+      ? { text: sgn(c - a), trace: `算出 ${polyT(a - c, o * b)}，係數卻只寫數字 ${c - a}，漏了負號`, fix: `係數要連同前面的符號：${a}x−${c}x＝(${a}−${c})x，係數是 ${a - c}` }
+      : { text: frT(b, c), trace: `只看數字，把 ${a}−${b}x/${c} 的 x 項係數說成 ${frT(b, c)}，漏了前面的減號`, fix: `先把減號改成加負數：${a}−${b}x/${c}＝${a}＋(−${b}/${c})x，係數是 ${frT(-b, c)}` } },
+    AL06: { mis: 'AL06', name: '合併時正負號錯', fn: ({ t, a, c }) => t === 0
+      ? { text: sgn(a + c), trace: `把 −${c}x 當成 ＋${c}x，算成 ${a}＋${c}＝${a + c}`, fix: `−${c}x 要連同負號：${a}−${c}＝${a - c}` } : null },
+    AL05: { mis: 'AL05', name: '不同類項也合併', fn: ({ t, a, b, c, o }) => t === 0
+      ? { text: sgn(a + o * b - c), trace: `把 ${a}、${sgn(o * b)}、−${c} 全部加起來得 ${sgn(a + o * b - c)}`, fix: `${sgn(o * b)} 是常數項，不能和 x 項合併：${a}x−${c}x＝${polyT(a - c, 0)}，係數 ${a - c}` } : null },
+    AL19: { mis: 'AL19', name: '除號簡記成乘法', fn: ({ t, b, c }) => t === 1
+      ? { text: sgn(-b * c), trace: `把 x/${c} 看成 ${c}x，${b}x/${c} 當成 ${b * c}x，係數說成 −${b * c}`, fix: `x/${c} 是 x÷${c}＝(1/${c})x：${b}x/${c}＝(${b}/${c})x，係數 ${frT(-b, c)}` } : null },
+    AL10: { mis: 'AL10', name: '化簡時漏寫分母', fn: ({ t, b, c }) => t === 1
+      ? { text: sgn(-b), trace: `把分母 ${c} 丟掉，只看分子的 −${b}x，係數說成 −${b}`, fix: `${b}x/${c}＝(${b}/${c})x，分母要算進係數：${frT(-b, c)}` } : null }
+  });
+  // 化簡 ax−(x±b)/k
+  add2('alIntFrac', K.expr, {
+    AL17: { mis: 'AL17', name: '整式通分沒乘分母', fn: ({ a, b, k, o }) => ({ text: fracE(a - 1, -o * b, k), trace: `把 ${a}x 直接放進分子，沒有乘 ${k}：(${a}x−x${op(-o)}${b})/${k}＝${fracE(a - 1, -o * b, k)}`,
+      fix: `${a}x 要先寫成 ${a * k}x/${k}（分子分母同乘 ${k}），再合成一個分數：(${a * k}x−x${op(-o)}${b})/${k}＝${fracE(a * k - 1, -o * b, k)}` }) },
+    AL09: { mis: 'AL09', name: '通分時分子沒加括號', fn: ({ a, b, k, o }) => ({ text: fracE(a * k - 1, o * b, k), trace: `寫成 (${a * k}x−x${op(o)}${b})/${k}，減號只作用在 x，${b} 沒有變號`,
+      fix: `分子先加括號：${a * k}x−(x${op(o)}${b})＝${a * k}x−x${op(-o)}${b}，答案 ${fracE(a * k - 1, -o * b, k)}` }) },
+    AL10: { mis: 'AL10', name: '化簡時漏寫分母', fn: ({ a, b, k, o }) => ({ text: polyT(a * k - 1, -o * b), trace: `通分後把分母 ${k} 丟掉，寫成 ${a * k}x−x${op(-o)}${b}＝${polyT(a * k - 1, -o * b)}`,
+      fix: `這是化簡式子不是解方程式，分母要留著：${fracE(a * k - 1, -o * b, k)}` }) }
+  });
+  // 化簡 (px±b)/m＋(qx±c)/n
+  const faI = ({ p, b, o1, m, q, c, o2, n }) => { const L = m / igcd(m, n) * n, u = L / m, v = L / n;
+    return { L, u, v, N1: polyT(p, o1 * b), N2: polyT(q, o2 * c), A: p * u + q * v, B: o1 * b * u + o2 * c * v }; };
+  const mul = (u, N) => u === 1 ? `(${N})` : `${u}(${N})`;
+  add2('alFracAdd', K.expr, {
+    AL18: { mis: 'AL18', name: '分子分母各自相加', fn: P => { const I = faI(P), t = fracE(P.p + P.q, P.o1 * P.b + P.o2 * P.c, P.m + P.n);
+      return { text: t, trace: `把分子加分子、分母加分母：(${I.N1}＋${I.N2})/(${P.m}＋${P.n})＝${t}`, fix: `分母不同要先通分成 ${I.L}：[${mul(I.u, I.N1)}＋${mul(I.v, I.N2)}]/${I.L}＝${fracE(I.A, I.B, I.L)}；可以代 x＝1 檢查` }; } },
+    AL09: { mis: 'AL09', name: '通分時分子沒加括號', fn: P => { const I = faI(P), t = fracE(I.A, P.o1 * P.b + P.o2 * P.c, I.L);
+      return { text: t, trace: `通分時倍數只乘分子的第一項：(${polyT(P.p * I.u, P.o1 * P.b)}＋${polyT(P.q * I.v, P.o2 * P.c)})/${I.L}＝${t}`, fix: `分子先加括號再乘倍數：${mul(I.u, I.N1)}＋${mul(I.v, I.N2)}，答案 ${fracE(I.A, I.B, I.L)}` }; } },
+    AL10: { mis: 'AL10', name: '化簡時漏寫分母', fn: P => { const I = faI(P);
+      return { text: polyT(I.A, I.B), trace: `通分後把分母 ${I.L} 丟掉，寫成 ${polyT(P.p * I.u, P.o1 * P.b * I.u)}＋${polyT(P.q * I.v, P.o2 * P.c * I.v)}＝${polyT(I.A, I.B)}`, fix: `化簡式子時分母要留著：${fracE(I.A, I.B, I.L)}` }; } }
+  });
+  // 化簡 px/m＋x/n
+  add2('alFracMono', K.expr, {
+    AL18: { mis: 'AL18', name: '分子分母各自相加', fn: ({ p, m, n }) => ({ text: `${p + 1}x/${m + n}`, trace: `把分子加分子、分母加分母，算成 (${p}x＋x)/(${m}＋${n})＝${p + 1}x/${m + n}`,
+      fix: `係數要先通分：${p}/${m}＋1/${n}＝${frT(p * n + m, m * n)}，答案 ${cx(p * n + m, m * n)}` }) },
+    AL16: { mis: 'AL16', name: '合併後漏掉字母', fn: ({ p, m, n }) => ({ text: frT(p * n + m, m * n), trace: `算係數 ${p}/${m}＋1/${n}＝${frT(p * n + m, m * n)} 時把 x 掉了`,
+      fix: `係數相加後字母要留著：${cx(p * n + m, m * n)}` }) },
+    AL19: { mis: 'AL19', name: '除號簡記成乘法', fn: ({ p, m, n }) => ({ text: cx(p + n * m, m), trace: `把 x/${n} 看成 ${n}x，算成 ${p}x/${m}＋${n}x＝${cx(p + n * m, m)}`,
+      fix: `x/${n} 是 x÷${n}＝(1/${n})x，答案 ${cx(p * n + m, m * n)}` }) }
+  });
 })(typeof window !== 'undefined' ? window : globalThis);
 
 /* ============================================================
    七上3-2：一元一次方程式（v3.11，模板擴充第 2 批）
    迷思代碼沿用路線 A 題庫 題庫_七上3-2_一元一次方程式_路線A.json（EQ01～EQ13；EQ09 只能出「推論是否一定正確」的人工判讀題，不做模板）
+   v3.71（2026-11-22）：現成題庫擴充新增的 EQ14～EQ21 補上規則（新題型 eqMul、eqWhich、eqFrac、eqNegStep、eqDenSum、eqPara；eqSolve2 加 EQ16、EQ21，eqNeg 加 EQ19）
    審核後（2026-11-10）：負號一律用 sgn；解方程式加入正負號變化，正解不固定是最大的數；EQ07／EQ08 各有兩種寫法、互斥，避免「相反數＋倒數」一起出現就猜得到正解
    ============================================================ */
 (function (G) {
@@ -6829,7 +7549,12 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
   add('eqSolve2', K.num, {
     EQ10: { mis: 'EQ10', name: 'x 項移項沒變號', fn: ({ a, b, c, d, s }) => ({ text: frT(d - s * b, a + c), trace: `把 ${cx(c)} 移到左邊沒有變號：${a}x＋${cx(c)}＝${sgn(d)}${pm(-s, b)}，x＝${frT(d - s * b, a + c)}`, fix: `${cx(c)} 移到左邊要變成 −${cx(c)}：${polyT(a - c, 0)}＝${sgn(d - s * b)}` }) },
     EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ a, b, c, d, s }) => ({ text: frT(d + s * b, a - c), trace: `把 ${pm(s, b)} 移到右邊沒有變號：${a}x−${cx(c)}＝${sgn(d)}${pm(s, b)}，x＝${frT(d + s * b, a - c)}`, fix: `${pm(s, b)} 移到右邊要變成 ${pm(-s, b)}：${polyT(a - c, 0)}＝${sgn(d - s * b)}` }) },
-    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ a, b, c, d, s }) => ({ text: frT(a - c, d - s * b), trace: `${polyT(a - c, 0)}＝${sgn(d - s * b)} 算對了，最後除反了：x＝${dv(a - c, d - s * b)}`, fix: `兩邊同除以 x 的係數 ${a - c}：x＝${dv(d - s * b, a - c)}` }) }
+    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ a, b, c, d, s }) => ({ text: frT(a - c, d - s * b), trace: `${polyT(a - c, 0)}＝${sgn(d - s * b)} 算對了，最後除反了：x＝${dv(a - c, d - s * b)}`, fix: `兩邊同除以 x 的係數 ${a - c}：x＝${dv(d - s * b, a - c)}` }) },
+    // v3.71：現成題庫擴充新增的迷思（EQ16 係數用加減移項、EQ21 把相等的值當成解）
+    EQ16: { mis: 'EQ16', name: '係數用加減移項', fn: ({ a, b, c, d, s }) => { const k = a - c, R = d - s * b; if (k === 1) return null;
+      return { text: sgn(R - k), value: R - k, trace: `${polyT(k, 0)}＝${sgn(R)} 算對了，把 ${k} 當成加上的數移過去：x＝${sgn(R)}−${k}＝${sgn(R - k)}`, fix: `${polyT(k, 0)} 是 ${k} 乘 x，要兩邊同除以 ${k}：x＝${dv(R, k)}＝${frT(R, k)}` }; } },
+    EQ21: { mis: 'EQ21', name: '把相等的值當成解', fn: ({ a, b, s, x0 }) => { const v = a * x0 + s * b;
+      return { text: sgn(v), value: v, trace: `x＝${x0} 時 ${a}x${pm(s, b)} 和右邊都是 ${sgn(v)}，就說方程式的解是 ${sgn(v)}`, fix: `解是 x 的值：兩邊都等於 ${sgn(v)} 是檢驗的結果，讓兩邊相等的 x＝${sgn(x0)} 才是解` }; } }
   });
   // 解 ax＋sb... 的第一步：a(x−b)＝x＋c（選項是方程式，check: sameSol eq）
   add('eqStep', K.text, {
@@ -6844,7 +7569,77 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
   add('eqNeg', K.num, {
     EQ12: { mis: 'EQ12', name: '負號後沒有全變號', fn: ({ a, b, c, d, s }) => ({ text: frT(c - s * a * b - d, a), trace: `−${a}${inn(s, b)} 寫成 −${a}x${pm(-s, a * b)}，第二項沒有變號：${c}−${a}x${pm(-s, a * b)}＝${sgn(d)}，x＝${frT(c - s * a * b - d, a)}`, fix: `−${a}×${negP(-s * b)}＝${sgn(s * a * b)}：${c}−${a}x${pm(s, a * b)}＝${sgn(d)}` }) },
     EQ11: { mis: 'EQ11', name: '去括號漏乘第二項', fn: ({ a, b, c, d, s }) => ({ text: frT(c + s * b - d, a), trace: `−${a}${inn(s, b)} 寫成 −${a}x${pm(s, b)}，${b} 沒乘 ${a}：${c}−${a}x${pm(s, b)}＝${sgn(d)}，x＝${frT(c + s * b - d, a)}`, fix: `−${a} 要乘到每一項：−${a}${inn(s, b)}＝−${a}x${pm(s, a * b)}` }) },
-    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ a, b, c, d, s }) => ({ text: frT(s * a * b - d - c, a), trace: `把 ${c} 移到右邊沒有變號：−${a}${inn(s, b)}＝${sgn(d)}＋${c}，x＝${frT(s * a * b - d - c, a)}`, fix: `${c} 移到右邊要變成 −${c}：−${a}${inn(s, b)}＝${sgn(d)}−${c}＝${sgn(d - c)}` }) }
+    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ a, b, c, d, s }) => ({ text: frT(s * a * b - d - c, a), trace: `把 ${c} 移到右邊沒有變號：−${a}${inn(s, b)}＝${sgn(d)}＋${c}，x＝${frT(s * a * b - d - c, a)}`, fix: `${c} 移到右邊要變成 −${c}：−${a}${inn(s, b)}＝${sgn(d)}−${c}＝${sgn(d - c)}` }) },
+    // v3.71：EQ19 先算減法再乘括號（(c−a)(x−sb)＝d）
+    EQ19: { mis: 'EQ19', name: '先算減法再乘括號', fn: ({ a, b, c, d, s }) => { const k = c - a; if (k === 0) return null;
+      return { text: frT(d + s * b * k, k), trace: `先算 ${c}−${a}＝${sgn(k)}，寫成 ${negP(k)}${inn(s, b)}＝${sgn(d)}，x＝${frT(d + s * b * k, k)}`, fix: `−${a} 是和括號相乘，要先乘：${c}−${a}${inn(s, b)}＝${c}−${a}x${pm(s, a * b)}，再和 ${c} 相加減` }; } }
+  });
+  // v3.71：解 c−a(x−sb)＝d 去括號的第一步（選項是方程式，check: sameSol eq）
+  add('eqNegStep', K.text, {
+    EQ12: { mis: 'EQ12', name: '負號後沒有全變號', fn: ({ a, b, c, d, s }) => ({ text: `${c}−${a}x${pm(-s, a * b)}＝${sgn(d)}`, trace: `−${a}×${negP(-s * b)} 算成 ${sgn(-s * a * b)}，第二項沒有變號：${c}−${a}x${pm(-s, a * b)}`, fix: `−${a}×${negP(-s * b)}＝${sgn(s * a * b)}：${c}−${a}x${pm(s, a * b)}＝${sgn(d)}` }) },
+    EQ11: { mis: 'EQ11', name: '去括號漏乘第二項', fn: ({ a, b, c, d, s }) => ({ text: `${c}−${a}x${pm(-s, b)}＝${sgn(d)}`, trace: `−${a} 只乘了 x，括號裡的 ${pm(-s, b)} 沒有乘，照原樣寫下來：${c}−${a}x${pm(-s, b)}`, fix: `−${a} 要乘到括號裡每一項：−${a}${inn(s, b)}＝−${a}x${pm(s, a * b)}` }) },
+    EQ19: { mis: 'EQ19', name: '先算減法再乘括號', fn: ({ a, b, c, d, s, x0 }) => { const k = c - a; if (k === 0 || k * (x0 - s * b) === d) return null;
+      return { text: `${polyT(k, -s * k * b)}＝${sgn(d)}`, trace: `先算 ${c}−${a}＝${sgn(k)}，寫成 ${negP(k)}${inn(s, b)}，再展開成 ${polyT(k, -s * k * b)}`, fix: `−${a} 是和括號相乘，要先乘再和 ${c} 相加減：${c}−${a}${inn(s, b)}＝${c}−${a}x${pm(s, a * b)}` }; } }
+  });
+  // v3.71：EQ14 以為運算後解會改變：「A1x±B1＝C1 的解是 x0，兩邊同乘（除以）k 得 A2x±B2＝C2，它的解是？」
+  const e2 = ({ A2, B2, C2, s }) => `${A2}x${pm(s, B2)}＝${sgn(C2)}`;
+  add('eqMul', K.num, {
+    EQ14: { mis: 'EQ14', name: '以為運算後解會改變', fn: P => { const { x0, k, op, C2 } = P, w = op === 1 ? '乘' : '除以', v = op === 1 ? sgn(x0 * k) : frT(x0, k);
+      return { text: v, trace: `${e2(P)} 是兩邊同${w} ${k} 得到的，就以為解也跟著${w} ${k}：${negP(x0)}${op === 1 ? '×' : '÷'}${k}＝${v}`, fix: `兩邊同${w} ${k} 後等式仍然成立，解不變：x＝${sgn(x0)} 代入 ${e2(P)}，左邊＝${sgn(C2)}＝右邊` }; } },
+    EQ16: { mis: 'EQ16', name: '係數用加減移項', fn: ({ A2, B2, C2, s }) => { const R = C2 - s * B2;
+      return { text: sgn(R - A2), value: R - A2, trace: `${A2}x＝${sgn(R)} 算對了，把 ${A2} 當成加上的數移過去：x＝${sgn(R)}−${A2}＝${sgn(R - A2)}`, fix: `${A2}x 是 ${A2} 乘 x，要兩邊同除以 ${A2}：x＝${dv(R, A2)}＝${frT(R, A2)}` }; } },
+    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ A2, B2, C2, s }) => { const R = C2 - s * B2;
+      return { text: frT(A2, R), trace: `${A2}x＝${sgn(R)} 算對了，最後除反了：x＝${dv(A2, R)}`, fix: `兩邊同除以 x 的係數 ${A2}：x＝${dv(R, A2)}＝${frT(R, A2)}` }; } },
+    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ A2, B2, C2, s }) => ({ text: frT(C2 + s * B2, A2), trace: `把 ${pm(s, B2)} 移到右邊沒有變號：${A2}x＝${sgn(C2)}${pm(s, B2)}，x＝${frT(C2 + s * B2, A2)}`, fix: `${pm(s, B2)} 移到右邊要變成 ${pm(-s, B2)}：${A2}x＝${sgn(C2 - s * B2)}` }) },
+    EQ08: { mis: 'EQ08', name: '乘除移項也變號', fn: ({ A2, B2, C2, s }) => { const R = C2 - s * B2;
+      return { text: frT(R, -A2), trace: `${A2}x＝${sgn(R)} 算對了，把 ${A2} 移過去時也變號：x＝${dv(R, -A2)}`, fix: `兩邊同除以 ${A2}，不是 −${A2}：x＝${dv(R, A2)}＝${frT(R, A2)}` }; } }
+  });
+  // v3.71：「x＝x0 是下列哪一個方程式的解？」（選項是方程式，check: sameSol sol）；誘答是有迷思的學生會「驗算成立」的方程式
+  add('eqWhich', K.text, {
+    EQ15a: { mis: 'EQ15', name: '代入負數漏了負號', fn: ({ x0, p }) => x0 >= 0 ? null : ({ text: `${p}−x＝${sgn(p + x0)}`, trace: `把 x＝${sgn(x0)} 代入 ${p}−x 沒加括號，算成 ${p}−${-x0}＝${sgn(p + x0)}，以為 x＝${sgn(x0)} 是解`, fix: `代入負數要先加括號：${p}−(${sgn(x0)})＝${p - x0}，不等於 ${sgn(p + x0)}，所以不是解` }) },
+    EQ15b: { mis: 'EQ15', name: '代入負數漏了負號（乘係數）', fn: ({ x0, p, e }) => x0 >= 0 ? null : ({ text: `${p}−${e}x＝${sgn(p + e * x0)}`, trace: `把 x＝${sgn(x0)} 代入 ${p}−${e}x 沒加括號，算成 ${p}−${e}×${-x0}＝${sgn(p + e * x0)}，以為 x＝${sgn(x0)} 是解`, fix: `代入負數要先加括號：${p}−${e}×(${sgn(x0)})＝${p - e * x0}，不等於 ${sgn(p + e * x0)}，所以不是解` }) },
+    EQ16: { mis: 'EQ16', name: '係數用加減移項', fn: ({ x0, e }) => x0 * (e - 1) === e ? null : ({ text: `${e}x＝${sgn(x0 + e)}`, trace: `解 ${e}x＝${sgn(x0 + e)} 時把 ${e} 當成加上的數移過去：x＝${sgn(x0 + e)}−${e}＝${sgn(x0)}，以為 x＝${sgn(x0)} 是解`, fix: `${e}x 是 ${e} 乘 x，要兩邊同除以 ${e}：x＝${dv(x0 + e, e)}＝${frT(x0 + e, e)}` }) },
+    EQ17: { mis: 'EQ17', name: '乘除移項沒換運算', fn: ({ x0, m }) => ({ text: `x/${m}＝${sgn(m * x0)}`, trace: `解 x/${m}＝${sgn(m * x0)} 時照原來的運算再除一次：x＝${dv(m * x0, m)}＝${sgn(x0)}，以為 x＝${sgn(x0)} 是解`, fix: `x 被除以 ${m}，要做相反的事，兩邊同乘 ${m}：x＝${sgn(m * x0)}×${m}＝${sgn(m * m * x0)}` }) },
+    EQ08: { mis: 'EQ08', name: '乘除移項也變號', fn: ({ x0, m }) => ({ text: `−${m}x＝${sgn(m * x0)}`, trace: `解 −${m}x＝${sgn(m * x0)} 時把 −${m} 移過去變成除以 ${m}：x＝${dv(m * x0, m)}＝${sgn(x0)}，以為 x＝${sgn(x0)} 是解`, fix: `兩邊同除以 −${m}：x＝${dv(m * x0, -m)}＝${sgn(-x0)}` }) },
+    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ x0, a2, b2, s2 }) => { const C = a2 * x0 - s2 * b2;
+      return { text: `${a2}x${pm(s2, b2)}＝${sgn(C)}`, trace: `解 ${a2}x${pm(s2, b2)}＝${sgn(C)} 時把 ${pm(s2, b2)} 移到右邊沒有變號：${a2}x＝${sgn(C)}${pm(s2, b2)}＝${sgn(a2 * x0)}，x＝${sgn(x0)}，以為 x＝${sgn(x0)} 是解`, fix: `${pm(s2, b2)} 移到右邊要變成 ${pm(-s2, b2)}：${a2}x＝${sgn(C - s2 * b2)}，x＝${frT(C - s2 * b2, a2)}` }; } }
+  });
+  // v3.71：解 (p/q)x±b＝c 或 (p/q)x＝c（hb＝0 沒有常數項；p＝1 寫成 x/q）
+  const cf = (p, q) => p === 1 ? `x/${q}` : `(${p}/${q})x`;
+  const fr = (p, q) => p === 1 ? `${q}` : `${q}/${p}`;          // 係數的倒數 q/p
+  add('eqFrac', K.num, {
+    EQ17: { mis: 'EQ17', name: '乘除移項沒換運算', fn: ({ p, q, t, hb, b, s }) => { const R = p * t, pre = hb ? `先移項：${cf(p, q)}＝${sgn(R)}；` : '';
+      return { text: frT(p * R, q), trace: pre + (p === 1 ? `x 被除以 ${q}，移到另一邊還是除以 ${q}：x＝${dv(R, q)}＝${frT(R, q)}` : `x 被乘了 ${p}/${q}，移到另一邊還是乘 ${p}/${q}：x＝${sgn(R)}×${p}/${q}＝${frT(p * R, q)}`),
+        fix: `要做相反的運算：兩邊同乘 ${fr(p, q)}，x＝${sgn(R)}×${fr(p, q)}＝${sgn(q * t)}` }; } },
+    EQ13: { mis: 'EQ13', name: '去分母常數項漏乘', fn: ({ p, q, t, hb, b, s }) => { const c = p * t + (hb ? s * b : 0);
+      if (!hb) return { text: frT(c, p), trace: `兩邊同乘 ${q} 時右邊的 ${sgn(c)} 沒乘到：${polyT(p, 0)}＝${sgn(c)}，x＝${frT(c, p)}`, fix: `右邊也要乘 ${q}：${polyT(p, 0)}＝${sgn(q * c)}，x＝${sgn(q * t)}` };
+      return { text: frT(q * c - s * b, p), trace: `兩邊同乘 ${q} 時 ${pm(s, b)} 沒乘到：${polyT(p, 0)}${pm(s, b)}＝${sgn(q * c)}，x＝${frT(q * c - s * b, p)}`, fix: `每一項都要乘 ${q}：${polyT(p, 0)}${pm(s, q * b)}＝${sgn(q * c)}，x＝${sgn(q * t)}` }; } },
+    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ p, q, t }) => { const R = p * t;
+      return { text: frT(p, q * R), trace: `${cf(p, q)}＝${sgn(R)} 之後除反了：x＝${p}/${q}÷${negP(R)}＝${frT(p, q * R)}`, fix: `兩邊同乘 ${fr(p, q)}（除以係數 ${p}/${q}）：x＝${sgn(R)}×${fr(p, q)}＝${sgn(q * t)}` }; } },
+    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ p, q, t, hb, b, s }) => { if (!hb) return null; const c = p * t + s * b, R2 = c + s * b;
+      return { text: frT(q * R2, p), trace: `把 ${pm(s, b)} 移到右邊沒有變號：${cf(p, q)}＝${sgn(c)}${pm(s, b)}＝${sgn(R2)}，x＝${frT(q * R2, p)}`, fix: `${pm(s, b)} 移到右邊要變成 ${pm(-s, b)}：${cf(p, q)}＝${sgn(p * t)}，x＝${sgn(q * t)}` }; } },
+    EQ08: { mis: 'EQ08', name: '乘除移項也變號', fn: ({ p, q, t }) => { const R = p * t;
+      return { text: sgn(-q * t), value: -q * t, trace: `${cf(p, q)}＝${sgn(R)} 之後，把係數移過去時也變號：x＝${sgn(R)}×(−${fr(p, q)})＝${sgn(-q * t)}`, fix: `兩邊同乘 ${fr(p, q)}，正負號不變：x＝${sgn(R)}×${fr(p, q)}＝${sgn(q * t)}` }; } }
+  });
+  // v3.71：解 x/m＋x/n＝r（EQ20 分數相加分母也相加）；L＝lcm(m, n)、S＝L/m＋L/n
+  add('eqDenSum', K.num, {
+    EQ20: { mis: 'EQ20', name: '分數相加分母也相加', fn: ({ m, n, r, L, S }) => ({ text: frT(r * (m + n), 2), trace: `分子加分子、分母加分母：x/${m}＋x/${n}＝2x/${m + n}，2x/${m + n}＝${sgn(r)}，x＝${frT(r * (m + n), 2)}`, fix: `分數相加要先通分：x/${m}＋x/${n}＝${polyT(L / m, 0)}/${L}＋${polyT(L / n, 0)}/${L}＝${S}x/${L}；或兩邊同乘 ${L} 去分母` }) },
+    EQ13: { mis: 'EQ13', name: '去分母常數項漏乘', fn: ({ m, n, r, L, S }) => ({ text: frT(r, S), trace: `兩邊同乘 ${L} 時右邊的 ${sgn(r)} 沒乘到：${polyT(L / m, 0)}＋${polyT(L / n, 0)}＝${sgn(r)}，x＝${frT(r, S)}`, fix: `右邊也要乘 ${L}：${polyT(L / m, 0)}＋${polyT(L / n, 0)}＝${sgn(r * L)}` }) },
+    EQ08: { mis: 'EQ08', name: '乘除移項也變號', fn: ({ r, L, S }) => ({ text: frT(r * L, -S), trace: `去分母得 ${polyT(S, 0)}＝${sgn(r * L)}，把 ${S} 移過去時也變號：x＝${dv(r * L, -S)}`, fix: `兩邊同除以 ${S}，不是 −${S}：x＝${dv(r * L, S)}＝${frT(r * L, S)}` }) },
+    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ r, L, S }) => ({ text: frT(S, r * L), trace: `去分母得 ${polyT(S, 0)}＝${sgn(r * L)}，最後除反了：x＝${dv(S, r * L)}`, fix: `兩邊同除以 x 的係數 ${S}：x＝${dv(r * L, S)}＝${frT(r * L, S)}` }) },
+    EQ17: { mis: 'EQ17', name: '乘除移項沒換運算', fn: ({ r, L, S }) => ({ text: frT(r * S, L), trace: `通分得 (${S}/${L})x＝${sgn(r)}，移到另一邊還是乘 ${S}/${L}：x＝${sgn(r)}×${S}/${L}＝${frT(r * S, L)}`, fix: `x 被乘了 ${S}/${L}，要兩邊同乘 ${L}/${S}：x＝${sgn(r)}×${L}/${S}＝${frT(r * L, S)}` }) }
+  });
+  // v3.71：EQ18 代入時漏寫乘號：「已知 x＝x0 是 px±qa＝c 的解，a＝？」（R＝c−p·x0＝s·q·a0）
+  add('eqPara', K.num, {
+    EQ18: { mis: 'EQ18', name: '代入時漏寫乘號', fn: ({ p, x0, q, s, c }) => { const N = Number(`${p}${x0}`);
+      return { text: frT(c - N, s * q), trace: `把 x＝${x0} 代入 ${p}x 寫成 ${N}：${N}${pm(s, q)}a＝${sgn(c)}，a＝${frT(c - N, s * q)}`, fix: `${p}x 是 ${p}×x，代入要寫 ${p}×${x0}＝${p * x0}：${p * x0}${pm(s, q)}a＝${sgn(c)}` }; } },
+    EQ06: { mis: 'EQ06', name: '加減移項沒變號', fn: ({ p, x0, q, s, c }) => ({ text: frT(c + p * x0, s * q), trace: `代入得 ${p * x0}${pm(s, q)}a＝${sgn(c)}，把 ${p * x0} 移到右邊沒有變號：${sgn(s * q)}a＝${sgn(c)}＋${p * x0}，a＝${frT(c + p * x0, s * q)}`, fix: `${p * x0} 移到右邊要變成 −${p * x0}：${sgn(s * q)}a＝${sgn(c)}−${p * x0}＝${sgn(c - p * x0)}` }) },
+    EQ16: { mis: 'EQ16', name: '係數用加減移項', fn: ({ p, x0, q, s, c }) => { const R = c - p * x0, k = s * q;
+      return { text: sgn(R - k), value: R - k, trace: `${sgn(k)}a＝${sgn(R)} 算對了，把 ${sgn(k)} 當成加上的數移過去：a＝${sgn(R)}−${negP(k)}＝${sgn(R - k)}`, fix: `${sgn(k)}a 是 ${negP(k)} 乘 a，要兩邊同除以 ${negP(k)}：a＝${dv(R, k)}＝${frT(R, k)}` }; } },
+    EQ07: { mis: 'EQ07', name: '係數移項除式顛倒', fn: ({ p, x0, q, s, c }) => { const R = c - p * x0, k = s * q;
+      return { text: frT(k, R), trace: `${sgn(k)}a＝${sgn(R)} 算對了，最後除反了：a＝${dv(k, R)}`, fix: `兩邊同除以 a 的係數 ${negP(k)}：a＝${dv(R, k)}＝${frT(R, k)}` }; } },
+    EQ08: { mis: 'EQ08', name: '乘除移項也變號', fn: ({ p, x0, q, s, c }) => { const R = c - p * x0, k = s * q;
+      return { text: frT(R, -k), trace: `${sgn(k)}a＝${sgn(R)} 算對了，把 ${negP(k)} 移過去時也變號：a＝${dv(R, -k)}`, fix: `兩邊同除以 ${negP(k)}，正負號不變：a＝${dv(R, k)}＝${frT(R, k)}` }; } }
   });
   // 解 x/m−sk＝x/n（同乘 mn；s＝1 解是正的，s＝−1 解是負的）
   add('eqDen1', K.num, {
@@ -6863,10 +7658,11 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
 /* ============================================================
    七上3-3：一元一次方程式的應用（v3.11，模板擴充第 2 批）
    迷思代碼沿用路線 A 題庫 題庫_七上3-3_一元一次方程式的應用_路線A.json（WP01～WP14；WP12「不檢驗合理性」要人工判讀，不做模板）
+   v3.71（2026-11-22）：現成題庫擴充新增的 WP15～WP20 補上規則（新題型 wpMove、wpGive、wpMeet、wpDisc3、wpLater、wpEachX、wpEachN、wpTrip；WP16、WP17 的模板標 optional，照現成題庫）
    ============================================================ */
 (function (G) {
   'use strict';
-  const F = G.FARules, K = F.keys, { sgn } = F.util;
+  const F = G.FARules, K = F.keys, { sgn, frT, decT } = F.util;
   // 老師 2026-11-10 裁定：同一個迷思代碼的誘答一題只出一個（沒寫 excl 的規則，互斥組就是迷思代碼）
   const add = (kind, key, rules) => { Object.values(rules).forEach(r => { if (!r.excl) r.excl = r.mis; }); F.registerKind(kind, { key }, rules); };
   const nice = v => v > 0 && Math.abs(v * 10 - Math.round(v * 10)) < 1e-9;   // 正的、最多一位小數
@@ -6926,6 +7722,73 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     WP04c: { mis: 'WP04', name: '方向寫反、單位也沒換（兩個錯）', fn: ({ v1, v2, t }) => ({ text: `x/${v1}−x/${v2}＝${t}`, trace: `用騎車時間減走路時間，${t} 分鐘也沒有換成小時`, fix: `走路時間比較多，而且單位要一致：x/${v2}−x/${v1}＝${t}/60` }) },
     WP11c: { mis: 'WP11', name: '速率關係用錯、單位也沒換（兩個錯）', fn: ({ v1, v2, t }) => ({ text: `${v2}x−${v1}x＝${t}`, trace: `時間寫成速率×距離，${t} 分鐘也沒有換成小時`, fix: `時間＝距離÷速率，單位用小時：x/${v2}−x/${v1}＝${t}/60` }) },
     WP04: { mis: 'WP04', name: '「比…少」方向寫反', fn: ({ v1, v2, t }) => ({ text: `x/${v1}−x/${v2}＝${t}/60`, trace: `用騎車時間減走路時間`, fix: `騎車比走路「少」花，是走路時間比較多：x/${v2}−x/${v1}＝${t}/60` }) }
+  });
+  // ---------- v3.71：現成題庫擴充新增的迷思（WP15～WP20） ----------
+  const pm = (s, v) => (s > 0 ? '＋' : '−') + v;
+  // 兩容器共 N，從甲拿 k 到乙後一樣多（h＝N/2、x0＝h＋k；選項「38 本」）
+  add('wpMove', K.unitNum, {
+    WP15: { mis: 'WP15', name: '取走放入只改一邊', fn: ({ N, k, x0, C, U }) => { const v = (N + k) / 2; if (!Number.isInteger(v)) return null;
+      return { value: v, text: `${v} ${U}`, trace: `甲${C}拿走 ${k} ${U}，只寫了甲${C}減少，乙${C}沒有加：x−${k}＝${N}−x，x＝${v}`, fix: `乙${C}收到 ${k} ${U}，也要加上去：x−${k}＝${N}−x＋${k}，x＝${x0}` }; } },
+    WP03: { mis: 'WP03', name: '另一量直接用總數', fn: ({ N, k, C, U }) => ({ value: N + 2 * k, text: `${N + 2 * k} ${U}`, trace: `乙${C}直接用總數 ${N}：x−${k}＝${N}＋${k}，x＝${N + 2 * k}`, fix: `${N} ${U}是兩${C}合起來；乙${C}原來只有 ${N}−x ${U}：x−${k}＝${N}−x＋${k}` }) },
+    WP13a: { mis: 'WP13', name: '答成另一個的數量', fn: ({ N, x0, C, U }) => ({ value: N - x0, text: `${N - x0} ${U}`, trace: `解出 x＝${x0} 後，答成乙${C}原來的 ${N}−${x0}＝${N - x0} ${U}`, fix: `題目問的是甲${C}原來有幾${U}，x＝${x0} 就是答案` }) },
+    WP13b: { mis: 'WP13', name: '答成移動後的數量', fn: ({ h, k, C, U }) => ({ value: h, text: `${h} ${U}`, trace: `答成拿完之後每${C}的 ${2 * h}÷2＝${h} ${U}`, fix: `題目問的是甲${C}「原來」有幾${U}：拿走 ${k} ${U}前是 ${h}＋${k}＝${h + k} ${U}` }) }
+  });
+  // 兩人共 T，G 給 R k 之後，G 是 R 的 m 倍；設 R 原有 x（選項是方程式，check: sameSol sol）
+  add('wpGive', K.text, {
+    WP15a: { mis: 'WP15', name: '收到的一方沒有加', fn: ({ T, k, m, G, R, U }) => ({ text: `${T}−x−${k}＝${m}x`, trace: `${G}給出 ${k} ${U}減掉了，${R}收到 ${k} ${U}卻沒有加上去，還是寫 x`, fix: `${R}收到 ${k} ${U}後是 x＋${k}：${T}−x−${k}＝${m}(x＋${k})` }) },
+    WP15b: { mis: 'WP15', name: '給出的一方沒有減', fn: ({ T, k, m, G, R, U }) => ({ text: `${T}−x＝${m}(x＋${k})`, trace: `${R}收到的 ${k} ${U}加上去了，${G}給出 ${k} ${U}卻沒有減掉，還是寫 ${T}−x`, fix: `${G}給出 ${k} ${U}後是 ${T}−x−${k}：${T}−x−${k}＝${m}(x＋${k})` }) },
+    WP02: { mis: 'WP02', name: '另一量寫成 x－總數', fn: ({ T, k, m, G, U }) => ({ text: `x−${T}−${k}＝${m}(x＋${k})`, trace: `${G}原有的寫成 x−${T}`, fix: `x 比總數 ${T} 小，x−${T} 是負的；${G}原有 ${T}−x ${U}` }) },
+    WP05: { mis: 'WP05', name: '倍數關係寫反', fn: ({ T, k, m, G, R }) => ({ text: `${m}(${T}−x−${k})＝x＋${k}`, trace: `把 ${m} 倍乘在${G}身上：${m}(${T}−x−${k})`, fix: `「${G}是${R}的 ${m} 倍」：${G}＝${m}×${R}，${m} 要乘在${R}那邊：${T}−x−${k}＝${m}(x＋${k})` }) },
+    WP04: { mis: 'WP04', name: '給出收到方向寫反', fn: ({ T, k, m, G, R }) => ({ text: `${T}−x＋${k}＝${m}(x−${k})`, trace: `把「${G}給${R}」寫反：${G}加了 ${k}、${R}減了 ${k}`, fix: `給出去的${G}要減 ${k}、收到的${R}要加 ${k}：${T}−x−${k}＝${m}(x＋${k})` }) }
+  });
+  // 相遇（dir＝0）／追趕（dir＝1）：速率每分鐘 v1、v2 公尺，相距 D 公里（Dm 公尺），x 分鐘後（選項是方程式）
+  add('wpMeet', K.text, {
+    WP16: { mis: 'WP16', name: '相遇、追趕和差用反', fn: ({ dir, v1, v2, Dm }) => dir === 0
+      ? { text: `${v1}x−${v2}x＝${Dm}`, trace: `相向而行卻用速率差：甲走的路減乙走的路`, fix: `相向而行時兩人走的路「加起來」等於相距 ${Dm} 公尺：${v1}x＋${v2}x＝${Dm}` }
+      : { text: `${v1}x＋${v2}x＝${Dm}`, trace: `同向追趕卻把兩人走的路加起來`, fix: `追上時甲比乙「多走」的路等於原來相距的 ${Dm} 公尺：${v1}x−${v2}x＝${Dm}` } },
+    WP10: { mis: 'WP10', name: '距離單位沒換算', fn: ({ dir, v1, v2, D, Dm }) => ({ text: `${v1}x${dir === 0 ? '＋' : '−'}${v2}x＝${D}`, trace: `速率是每分鐘幾公尺，相距 ${D} 公里卻直接寫 ${D}`, fix: `單位要一致：${D} 公里＝${Dm} 公尺，右邊要寫 ${Dm}` }) },
+    WP11: { mis: 'WP11', name: '速率關係用錯', fn: ({ dir, v1, v2, Dm }) => ({ text: `x/${v1}${dir === 0 ? '＋' : '−'}x/${v2}＝${Dm}`, trace: `把每個人走的路寫成 x÷速率：x/${v1}、x/${v2}`, fix: `路程＝速率×時間：x 分鐘甲走 ${v1}x 公尺、乙走 ${v2}x 公尺` }) }
+  });
+  // 先打 p1 折再打 p2 折（p1、p2 用百分數：85＝八五折），賣 P 元（選項是方程式）
+  add('wpDisc3', K.text, {
+    WP17: { mis: 'WP17', name: '連續打折把折數相加', fn: ({ p1, p2, P, Z1, Z2 }) => { const c = (p1 + p2 - 100) / 100;
+      return { text: `x×${decT(c)}＝${P}`, trace: `先打${Z1}折再打${Z2}折，把打掉的 ${decT((100 - p1) / 10)} 成和 ${decT((100 - p2) / 10)} 成相加，一共打掉 ${decT((200 - p1 - p2) / 10)} 成，寫成 ${decT(c)}x`, fix: `兩次打折要連乘：x×${decT(p1 / 100)}×${decT(p2 / 100)}＝${decT(p1 * p2 / 10000)}x，不是 ${decT(c)}x` }; } },
+    WP08: { mis: 'WP08', name: '折數換小數錯位', fn: ({ p1, p2, P, Z1, Z2 }) => ({ text: `x×${decT(p1 / 1000)}×${decT(p2 / 1000)}＝${P}`, trace: `把${Z1}折寫成 ${decT(p1 / 1000)}、${Z2}折寫成 ${decT(p2 / 1000)}`, fix: `${Z1}折是原價的 ${decT(p1 / 100)}、${Z2}折是 ${decT(p2 / 100)}：x×${decT(p1 / 100)}×${decT(p2 / 100)}＝${P}` }) },
+    WP07: { mis: 'WP07', name: '打折當成打掉幾成', fn: ({ p1, p2, P, Z1, Z2 }) => ({ text: `x×${decT((100 - p1) / 100)}×${decT((100 - p2) / 100)}＝${P}`, trace: `把打${Z1}折當成只付 ${decT((100 - p1) / 100)}、打${Z2}折當成只付 ${decT((100 - p2) / 100)}`, fix: `打${Z1}折是付原價的 ${decT(p1 / 100)}，打${Z2}折是再付 ${decT(p2 / 100)}：x×${decT(p1 / 100)}×${decT(p2 / 100)}＝${P}` }) }
+  });
+  // x 年後 N1 是 N2 的 m 倍，解是負數（x0＜0，表示 −x0 年前）；選項「x＝−1」「無解」（check: solve）
+  add('wpLater', K.text, {
+    WP18: { mis: 'WP18', name: '負數解一律捨棄', fn: ({ A, B, m, x0, N1, N2 }) => x0 >= 0 ? null : ({ text: '無解', trace: `列出 ${A}＋x＝${m}(${B}＋x)，解出 x＝${sgn(x0)} 是負數，就以為「x 年後」不可能是負的，答無解`, fix: `x＝${sgn(x0)} 表示 ${-x0} 年前：${N1} ${A}−${-x0}＝${A + x0} 歲、${N2} ${B}−${-x0}＝${B + x0} 歲，${A + x0}＝${m}×${B + x0}，真的有這個時候` }) },
+    WP01a: { mis: 'WP01', name: '年齡只加在一個人', fn: ({ A, B, m, N1, N2 }) => ({ text: `x＝${sgn(m * B - A)}`, trace: `x 年後只有${N1}加了 x 歲，${N2}還用今年的 ${B} 歲：${A}＋x＝${m}×${B}，x＝${sgn(m * B - A)}`, fix: `x 年後兩個人都多 x 歲：${A}＋x＝${m}(${B}＋x)` }) },
+    WP01b: { mis: 'WP01', name: '年齡只加在一個人（另一人）', fn: ({ A, B, m, N1, N2 }) => ({ text: `x＝${frT(A - m * B, m)}`, trace: `x 年後只有${N2}加了 x 歲，${N1}還用今年的 ${A} 歲：${A}＝${m}(${B}＋x)，x＝${frT(A - m * B, m)}`, fix: `x 年後兩個人都多 x 歲：${A}＋x＝${m}(${B}＋x)` }) },
+    WP05: { mis: 'WP05', name: '倍數關係寫反', fn: ({ A, B, m, N1, N2 }) => ({ text: `x＝${frT(B - m * A, m - 1)}`, trace: `把 ${m} 倍乘在${N1}身上：${m}(${A}＋x)＝${B}＋x，x＝${frT(B - m * A, m - 1)}`, fix: `「${N1}是${N2}的 ${m} 倍」：${N1}＝${m}×${N2}，${A}＋x＝${m}(${B}＋x)` }) }
+  });
+  // 一 MB 的 IB x 元，一 MA 的 IA 比 IB 貴（s＝1）／便宜（s＝−1）k 元，買 p 個 IA、q 個 IB 共要幾元（選項是代數式，check: sameExpr）
+  add('wpEachX', K.expr, {
+    WP19: { mis: 'WP19', name: '每個的差只加一次', fn: ({ p, q, k, s, IA, MA }) => ({ text: `${p}x${pm(s, k)}＋${q}x`, trace: `每${MA}${IA}${s > 0 ? '貴' : '便宜'} ${k} 元，卻只${s > 0 ? '加' : '減'}了一次 ${k}：${p}x${pm(s, k)}`, fix: `一${MA}${IA}是 x${pm(s, k)} 元，${p} ${MA}要整個乘 ${p}：${p}(x${pm(s, k)})，一共${s > 0 ? '貴' : '便宜'}了 ${p}×${k}＝${p * k} 元` }) },
+    WP14: { mis: 'WP14', name: '等號兩邊不是同一量', fn: ({ p, q, k, s, MA, MB }) => ({ text: `x＋(x${pm(s, k)})`, trace: `只算了一${MA}和一${MB}的錢，沒有乘上個數`, fix: `要算的是 ${p} ${MA}和 ${q} ${MB}的總價：${p}(x${pm(s, k)})＋${q}x` }) },
+    WP04: { mis: 'WP04', name: '「比…多／少」方向寫反', fn: ({ p, q, k, s, IA, IB, MA }) => ({ text: `${p}(x${pm(-s, k)})＋${q}x`, trace: `「${IA}比${IB}${s > 0 ? '貴' : '便宜'} ${k} 元」方向寫反，一${MA}${IA}寫成 x${pm(-s, k)}`, fix: `${IA}比較${s > 0 ? '貴' : '便宜'}，一${MA}${IA}是 x${pm(s, k)} 元` }) }
+  });
+  // 買 p 個 IA、q 個 IB 共 T 元，IA 每個比 IB 貴 k 元；問 IA 一個多少元（IB 是 y 元、IA 是 PA 元）
+  const posInt = v => Number.isInteger(v) && v > 0;
+  add('wpEachN', K.unitNum, {
+    WP19a: { mis: 'WP19', name: '每個的差只加一次', fn: ({ p, q, k, T, IA, IB, MA, MB }) => { const y = (T - k) / (p + q); if (!posInt(y)) return null;
+      return { value: y + k, text: `${y + k} 元`, trace: `設${IB}一${MB} x 元，${p} ${MA}${IA}只加了一次 ${k}：${p}x＋${k}＋${q}x＝${T}，x＝${y}，${IA}一${MA} ${y}＋${k}＝${y + k} 元`, fix: `${p} ${MA}${IA}每${MA}都貴 ${k} 元：${p}(x＋${k})＋${q}x＝${T}` }; } },
+    WP19b: { mis: 'WP19', name: '每個的差只減一次', fn: ({ p, q, k, T, IA, IB, MA, MB }) => { const v = (T + k) / (p + q); if (!posInt(v)) return null;
+      return { value: v, text: `${v} 元`, trace: `設${IA}一${MA} x 元，${q} ${MB}${IB}只減了一次 ${k}：${p}x＋${q}x−${k}＝${T}，x＝${v}`, fix: `${q} ${MB}${IB}每${MB}都便宜 ${k} 元：${p}x＋${q}(x−${k})＝${T}` }; } },
+    WP14: { mis: 'WP14', name: '等號兩邊不是同一量', fn: ({ p, q, k, T, MA, MB }) => { const v = (T + k) / 2; if (!posInt(v)) return null;
+      return { value: v, text: `${v} 元`, trace: `左邊只寫了一${MA}和一${MB}的錢：x＋(x−${k})＝${T}，x＝${v}`, fix: `${T} 元是 ${p} ${MA}和 ${q} ${MB}的總價：${p}x＋${q}(x−${k})＝${T}` }; } },
+    WP13a: { mis: 'WP13', name: '答成幾個的總價', fn: ({ p, PA, IA, MA }) => ({ value: p * PA, text: `${p * PA} 元`, trace: `解出 x＝${PA} 後，答成 ${p} ${MA}${IA}的總價 ${p}×${PA}＝${p * PA}`, fix: `題目問的是${IA}「一${MA}」多少元，x＝${PA} 就是答案` }) },
+    WP13b: { mis: 'WP13', name: '答成另一種的價錢', fn: ({ k, PA, y, IA, IB, MA, MB }) => ({ value: y, text: `${y} 元`, trace: `解出 x＝${PA} 後，答成${IB}一${MB}的 ${PA}−${k}＝${y} 元`, fix: `題目問的是${IA}一${MA}多少元，x＝${PA} 就是答案` }) },
+    WP04: { mis: 'WP04', name: '「比…多／少」方向寫反', fn: ({ p, q, k, T, IA, IB }) => { const v = (T - q * k) / (p + q); if (!posInt(v)) return null;
+      return { value: v, text: `${v} 元`, trace: `把${IB}寫成比${IA}貴：${p}x＋${q}(x＋${k})＝${T}，x＝${v}`, fix: `${IB}比${IA}便宜 ${k} 元，是 x−${k}：${p}x＋${q}(x−${k})＝${T}` }; } }
+  });
+  // 去程每小時 v1、回程每小時 v2 公里，來回共 Tm 分鐘（H 小時 M 分＝TT 小時），設去程 x 小時（選項是方程式）
+  add('wpTrip', K.text, {
+    WP20: { mis: 'WP20', name: '時分換算當成十進位', fn: ({ v1, v2, M, TT, TD, TX }) => ({ text: `${v1}x＝${v2}(${TD}−x)`, trace: `把「${TX}」寫成 ${TD} 小時：${v1}x＝${v2}(${TD}−x)`, fix: `1 小時是 60 分鐘，不是 100 分鐘：${M} 分鐘＝${M}/60 小時，「${TX}」＝${TT} 小時` }) },
+    WP10: { mis: 'WP10', name: '時間單位沒換算', fn: ({ v1, v2, Tm, TT, TX }) => ({ text: `${v1}x＝${v2}(${Tm}−x)`, trace: `「${TX}」直接寫成 ${Tm}（分鐘），沒有換成小時`, fix: `速率是每小時，時間要用小時：${Tm} 分鐘＝${TT} 小時` }) },
+    WP11: { mis: 'WP11', name: '速率關係用錯', fn: ({ v1, v2, TT }) => ({ text: `x/${v1}＝(${TT}−x)/${v2}`, trace: `把路程寫成時間÷速率：去程 x/${v1}、回程 (${TT}−x)/${v2}`, fix: `路程＝速率×時間：去程 ${v1}x 公里、回程 ${v2}(${TT}−x) 公里，沿原路所以相等` }) },
+    WP03: { mis: 'WP03', name: '另一量直接用總數', fn: ({ v1, v2, TT }) => ({ text: `${v1}x＝${v2}×${TT}`, trace: `回程時間直接用來回的總時間 ${TT} 小時`, fix: `總時間是去程加回程，回程只有 ${TT}−x 小時：${v1}x＝${v2}(${TT}−x)` }) }
   });
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -7029,6 +7892,114 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     LE05: { mis: 'LE05', name: '忽略數量', fn: P => { const { m, n } = P, N = nm(P); return { text: 'x＋y', trace: `只算了一${N.ua}${N.A}加一${N.ub}${N.B}：x＋y`, fix: `買了 ${m} ${N.ua}、${n} ${N.ub}，要乘上數量：${lin2(m, n)}` }; } },
     LE13: { mis: 'LE13', name: '數量與單價用加的', fn: P => { const { m, n } = P; return { text: `${m}＋x＋${n}＋y`, trace: `把數量和單價全部加起來：${m}＋x＋${n}＋y`, fix: `總價＝數量×單價：${m}×x＋${n}×y＝${lin2(m, n)}` }; } }
   });
+
+  // ===================================================== v3.71：現成題庫擴充後的新迷思（LE15～LE17、LE19～LE21、LE23、LE24） =====================================================
+  const sT = c => c > 0 ? '＋' : '−';                                    // 二元一次式裡接在後面的項
+  const tailY = d => (d > 0 ? '＋' : '') + coefX(d, 'y');               // ＋5y、−5y、＋y
+  const tailX = c => (c > 0 ? '＋' : '') + coefX(c, 'x');
+  const xyT = k => k === 0 ? null : coefX(k, 'xy');
+  // 代入時每一項的寫法：係數 ±1 寫成 −2、2；其他寫 4×(−3)
+  const termV = (c, v, paren) => { const vv = paren ? negP(v) : `${v}`; return Math.abs(c) === 1 ? (c < 0 ? '−' : '') + vv : `${c < 0 ? '−' : ''}${Math.abs(c)}×${vv}`; };
+  const okV = T => `${joinT(T.map(([c, v]) => termV(c, v, true)))}＝${sgn(T.reduce((s, [c, v]) => s + c * v, 0))}`;
+
+  // LE-val1：含係數 ±1、有負係數的二元一次式代入（題庫 P08：x＝2、y＝−3 代入 −x−4y）
+  const t1 = ({ cx, cy, x1, y1 }) => [[cx, x1, 'x'], [cy, y1, 'y']];
+  add('leVal1', K.num, {
+    LE19: { mis: 'LE19', name: '代入負數漏掉負號', fn: P => { const T = t1(P); if (!T.some(t => t[1] < 0)) return null;
+      const val = T.reduce((s, [c, v]) => s + c * Math.abs(v), 0);
+      return { value: val, trace: `代入時把負數的負號丟掉：${joinT(T.map(([c, v]) => termV(c, Math.abs(v), false)))}＝${sgn(val)}`, fix: `負數要連負號一起放進括號：${okV(T)}` }; } },
+    LE17: { mis: 'LE17', name: '看不到係數 1', fn: P => { const T = t1(P), one = T.filter(t => Math.abs(t[0]) === 1), rest = T.filter(t => Math.abs(t[0]) !== 1);
+      if (!one.length || !rest.length) return null; const val = rest.reduce((s, [c, v]) => s + c * v, 0);
+      return { value: val, trace: `${one.map(([c, , n]) => coefX(c, n)).join('、')} 看不到係數，就漏掉這一項，只算 ${joinT(rest.map(([c, v]) => termV(c, v, true)))}＝${sgn(val)}`, fix: `${one.map(([c, , n]) => `${coefX(c, n)} 是 ${c < 0 ? '(−1)' : '1'}×${n}`).join('、')}，也要代入：${okV(T)}` }; } },
+    // 只漏一項的負號（兩項都是負係數時漏係數 −1 那一項，同題庫 P08A：−x−4y 算成 x−4y）
+    LE20: { mis: 'LE20', name: '係數漏了負號', fn: P => { const T = t1(P), negs = T.filter(t => t[0] < 0); if (!negs.length) return null;
+      const w = negs.length > 1 ? (negs.find(t => Math.abs(t[0]) === 1) || negs[0]) : negs[0];
+      const T2 = T.map(t => t === w ? [-t[0], t[1], t[2]] : t), val = T2.reduce((s, [c, v]) => s + c * v, 0);
+      return { value: val, trace: `把 ${coefX(w[0], w[2])} 的負號漏掉，當成 ${coefX(-w[0], w[2])}：${joinT(T2.map(([c, v]) => termV(c, v, true)))}＝${sgn(val)}`, fix: `係數連前面的負號一起看，${coefX(w[0], w[2])} 的係數是 ${sgn(w[0])}：${okV(T)}` }; } },
+    LE04: { mis: 'LE04', name: 'x、y 對調代入', fn: P => { const { cx, cy, x1, y1 } = P; if (x1 === y1) return null; const T2 = [[cx, y1], [cy, x1]], val = cx * y1 + cy * x1;
+      return { value: val, trace: `把 x、y 的值對調代入：${joinT(T2.map(([c, v]) => termV(c, v, true)))}＝${sgn(val)}`, fix: `x＝${sgn(x1)} 代入 x、y＝${sgn(y1)} 代入 y：${okV(t1(P))}` }; } },
+    LE14: { mis: 'LE14', name: '不同類項合併成 xy', fn: P => { const { cx, cy, x1, y1 } = P, k = cx + cy; if (k === 0) return null; const val = k * x1 * y1;
+      return { value: val, trace: `先把 ${lin2(cx, cy)} 合併成 ${coefX(k, 'xy')}，再代入：${k}×${negP(x1)}×${negP(y1)}＝${sgn(val)}`, fix: `${coefX(cx, 'x')} 和 ${coefX(cy, 'y')} 不是同類項，不能合併，要分別代入：${okV(t1(P))}` }; } }
+  });
+
+  // LE-sub：(ax＋by)−(x＋dy) 化簡（題庫 P15）
+  F.registerFn('leTY', d => tailY(d));
+  F.registerFn('leVal1Ok', (cx, cy, x1, y1) => okV([[cx, x1], [cy, y1]]));
+  F.registerFn('leSubQ', (a, b, d) => `(${lin2(a, b)})−(${lin2(1, d)})`);
+  add('leSub', K.text, {
+    LE15: { mis: 'LE15', name: '負號去括號沒全變號', fn: ({ a, b, d }) => { const t = lin2(a - 1, b + d); if (b + d === 0) return null;
+      return { text: t, trace: `−(${lin2(1, d)}) 只把第一項變號，寫成 −x${tailY(d)}：${lin2(a, b)}−x${tailY(d)}＝${t}`, fix: `括號前是負號，括號裡每一項都要變號：−(${lin2(1, d)})＝−x${tailY(-d)}，${lin2(a, b)}−x${tailY(-d)}＝${lin2(a - 1, b - d)}` }; } },
+    LE17: { mis: 'LE17', name: '看不到係數 1', fn: ({ a, b, d }) => { const t = lin2(a, b - d);
+      return { text: t, trace: `去括號後 −x 看不到係數，就漏掉了：${coefX(a, 'x')}−x 寫成 ${coefX(a, 'x')}，答案寫成 ${t}`, fix: `−x 是 (−1)×x：${coefX(a, 'x')}−x＝${coefX(a - 1, 'x') || '0'}，答案是 ${lin2(a - 1, b - d)}` }; } },
+    LE20: { mis: 'LE20', name: '係數漏了負號', fn: ({ a, b, d }) => { const t = lin2(a + 1, b - d);
+      return { text: t, trace: `去括號後的 −x 漏了負號，當成 ＋x：${coefX(a, 'x')}＋x＝${coefX(a + 1, 'x')}，答案寫成 ${t}`, fix: `括號前是負號，x 變成 −x：${coefX(a, 'x')}−x＝${coefX(a - 1, 'x') || '0'}，答案是 ${lin2(a - 1, b - d)}` }; } },
+    LE14: { mis: 'LE14', name: '不同類項合併成 xy', fn: ({ a, b, d }) => { const k = a - 1 + b - d, t = xyT(k); if (!t || k < 2) return null;
+      return { text: t, trace: `化簡成 ${lin2(a - 1, b - d)} 後，再把 x 項和 y 項合併成 ${t}`, fix: `${coefX(a - 1, 'x')} 和 ${coefX(b - d, 'y')} 不是同類項，不能合併，答案是 ${lin2(a - 1, b - d)}` }; } }
+  });
+
+  // LE-comb：ax＋by−x＋dy 合併同類項（題庫 P18）
+  F.registerFn('leCombQ', (a, b, d) => `${lin2(a, b)}−x${tailY(d)}`);
+  add('leComb', K.text, {
+    LE17: { mis: 'LE17', name: '看不到係數 1', fn: ({ a, b, d }) => { const t = lin2(a, b + d);
+      return { text: t, trace: `−x 看不到係數，就漏掉了：${coefX(a, 'x')}−x 寫成 ${coefX(a, 'x')}，答案寫成 ${t}`, fix: `−x 是 (−1)×x：${coefX(a, 'x')}−x＝${coefX(a - 1, 'x')}，答案是 ${lin2(a - 1, b + d)}` }; } },
+    LE20: { mis: 'LE20', name: '係數漏了負號', fn: ({ a, b, d }) => { const t = lin2(a + 1, b + d);
+      return { text: t, trace: `−x 的負號漏掉，${coefX(a, 'x')}−x 算成 ${coefX(a + 1, 'x')}，答案寫成 ${t}`, fix: `把減號寫成加負項：${coefX(a, 'x')}＋(−1)x＝${coefX(a - 1, 'x')}，答案是 ${lin2(a - 1, b + d)}` }; } },
+    LE20b: { mis: 'LE20', name: '係數漏了負號（y 項）', fn: ({ a, b, d }) => { if (b >= 0) return null; const t = lin2(a - 1, -b + d); if (-b + d === 0) return null;
+      return { text: t, trace: `${coefX(b, 'y')} 的負號漏掉，當成 ${coefX(-b, 'y')}：${coefX(-b, 'y')}${tailY(d)}＝${coefX(-b + d, 'y')}，答案寫成 ${t}`, fix: `係數連前面的負號一起圈起來：${coefX(b, 'y')}${tailY(d)}＝${coefX(b + d, 'y')}，答案是 ${lin2(a - 1, b + d)}` }; } },
+    LE14: { mis: 'LE14', name: '不同類項合併成 xy', fn: ({ a, b, d }) => { const k = a - 1 + b + d, t = xyT(k); if (!t || k < 2) return null;
+      return { text: t, trace: `合併成 ${lin2(a - 1, b + d)} 後，再把 x 項和 y 項合併成 ${t}`, fix: `${coefX(a - 1, 'x')} 和 ${coefX(b + d, 'y')} 不是同類項，不能合併，答案是 ${lin2(a - 1, b + d)}` }; } }
+  });
+
+  // LE-dist：m(ax＋by)−n(cx＋dy) 用分配律化簡（題庫 P16）
+  F.registerFn('leDistQ', (m, a, b, n, c, d) => `${m}(${lin2(a, b)})−${n}(${lin2(c, d)})`);
+  const dOk = ({ m, a, b, n, c, d }) => lin2(m * a - n * c, m * b - n * d);
+  const dWay = ({ m, a, b, n, c, d }) => `${m}(${lin2(a, b)})＝${lin2(m * a, m * b)}，−${n}(${lin2(c, d)})＝${lin2(-n * c, -n * d)}，合起來是 ${lin2(m * a - n * c, m * b - n * d)}`;
+  add('leDist', K.text, {
+    LE21: { mis: 'LE21', name: '分配律只乘第一項', fn: P => { const { m, a, b, n, c, d } = P; if (b - d === 0) return null; const t = lin2(m * a - n * c, b - d);
+      return { text: t, trace: `${m}(${lin2(a, b)}) 只乘第一項寫成 ${lin2(m * a, b)}，−${n}(${lin2(c, d)}) 寫成 ${lin2(-n * c, -d)}，合起來是 ${t}`, fix: `括號外的數要乘到裡面每一項：${dWay(P)}` }; } },
+    LE20: { mis: 'LE20', name: '係數漏了負號', fn: P => { const { m, a, b, n, c, d } = P; const t = lin2(m * a + n * c, m * b + n * d);
+      return { text: t, trace: `−${n}(${lin2(c, d)}) 漏了負號，算成 ${lin2(n * c, n * d)}，合起來是 ${t}`, fix: `把 −${n} 連負號一起乘進去：${dWay(P)}` }; } },
+    LE15: { mis: 'LE15', name: '負號去括號沒全變號', fn: P => { const { m, a, b, n, c, d } = P; if (m * b + n * d === 0) return null; const t = lin2(m * a - n * c, m * b + n * d);
+      return { text: t, trace: `−${n}(${lin2(c, d)}) 只有第一項變號，寫成 ${lin2(-n * c, n * d)}，合起來是 ${t}`, fix: `−${n} 要乘到括號裡每一項，每一項都變號：${dWay(P)}` }; } },
+    LE14: { mis: 'LE14', name: '不同類項合併成 xy', fn: P => { const { m, a, b, n, c, d } = P, k = m * a - n * c + m * b - n * d, t = xyT(k); if (!t || k < 2) return null;
+      return { text: t, trace: `化簡成 ${dOk(P)} 後，再把 x 項和 y 項合併成 ${t}`, fix: `x 項和 y 項不是同類項，不能合併，答案是 ${dOk(P)}` }; } }
+  });
+
+  // LE-frac：(ax＋by)/m−(cx＋dy)/n 通分化簡（題庫 P17）
+  F.registerFn('leFracQ', (a, b, m, c, d, n) => `(${lin2(a, b)})/${m}−(${lin2(c, d)})/${n}`);
+  const g2 = (x, y) => { x = Math.abs(x); y = Math.abs(y); while (y) [x, y] = [y, x % y]; return x; };
+  // 正解是最簡的 (Px＋Qy)/L：P＞0、Q 不是 0，P、Q、L 沒有公因數；原式每個分子和自己的分母也沒有公因數
+  F.registerFn('leFracOK', (a, b, m, c, d, n) => { const P = n * a - m * c, Q = n * b - m * d; return m !== n && g2(m, n) === 1 && P > 0 && Q !== 0 && g2(g2(P, Q), m * n) === 1 && g2(g2(a, b), m) === 1 && g2(g2(c, d), n) === 1; });
+  F.registerFn('leFracA', (a, b, m, c, d, n) => `(${lin2(n * a - m * c, n * b - m * d)})/${m * n}`);
+  const fWay = ({ a, b, m, c, d, n }) => `通分後分子是 ${n}(${lin2(a, b)})−${m}(${lin2(c, d)})＝${lin2(n * a, n * b)}${tailX(-m * c)}${tailY(-m * d)}＝${lin2(n * a - m * c, n * b - m * d)}，答案是 (${lin2(n * a - m * c, n * b - m * d)})/${m * n}`;
+  add('leFrac', K.text, {
+    LE16: { mis: 'LE16', name: '通分後丟掉分母', fn: P => { const { a, b, m, c, d, n } = P, t = lin2(n * a - m * c, n * b - m * d);
+      return { text: t, trace: `通分成 (${n}(${lin2(a, b)})−${m}(${lin2(c, d)}))/${m * n} 後，像解方程式一樣同乘 ${m * n}，把分母丟掉：${t}`, fix: `這是式子不是方程式，不能兩邊同乘，分母要留著：${fWay(P)}` }; } },
+    LE21: { mis: 'LE21', name: '通分時只乘第一項', fn: P => { const { a, b, m, c, d, n } = P; if (b - d === 0) return null; const t = `(${lin2(n * a - m * c, b - d)})/${m * n}`;
+      return { text: t, trace: `通分時分子只乘第一項：${n}(${lin2(a, b)}) 寫成 ${lin2(n * a, b)}、${m}(${lin2(c, d)}) 寫成 ${lin2(m * c, d)}，得到 ${t}`, fix: `分子的每一項都要乘：${fWay(P)}` }; } },
+    LE15: { mis: 'LE15', name: '負號去括號沒全變號', fn: P => { const { a, b, m, c, d, n } = P; if (n * b + m * d === 0) return null; const t = `(${lin2(n * a - m * c, n * b + m * d)})/${m * n}`;
+      return { text: t, trace: `分子減掉 ${m}(${lin2(c, d)}) 時只有第一項變號：${lin2(n * a, n * b)}${tailX(-m * c)}${tailY(m * d)}，得到 ${t}`, fix: `減號後面括號裡每一項都要變號：${fWay(P)}` }; } }
+  });
+
+  // LE-diff：「B 比 A 便宜（貴）y 元」的總價（題庫 P10、P11）；dir＝0 便宜、1 貴
+  const LEDIF = [[['全票', '張', '優待票', '張'], ['大人票', '張', '兒童票', '張'], ['蘋果', '顆', '橘子', '顆'], ['牛奶', '瓶', '豆漿', '瓶']],
+    [['餅乾', '盒', '果汁', '瓶'], ['筆記本', '本', '相簿', '本'], ['原子筆', '枝', '自動筆', '枝'], ['紅茶', '杯', '奶茶', '杯']]];
+  F.registerFn('leDif', (dir, i, j) => LEDIF[dir][i][j]);
+  const dfN = ({ dir, ci }) => { const c = LEDIF[dir][ci]; return { A: c[0], ua: c[1], B: c[2], ub: c[3], w: dir ? '貴' : '便宜', s: dir ? 1 : -1 }; };
+  const dfB = s => `(x${s > 0 ? '＋' : '−'}y)`;
+  const dfOk = ({ m, n, dir }) => lin2(m + n, (dir ? 1 : -1) * n);
+  const dfWay = P => { const N = dfN(P); return `${P.m}x＋${P.n}${dfB(N.s)}＝${dfOk(P)}`; };
+  F.registerFn('leDifAns', (m, n, dir) => dfOk({ m, n, dir }));
+  add('leDiff', K.text, {
+    LE21: { mis: 'LE21', name: '分配律只乘第一項', fn: P => { const N = dfN(P), t = lin2(P.m + P.n, N.s);
+      return { text: t, trace: `${P.n}${dfB(N.s)} 只乘第一項，寫成 ${P.n}x${N.s > 0 ? '＋' : '−'}y：${P.m}x＋${P.n}x${N.s > 0 ? '＋' : '−'}y＝${t}`, fix: `${P.n} 要乘到括號裡每一項：${P.n}${dfB(N.s)}＝${lin2(P.n, N.s * P.n)}，${dfWay(P)}` }; } },
+    LE23: { mis: 'LE23', name: '多少關係顛倒', fn: P => { const N = dfN(P), w = P.dir ? '(x−y)' : '(y−x)', t = P.dir ? lin2(P.m + P.n, -P.n) : lin2(P.m - P.n, P.n); if (P.m === P.n && !P.dir) return null;
+      return { text: t, trace: `「${N.B}比${N.A}${N.w} y 元」寫成 ${w} 元：${P.m}x＋${P.n}${w}＝${t}`, fix: `用數字想：${N.A} 30 元、${N.w} 5 元，${N.B}是 30${P.dir ? '＋' : '−'}5 元，所以${N.B}是 ${dfB(N.s)} 元：${dfWay(P)}` }; } },
+    LE24: { mis: 'LE24', name: '差量當成單價', fn: P => { const N = dfN(P), t = lin2(P.m, P.n);
+      return { text: t, trace: `把${N.w}的 y 元當成${N.B}的價錢，${N.B}寫成 y 元：${P.m}x＋${P.n}y`, fix: `${N.B}的價錢＝${N.A}的價錢${P.dir ? '＋貴' : '−便宜'}的錢＝${dfB(N.s)} 元：${dfWay(P)}` }; } },
+    LE12: { mis: 'LE12', name: '數量與單價配錯', fn: P => { const N = dfN(P); if (P.m === P.n) return null; const t = lin2(P.m + P.n, N.s * P.m);
+      return { text: t, trace: `把 ${P.m} ${N.ua}乘到${N.B}的價錢、${P.n} ${N.ub}乘到${N.A}的價錢：${P.n}x＋${P.m}${dfB(N.s)}＝${t}`, fix: `${P.m} ${N.ua}${N.A}是 ${P.m}x 元、${P.n} ${N.ub}${N.B}是 ${P.n}${dfB(N.s)} 元：${dfOk(P)}` }; } }
+  });
 })(globalThis);
 
 /* ============================================================
@@ -7038,6 +8009,7 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
    - 老師 2026-11-11 裁定：SS-den 改成兩步「x/m＝y/n±r」（去分母＋移項）
    - A2（共用片段猜法）：SS-den 用 SY06b「y/n 那一項沒乘」（題庫 P06A 選項 D 的寫法）；2026-11-11 審核後 SS-den 不再用 SY06（右邊常數沒乘），規則保留；
      SY06b 和正解共用右邊的常數，四個選項共用片段一樣多，「選共用最多的」猜不到
+   v3.71（2026-11-22）：現成題庫擴充新增的迷思 SY13～SY18 補規則與模板 SS-back、SS-expr、SS-subY、SS-subX、SS-par（解寫「x＝3、y＝1」，不用數對）；SY12 觀念敘述列 exclude
    ============================================================ */
 (function (G) {
   'use strict';
@@ -7138,6 +8110,99 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     SY06b: { mis: 'SY06', name: '乘一式漏乘 y/n 那一項', fn: ({ m, n, r }) => ({ text: `${coefX(n, 'x')}−y/${n}＝${sgn(m * n * r)}`, trace: `同乘 ${m * n} 時 y/${n} 那一項沒有乘：${n}x＝y/${n}${pm(m * n * r)}，移項得 ${coefX(n, 'x')}−y/${n}＝${sgn(m * n * r)}`, fix: `每一項都要乘 ${m * n}：y/${n}×${m * n}＝${m}y，${n}x＝${m}y${pm(m * n * r)}，${eqT(n, -m, m * n * r)}` }) },
     SY11: { mis: 'SY11', name: '去分母只拿掉分母', fn: ({ m, n, r }) => ({ text: eqT(1, -1, m * n * r), trace: `同乘 ${m * n} 時只把分母拿掉：x＝y${pm(m * n * r)}，${eqT(1, -1, m * n * r)}`, fix: `x/${m}×${m * n}＝${n}x、y/${n}×${m * n}＝${m}y：${n}x＝${m}y${pm(m * n * r)}，${eqT(n, -m, m * n * r)}` }) },
     SY09c: { mis: 'SY09', name: '右邊沒乘、移項也沒變號（兩個錯）', fn: ({ m, n, r }) => ({ text: eqT(n, m, r), trace: `同乘 ${m * n} 時右邊的 ${sgn(r)} 沒乘，${m}y 移到左邊也沒變號：${eqT(n, m, r)}`, fix: `每一項都要乘 ${m * n}，${m}y 移到左邊變成 −${m}y：${eqT(n, -m, m * n * r)}` }) }
+  });
+  // ===================================================== v3.71：現成題庫擴充後的新迷思 SY13～SY18 =====================================================
+  // SY12（以為回代不同式會不同）是觀念敘述、算不出誘答值，列 coverage.exclude
+  const trm = (k, v = 'x') => (k > 0 ? '＋' : '−') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + v;      // ＋3x、−y（接在別的項後面）
+  const cf = (k, m, v = 'x') => k === 0 ? coefX(m, v) || '0' : sgn(k) + (m ? trm(m, v) : '');        // 常數在前：8−6x、−4＋3x（學生移項後照順序寫）
+  const { frT } = F.util;
+  // SS-back：已求出 x＝x0（負數），代入 ax＋by＝c 求 y（題庫 P12）
+  F.registerFn('ssBackEq', (a, x0, b, c) => `${a}×(${sgn(x0)})${trm(b, 'y')}＝${sgn(c)}`);
+  add('ssBack', K.num, {
+    SY18: { mis: 'SY18', name: '代入負數沒加括號', fn: ({ a, x0, b, c, y0 }) => { if (x0 >= 0) return null; const L = a + x0, Pr = a * x0;
+      return { text: frT(c - L, b), trace: `x＝${sgn(x0)} 代入時沒加括號，${a}x 寫成 ${a}−${-x0}：${a}−${-x0}${trm(b, 'y')}＝${sgn(c)}，${coefX(b, 'y')}＝${sgn(c)}${pm(-L)}＝${sgn(c - L)}，y＝${frT(c - L, b)}`,
+        fix: `負數代入要加括號：${a}×(${sgn(x0)})＝${sgn(Pr)}，${sgn(Pr)}${trm(b, 'y')}＝${sgn(c)}，${coefX(b, 'y')}＝${sgn(c - Pr)}，y＝${frT(c - a * x0, b)}` }; } },
+    SY09: { mis: 'SY09', name: '移項沒有變號', fn: ({ a, x0, b, c, y0 }) => { const Pr = a * x0; if (Pr === 0) return null;
+      return { text: frT(c + Pr, b), trace: `${a}×(${sgn(x0)})${trm(b, 'y')}＝${sgn(c)}，${sgn(Pr)}${trm(b, 'y')}＝${sgn(c)}，把 ${sgn(Pr)} 移到右邊沒有變號：${coefX(b, 'y')}＝${sgn(c)}${pm(Pr)}＝${sgn(c + Pr)}，y＝${frT(c + Pr, b)}`,
+        fix: `${sgn(Pr)} 移到右邊要變成 ${pm(-Pr)}：${coefX(b, 'y')}＝${sgn(c)}${pm(-Pr)}＝${sgn(c - Pr)}，y＝${frT(c - a * x0, b)}` }; } },
+    SY13: { mis: 'SY13', name: '−by 的負號被忽略', fn: ({ a, x0, b, c, y0 }) => { if (b >= 0) return null; const Pr = a * x0, R = c - Pr;
+      return { text: frT(R, -b), trace: `${sgn(Pr)}${trm(b, 'y')}＝${sgn(c)}，${coefX(b, 'y')}＝${sgn(R)}，把 ${coefX(b, 'y')} 當成 ${coefX(-b, 'y')}：y＝${sgn(R)}÷${-b}＝${frT(R, -b)}`,
+        fix: `負號要留著，兩邊同除以 ${sgn(b)}：y＝${negP(R)}÷(${sgn(b)})＝${frT(c - a * x0, b)}` }; } },
+    SY15: { mis: 'SY15', name: '係數用加減移項', fn: ({ a, x0, b, c, y0 }) => { const R = c - a * x0;
+      return { text: sgn(R - b), trace: `算到 ${coefX(b, 'y')}＝${sgn(R)} 後，把係數 ${sgn(b)} 用減的移過去：y＝${sgn(R)}−${negP(b)}＝${sgn(R - b)}`,
+        fix: `${coefX(b, 'y')} 是 ${sgn(b)} 乘 y，要兩邊同除以 ${sgn(b)}：y＝${negP(R)}÷${negP(b)}＝${frT(c - a * x0, b)}` }; } }
+  });
+
+  // SS-expr：把 ax−by＝c 改寫成用 x 表示 y（題庫 P11）；y＝px＋q，a＝bp，c＝−bq
+  F.registerFn('ssExprCk', (a, b, c) => `(${sgn(c)}−${negP(a)}x)÷(−${b})`);
+  const exL = (a, b, c) => `${coefX(-b, 'y')}＝${cf(c, -a)}`;                                         // 移項後：−2y＝8−6x
+  add('ssExpr', K.expr, {
+    SY13: { mis: 'SY13', name: '−by 的負號被忽略', fn: ({ a, b, c, p, q }) => ({ text: polyT(-p, -q),
+      trace: `${eqT(a, -b, c)} 移項得 ${exL(a, b, c)}，把 ${coefX(-b, 'y')} 當成 ${coefX(b, 'y')}，直接寫成 y＝${cf(-q, -p)}`,
+      fix: `${coefX(-b, 'y')} 的負號要留著，兩邊同除以 −${b}，每一項都變號：y＝${polyT(p, q)}` }) },
+    SY16: { mis: 'SY16', name: '同除時只除常數', fn: ({ a, b, c, p, q }) => b === 1 ? null : ({ text: polyT(-a, q),
+      trace: `移項得 ${exL(a, b, c)}，兩邊同除以 −${b} 時只除了 ${sgn(c)}：y＝${cf(q, -a)}`,
+      fix: `右邊每一項都要除以 −${b}：(${sgn(-a)}x)÷(−${b})＝${coefX(p, 'x')}，y＝${polyT(p, q)}` }) },
+    SY16b: { mis: 'SY16', name: '同除時只除 x 項', fn: ({ a, b, c, p, q }) => b === 1 ? null : ({ text: polyT(p, c),
+      trace: `移項得 ${exL(a, b, c)}，兩邊同除以 −${b} 時只除了 ${coefX(-a, 'x')}：y＝${cf(c, p)}`,
+      fix: `右邊每一項都要除以 −${b}：${negP(c)}÷(−${b})＝${sgn(q)}，y＝${polyT(p, q)}` }) },
+    SY09: { mis: 'SY09', name: '移項沒有變號', fn: ({ a, b, c, p, q }) => ({ text: polyT(-p, q),
+      trace: `把 ${coefX(a, 'x')} 移到右邊沒有變號：${coefX(-b, 'y')}＝${cf(c, a)}，y＝${cf(q, -p)}`,
+      fix: `${coefX(a, 'x')} 移到右邊要變成 ${coefX(-a, 'x')}：${exL(a, b, c)}，y＝${polyT(p, q)}` }) }
+  });
+
+  // SS-subY：由①ax−y＝c 得 y＝ax−c，代入②dx＋ey＝f，得到哪一式（題庫 P10）
+  const subT = (d, e, inner, f) => `${coefX(d, 'x')}${e > 0 ? '＋' : '−'}${Math.abs(e) === 1 ? '' : Math.abs(e)}(${inner})＝${sgn(f)}`;
+  F.registerFn('ssSubT', (d, e, a, c, f) => subT(d, e, polyT(a, -c), f));
+  add('ssSubY', K.text, {
+    SY13: { mis: 'SY13', name: '−y 的負號被忽略', fn: ({ a, c, d, e, f }) => ({ text: subT(d, e, polyT(-a, c), f),
+      trace: `由①移項得 −y＝${cf(c, -a)}，直接寫成 y＝${cf(c, -a)}，代入②得 ${subT(d, e, polyT(-a, c), f)}`,
+      fix: `−y 的負號要留著，兩邊同乘 −1 每一項都變號：y＝${polyT(a, -c)}，代入②得 ${subT(d, e, polyT(a, -c), f)}` }) },
+    SY09: { mis: 'SY09', name: '移項沒有變號', fn: ({ a, c, d, e, f }) => ({ text: subT(d, e, polyT(-a, -c), f),
+      trace: `由①把 ${coefX(a, 'x')} 移到右邊沒有變號：−y＝${cf(c, a)}，y＝${cf(-c, -a)}，代入②得 ${subT(d, e, polyT(-a, -c), f)}`,
+      fix: `${coefX(a, 'x')} 移到右邊要變成 ${coefX(-a, 'x')}：−y＝${cf(c, -a)}，y＝${polyT(a, -c)}` }) },
+    SY02: { mis: 'SY02', name: '代入時漏括號', fn: ({ a, c, d, e, f }) => { const t = `${coefX(d, 'x')}${trm(e * a, 'x')}${pm(-c)}＝${sgn(f)}`;
+      return { text: t, trace: `把 y＝${polyT(a, -c)} 代入②時沒加括號，寫成 ${t}，${e === -1 ? '減號' : sgn(e) + ' '}只${e === -1 ? '作用' : '乘'}到 ${coefX(a, 'x')}，沒有${e === -1 ? '作用' : '乘'}到 ${sgn(-c)}`,
+        fix: `要整個加括號：${subT(d, e, polyT(a, -c), f)}，${e === -1 ? '減號要讓括號裡每一項變號' : sgn(e) + ' 也要乘到 ' + sgn(-c)}` }; } },
+    SY17: { mis: 'SY17', name: '代回原來那一式', fn: ({ a, c }) => { const t = `${coefX(a, 'x')}−(${polyT(a, -c)})＝${sgn(c)}`;
+      return { text: t, trace: `由①得 y＝${polyT(a, -c)}，又代回①：${t}，展開後 x 消掉了，得 ${sgn(c)}＝${sgn(c)}`,
+        fix: `由①得到的 y＝${polyT(a, -c)} 要代入另一式②，不能代回①` }; } }
+  });
+
+  // SS-subX：由①kx−kmy＝kn 得 x＝my＋n，代入②dx＋ey＝f（題庫 P14）
+  const subX = (d, inner, e, f) => `${d}(${inner})${trm(e, 'y')}＝${sgn(f)}`;
+  F.registerFn('ssSubX', (d, m, n, e, f) => subX(d, polyT(m, n, 'y'), e, f));
+  add('ssSubX', K.text, {
+    SY16: { mis: 'SY16', name: '同除時只除一項', fn: ({ k, m, n, d, e, f }) => ({ text: subX(d, polyT(k * m, n, 'y'), e, f),
+      trace: `由①得 ${coefX(k, 'x')}＝${polyT(k * m, k * n, 'y')}，兩邊同除以 ${k} 時只除了 ${k * n}，得 x＝${polyT(k * m, n, 'y')}，代入②得 ${subX(d, polyT(k * m, n, 'y'), e, f)}`,
+      fix: `每一項都要除以 ${k}：x＝${polyT(m, n, 'y')}，代入②得 ${subX(d, polyT(m, n, 'y'), e, f)}` }) },
+    SY17: { mis: 'SY17', name: '代回原來那一式', fn: ({ k, m, n }) => { const t = subX(k, polyT(m, n, 'y'), -k * m, k * n);
+      return { text: t, trace: `由①得 x＝${polyT(m, n, 'y')}，又代回①：${t}，展開得 ${polyT(k * m, k * n, 'y')}${trm(-k * m, 'y')}＝${k * n}，y 消掉了，得 ${k * n}＝${k * n}`,
+        fix: `由①得到的 x＝${polyT(m, n, 'y')} 要代入另一式②，不能代回①` }; } },
+    SY02: { mis: 'SY02', name: '代入時漏括號', fn: ({ m, n, d, e, f }) => { const t = `${coefX(d * m, 'y')}${pm(n)}${trm(e, 'y')}＝${sgn(f)}`;
+      return { text: t, trace: `把 x＝${polyT(m, n, 'y')} 代入 ${d}x 時沒加括號，${d} 只乘到 ${coefX(m, 'y')}：${t}`,
+        fix: `要整個加括號：${subX(d, polyT(m, n, 'y'), e, f)}，${d} 也要乘到 ${sgn(n)}` }; } },
+    SY09: { mis: 'SY09', name: '移項沒有變號', fn: ({ k, m, n, d, e, f }) => ({ text: subX(d, polyT(-m, n, 'y'), e, f),
+      trace: `由①把 ${coefX(-k * m, 'y')} 移到右邊沒有變號：${coefX(k, 'x')}＝${cf(k * n, -k * m, 'y')}，x＝${cf(n, -m, 'y')}，代入②得 ${subX(d, polyT(-m, n, 'y'), e, f)}`,
+      fix: `${coefX(-k * m, 'y')} 移到右邊要變成 ${coefX(k * m, 'y')}：${coefX(k, 'x')}＝${polyT(k * m, k * n, 'y')}，x＝${polyT(m, n, 'y')}` }) }
+  });
+
+  // SS-par：k(x＋p)＋by＝c1（①）、kx＋ty＝c2（②），①去括號整理後減去②（題庫 P22）
+  F.registerFn('ssParE', (k, p, b, c1) => `${k}(x${pm(p)})${trm(b, 'y')}＝${sgn(c1)}`);
+  F.registerFn('ssParL', (k, p, b, c1) => `${k}x${pm(k * p)}${trm(b, 'y')}＝${sgn(c1)}`);   // 正確去括號：2x＋6＋y＝3
+  add('ssPar', K.text, {
+    SY14: { mis: 'SY14', name: '去括號只乘第一項', fn: ({ k, p, b, t, c1, c2 }) => { const B = b - t, R = c1 - p - c2;
+      return { text: v1(B, 'y', R), trace: `去括號時 ${k} 只乘到 x：${k}x${pm(p)}${trm(b, 'y')}＝${sgn(c1)}，整理得 ${eqT(k, b, c1 - p)}，再減去②得 ${v1(B, 'y', R)}`,
+        fix: `${k} 要乘到括號裡每一項：${k}x${pm(k * p)}${trm(b, 'y')}＝${sgn(c1)}，${eqT(k, b, c1 - k * p)}，再減去②得 ${v1(B, 'y', c1 - k * p - c2)}` }; } },
+    SY09: { mis: 'SY09', name: '移項沒有變號', fn: ({ k, p, b, t, c1, c2 }) => { const B = b - t, R = c1 + k * p - c2;
+      return { text: v1(B, 'y', R), trace: `去括號得 ${k}x${pm(k * p)}${trm(b, 'y')}＝${sgn(c1)}，把 ${pm(k * p)} 移到右邊沒有變號：${eqT(k, b, c1 + k * p)}，再減去②得 ${v1(B, 'y', R)}`,
+        fix: `${pm(k * p)} 移到右邊要變成 ${pm(-k * p)}：${eqT(k, b, c1 - k * p)}` }; } },
+    SY10: { mis: 'SY10', name: '右邊只抄一式', fn: ({ k, p, b, t, c1, c2 }) => { const B = b - t, R = c1 - k * p;
+      return { text: v1(B, 'y', R), trace: `①整理成 ${eqT(k, b, R)}，減去②時左邊減了，右邊只抄①的 ${sgn(R)}：${v1(B, 'y', R)}`,
+        fix: `右邊也要減：${sgn(R)}−${negP(c2)}＝${sgn(R - c2)}` }; } },
+    SY03: { mis: 'SY03', name: '相減時符號出錯', fn: ({ k, p, b, t, c1, c2 }) => { if (t >= 0 || b + t === 0) return null; const R = c1 - k * p - c2;
+      return { text: v1(b + t, 'y', R), trace: `${coefX(b, 'y')} 減 ${coefX(t, 'y')} 時負數沒有變號，算成 ${sgn(b)}−${-t}＝${sgn(b + t)}：${v1(b + t, 'y', R)}`,
+        fix: `減去 ${coefX(t, 'y')} 要變成加 ${coefX(-t, 'y')}：${coefX(b, 'y')}−(${coefX(t, 'y')})＝${coefX(b - t, 'y')}，${v1(b - t, 'y', R)}` }; } }
   });
 })(globalThis);
 
@@ -7288,6 +8353,58 @@ window.FAVerify = Object.assign({}, __PV || {}, window.FAVerify);
     SW12: { mis: 'SW12', name: '解出不合理的數就以為算錯', fn: ({ ci, X, Y, v }) => ({ text: '一定算錯了，要再算一次', trace: `解出${ansT(ci, X, Y)}，代回兩式都成立，還是覺得答案不可能是${what(v)}，一直重算`, fix: v === 2 ? `代回兩式都成立，表示計算沒錯；0 ${SWRSN[ci][2]}也合理（那一種沒買），答案照寫：${ansT(ci, X, Y)}` : `代回兩式都成立，表示計算沒錯；${what(v)}不合情境，就寫本題無解` }) },
     SW10: { mis: 'SW10', name: 'x、y 配錯對象', fn: ({ ci, X, Y, v }) => { if (v !== 2) return null; const N = SWRSN[ci];
       return { text: ansT(ci, Y, X), trace: `把 x 當成${N[1]}的${N[2]}數、y 當成${N[0]}的${N[2]}數，寫成 ${ansT(ci, Y, X)}`, fix: `題目設${N[0]} x ${N[2]}、${N[1]} y ${N[2]}：${ansT(ci, X, Y)}` }; } }
+  });
+
+  // ===================================================== v3.71：現成題庫擴充後的新迷思（SW17～SW19） =====================================================
+  // SW-rel2：大的比小的多 d，而且大的比小的 k 倍多（o＝1）／少（o＝−1）e（題庫 P09、P15）；設大的 x、小的 y
+  const SWR2 = [['大數', '小數', ''], ['哥哥', '弟弟', '顆', '彈珠'], ['姊姊', '妹妹', '張', '貼紙'], ['甲班', '乙班', '個', '回收寶特瓶']];
+  const r2 = ({ k, o, e, q }) => { const x0 = k * q + o * e; return { x0, d: x0 - q, ms: o > 0 ? '多' : '少', pm: o > 0 ? '＋' : '−' }; };
+  F.registerFn('swR2OK', (k, o, e, q) => { const { x0, d } = r2({ k, o, e, q }); return x0 > 0 && d > 0; });
+  F.registerFn('swR2Stem', (ci, k, o, e, q) => { const C = SWR2[ci], { d, ms } = r2({ k, o, e, q }), u = C[2] ? ' ' + C[2] : '';
+    return ci === 0 ? `${C[0]}比${C[1]}多 ${d}，而且${C[0]}比${C[1]}的 ${k} 倍${ms} ${e}。設${C[0]} x、${C[1]} y，下列哪一組聯立方程式正確？`
+      : `${C[0]}的${C[3]}比${C[1]}多 ${d}${u}，而且${C[0]}的${C[3]}比${C[1]}的 ${k} 倍${ms} ${e}${u}。設${C[0]}有 x${u}、${C[1]}有 y${u}，下列哪一組聯立方程式正確？`; });
+  F.registerFn('swR2Ans', (k, o, e, q) => { const { d, pm } = r2({ k, o, e, q }); return `x＝y＋${d}；x＝${k}y${pm}${e}`; });
+  add('swRel2', K.text, {
+    SW18: { mis: 'SW18', name: '幾倍多少先加減再乘', fn: P => { const { k, e } = P, { d, ms, pm } = r2(P);
+      return { text: `x＝y＋${d}；x＝${k}(y${pm}${e})`, trace: `「${k} 倍${ms} ${e}」先把 y ${o2(P.o)} ${e} 再乘 ${k}，寫成 x＝${k}(y${pm}${e})`, fix: `先乘再${o2(P.o)}：y 的 ${k} 倍是 ${k}y，再${ms} ${e}，x＝${k}y${pm}${e}；用數字試，y＝10 時 ${k} 倍${ms} ${e} 是 ${k * 10 + P.o * e}，${k}(10${pm}${e})＝${k * (10 + P.o * e)}` }; } },
+    SW08: { mis: 'SW08', name: '倍數乘錯一方', fn: P => { const { k, e } = P, { d, ms, pm } = r2(P);
+      return { text: `x＝y＋${d}；y＝${k}x${pm}${e}`, trace: `「x 比 y 的 ${k} 倍${ms} ${e}」寫成 y＝${k}x${pm}${e}，把 ${k} 倍乘在 x 上`, fix: `是 y 的 ${k} 倍，${k} 要乘在 y 上：x＝${k}y${pm}${e}` }; } },
+    SW07: { mis: 'SW07', name: '「比…多」方向寫反', fn: P => { const { k, e } = P, { d, pm } = r2(P);
+      return { text: `y＝x＋${d}；x＝${k}y${pm}${e}`, trace: `「x 比 y 多 ${d}」寫成 y＝x＋${d}，把 ${d} 加在比較多的一方`, fix: `x 比較多，y 加 ${d} 才等於 x：x＝y＋${d}` }; } },
+    SW06: { mis: 'SW06', name: '總數放錯式子', fn: P => { const { k, e } = P, { d, pm } = r2(P);
+      return { text: `x＋y＝${d}；x＝${k}y${pm}${e}`, trace: `把相差的 ${d} 當成兩者合起來，寫成 x＋y＝${d}`, fix: `${d} 是相差的量：x−y＝${d}，也就是 x＝y＋${d}` }; } }
+  });
+  function o2(o) { return o > 0 ? '加' : '減'; }
+
+  // SW-swap（進階，只有康軒教）：價錢貼反，dr＝1 多收、dr＝−1 少收（題庫 P11）
+  const SWSW = [['汽水', '冬瓜茶', '杯'], ['大杯飲料', '小杯飲料', '杯'], ['雞腿便當', '排骨便當', '個'], ['大盒餅乾', '小盒餅乾', '盒']];
+  F.registerFn('swSw', (i, j) => SWSW[i][j]);
+  const swD = ({ p1, p2, x0, y0 }) => ({ T: p1 * x0 + p2 * y0, D: (p2 - p1) * (x0 - y0) });
+  F.registerFn('swSwD', (p1, p2, x0, y0) => swD({ p1, p2, x0, y0 }).D);
+  F.registerFn('swSwAns', (p1, p2, x0, y0) => { const { T, D } = swD({ p1, p2, x0, y0 }); return `${eqT(p1, p2, T)}；${eqT(p2, p1, T + D)}`; });
+  add('swSwap', K.text, {
+    SW17: { mis: 'SW17', name: '看錯對調搞不清多少', fn: P => { const { p1, p2 } = P, { T, D } = swD(P), A = Math.abs(D), more = D > 0;
+      return { text: `${eqT(p1, p2, T)}；${eqT(p2, p1, T - D)}`, trace: `貼反後${more ? '多收' : '少收'} ${A} 元，卻寫成 ${lin2(p2, p1)}＝${T}${more ? '−' : '＋'}${A}，把${more ? '多出來' : '少掉'}的錢${more ? '扣' : '加'}在錯的一邊`, fix: `貼反後收的錢比應收的${more ? '多' : '少'}：${lin2(p2, p1)}＝${T}${more ? '＋' : '−'}${A}＝${T + D}；代數字檢查，貼反後的總價要${more ? '大於' : '小於'} ${T}` }; } },
+    SW06: { mis: 'SW06', name: '總數放錯式子', fn: P => { const { p1, p2 } = P, { T, D } = swD(P), A = Math.abs(D);
+      return { text: `${eqT(p1, p2, T)}；${eqT(p2, p1, A)}`, trace: `把${D > 0 ? '多收' : '少收'}的 ${A} 元當成貼反後收的錢，寫成 ${lin2(p2, p1)}＝${A}`, fix: `${A} 元只是差額，貼反後收的是 ${T}${D > 0 ? '＋' : '−'}${A}＝${T + D} 元：${eqT(p2, p1, T + D)}` }; } },
+    SW10: { mis: 'SW10', name: '單價配錯對象', fn: P => { const { p1, p2, ci } = P, { T, D } = swD(P), N = SWSW[ci];
+      return { text: `${eqT(p2, p1, T)}；${eqT(p1, p2, T + D)}`, trace: `原定的價錢和貼反的價錢配錯：應收寫成 ${lin2(p2, p1)}＝${T}`, fix: `原定${N[0]}一${N[2]} ${p1} 元乘 x：${eqT(p1, p2, T)}；貼反後${N[0]}變成 ${p2} 元：${eqT(p2, p1, T + D)}` }; } }
+  });
+
+  // SW-box（進階，只有康軒教）：每份 a 個剩 r 個、每份 b 個不足 s 個（題庫 P10）；ord＝1 時題目先講不足
+  const SWBX = [['蘋果', '顆', '盒子', '個', '每盒裝'], ['鉛筆', '枝', '學生', '人', '每人發'], ['糖果', '顆', '小朋友', '人', '每人分'], ['書', '本', '書架', '層', '每層放']];
+  F.registerFn('swBx', (i, j) => SWBX[i][j]);
+  const bxE = (rest, lack, A, B, ord) => ord ? `${lack}；${rest}` : `${rest}；${lack}`;
+  F.registerFn('swBxStem', (ci, a, b, r, s, ord) => { const N = SWBX[ci], R = `${N[4]} ${a} ${N[1]}會剩 ${r} ${N[1]}`, L = `${N[4]} ${b} ${N[1]}會不足 ${s} ${N[1]}`;
+    return `一批${N[0]}，${ord ? L + '；' + R : R + '；' + L}。設${N[0]} x ${N[1]}、${N[2]} y ${N[3]}，下列哪一組聯立方程式正確？`; });
+  F.registerFn('swBxAns', (a, b, r, s, ord) => bxE(`x−${r}＝${a}y`, `x＋${s}＝${b}y`, a, b, ord));
+  add('swBox', K.text, {
+    SW19: { mis: 'SW19', name: '盈餘不足加減用反', fn: ({ a, b, r, s, ord, ci }) => { const N = SWBX[ci];
+      return { text: bxE(`x＋${r}＝${a}y`, `x−${s}＝${b}y`, a, b, ord), trace: `「剩 ${r} ${N[1]}」用加、「不足 ${s} ${N[1]}」用減，寫成 x＋${r}＝${a}y、x−${s}＝${b}y`, fix: `剩下表示${N[0]}比剛好分完需要的多，要減掉剩的：x−${r}＝${a}y；不足表示比剛好分完需要的少，要補上不足的：x＋${s}＝${b}y` }; } },
+    SW10: { mis: 'SW10', name: '每份數量配錯', fn: ({ a, b, r, s, ord, ci }) => { const N = SWBX[ci];
+      return { text: bxE(`x−${r}＝${b}y`, `x＋${s}＝${a}y`, a, b, ord), trace: `把${N[4]} ${b} ${N[1]}配給「剩 ${r} ${N[1]}」、${N[4]} ${a} ${N[1]}配給「不足 ${s} ${N[1]}」`, fix: `${N[4]} ${a} ${N[1]}時剩 ${r} ${N[1]}：x−${r}＝${a}y；${N[4]} ${b} ${N[1]}時不足 ${s} ${N[1]}：x＋${s}＝${b}y` }; } },
+    SW04: { mis: 'SW04', name: '數量與份數混在一起', fn: ({ a, b, r, s, ord, ci }) => { const N = SWBX[ci];
+      return { text: bxE(`x−${r}＝y/${a}`, `x＋${s}＝y/${b}`, a, b, ord), trace: `y 是${N[2]}的${N[3]}數，卻寫成 y/${a}、y/${b}`, fix: `${N[2]}的${N[3]}數乘${N[4]}的${N[1]}數，才是${N[0]}的${N[1]}數：x−${r}＝${a}y、x＋${s}＝${b}y` }; } }
   });
 })(globalThis);
 
