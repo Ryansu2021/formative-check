@@ -3669,7 +3669,9 @@ sup .mf{font-size:.9em}
 .ma .mf,.mp .mf{top:0}
 .mb{margin:0 .15em}
 .mq{margin:0 .08em}
-.mt{margin:0 .12em}`;
+.mt{margin:0 .12em}
+.mq.mqn{margin:0 .18em}
+.mq,.ms{font-family:"PingFang TC","Hiragino Sans","Noto Sans TC","Microsoft JhengHei",sans-serif;font-style:normal}`;
   const MX_ESC = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const MX_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ⁻⁺';
   const MX_UNIT_A = '(?:km|cm|mm|kg|mL|min|m|g|L|s|h)';
@@ -3866,7 +3868,9 @@ sup .mf{font-size:.9em}
         }
         // v3.42（老師 2026-11-19 截圖：選項的「−」和分數被拆成兩行）：一元負號和後面的數、分數、帶分數、根號、括號包成不換行的一組
         if (c === '−' && mxBinLeft(T[k - 1]) && T[k + 1] && !(T[k + 1].t === 'op' && /^\s$/.test(T[k + 1].raw))) { h += '<span class="mb">−</span>' + mxSup(t.sup, st); continue; }   // v3.64 二元減號加間距
-        if (/^[＜＞≦≧<>]$/.test(c)) { h += `<span class="mq">${MX_ESC(c)}</span>` + mxSup(t.sup, st); continue; }   // v3.64 不等號兩側補間距（上標不貼著）
+        // v3.81（2026-11-26 看圖驗收：∠⊥△ 在 iPad 比字小、偏低；≦≧ 比 ＜＞ 小、細）：-apple-system 在 WebKit 遇到這些符號會退到系統的小號符號字型，包 .ms／.mq 指定 PingFang TC
+        if (/^[∠⊥△∥]$/.test(c)) { h += `<span class="ms">${c}</span>` + mxSup(t.sup, st); continue; }
+        if (/^[＜＞≦≧<>]$/.test(c)) { h += `<span class="mq${/[≦≧]/.test(c) ? ' mqn' : ''}">${MX_ESC(c)}</span>` + mxSup(t.sup, st); continue; }   // v3.64 不等號兩側補間距（上標不貼著）
         if (c === '−' && !inM && !MX_NOWRAP) {   // 指數、分數、短括號裡面本來就不會換行；「−5」這種負號接數字瀏覽器也不會拆，只處理分數、帶分數、根號、括號
           const P = T[k - 1], N = T[k + 1];
           const un = !P || P.t === 'cjk' || (P.t === 'op' && /^[\s＝=(（,，、:：＋+×÷<>≤≥＜＞≦≧]$/.test(P.raw));
