@@ -153,6 +153,85 @@
    "example": "題目問上視圖，卻選了前視圖",
    "remedy": "在積木的前、右、上各貼一張標籤，請學生指出要畫的那一面朝哪裡，再畫。",
    "source": "依教學經驗（知識卡會考題 112-3 評量是否理解前視圖的意義）"
+  },
+  {
+   "code": "SM15",
+   "name": "射線 AB、BA 當同一條",
+   "desc": "以為射線和線段一樣，兩個字母前後對調還是同一條，不管端點在哪、往哪一邊延伸",
+   "example": "射線 CB 上的點，數成射線 BC 上的點",
+   "remedy": "請學生各畫一條射線 AB、射線 BA，指出端點（第一個字母）和延伸方向，再比較是不是同一條。",
+   "source": "知識卡迷思：康軒 p.195 明寫兩者不同、自我檢核1（p.215）；南一 p.181 比較表、備課 p.247；翰林 P207 明寫射線 AB 與 BA 不同（✓／✓／✓）",
+   "card": "射線 AB 與射線 BA 視為相同",
+   "tiers": [
+    "七下6-1-S1T1"
+   ]
+  },
+  {
+   "code": "SM16",
+   "name": "角的頂點認錯",
+   "desc": "不知道 ∠BAC 的頂點是中間的字母；或同一個頂點有好幾個角時，只寫 ∠A",
+   "example": "∠ABC 的頂點寫成 A；M 點有兩個角，卻寫 ∠M",
+   "remedy": "先圈出中間的字母當頂點，用手指沿兩條邊走一次；同一個頂點有好幾個角時，請學生說出只寫 ∠M 會分不出哪一個。",
+   "source": "知識卡迷思：康軒 p.196 共頂點時改用三字母或 ∠1、∠2；南一 p.182「∠A 無法確定」；翰林 P208 無法確定時用三點（✓／✓／✓）",
+   "card": "同一頂點有多個角時只寫 ∠A，或不知 ∠BAC 的頂點是哪一點（手冊 S-7-1）",
+   "tiers": [
+    "七下6-1-S1T1"
+   ]
+  },
+  {
+   "code": "SM17",
+   "name": "以為直線有中點",
+   "desc": "把直線當成有兩個端點，以為直線也有中點；把線段的中點說成直線的中點",
+   "example": "M 是線段 AB 的中點，就說 M 也是直線 AB 的中點",
+   "remedy": "請學生說出直線、線段各有幾個端點；沒有端點、往兩邊無限延伸的直線，找得到「正中間」嗎？",
+   "source": "知識卡迷思：康軒 自我檢核2（p.215）P 是 AB 的中點，不是 L 的中點；南一 6-1 課本未見；翰林 課本未見、只在備課 P315 眉批與會考觀測站（✓／–／備）",
+   "card": "以為直線有中點、中垂線；把中垂線與線段的交點當成中垂線的中點（手冊 S-7-3）"
+  },
+  {
+   "code": "SM18",
+   "name": "直線、射線當成線段",
+   "desc": "把直線 AB、射線 AB 當成只到 A、B 兩點為止的線段：數射線上的點只數到第二個字母，找垂足只在線段 AB 上找",
+   "example": "射線 CB 上的點只數 C、B；垂足在 AB 延長線上時，改量 C 到 B 的長",
+   "remedy": "對照提示卡：直線兩頭延伸（↔）、射線一頭延伸（→）、線段兩頭停住（‾）；畫圖時把直線、射線畫到紙邊。",
+   "source": "知識卡教學建議：Moravcová 與 Hromadová（2020，捷克）發現許多學生把直線當成線段處理（p.331）；射線部分依教學經驗",
+   "tiers": [
+    "七下6-1-S1T1"
+   ]
+  },
+  {
+   "code": "SM19",
+   "name": "射線當成直線",
+   "desc": "以為射線也往兩邊延伸，把端點另一側的點也算在射線上",
+   "example": "直線上依序有 A、B、C，說 A 也在射線 BC 上",
+   "remedy": "請學生從端點出發，只朝第二個字母的方向畫箭頭；端點另一側的點不在這條射線上。",
+   "source": "依教學經驗（主幹卡 S1 卡點提示卡：射線只往一頭延伸，從端點開始）",
+   "tiers": [
+    "七下6-1-S1T1"
+   ]
+  },
+  {
+   "code": "SM20",
+   "name": "只畫最靠近自己的一排",
+   "desc": "畫前視圖、側視圖時只畫最靠近自己的那一排（行）積木，後面比較高、看得到的積木沒畫",
+   "example": "前視圖只畫最前排的高度",
+   "remedy": "把眼睛放低到和積木一樣高，請學生指出「後面那一疊有沒有冒出來」；每一行（排）都要問最高有幾層。",
+   "source": "依教學經驗"
+  },
+  {
+   "code": "SM21",
+   "name": "箏形當成菱形",
+   "desc": "以為箏形和菱形一樣，兩條對角線都是對稱軸",
+   "example": "箏形有 2 條對稱軸",
+   "remedy": "發箏形紙片沿兩條對角線各摺一次：只有一條能讓兩邊疊合；再和菱形比，菱形四邊等長、箏形只有兩組鄰邊等長。",
+   "source": "依教學經驗（知識卡先備銜接：翰林備課 P320 眉批提醒向學生澄清菱形與箏形的共同點與差異）"
+  },
+  {
+   "code": "SM22",
+   "name": "周長算進對稱軸",
+   "desc": "算線對稱圖形的周長時，把畫在圖形裡面的對稱軸那一段也加進去",
+   "example": "等腰三角形周長＝兩腰＋底邊＋對稱軸上那段高",
+   "remedy": "請學生用手指沿圖形外圍走一圈，只把走過的邊加起來；圖形裡面的線不在外圍，不算周長。",
+   "source": "依教學經驗"
   }
  ],
  "items": [
@@ -817,8 +896,1696 @@
    "hint": "站到正前方，再抬高往下看：圖的下緣是立體的前面。",
    "seg": "七下6-1-S3",
    "fig": "<svg viewBox=\"0 0 330 175\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"34.5,93.5 50.9,103 67.4,93.5 50.9,84\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"34.5,112.5 50.9,122 50.9,103 34.5,93.5\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"50.9,122 67.4,112.5 67.4,93.5 50.9,103\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,93.5 83.8,103 100.3,93.5 83.8,84\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,112.5 83.8,122 83.8,103 67.4,93.5\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"83.8,122 100.3,112.5 100.3,93.5 83.8,103\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"50.9,103 67.4,112.5 83.8,103 67.4,93.5\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"50.9,122 67.4,131.5 67.4,112.5 50.9,103\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,131.5 83.8,122 83.8,103 67.4,112.5\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,74.5 83.8,84 100.3,74.5 83.8,65\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,93.5 83.8,103 83.8,84 67.4,74.5\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"83.8,103 100.3,93.5 100.3,74.5 83.8,84\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,112.5 83.8,122 100.3,112.5 83.8,103\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,131.5 83.8,141 83.8,122 67.4,112.5\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"83.8,141 100.3,131.5 100.3,112.5 83.8,122\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"50.9,122 67.4,131.5 83.8,122 67.4,112.5\" fill=\"#f4f4f4\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"50.9,141 67.4,150.5 67.4,131.5 50.9,122\" fill=\"#d6d6d6\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><polygon points=\"67.4,150.5 83.8,141 83.8,122 67.4,131.5\" fill=\"#a9a9a9\" stroke=\"#333\" stroke-width=\"1.3\" stroke-linejoin=\"round\"/><line x1=\"16.4\" y1=\"151.4\" x2=\"34.5\" y2=\"141\" stroke=\"#333\" stroke-width=\"1.8\"/><polygon points=\"34.5,141 30.4,148 26.4,141\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\" stroke-linejoin=\"round\"/><text x=\"8.4\" y=\"159.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"150\" y=\"44\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"163\" y=\"31\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"176\" y=\"44\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"163\" y=\"44\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"176\" y=\"57\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"169.5\" y=\"86\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"263\" y=\"57\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"276\" y=\"57\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"276\" y=\"44\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"250\" y=\"57\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"269.5\" y=\"86\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"163\" y=\"142\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"163\" y=\"129\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"176\" y=\"142\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"150\" y=\"142\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"169.5\" y=\"171\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"263\" y=\"116\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"276\" y=\"129\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"250\" y=\"142\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"263\" y=\"129\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><rect x=\"263\" y=\"142\" width=\"13\" height=\"13\" fill=\"#eee\" stroke=\"#333\" stroke-width=\"1.5\"/><text x=\"269.5\" y=\"171\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P09A",
+   "set": "A",
+   "pair": "P09",
+   "bloom": "理解",
+   "lc": "S-7-1",
+   "stem": "直線上依序有 A、B、C、D、E 五點。這五個點中，在射線 CB 上的點有幾個？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4 個",
+     "mis": "SM15",
+     "feedback": "你數了 B、C、D、E 共 4 個，這是射線 BC（從 B 往 C 那一邊）。射線 CB 的端點是 C、往 B 的方向延伸，只有 C、B、A 共 3 個。"
+    },
+    {
+     "key": "B",
+     "text": "3 個",
+     "mis": null,
+     "feedback": "正確！射線 CB 的端點是 C，從 C 經過 B 往 A 那一邊一直延伸，C、B、A 都在上面，共 3 個。"
+    },
+    {
+     "key": "C",
+     "text": "2 個",
+     "mis": "SM18",
+     "feedback": "你只數了 C、B 共 2 個，把射線 CB 當成線段 CB。射線會從 C 經過 B 一直延伸下去，A 也在上面，共 3 個。"
+    },
+    {
+     "key": "D",
+     "text": "5 個",
+     "mis": "SM19",
+     "feedback": "你把五個點都算進去共 5 個，把射線當成往兩邊延伸的直線。射線 CB 只從 C 往 B 那一邊延伸，D、E 不在上面，共 3 個。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "3"
+   },
+   "hint": "射線 CB：端點是第一個字母 C，往 B 的方向一直延伸。",
+   "seg": "七下6-1-S1"
+  },
+  {
+   "id": "P09B",
+   "set": "B",
+   "pair": "P09",
+   "bloom": "理解",
+   "lc": "S-7-1",
+   "stem": "直線上依序有 P、Q、R、S、T、U、V 七點。這七個點中，在射線 SQ 上的點有幾個？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3 個",
+     "mis": "SM18",
+     "feedback": "你只數了 Q、R、S 共 3 個，把射線 SQ 當成線段 SQ。射線會從 S 經過 Q 一直延伸下去，P 也在上面，共 4 個。"
+    },
+    {
+     "key": "B",
+     "text": "7 個",
+     "mis": "SM19",
+     "feedback": "你把七個點都算進去共 7 個，把射線當成往兩邊延伸的直線。射線 SQ 只從 S 往 Q 那一邊延伸，T、U、V 不在上面，共 4 個。"
+    },
+    {
+     "key": "C",
+     "text": "4 個",
+     "mis": null,
+     "feedback": "正確！射線 SQ 的端點是 S，從 S 經過 R、Q 往 P 那一邊一直延伸，S、R、Q、P 都在上面，共 4 個。"
+    },
+    {
+     "key": "D",
+     "text": "6 個",
+     "mis": "SM15",
+     "feedback": "你數了 Q、R、S、T、U、V 共 6 個，這是射線 QS（從 Q 往 S 那一邊）。射線 SQ 的端點是 S、往 Q 的方向延伸，只有 S、R、Q、P 共 4 個。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "4"
+   },
+   "hint": "射線 SQ：端點是第一個字母 S，往 Q 的方向一直延伸。",
+   "seg": "七下6-1-S1"
+  },
+  {
+   "id": "P10A",
+   "set": "A",
+   "pair": "P10",
+   "bloom": "記憶",
+   "lc": "S-7-1",
+   "stem": "△ABC 中，M 是線段 AB 的中點。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "∠ABC 的頂點是 A",
+     "mis": "SM16",
+     "feedback": "你把第一個字母 A 當成頂點。∠ABC 的頂點是中間的字母 B，兩邊是射線 BA 和射線 BC。"
+    },
+    {
+     "key": "B",
+     "text": "M 也是直線 AB 的中點",
+     "mis": "SM17",
+     "feedback": "你以為直線 AB 也有中點。直線往兩邊無限延伸、沒有端點，沒有中點；M 只是線段 AB 的中點。"
+    },
+    {
+     "key": "C",
+     "text": "直線 AB 沒有端點，往兩邊無限延伸",
+     "mis": null,
+     "feedback": "正確！直線 AB 通過 A、B 兩點，往兩邊無限延伸，沒有端點；線段 AB 才有 A、B 兩個端點。"
+    },
+    {
+     "key": "D",
+     "text": "射線 AB 和射線 BA 是同一條射線",
+     "mis": "SM15",
+     "feedback": "你以為射線和線段一樣，字母對調也相同。射線 AB 從 A 出發往 B 延伸，射線 BA 從 B 出發往 A 延伸，端點和方向都不同。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先想：線段、射線、直線各有幾個端點？角的記號中，哪個字母是頂點？",
+   "seg": "七下6-1-S1",
+   "optional": true
+  },
+  {
+   "id": "P10B",
+   "set": "B",
+   "pair": "P10",
+   "bloom": "記憶",
+   "lc": "S-7-1",
+   "stem": "△PQR 中，N 是線段 PQ 的中點。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "射線 PQ 只有一個端點 P",
+     "mis": null,
+     "feedback": "正確！射線 PQ 從端點 P 出發，經過 Q 往同一邊無限延伸，只有一個端點 P。"
+    },
+    {
+     "key": "B",
+     "text": "N 也是直線 PQ 的中點",
+     "mis": "SM17",
+     "feedback": "你以為直線 PQ 也有中點。直線往兩邊無限延伸、沒有端點，沒有中點；N 只是線段 PQ 的中點。"
+    },
+    {
+     "key": "C",
+     "text": "射線 QP 和射線 PQ 是同一條射線",
+     "mis": "SM15",
+     "feedback": "你以為射線和線段一樣，字母對調也相同。射線 QP 從 Q 出發往 P 延伸，射線 PQ 從 P 出發往 Q 延伸，端點和方向都不同。"
+    },
+    {
+     "key": "D",
+     "text": "∠PRQ 的頂點是 P",
+     "mis": "SM16",
+     "feedback": "你把第一個字母 P 當成頂點。∠PRQ 的頂點是中間的字母 R，兩邊是射線 RP 和射線 RQ。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "先想：線段、射線、直線各有幾個端點？角的記號中，哪個字母是頂點？",
+   "seg": "七下6-1-S1",
+   "optional": true
+  },
+  {
+   "id": "P11A",
+   "set": "A",
+   "pair": "P11",
+   "bloom": "應用",
+   "lc": "S-7-3",
+   "stem": "如圖是地圖的一部分（上方是北），筆直的海岸線是直線 AB，A、B 是兩座碼頭，C 是小島。CH⊥直線 AB，CV 是從 C 往正南方畫到直線 AB 的線段（單位：公尺）。小島 C 到海岸線的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "24 公尺",
+     "mis": null,
+     "feedback": "正確！CH⊥直線 AB，垂直線段 CH＝24 公尺就是小島到海岸線（直線 AB）的距離；直線可以延長，垂足 H 不在兩座碼頭之間也可以。"
+    },
+    {
+     "key": "B",
+     "text": "51 公尺",
+     "mis": "SM02",
+     "feedback": "你選了 CA＝51，這是 C 和碼頭 A 的連線，不是垂直線段。點到直線的距離要取垂直線段 CH＝24 公尺。"
+    },
+    {
+     "key": "C",
+     "text": "40 公尺",
+     "mis": "SM18",
+     "feedback": "你選了 CB＝40，以為只能走到兩座碼頭之間（線段 AB），就取離 C 最近的碼頭 B。直線 AB 會往兩邊延伸，和它垂直的是 CH＝24 公尺。"
+    },
+    {
+     "key": "D",
+     "text": "26 公尺",
+     "mis": "SM01",
+     "feedback": "你選了往正南方畫的 CV＝26。AB 是斜的，CV 和 AB 的夾角不是 90°；要找和直線 AB 垂直的 CH＝24 公尺。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "24"
+   },
+   "hint": "點到直線的距離：從點畫一條和「直線」垂直的線段；直線 AB 可以延長到碼頭外面。",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 340 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.0\" y1=\"239.2\" x2=\"339.0\" y2=\"98.4\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"222.4\" y1=\"28.7\" x2=\"264.4\" y2=\"129.4\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"222.4\" y1=\"28.7\" x2=\"130.1\" y2=\"185.4\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"222.4\" y1=\"28.7\" x2=\"222.4\" y2=\"146.9\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"222.4\" y1=\"28.7\" x2=\"75.6\" y2=\"208.1\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M261.3 122.0 L253.9 125.1 L257.0 132.5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"222.4\" cy=\"28.7\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"264.4\" cy=\"129.4\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"130.1\" cy=\"185.4\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"222.4\" cy=\"146.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"75.6\" cy=\"208.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"260.8\" y=\"94.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">24</text><text x=\"172.8\" y=\"141.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">40</text><text x=\"210.4\" y=\"119.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">26</text><text x=\"117.7\" y=\"142.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">51</text><text x=\"225.8\" y=\"21.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"267.8\" y=\"147.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"130.1\" y=\"203.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"225.8\" y=\"164.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"75.6\" y=\"226.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P11B",
+   "set": "B",
+   "pair": "P11",
+   "bloom": "應用",
+   "lc": "S-7-3",
+   "stem": "如圖是地圖的一部分（上方是北），筆直的海岸線是直線 AB，A、B 是兩座碼頭，C 是小島。CH⊥直線 AB，CV 是從 C 往正南方畫到直線 AB 的線段（單位：公尺）。小島 C 到海岸線的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "80 公尺",
+     "mis": "SM18",
+     "feedback": "你選了 CB＝80，以為只能走到兩座碼頭之間（線段 AB），就取離 C 最近的碼頭 B。直線 AB 會往兩邊延伸，和它垂直的是 CH＝48 公尺。"
+    },
+    {
+     "key": "B",
+     "text": "52 公尺",
+     "mis": "SM01",
+     "feedback": "你選了往正南方畫的 CV＝52。AB 是斜的，CV 和 AB 的夾角不是 90°；要找和直線 AB 垂直的 CH＝48 公尺。"
+    },
+    {
+     "key": "C",
+     "text": "102 公尺",
+     "mis": "SM02",
+     "feedback": "你選了 CA＝102，這是 C 和碼頭 A 的連線，不是垂直線段。點到直線的距離要取垂直線段 CH＝48 公尺。"
+    },
+    {
+     "key": "D",
+     "text": "48 公尺",
+     "mis": null,
+     "feedback": "正確！CH⊥直線 AB，垂直線段 CH＝48 公尺就是小島到海岸線（直線 AB）的距離；直線可以延長，垂足 H 不在兩座碼頭之間也可以。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "48"
+   },
+   "hint": "點到直線的距離：從點畫一條和「直線」垂直的線段；直線 AB 可以延長到碼頭外面。",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 340 260\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.0\" y1=\"241.2\" x2=\"339.0\" y2=\"100.4\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"224.0\" y1=\"26.7\" x2=\"267.1\" y2=\"130.3\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"224.0\" y1=\"26.7\" x2=\"129.0\" y2=\"187.9\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"224.0\" y1=\"26.7\" x2=\"224.0\" y2=\"148.3\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"224.0\" y1=\"26.7\" x2=\"72.9\" y2=\"211.3\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M264.0 122.9 L256.7 126.0 L259.7 133.4\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"224.0\" cy=\"26.7\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"267.1\" cy=\"130.3\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"129.0\" cy=\"187.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"224.0\" cy=\"148.3\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"72.9\" cy=\"211.3\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"263.1\" y=\"94.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">48</text><text x=\"172.6\" y=\"142.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">80</text><text x=\"212.0\" y=\"119.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">52</text><text x=\"111.1\" y=\"139.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">102</text><text x=\"227.3\" y=\"19.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">C</text><text x=\"270.5\" y=\"147.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"129.0\" y=\"205.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"227.3\" y=\"165.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"72.9\" y=\"229.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P12A",
+   "set": "A",
+   "pair": "P12",
+   "bloom": "分析",
+   "lc": "S-7-1",
+   "stem": "直線上依序有 A、B、C、D、E 五點，K 點不在這條直線上。這六個點中，不在射線 BC 上的點有幾個？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3 個",
+     "mis": "SM15",
+     "feedback": "你看成射線 CB（C、B、A 在上面），數出 D、E、K 共 3 個。射線 BC 的端點是 B、往 C 的方向延伸，不在上面的是 A、K 共 2 個。"
+    },
+    {
+     "key": "B",
+     "text": "4 個",
+     "mis": "SM18",
+     "feedback": "你把射線 BC 當成線段 BC，只有 B、C 在上面，數出 A、D、E、K 共 4 個。射線會經過 C 繼續延伸，D、E 也在上面，不在的只有 A、K 共 2 個。"
+    },
+    {
+     "key": "C",
+     "text": "1 個",
+     "mis": "SM19",
+     "feedback": "你把射線當成往兩邊延伸的直線，直線上五個點都在上面，只數出 K 共 1 個。射線 BC 只往 C 那一邊延伸，A 不在上面，共 2 個。"
+    },
+    {
+     "key": "D",
+     "text": "2 個",
+     "mis": null,
+     "feedback": "正確！射線 BC 從 B 經過 C 往 E 那一邊延伸，上面有 B、C、D、E；不在上面的是 A、K，共 2 個。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "2"
+   },
+   "hint": "先畫出射線 BC：從端點 B 出發，朝 C 的方向畫箭頭。",
+   "seg": "七下6-1-S1"
+  },
+  {
+   "id": "P12B",
+   "set": "B",
+   "pair": "P12",
+   "bloom": "分析",
+   "lc": "S-7-1",
+   "stem": "直線上依序有 P、Q、R、S、T、U 六點，K、J 兩點不在這條直線上。這八個點中，不在射線 TS 上的點有幾個？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6 個",
+     "mis": "SM18",
+     "feedback": "你把射線 TS 當成線段 TS，只有 T、S 在上面，數出 P、Q、R、U、K、J 共 6 個。射線會經過 S 繼續延伸，P、Q、R 也在上面，不在的是 U、K、J 共 3 個。"
+    },
+    {
+     "key": "B",
+     "text": "3 個",
+     "mis": null,
+     "feedback": "正確！射線 TS 從 T 經過 S 往 P 那一邊延伸，上面有 T、S、R、Q、P；不在上面的是 U、K、J，共 3 個。"
+    },
+    {
+     "key": "C",
+     "text": "2 個",
+     "mis": "SM19",
+     "feedback": "你把射線當成往兩邊延伸的直線，直線上六個點都在上面，只數出 K、J 共 2 個。射線 TS 只往 S 那一邊延伸，U 不在上面，共 3 個。"
+    },
+    {
+     "key": "D",
+     "text": "5 個",
+     "mis": "SM15",
+     "feedback": "你看成射線 ST（S、T、U 在上面），數出 P、Q、R、K、J 共 5 個。射線 TS 的端點是 T、往 S 的方向延伸，不在上面的是 U、K、J 共 3 個。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "3"
+   },
+   "hint": "先畫出射線 TS：從端點 T 出發，朝 S 的方向畫箭頭。",
+   "seg": "七下6-1-S1"
+  },
+  {
+   "id": "P13A",
+   "set": "A",
+   "pair": "P13",
+   "bloom": "理解",
+   "lc": "S-7-1",
+   "stem": "直線 L 上依序有 A、M、B 三點，AM＝MB＝4 公分；P 點不在 L 上，連接 PA、PM、PB。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "射線 MB 的長是 4 公分",
+     "mis": "SM18",
+     "feedback": "你把射線 MB 當成線段 MB，長算成 4 公分。射線從 M 經過 B 一直延伸下去，沒有長度可以量。"
+    },
+    {
+     "key": "B",
+     "text": "∠PMB 可以簡寫成 ∠M",
+     "mis": "SM16",
+     "feedback": "你以為頂點是 M 就能寫成 ∠M。M 點有 ∠PMA、∠PMB 好幾個角，只寫 ∠M 分不出是哪一個，要寫三個字母。"
+    },
+    {
+     "key": "C",
+     "text": "M 是直線 L 的中點",
+     "mis": "SM17",
+     "feedback": "你以為直線 L 也有中點。直線往兩邊無限延伸、沒有端點，沒有中點；M 是線段 AB 的中點。"
+    },
+    {
+     "key": "D",
+     "text": "線段 AB 的長是 8 公分",
+     "mis": null,
+     "feedback": "正確！線段 AB 有兩個端點 A、B，長＝AM＋MB＝4＋4＝8 公分。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "直線、射線哪一頭會一直延伸？同一個頂點有好幾個角時，角要怎麼寫？",
+   "seg": "七下6-1-S1",
+   "optional": true
+  },
+  {
+   "id": "P13B",
+   "set": "B",
+   "pair": "P13",
+   "bloom": "理解",
+   "lc": "S-7-1",
+   "stem": "直線 L 上依序有 C、N、D 三點，CN＝ND＝6 公分；Q 點不在 L 上，連接 QC、QN、QD。下列敘述哪一個正確？",
+   "options": [
+    {
+     "key": "A",
+     "text": "線段 CD 的長是 12 公分",
+     "mis": null,
+     "feedback": "正確！線段 CD 有兩個端點 C、D，長＝CN＋ND＝6＋6＝12 公分。"
+    },
+    {
+     "key": "B",
+     "text": "∠QNC 可以簡寫成 ∠N",
+     "mis": "SM16",
+     "feedback": "你以為頂點是 N 就能寫成 ∠N。N 點有 ∠QNC、∠QND 好幾個角，只寫 ∠N 分不出是哪一個，要寫三個字母。"
+    },
+    {
+     "key": "C",
+     "text": "N 是直線 L 的中點",
+     "mis": "SM17",
+     "feedback": "你以為直線 L 也有中點。直線往兩邊無限延伸、沒有端點，沒有中點；N 是線段 CD 的中點。"
+    },
+    {
+     "key": "D",
+     "text": "射線 NC 的長是 6 公分",
+     "mis": "SM18",
+     "feedback": "你把射線 NC 當成線段 NC，長算成 6 公分。射線從 N 經過 C 一直延伸下去，沒有長度可以量。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "manual"
+   },
+   "hint": "直線、射線哪一頭會一直延伸？同一個頂點有好幾個角時，角要怎麼寫？",
+   "seg": "七下6-1-S1",
+   "optional": true
+  },
+  {
+   "id": "P14A",
+   "set": "A",
+   "pair": "P14",
+   "bloom": "應用",
+   "lc": "S-7-3",
+   "stem": "如圖，A、B 兩點對稱於直線 L，AB 交 L 於 M，AV 是從 A 往正下方畫到 L 的線段，P 是 L 上一點（長度單位：公分）。A 點到直線 L 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "36 公分",
+     "mis": null,
+     "feedback": "正確！A、B 對稱於 L，L 垂直平分 AB，A 到 L 的距離是垂直線段 AM＝72÷2＝36 公分。"
+    },
+    {
+     "key": "B",
+     "text": "60 公分",
+     "mis": "SM02",
+     "feedback": "你選了 AP＝60，這是 A 和 L 上一點 P 的連線，不是垂直線段。距離要取垂直線段 AM＝72÷2＝36 公分。"
+    },
+    {
+     "key": "C",
+     "text": "72 公分",
+     "mis": "SM09",
+     "feedback": "你把整段 AB＝72 當成 A 到 L 的距離。對稱軸 L 平分 AB，AM＝MB，距離是 AB 的一半：72÷2＝36 公分。"
+    },
+    {
+     "key": "D",
+     "text": "45 公分",
+     "mis": "SM01",
+     "feedback": "你選了看起來「直直往下」的 AV＝45。L 是斜的，AV 和 L 的夾角不是 90°；和 L 垂直的是 AB，距離是 AM＝72÷2＝36 公分。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "72÷2"
+   },
+   "hint": "對稱軸和對稱點的連線有什麼關係？點到直線的距離要取哪一條線段？",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 280 230\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.0\" y1=\"219.1\" x2=\"279.0\" y2=\"10.6\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"62.7\" y1=\"56.9\" x2=\"174.0\" y2=\"205.2\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"62.7\" y1=\"56.9\" x2=\"62.7\" y2=\"172.7\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"62.7\" y1=\"56.9\" x2=\"217.3\" y2=\"56.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M113.6 124.6 L120.0 119.8 L124.8 126.2\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"62.7\" cy=\"56.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"174.0\" cy=\"205.2\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"118.4\" cy=\"131.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"62.7\" cy=\"172.7\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"217.3\" cy=\"56.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"127.7\" y=\"198.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AB＝72</text><text x=\"50.7\" y=\"119.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">45</text><text x=\"140.0\" y=\"49.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">60</text><text x=\"258.4\" y=\"14.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"59.4\" y=\"49.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"177.4\" y=\"222.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"97.4\" y=\"136.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">M</text><text x=\"66.1\" y=\"190.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"213.9\" y=\"49.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text></svg>"
+  },
+  {
+   "id": "P14B",
+   "set": "B",
+   "pair": "P14",
+   "bloom": "應用",
+   "lc": "S-7-3",
+   "stem": "如圖，A、B 兩點對稱於直線 L，AB 交 L 於 M，AV 是從 A 往正下方畫到 L 的線段，P 是 L 上一點（長度單位：公分）。A 點到直線 L 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "42 公分",
+     "mis": "SM09",
+     "feedback": "你把整段 AB＝42 當成 A 到 L 的距離。對稱軸 L 平分 AB，AM＝MB，距離是 AB 的一半：42÷2＝21 公分。"
+    },
+    {
+     "key": "B",
+     "text": "29 公分",
+     "mis": "SM01",
+     "feedback": "你選了看起來「直直往下」的 AV＝29。L 是斜的，AV 和 L 的夾角不是 90°；和 L 垂直的是 AB，距離是 AM＝42÷2＝21 公分。"
+    },
+    {
+     "key": "C",
+     "text": "35 公分",
+     "mis": "SM02",
+     "feedback": "你選了 AP＝35，這是 A 和 L 上一點 P 的連線，不是垂直線段。距離要取垂直線段 AM＝42÷2＝21 公分。"
+    },
+    {
+     "key": "D",
+     "text": "21 公分",
+     "mis": null,
+     "feedback": "正確！A、B 對稱於 L，L 垂直平分 AB，A 到 L 的距離是垂直線段 AM＝42÷2＝21 公分。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "42÷2"
+   },
+   "hint": "對稱軸和對稱點的連線有什麼關係？點到直線的距離要取哪一條線段？",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 280 230\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20.3\" y1=\"229.0\" x2=\"259.7\" y2=\"1.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"77.0\" y1=\"69.9\" x2=\"182.0\" y2=\"180.1\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"77.0\" y1=\"69.9\" x2=\"77.0\" y2=\"175.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"77.0\" y1=\"69.9\" x2=\"203.0\" y2=\"55.0\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M124.0 119.2 L129.8 113.7 L135.3 119.5\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"77.0\" cy=\"69.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"182.0\" cy=\"180.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"129.5\" cy=\"125.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"77.0\" cy=\"175.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"203.0\" cy=\"55.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"139.3\" y=\"183.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">AB＝42</text><text x=\"65.0\" y=\"127.1\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">29</text><text x=\"138.6\" y=\"55.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">35</text><text x=\"261.4\" y=\"22.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"64.4\" y=\"71.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text><text x=\"185.4\" y=\"197.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"108.5\" y=\"130.0\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">M</text><text x=\"80.4\" y=\"192.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"199.6\" y=\"47.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text></svg>"
+  },
+  {
+   "id": "P15A",
+   "set": "A",
+   "pair": "P15",
+   "bloom": "分析",
+   "lc": "S-7-3",
+   "stem": "如圖，P、Q 兩點對稱於直線 AB，PQ 交直線 AB 於 H，PV 是從 P 往正下方畫到直線 AB 的線段（長度單位：公分）。P 點到直線 AB 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "80 公分",
+     "mis": "SM09",
+     "feedback": "你把整段 PQ＝80 當成 P 到直線 AB 的距離。對稱軸平分 PQ，PH＝HQ，距離是 80÷2＝40 公分。"
+    },
+    {
+     "key": "B",
+     "text": "58 公分",
+     "mis": "SM18",
+     "feedback": "你選了 PB＝58，以為垂足要落在線段 AB 上，就取 AB 上離 P 最近的 B。直線 AB 會往兩邊延伸，垂直線段是 PH＝80÷2＝40 公分。"
+    },
+    {
+     "key": "C",
+     "text": "40 公分",
+     "mis": null,
+     "feedback": "正確！P、Q 對稱於直線 AB，直線 AB 垂直平分 PQ，距離是垂直線段 PH＝80÷2＝40 公分；H 在 AB 的延長線上也可以。"
+    },
+    {
+     "key": "D",
+     "text": "50 公分",
+     "mis": "SM01",
+     "feedback": "你選了看起來「直直往下」的 PV＝50。直線 AB 是斜的，PV 和它的夾角不是 90°；和它垂直的是 PQ，距離是 PH＝80÷2＝40 公分。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "80÷2"
+   },
+   "hint": "直線 AB 可以延長；對稱軸會把對稱點的連線怎樣？",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 290 230\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.0\" y1=\"223.0\" x2=\"289.0\" y2=\"7.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"63.7\" y1=\"79.2\" x2=\"156.6\" y2=\"203.0\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"63.7\" y1=\"79.2\" x2=\"63.7\" y2=\"176.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"63.7\" y1=\"79.2\" x2=\"175.2\" y2=\"92.4\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M105.4 134.7 L111.8 129.9 L116.6 136.3\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"63.7\" cy=\"79.2\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"156.6\" cy=\"203.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"110.2\" cy=\"141.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"63.7\" cy=\"176.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"175.2\" cy=\"92.4\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"226.3\" cy=\"54.0\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"114.0\" y=\"201.0\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">PQ＝80</text><text x=\"51.7\" y=\"132.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">50</text><text x=\"120.9\" y=\"78.5\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">58</text><text x=\"51.2\" y=\"80.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"160.0\" y=\"220.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">Q</text><text x=\"89.2\" y=\"146.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"67.1\" y=\"193.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"171.8\" y=\"84.8\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"222.9\" y=\"46.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P15B",
+   "set": "B",
+   "pair": "P15",
+   "bloom": "分析",
+   "lc": "S-7-3",
+   "stem": "如圖，P、Q 兩點對稱於直線 AB，PQ 交直線 AB 於 H，PV 是從 P 往正下方畫到直線 AB 的線段（長度單位：公分）。P 點到直線 AB 的距離是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "52 公分",
+     "mis": "SM18",
+     "feedback": "你選了 PB＝52，以為垂足要落在線段 AB 上，就取 AB 上離 P 最近的 B。直線 AB 會往兩邊延伸，垂直線段是 PH＝96÷2＝48 公分。"
+    },
+    {
+     "key": "B",
+     "text": "48 公分",
+     "mis": null,
+     "feedback": "正確！P、Q 對稱於直線 AB，直線 AB 垂直平分 PQ，距離是垂直線段 PH＝96÷2＝48 公分；H 在 AB 的延長線上也可以。"
+    },
+    {
+     "key": "C",
+     "text": "73 公分",
+     "mis": "SM01",
+     "feedback": "你選了看起來「直直往下」的 PV＝73。直線 AB 是斜的，PV 和它的夾角不是 90°；和它垂直的是 PQ，距離是 PH＝96÷2＝48 公分。"
+    },
+    {
+     "key": "D",
+     "text": "96 公分",
+     "mis": "SM09",
+     "feedback": "你把整段 PQ＝96 當成 P 到直線 AB 的距離。對稱軸平分 PQ，PH＝HQ，距離是 96÷2＝48 公分。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "96÷2"
+   },
+   "hint": "直線 AB 可以延長；對稱軸會把對稱點的連線怎樣？",
+   "seg": "七下6-1-S1",
+   "fig": "<svg viewBox=\"0 0 290 230\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"45.5\" y1=\"229.0\" x2=\"244.5\" y2=\"1.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"90.9\" y1=\"76.1\" x2=\"190.9\" y2=\"163.3\" stroke=\"#333\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/><line x1=\"90.9\" y1=\"76.1\" x2=\"90.9\" y2=\"176.9\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"90.9\" y1=\"76.1\" x2=\"159.1\" y2=\"98.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M134.9 114.4 L140.1 108.4 L146.2 113.7\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"90.9\" cy=\"76.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"190.9\" cy=\"163.3\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"140.9\" cy=\"119.7\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"90.9\" cy=\"176.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"159.1\" cy=\"98.9\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"199.1\" cy=\"53.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.1\" y=\"168.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">PQ＝96</text><text x=\"78.9\" y=\"131.2\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">73</text><text x=\"128.8\" y=\"80.8\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">52</text><text x=\"78.4\" y=\"77.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"194.2\" y=\"180.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">Q</text><text x=\"140.9\" y=\"145.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"78.4\" y=\"178.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"171.6\" y=\"107.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">B</text><text x=\"211.6\" y=\"61.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P16A",
+   "set": "A",
+   "pair": "P16",
+   "bloom": "應用",
+   "lc": "S-7-5",
+   "stem": "菱形（不是正方形）、正三角形和箏形（不是菱形）的對稱軸，合起來共有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "7 條",
+     "mis": "SM21",
+     "feedback": "你把箏形當成菱形，兩條對角線都算，得 2＋3＋2＝7 條。箏形沿另一條對角線摺兩邊不會疊合，只有 1 條對稱軸。"
+    },
+    {
+     "key": "B",
+     "text": "6 條",
+     "mis": null,
+     "feedback": "正確！菱形 2 條（兩條對角線）、正三角形 3 條（每條通過一個頂點和對邊中點）、箏形 1 條（把兩組等長鄰邊疊在一起的那條對角線），2＋3＋1＝6 條。"
+    },
+    {
+     "key": "C",
+     "text": "4 條",
+     "mis": "SM05",
+     "feedback": "你只找到正三角形直立的那 1 條，算成 2＋1＋1＝4 條。通過另外兩個頂點的 2 條也是對稱軸，正三角形共 3 條。"
+    },
+    {
+     "key": "D",
+     "text": "8 條",
+     "mis": "SM06",
+     "feedback": "你把菱形當成正四邊形，算成 4＋3＋1＝8 條。菱形邊都相等但角不一定相等，不是正多邊形，只有 2 條對稱軸。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "axesCount",
+    "shapes": "菱形、正三角形、箏形",
+    "op": "sum"
+   },
+   "hint": "每個圖形都沿線摺摺看，兩邊完全疊合才是對稱軸；斜的軸也要找。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P16B",
+   "set": "B",
+   "pair": "P16",
+   "bloom": "應用",
+   "lc": "S-7-5",
+   "stem": "菱形（不是正方形）、正六邊形和箏形（不是菱形）的對稱軸，合起來共有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "6 條",
+     "mis": "SM05",
+     "feedback": "你只找到正六邊形通過相對頂點的 3 條，算成 2＋3＋1＝6 條。通過相對兩邊中點的 3 條也是對稱軸，正六邊形共 6 條。"
+    },
+    {
+     "key": "B",
+     "text": "11 條",
+     "mis": "SM06",
+     "feedback": "你把菱形當成正四邊形，算成 4＋6＋1＝11 條。菱形邊都相等但角不一定相等，不是正多邊形，只有 2 條對稱軸。"
+    },
+    {
+     "key": "C",
+     "text": "10 條",
+     "mis": "SM21",
+     "feedback": "你把箏形當成菱形，兩條對角線都算，得 2＋6＋2＝10 條。箏形沿另一條對角線摺兩邊不會疊合，只有 1 條對稱軸。"
+    },
+    {
+     "key": "D",
+     "text": "9 條",
+     "mis": null,
+     "feedback": "正確！菱形 2 條（兩條對角線）、正六邊形 6 條（3 條通過相對頂點、3 條通過相對兩邊中點）、箏形 1 條（把兩組等長鄰邊疊在一起的那條對角線），2＋6＋1＝9 條。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "axesCount",
+    "shapes": "菱形、正六邊形、箏形",
+    "op": "sum"
+   },
+   "hint": "每個圖形都沿線摺摺看，兩邊完全疊合才是對稱軸；斜的軸也要找。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P17A",
+   "set": "A",
+   "pair": "P17",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "等腰梯形 ABCD（AD 是上底、BC 是下底）是線對稱圖形，對稱軸 L 和 AD、BC 分別交於 M、N。AM＝3、BN＝6、AB＝5、MN＝4（單位：公分），梯形的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "32 公分",
+     "mis": "SM22",
+     "feedback": "你算 28＋4＝32，把對稱軸上的 MN 也加進周長。周長只算圖形外圍的邊，MN 在圖形裡面，不算。"
+    },
+    {
+     "key": "B",
+     "text": "28 公分",
+     "mis": null,
+     "feedback": "正確！CD 是 AB 的對應邊，CD＝AB＝5；對稱軸平分 AD、BC，AD＝2×3＝6、BC＝2×6＝12，周長＝5＋5＋6＋12＝28。"
+    },
+    {
+     "key": "C",
+     "text": "14 公分",
+     "mis": "SM08",
+     "feedback": "你只把題目給的 AM、BN、AB 加起來，3＋6＋5＝14。CD 和 AB 對摺後疊合一樣長，MD、NC 也和 AM、BN 一樣長，都要算進去。"
+    },
+    {
+     "key": "D",
+     "text": "19 公分",
+     "mis": "SM09",
+     "feedback": "你算 3＋6＋5＋5＝19，把 AD 當成 3、BC 當成 6。對稱軸平分 AD、BC，所以 AD＝2×3＝6、BC＝2×6＝12，周長是 28。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "5+5+2*3+2*6"
+   },
+   "hint": "對摺後疊在一起的邊一樣長；周長只算外圍的邊。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P17B",
+   "set": "B",
+   "pair": "P17",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "等腰梯形 ABCD（AD 是上底、BC 是下底）是線對稱圖形，對稱軸 L 和 AD、BC 分別交於 M、N。AM＝2、BN＝8、AB＝10、MN＝8（單位：公分），梯形的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "20 公分",
+     "mis": "SM08",
+     "feedback": "你只把題目給的 AM、BN、AB 加起來，2＋8＋10＝20。CD 和 AB 對摺後疊合一樣長，MD、NC 也和 AM、BN 一樣長，都要算進去。"
+    },
+    {
+     "key": "B",
+     "text": "30 公分",
+     "mis": "SM09",
+     "feedback": "你算 2＋8＋10＋10＝30，把 AD 當成 2、BC 當成 8。對稱軸平分 AD、BC，所以 AD＝2×2＝4、BC＝2×8＝16，周長是 40。"
+    },
+    {
+     "key": "C",
+     "text": "40 公分",
+     "mis": null,
+     "feedback": "正確！CD 是 AB 的對應邊，CD＝AB＝10；對稱軸平分 AD、BC，AD＝2×2＝4、BC＝2×8＝16，周長＝10＋10＋4＋16＝40。"
+    },
+    {
+     "key": "D",
+     "text": "48 公分",
+     "mis": "SM22",
+     "feedback": "你算 40＋8＝48，把對稱軸上的 MN 也加進周長。周長只算圖形外圍的邊，MN 在圖形裡面，不算。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "10+10+2*2+2*8"
+   },
+   "hint": "對摺後疊在一起的邊一樣長；周長只算外圍的邊。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P18A",
+   "set": "A",
+   "pair": "P18",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "如圖，直線 L 上有 V、H、A 三點，PH⊥L，PV 是從 P 往正下方畫的線段（長度單位：公分）。L 是對稱軸，P 點對稱於 L 的點是 Q，PQ 長多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "40 公分",
+     "mis": null,
+     "feedback": "正確！對稱點要沿著和 L 垂直的方向找：從 P 沿 PH 走到 L，再走一樣遠，PQ＝2×20＝40 公分。"
+    },
+    {
+     "key": "B",
+     "text": "20 公分",
+     "mis": "SM09",
+     "feedback": "你把 PH＝20 當成整段 PQ。Q 在 L 的另一側，L 垂直平分 PQ，PH＝HQ＝20，PQ＝2×20＝40 公分。"
+    },
+    {
+     "key": "C",
+     "text": "50 公分",
+     "mis": "SM07",
+     "feedback": "你從 P 往正下方走到 V，再往下走一樣遠當成對稱點，PQ＝2×25＝50。L 是斜的，要沿著和 L 垂直的 PH 找：PQ＝2×20＝40 公分。"
+    },
+    {
+     "key": "D",
+     "text": "58 公分",
+     "mis": "SM02",
+     "feedback": "你把 PA＝29 當成 P 到 L 的距離，PQ＝2×29＝58。P 到 L 的距離是垂直線段 PH＝20，PQ＝2×20＝40 公分。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "value",
+    "expr": "2×20"
+   },
+   "hint": "對稱軸會垂直平分對稱點的連線；L 是斜的，垂直的方向不是鉛直。",
+   "seg": "七下6-1-S2",
+   "fig": "<svg viewBox=\"0 0 280 210\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.3\" y1=\"209.0\" x2=\"278.7\" y2=\"1.0\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"69.7\" y1=\"35.6\" x2=\"128.3\" y2=\"113.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"69.7\" y1=\"35.6\" x2=\"69.7\" y2=\"157.8\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"69.7\" y1=\"35.6\" x2=\"210.3\" y2=\"52.2\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M123.5 107.4 L129.9 102.6 L134.7 109.0\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"69.7\" cy=\"35.6\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"128.3\" cy=\"113.8\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"69.7\" cy=\"157.8\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"210.3\" cy=\"52.2\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"89.4\" y=\"86.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">20</text><text x=\"57.7\" y=\"101.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">25</text><text x=\"141.4\" y=\"36.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">29</text><text x=\"273.7\" y=\"25.7\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"66.3\" y=\"28.1\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"131.6\" y=\"131.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"73.0\" y=\"175.4\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"207.0\" y=\"44.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P18B",
+   "set": "B",
+   "pair": "P18",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "如圖，直線 L 上有 V、H、A 三點，PH⊥L，PV 是從 P 往正下方畫的線段（長度單位：公分）。L 是對稱軸，P 點對稱於 L 的點是 Q，PQ 長多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "52 公分",
+     "mis": "SM07",
+     "feedback": "你從 P 往正下方走到 V，再往下走一樣遠當成對稱點，PQ＝2×26＝52。L 是斜的，要沿著和 L 垂直的 PH 找：PQ＝2×24＝48 公分。"
+    },
+    {
+     "key": "B",
+     "text": "48 公分",
+     "mis": null,
+     "feedback": "正確！對稱點要沿著和 L 垂直的方向找：從 P 沿 PH 走到 L，再走一樣遠，PQ＝2×24＝48 公分。"
+    },
+    {
+     "key": "C",
+     "text": "80 公分",
+     "mis": "SM02",
+     "feedback": "你把 PA＝40 當成 P 到 L 的距離，PQ＝2×40＝80。P 到 L 的距離是垂直線段 PH＝24，PQ＝2×24＝48 公分。"
+    },
+    {
+     "key": "D",
+     "text": "24 公分",
+     "mis": "SM09",
+     "feedback": "你把 PH＝24 當成整段 PQ。Q 在 L 的另一側，L 垂直平分 PQ，PH＝HQ＝24，PQ＝2×24＝48 公分。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "2×24"
+   },
+   "hint": "對稱軸會垂直平分對稱點的連線；L 是斜的，垂直的方向不是鉛直。",
+   "seg": "七下6-1-S2",
+   "fig": "<svg viewBox=\"0 0 280 210\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"1.0\" y1=\"172.7\" x2=\"279.0\" y2=\"56.9\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"64.8\" y1=\"45.2\" x2=\"100.6\" y2=\"131.2\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"64.8\" y1=\"45.2\" x2=\"64.8\" y2=\"146.1\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"64.8\" y1=\"45.2\" x2=\"215.2\" y2=\"83.4\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M97.5 123.8 L104.9 120.7 L108.0 128.1\" fill=\"none\" stroke=\"#333\" stroke-width=\"1.1\"/><circle cx=\"64.8\" cy=\"45.2\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"100.6\" cy=\"131.2\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"64.8\" cy=\"146.1\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><circle cx=\"215.2\" cy=\"83.4\" r=\"2.2\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"93.8\" y=\"88.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">24</text><text x=\"52.8\" y=\"100.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">26</text><text x=\"143.0\" y=\"57.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">40</text><text x=\"264.8\" y=\"53.4\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">L</text><text x=\"61.4\" y=\"37.7\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">P</text><text x=\"100.6\" y=\"149.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">H</text><text x=\"64.8\" y=\"164.2\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">V</text><text x=\"215.2\" y=\"75.5\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">A</text></svg>"
+  },
+  {
+   "id": "P19A",
+   "set": "A",
+   "pair": "P19",
+   "bloom": "理解",
+   "lc": "S-7-5",
+   "stem": "正方形、平行四邊形（不是長方形，也不是菱形）和箏形（不是菱形）的對稱軸，合起來共有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "5 條",
+     "mis": null,
+     "feedback": "正確！正方形 4 條（2 條對邊中點連線、2 條對角線）、平行四邊形 0 條、箏形 1 條，4＋0＋1＝5 條。"
+    },
+    {
+     "key": "B",
+     "text": "6 條",
+     "mis": "SM21",
+     "feedback": "你把箏形當成菱形，兩條對角線都算，得 4＋0＋2＝6 條。箏形沿另一條對角線摺兩邊不會疊合，只有 1 條對稱軸。"
+    },
+    {
+     "key": "C",
+     "text": "3 條",
+     "mis": "SM05",
+     "feedback": "你只找到正方形直的、橫的 2 條，算成 2＋0＋1＝3 條。正方形沿 2 條對角線摺也會疊合，共 4 條。"
+    },
+    {
+     "key": "D",
+     "text": "7 條",
+     "mis": "SM03",
+     "feedback": "你以為平行四邊形沿對角線摺會疊合，算成 4＋2＋1＝7 條。沿平行四邊形的對角線或對邊中點連線摺都疊不起來，它沒有對稱軸。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "axesCount",
+    "shapes": "正方形、平行四邊形、箏形",
+    "op": "sum"
+   },
+   "hint": "沿線摺摺看：兩邊要完全疊合才是對稱軸；斜的軸也要找。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P19B",
+   "set": "B",
+   "pair": "P19",
+   "bloom": "理解",
+   "lc": "S-7-5",
+   "stem": "正八邊形、平行四邊形（不是長方形，也不是菱形）和箏形（不是菱形）的對稱軸，合起來共有幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "5 條",
+     "mis": "SM05",
+     "feedback": "你只找到正八邊形通過相對頂點的 4 條，算成 4＋0＋1＝5 條。通過相對兩邊中點的 4 條也是對稱軸，正八邊形共 8 條。"
+    },
+    {
+     "key": "B",
+     "text": "11 條",
+     "mis": "SM03",
+     "feedback": "你以為平行四邊形沿對角線摺會疊合，算成 8＋2＋1＝11 條。沿平行四邊形的對角線或對邊中點連線摺都疊不起來，它沒有對稱軸。"
+    },
+    {
+     "key": "C",
+     "text": "9 條",
+     "mis": null,
+     "feedback": "正確！正八邊形 8 條（4 條通過相對頂點、4 條通過相對兩邊中點）、平行四邊形 0 條、箏形 1 條，8＋0＋1＝9 條。"
+    },
+    {
+     "key": "D",
+     "text": "10 條",
+     "mis": "SM21",
+     "feedback": "你把箏形當成菱形，兩條對角線都算，得 8＋0＋2＝10 條。箏形沿另一條對角線摺兩邊不會疊合，只有 1 條對稱軸。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "axesCount",
+    "shapes": "正八邊形、平行四邊形、箏形",
+    "op": "sum"
+   },
+   "hint": "沿線摺摺看：兩邊要完全疊合才是對稱軸；斜的軸也要找。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P20A",
+   "set": "A",
+   "pair": "P20",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "等腰三角形 ABC 是線對稱圖形，對稱軸 L 通過頂點 A，並和底邊 BC 交於 M。AB＝13、BM＝5、AM＝12（單位：公分），△ABC 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "48 公分",
+     "mis": "SM22",
+     "feedback": "你算 36＋12＝48，把對稱軸上的 AM 也加進周長。周長只算圖形外圍的邊，AM 在圖形裡面，不算。"
+    },
+    {
+     "key": "B",
+     "text": "18 公分",
+     "mis": "SM08",
+     "feedback": "你只把題目給的外圍邊 AB、BM 加起來，13＋5＝18。AC 和 AB 對摺後疊合一樣長，MC 也和 BM 一樣長，都要算進去。"
+    },
+    {
+     "key": "C",
+     "text": "36 公分",
+     "mis": null,
+     "feedback": "正確！AC 是 AB 的對應邊，AC＝AB＝13；對稱軸平分 BC，BC＝2×5＝10，周長＝13＋13＋10＝36。"
+    },
+    {
+     "key": "D",
+     "text": "31 公分",
+     "mis": "SM09",
+     "feedback": "你算 13＋13＋5＝31，把 BC 當成 5。對稱軸平分 BC，BM＝MC，BC＝2×5＝10，周長是 36。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "13+13+2*5"
+   },
+   "hint": "對摺後疊在一起的邊一樣長；周長只算外圍的邊。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P20B",
+   "set": "B",
+   "pair": "P20",
+   "bloom": "應用",
+   "lc": "S-7-4",
+   "stem": "等腰三角形 ABC 是線對稱圖形，對稱軸 L 通過頂點 A，並和底邊 BC 交於 M。AB＝10、BM＝6、AM＝8（單位：公分），△ABC 的周長是多少？",
+   "options": [
+    {
+     "key": "A",
+     "text": "16 公分",
+     "mis": "SM08",
+     "feedback": "你只把題目給的外圍邊 AB、BM 加起來，10＋6＝16。AC 和 AB 對摺後疊合一樣長，MC 也和 BM 一樣長，都要算進去。"
+    },
+    {
+     "key": "B",
+     "text": "26 公分",
+     "mis": "SM09",
+     "feedback": "你算 10＋10＋6＝26，把 BC 當成 6。對稱軸平分 BC，BM＝MC，BC＝2×6＝12，周長是 32。"
+    },
+    {
+     "key": "C",
+     "text": "40 公分",
+     "mis": "SM22",
+     "feedback": "你算 32＋8＝40，把對稱軸上的 AM 也加進周長。周長只算圖形外圍的邊，AM 在圖形裡面，不算。"
+    },
+    {
+     "key": "D",
+     "text": "32 公分",
+     "mis": null,
+     "feedback": "正確！AC 是 AB 的對應邊，AC＝AB＝10；對稱軸平分 BC，BC＝2×6＝12，周長＝10＋10＋12＝32。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "10+10+2*6"
+   },
+   "hint": "對摺後疊在一起的邊一樣長；周長只算外圍的邊。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P21A",
+   "set": "A",
+   "pair": "P21",
+   "bloom": "分析",
+   "lc": "S-7-5",
+   "stem": "正八邊形的對稱軸比長方形（長和寬不相等）多幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4 條",
+     "mis": "SM04",
+     "feedback": "你把長方形的 2 條對角線也算成對稱軸，算成 8−4＝4 條。沿長方形的對角線摺，兩個三角形對不齊，長方形只有 2 條。"
+    },
+    {
+     "key": "B",
+     "text": "6 條",
+     "mis": null,
+     "feedback": "正確！正八邊形 8 條（4 條通過相對頂點、4 條通過相對兩邊中點），長方形 2 條（對邊中點的連線），8−2＝6 條。"
+    },
+    {
+     "key": "C",
+     "text": "14 條",
+     "mis": "SM10",
+     "feedback": "你把正八邊形的每個頂點、每個邊中點各算一條，得 16 條，16−2＝14。每條對稱軸同時通過兩個點，重複算了，正八邊形只有 8 條。"
+    },
+    {
+     "key": "D",
+     "text": "0 條",
+     "mis": "SM05",
+     "feedback": "你只找到正八邊形直的、橫的 2 條，算成 2−2＝0 條。斜的 6 條也是對稱軸，正八邊形共 8 條。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "axesCount",
+    "shapes": "正八邊形、長方形",
+    "op": "diff"
+   },
+   "hint": "兩個圖形的對稱軸各畫出來數，斜的也要找；畫過的不要重複數。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P21B",
+   "set": "B",
+   "pair": "P21",
+   "bloom": "分析",
+   "lc": "S-7-5",
+   "stem": "正六邊形的對稱軸比長方形（長和寬不相等）多幾條？",
+   "options": [
+    {
+     "key": "A",
+     "text": "4 條",
+     "mis": null,
+     "feedback": "正確！正六邊形 6 條（3 條通過相對頂點、3 條通過相對兩邊中點），長方形 2 條（對邊中點的連線），6−2＝4 條。"
+    },
+    {
+     "key": "B",
+     "text": "10 條",
+     "mis": "SM10",
+     "feedback": "你把正六邊形的每個頂點、每個邊中點各算一條，得 12 條，12−2＝10。每條對稱軸同時通過兩個點，重複算了，正六邊形只有 6 條。"
+    },
+    {
+     "key": "C",
+     "text": "1 條",
+     "mis": "SM05",
+     "feedback": "你只找到正六邊形通過相對頂點的 3 條，算成 3−2＝1 條。通過相對兩邊中點的 3 條也是對稱軸，正六邊形共 6 條。"
+    },
+    {
+     "key": "D",
+     "text": "2 條",
+     "mis": "SM04",
+     "feedback": "你把長方形的 2 條對角線也算成對稱軸，算成 6−4＝2 條。沿長方形的對角線摺，兩個三角形對不齊，長方形只有 2 條。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "axesCount",
+    "shapes": "正六邊形、長方形",
+    "op": "diff"
+   },
+   "hint": "兩個圖形的對稱軸各畫出來數，斜的也要找；畫過的不要重複數。",
+   "seg": "七下6-1-S2"
+  },
+  {
+   "id": "P22A",
+   "set": "A",
+   "pair": "P22",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的前視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM13",
+     "feedback": "甲把同一條視線上前後重疊的積木都疊上去了：從左邊數第 1 行畫了 3＋1＋1＝5 層，正確是 3 層。被擋住的看不到，每一行只畫最高的那幾層：由左到右 3、2、1 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM20",
+     "feedback": "乙只畫了最前排（由左到右 1、2、1 層），後排比較高的積木從前面也看得到。每一行要畫最高的那幾層：由左到右 3、2、1 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM11",
+     "feedback": "丙是後視圖（由左到右 1、2、3 層），左右畫反了。站在正前方看，你的左手邊就是立體的左邊：由左到右 3、2、1 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": null,
+     "feedback": "正確！站在正前方看，每一行只畫最高的那幾層：由左到右 3、2、1 層。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "viewPick",
+    "heights": "3,1,0;1,0,0;1,2,1",
+    "view": "front",
+    "cands": "甲:100/100/110/110/111,乙:010/111,丙:001/011/111,丁:100/110/111"
+   },
+   "hint": "站在正前方看：每一行（前後重疊的積木）最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 275\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"133.4,110.7 163.4,110.7 163.4,80.7 133.4,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,110.7 175.7,102.1 175.7,72.1 163.4,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,80.7 163.4,80.7 175.7,72.1 145.7,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,80.7 163.4,80.7 163.4,50.7 133.4,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,80.7 175.7,72.1 175.7,42.1 163.4,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,50.7 163.4,50.7 175.7,42.1 145.7,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,50.7 163.4,50.7 163.4,20.7 133.4,20.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,50.7 175.7,42.1 175.7,12.1 163.4,20.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,20.7 163.4,20.7 175.7,12.1 145.7,12.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,110.7 193.4,110.7 193.4,80.7 163.4,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"193.4,110.7 205.7,102.1 205.7,72.1 193.4,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,80.7 193.4,80.7 205.7,72.1 175.7,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,119.3 151.1,119.3 151.1,89.3 121.1,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,119.3 163.4,110.7 163.4,80.7 151.1,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,89.3 151.1,89.3 163.4,80.7 133.4,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,127.9 138.9,127.9 138.9,97.9 108.9,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,127.9 151.1,119.3 151.1,89.3 138.9,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,97.9 138.9,97.9 151.1,89.3 121.1,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,127.9 168.9,127.9 168.9,97.9 138.9,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,127.9 181.1,119.3 181.1,89.3 168.9,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,97.9 168.9,97.9 181.1,89.3 151.1,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,97.9 168.9,97.9 168.9,67.9 138.9,67.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,97.9 181.1,89.3 181.1,59.3 168.9,67.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,67.9 168.9,67.9 181.1,59.3 151.1,59.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,127.9 198.9,127.9 198.9,97.9 168.9,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,127.9 211.1,119.3 211.1,89.3 198.9,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,97.9 198.9,97.9 211.1,89.3 181.1,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"153.9\" y1=\"157.9\" x2=\"153.9\" y2=\"136.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M149.4 142.9 L153.9 134.9 L158.4 142.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"167.9\" y=\"155.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"266.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"266.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"266.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"257.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"233.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"266.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P22B",
+   "set": "B",
+   "pair": "P22",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的前視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM20",
+     "feedback": "甲只畫了最前排（由左到右 1、1、1 層），後排比較高的積木從前面也看得到。每一行要畫最高的那幾層：由左到右 1、2、2 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM11",
+     "feedback": "乙是後視圖（由左到右 2、2、1 層），左右畫反了。站在正前方看，你的左手邊就是立體的左邊：由左到右 1、2、2 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": null,
+     "feedback": "正確！站在正前方看，每一行只畫最高的那幾層：由左到右 1、2、2 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM13",
+     "feedback": "丁把同一條視線上前後重疊的積木都疊上去了：從左邊數第 2 行畫了 2＋1＋1＝4 層，正確是 2 層。被擋住的看不到，每一行只畫最高的那幾層：由左到右 1、2、2 層。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "viewPick",
+    "heights": "0,2,0;1,1,2;1,1,1",
+    "view": "front",
+    "cands": "甲:111,乙:110/111,丙:011/111,丁:010/011/111/111"
+   },
+   "hint": "站在正前方看：每一行（前後重疊的積木）最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 245\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"157.3,95.7 187.3,95.7 187.3,65.7 157.3,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"187.3,95.7 199.6,87.1 199.6,57.1 187.3,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,65.7 187.3,65.7 199.6,57.1 169.6,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,65.7 187.3,65.7 187.3,35.7 157.3,35.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"187.3,65.7 199.6,57.1 199.6,27.1 187.3,35.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,35.7 187.3,35.7 199.6,27.1 169.6,27.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,104.3 145.0,104.3 145.0,74.3 115.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,104.3 157.3,95.7 157.3,65.7 145.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,74.3 145.0,74.3 157.3,65.7 127.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,104.3 175.0,104.3 175.0,74.3 145.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,104.3 187.3,95.7 187.3,65.7 175.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,74.3 175.0,74.3 187.3,65.7 157.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,104.3 205.0,104.3 205.0,74.3 175.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"205.0,104.3 217.3,95.7 217.3,65.7 205.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,74.3 205.0,74.3 217.3,65.7 187.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,74.3 205.0,74.3 205.0,44.3 175.0,44.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"205.0,74.3 217.3,65.7 217.3,35.7 205.0,44.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,44.3 205.0,44.3 217.3,35.7 187.3,35.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,112.9 132.7,112.9 132.7,82.9 102.7,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,112.9 145.0,104.3 145.0,74.3 132.7,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,82.9 132.7,82.9 145.0,74.3 115.0,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,112.9 162.7,112.9 162.7,82.9 132.7,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,112.9 175.0,104.3 175.0,74.3 162.7,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,82.9 162.7,82.9 175.0,74.3 145.0,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,112.9 192.7,112.9 192.7,82.9 162.7,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"192.7,112.9 205.0,104.3 205.0,74.3 192.7,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,82.9 192.7,82.9 205.0,74.3 175.0,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"147.7\" y1=\"142.9\" x2=\"147.7\" y2=\"121.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M143.2 127.9 L147.7 119.9 L152.2 127.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"161.7\" y=\"140.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"97.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"192.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"272.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P23A",
+   "set": "A",
+   "pair": "P23",
+   "bloom": "應用",
+   "lc": "S-7-2",
+   "stem": "如圖是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。它的右視圖由幾個正方形組成？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3 個",
+     "mis": "SM20",
+     "feedback": "你只數了最靠近你的最右邊那一行（由前往後 1、1、1 層，共 3 個），左邊比較高的積木從右邊也看得到。每一排要算最高的那幾層：3＋3＋1＝7 個。"
+    },
+    {
+     "key": "B",
+     "text": "10 個",
+     "mis": "SM13",
+     "feedback": "你把每一塊積木都算一格，數成 10 個。同一條視線上前後重疊的積木只看得到一個，每一排只算最高的那幾層：3＋3＋1＝7 個。"
+    },
+    {
+     "key": "C",
+     "text": "7 個",
+     "mis": null,
+     "feedback": "正確！站在右邊看，由左到右（最前排到最後一排）最高 3、3、1 層，右視圖共 3＋3＋1＝7 個正方形。"
+    },
+    {
+     "key": "D",
+     "text": "5 個",
+     "mis": "SM14",
+     "feedback": "你數的是前視圖（由左到右 3、1、1 層，共 5 個）。右視圖要站在右邊看：由左到右 3、3、1 層，共 7 個。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "value",
+    "expr": "3+3+1"
+   },
+   "hint": "站到立體的右邊：由左到右是最前排到最後一排，每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 162\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"181.1,106.4 211.1,106.4 211.1,76.4 181.1,76.4\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,106.4 223.4,97.8 223.4,67.8 211.1,76.4\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,76.4 211.1,76.4 223.4,67.8 193.4,67.8\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,115.0 138.9,115.0 138.9,85.0 108.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,115.0 151.1,106.4 151.1,76.4 138.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,85.0 138.9,85.0 151.1,76.4 121.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,85.0 138.9,85.0 138.9,55.0 108.9,55.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,85.0 151.1,76.4 151.1,46.4 138.9,55.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,55.0 138.9,55.0 151.1,46.4 121.1,46.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,55.0 138.9,55.0 138.9,25.0 108.9,25.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,55.0 151.1,46.4 151.1,16.4 138.9,25.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,25.0 138.9,25.0 151.1,16.4 121.1,16.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,115.0 168.9,115.0 168.9,85.0 138.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,115.0 181.1,106.4 181.1,76.4 168.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,85.0 168.9,85.0 181.1,76.4 151.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,115.0 198.9,115.0 198.9,85.0 168.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,115.0 211.1,106.4 211.1,76.4 198.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,85.0 198.9,85.0 211.1,76.4 181.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,123.6 126.6,123.6 126.6,93.6 96.6,93.6\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,123.6 138.9,115.0 138.9,85.0 126.6,93.6\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,93.6 126.6,93.6 138.9,85.0 108.9,85.0\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,93.6 126.6,93.6 126.6,63.6 96.6,63.6\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,93.6 138.9,85.0 138.9,55.0 126.6,63.6\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,63.6 126.6,63.6 138.9,55.0 108.9,55.0\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,63.6 126.6,63.6 126.6,33.6 96.6,33.6\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,63.6 138.9,55.0 138.9,25.0 126.6,33.6\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,33.6 126.6,33.6 138.9,25.0 108.9,25.0\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,123.6 186.6,123.6 186.6,93.6 156.6,93.6\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"186.6,123.6 198.9,115.0 198.9,85.0 186.6,93.6\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,93.6 186.6,93.6 198.9,85.0 168.9,85.0\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"153.6\" x2=\"141.6\" y2=\"132.6\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 138.6 L141.6 130.6 L146.1 138.6 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"151.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text></svg>"
+  },
+  {
+   "id": "P23B",
+   "set": "B",
+   "pair": "P23",
+   "bloom": "應用",
+   "lc": "S-7-2",
+   "stem": "如圖是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。它的右視圖由幾個正方形組成？",
+   "options": [
+    {
+     "key": "A",
+     "text": "9 個",
+     "mis": "SM13",
+     "feedback": "你把每一塊積木都算一格，數成 9 個。同一條視線上前後重疊的積木只看得到一個，每一排只算最高的那幾層：3＋1＋2＝6 個。"
+    },
+    {
+     "key": "B",
+     "text": "7 個",
+     "mis": "SM14",
+     "feedback": "你數的是前視圖（由左到右 2、3、2 層，共 7 個）。右視圖要站在右邊看：由左到右 3、1、2 層，共 6 個。"
+    },
+    {
+     "key": "C",
+     "text": "4 個",
+     "mis": "SM20",
+     "feedback": "你只數了最靠近你的最右邊那一行（由前往後 1、1、2 層，共 4 個），左邊比較高的積木從右邊也看得到。每一排要算最高的那幾層：3＋1＋2＝6 個。"
+    },
+    {
+     "key": "D",
+     "text": "6 個",
+     "mis": null,
+     "feedback": "正確！站在右邊看，由左到右（最前排到最後一排）最高 3、1、2 層，右視圖共 3＋1＋2＝6 個正方形。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "3+1+2"
+   },
+   "hint": "站到立體的右邊：由左到右是最前排到最後一排，每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 158\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"181.1,102.1 211.1,102.1 211.1,72.1 181.1,72.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,102.1 223.4,93.5 223.4,63.5 211.1,72.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 223.4,63.5 193.4,63.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 211.1,42.1 181.1,42.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,72.1 223.4,63.5 223.4,33.5 211.1,42.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,42.1 211.1,42.1 223.4,33.5 193.4,33.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,110.7 198.9,110.7 198.9,80.7 168.9,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,110.7 211.1,102.1 211.1,72.1 198.9,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,80.7 198.9,80.7 211.1,72.1 181.1,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,119.3 126.6,119.3 126.6,89.3 96.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 138.9,110.7 138.9,80.7 126.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,89.3 126.6,89.3 138.9,80.7 108.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,89.3 126.6,89.3 126.6,59.3 96.6,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 138.9,80.7 138.9,50.7 126.6,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,59.3 126.6,59.3 138.9,50.7 108.9,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 156.6,119.3 156.6,89.3 126.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 168.9,110.7 168.9,80.7 156.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 156.6,89.3 168.9,80.7 138.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 156.6,89.3 156.6,59.3 126.6,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,89.3 168.9,80.7 168.9,50.7 156.6,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,59.3 156.6,59.3 168.9,50.7 138.9,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,59.3 156.6,59.3 156.6,29.3 126.6,29.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,59.3 168.9,50.7 168.9,20.7 156.6,29.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,29.3 156.6,29.3 168.9,20.7 138.9,20.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 186.6,119.3 186.6,89.3 156.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"186.6,119.3 198.9,110.7 198.9,80.7 186.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,89.3 186.6,89.3 198.9,80.7 168.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"149.3\" x2=\"141.6\" y2=\"128.3\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 134.3 L141.6 126.3 L146.1 134.3 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"147.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text></svg>"
+  },
+  {
+   "id": "P24A",
+   "set": "A",
+   "pair": "P24",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的上視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM12",
+     "feedback": "甲是站在右邊往下看畫出的圖，轉了 90°。上視圖要站在正前方抬高往下看，圖的下緣是立體的前面。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM11",
+     "feedback": "乙把前後的位置對調了：最前排畫到最上面。上視圖的下緣是立體的前面，最前排要畫在最下面。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM14",
+     "feedback": "丙是前視圖（從正前方看，由左到右 2、2、1 層）。上視圖要從上往下看，看的是每一格有沒有積木。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": null,
+     "feedback": "正確！站在正前方抬高往下看：圖的下緣是立體的前面，每一格有積木就畫一格。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "viewPick",
+    "heights": "0,2,1;2,1,0;1,1,0",
+    "view": "top",
+    "cands": "甲:110/111/001,乙:110/110/011,丙:110/111,丁:011/110/110"
+   },
+   "hint": "站到正前方，再抬高往下看：圖的下緣是立體的哪一面？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 230\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"151.1,95.7 181.1,95.7 181.1,65.7 151.1,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,95.7 193.4,87.1 193.4,57.1 181.1,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,65.7 181.1,65.7 193.4,57.1 163.4,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,65.7 181.1,65.7 181.1,35.7 151.1,35.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,65.7 193.4,57.1 193.4,27.1 181.1,35.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,35.7 181.1,35.7 193.4,27.1 163.4,27.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,95.7 211.1,95.7 211.1,65.7 181.1,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,95.7 223.4,87.1 223.4,57.1 211.1,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,65.7 211.1,65.7 223.4,57.1 193.4,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,104.3 138.9,104.3 138.9,74.3 108.9,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,104.3 151.1,95.7 151.1,65.7 138.9,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,74.3 138.9,74.3 151.1,65.7 121.1,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,74.3 138.9,74.3 138.9,44.3 108.9,44.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,74.3 151.1,65.7 151.1,35.7 138.9,44.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,44.3 138.9,44.3 151.1,35.7 121.1,35.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,104.3 168.9,104.3 168.9,74.3 138.9,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,104.3 181.1,95.7 181.1,65.7 168.9,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,74.3 168.9,74.3 181.1,65.7 151.1,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,112.9 126.6,112.9 126.6,82.9 96.6,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,112.9 138.9,104.3 138.9,74.3 126.6,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,82.9 126.6,82.9 138.9,74.3 108.9,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,112.9 156.6,112.9 156.6,82.9 126.6,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,112.9 168.9,104.3 168.9,74.3 156.6,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,82.9 156.6,82.9 168.9,74.3 138.9,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"142.9\" x2=\"141.6\" y2=\"121.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 127.9 L141.6 119.9 L146.1 127.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"140.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"221.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"97.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"221.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"221.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"272.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"221.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P24B",
+   "set": "B",
+   "pair": "P24",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的上視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": null,
+     "feedback": "正確！站在正前方抬高往下看：圖的下緣是立體的前面，每一格有積木就畫一格。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM11",
+     "feedback": "乙把前後的位置對調了：最前排畫到最上面。上視圖的下緣是立體的前面，最前排要畫在最下面。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM14",
+     "feedback": "丙是前視圖（從正前方看，由左到右 3、1、1 層）。上視圖要從上往下看，看的是每一格有沒有積木。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM12",
+     "feedback": "丁是站在右邊往下看畫出的圖，轉了 90°。上視圖要站在正前方抬高往下看，圖的下緣是立體的前面。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "viewPick",
+    "heights": "3,1,1;1,1,1;0,1,0",
+    "view": "top",
+    "cands": "甲:111/111/010,乙:010/111/111,丙:100/100/111,丁:011/111/011"
+   },
+   "hint": "站到正前方，再抬高往下看：圖的下緣是立體的哪一面？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 245\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"115.0,110.7 145.0,110.7 145.0,80.7 115.0,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,110.7 157.3,102.1 157.3,72.1 145.0,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,80.7 145.0,80.7 157.3,72.1 127.3,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,80.7 145.0,80.7 145.0,50.7 115.0,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,80.7 157.3,72.1 157.3,42.1 145.0,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,50.7 145.0,50.7 157.3,42.1 127.3,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,50.7 145.0,50.7 145.0,20.7 115.0,20.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,50.7 157.3,42.1 157.3,12.1 145.0,20.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,20.7 145.0,20.7 157.3,12.1 127.3,12.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,110.7 175.0,110.7 175.0,80.7 145.0,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,110.7 187.3,102.1 187.3,72.1 175.0,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,80.7 175.0,80.7 187.3,72.1 157.3,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,110.7 205.0,110.7 205.0,80.7 175.0,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"205.0,110.7 217.3,102.1 217.3,72.1 205.0,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,80.7 205.0,80.7 217.3,72.1 187.3,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,119.3 132.7,119.3 132.7,89.3 102.7,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,119.3 145.0,110.7 145.0,80.7 132.7,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,89.3 132.7,89.3 145.0,80.7 115.0,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,119.3 162.7,119.3 162.7,89.3 132.7,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,119.3 175.0,110.7 175.0,80.7 162.7,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,89.3 162.7,89.3 175.0,80.7 145.0,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,119.3 192.7,119.3 192.7,89.3 162.7,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"192.7,119.3 205.0,110.7 205.0,80.7 192.7,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,89.3 192.7,89.3 205.0,80.7 175.0,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,127.9 150.4,127.9 150.4,97.9 120.4,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"150.4,127.9 162.7,119.3 162.7,89.3 150.4,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,97.9 150.4,97.9 162.7,89.3 132.7,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"135.4\" y1=\"157.9\" x2=\"135.4\" y2=\"136.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M130.9 142.9 L135.4 134.9 L139.9 142.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"149.4\" y=\"155.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"272.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P25A",
+   "set": "A",
+   "pair": "P25",
+   "bloom": "分析",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的左視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM14",
+     "feedback": "甲是前視圖（從正前方看，由左到右 2、3、1 層）。左視圖要站在立體的左邊看：由左到右 3、2、1 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": null,
+     "feedback": "正確！站在左邊看：你的左手邊是立體的後面，由左到右（最後一排到最前排）最高 3、2、1 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM13",
+     "feedback": "丙把同一條視線上前後重疊的積木都疊上去了：最後一排畫了 3＋1＝4 層。被擋住的看不到，每一排只畫最高的那幾層：由左到右 3、2、1 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM11",
+     "feedback": "丁是右視圖（從右邊看），和左視圖左右相反。站在左邊看，你的左手邊是立體的後面：由左到右 3、2、1 層。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "viewPick",
+    "heights": "0,3,1;2,1,0;1,0,0",
+    "view": "left",
+    "cands": "甲:010/110/111,乙:100/110/111,丙:100/110/110/111,丁:001/011/111"
+   },
+   "hint": "站到立體的左邊：你的左手邊是立體的哪一面？每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 260\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"151.1,110.7 181.1,110.7 181.1,80.7 151.1,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,110.7 193.4,102.1 193.4,72.1 181.1,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,80.7 181.1,80.7 193.4,72.1 163.4,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,80.7 181.1,80.7 181.1,50.7 151.1,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,80.7 193.4,72.1 193.4,42.1 181.1,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,50.7 181.1,50.7 193.4,42.1 163.4,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,50.7 181.1,50.7 181.1,20.7 151.1,20.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,50.7 193.4,42.1 193.4,12.1 181.1,20.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,20.7 181.1,20.7 193.4,12.1 163.4,12.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,110.7 211.1,110.7 211.1,80.7 181.1,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,110.7 223.4,102.1 223.4,72.1 211.1,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,80.7 211.1,80.7 223.4,72.1 193.4,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,119.3 138.9,119.3 138.9,89.3 108.9,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,119.3 151.1,110.7 151.1,80.7 138.9,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,89.3 138.9,89.3 151.1,80.7 121.1,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,89.3 138.9,89.3 138.9,59.3 108.9,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,89.3 151.1,80.7 151.1,50.7 138.9,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,59.3 138.9,59.3 151.1,50.7 121.1,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,119.3 168.9,119.3 168.9,89.3 138.9,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,119.3 181.1,110.7 181.1,80.7 168.9,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,89.3 168.9,89.3 181.1,80.7 151.1,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,127.9 126.6,127.9 126.6,97.9 96.6,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,127.9 138.9,119.3 138.9,89.3 126.6,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,97.9 126.6,97.9 138.9,89.3 108.9,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"157.9\" x2=\"141.6\" y2=\"136.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 142.9 L141.6 134.9 L146.1 142.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"155.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"32.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"251.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"97.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"251.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"251.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"287.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"218.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"251.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P25B",
+   "set": "B",
+   "pair": "P25",
+   "bloom": "分析",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的左視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": null,
+     "feedback": "正確！站在左邊看：你的左手邊是立體的後面，由左到右（最後一排到最前排）最高 2、2、1 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM13",
+     "feedback": "乙把同一條視線上前後重疊的積木都疊上去了：最後一排畫了 2＋1＝3 層。被擋住的看不到，每一排只畫最高的那幾層：由左到右 2、2、1 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM11",
+     "feedback": "丙是右視圖（從右邊看），和左視圖左右相反。站在左邊看，你的左手邊是立體的後面：由左到右 2、2、1 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM14",
+     "feedback": "丁是前視圖（從正前方看，由左到右 2、1、1 層）。左視圖要站在立體的左邊看：由左到右 2、2、1 層。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "viewPick",
+    "heights": "2,1,0;2,1,1;1,1,0",
+    "view": "left",
+    "cands": "甲:110/111,乙:010/110/111/111,丙:011/111,丁:100/111"
+   },
+   "hint": "站到立體的左邊：你的左手邊是立體的哪一面？每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 245\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"127.3,95.7 157.3,95.7 157.3,65.7 127.3,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,95.7 169.6,87.1 169.6,57.1 157.3,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"127.3,65.7 157.3,65.7 169.6,57.1 139.6,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"127.3,65.7 157.3,65.7 157.3,35.7 127.3,35.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,65.7 169.6,57.1 169.6,27.1 157.3,35.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"127.3,35.7 157.3,35.7 169.6,27.1 139.6,27.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,95.7 187.3,95.7 187.3,65.7 157.3,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"187.3,95.7 199.6,87.1 199.6,57.1 187.3,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"157.3,65.7 187.3,65.7 199.6,57.1 169.6,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,104.3 145.0,104.3 145.0,74.3 115.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,104.3 157.3,95.7 157.3,65.7 145.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,74.3 145.0,74.3 157.3,65.7 127.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,74.3 145.0,74.3 145.0,44.3 115.0,44.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,74.3 157.3,65.7 157.3,35.7 145.0,44.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,44.3 145.0,44.3 157.3,35.7 127.3,35.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,104.3 175.0,104.3 175.0,74.3 145.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,104.3 187.3,95.7 187.3,65.7 175.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,74.3 175.0,74.3 187.3,65.7 157.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,104.3 205.0,104.3 205.0,74.3 175.0,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"205.0,104.3 217.3,95.7 217.3,65.7 205.0,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,74.3 205.0,74.3 217.3,65.7 187.3,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,112.9 132.7,112.9 132.7,82.9 102.7,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,112.9 145.0,104.3 145.0,74.3 132.7,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"102.7,82.9 132.7,82.9 145.0,74.3 115.0,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,112.9 162.7,112.9 162.7,82.9 132.7,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,112.9 175.0,104.3 175.0,74.3 162.7,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,82.9 162.7,82.9 175.0,74.3 145.0,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"147.7\" y1=\"142.9\" x2=\"147.7\" y2=\"121.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M143.2 127.9 L147.7 119.9 L152.2 127.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"161.7\" y=\"140.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"158.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"192.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"257.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P26A",
+   "set": "A",
+   "pair": "P26",
+   "bloom": "應用",
+   "lc": "S-7-2",
+   "stem": "如圖是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。它的前視圖由幾個正方形組成？",
+   "options": [
+    {
+     "key": "A",
+     "text": "3 個",
+     "mis": "SM20",
+     "feedback": "你只數了最前排（由左到右 1、1、1 層，共 3 個），後排比較高的積木從前面也看得到。每一行要算最高的那幾層：2＋2＋1＝5 個。"
+    },
+    {
+     "key": "B",
+     "text": "8 個",
+     "mis": "SM13",
+     "feedback": "你把每一塊積木都算一格，數成 8 個。同一條視線上前後重疊的積木只看得到一個，每一行只算最高的那幾層：2＋2＋1＝5 個。"
+    },
+    {
+     "key": "C",
+     "text": "4 個",
+     "mis": "SM14",
+     "feedback": "你數的是右視圖（由左到右 1、1、2 層，共 4 個）。前視圖要站在正前方看：由左到右 2、2、1 層，共 5 個。"
+    },
+    {
+     "key": "D",
+     "text": "5 個",
+     "mis": null,
+     "feedback": "正確！站在正前方看，每一行只算最高的那幾層：由左到右 2、2、1 層，前視圖共 2＋2＋1＝5 個正方形。"
+    }
+   ],
+   "answer": "D",
+   "check": {
+    "type": "value",
+    "expr": "2+2+1"
+   },
+   "hint": "站在正前方看：每一行（前後重疊的積木）最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 151\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"133.4,95.7 163.4,95.7 163.4,65.7 133.4,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,95.7 175.7,87.1 175.7,57.1 163.4,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,65.7 163.4,65.7 175.7,57.1 145.7,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,65.7 163.4,65.7 163.4,35.7 133.4,35.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,65.7 175.7,57.1 175.7,27.1 163.4,35.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"133.4,35.7 163.4,35.7 175.7,27.1 145.7,27.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,95.7 193.4,95.7 193.4,65.7 163.4,65.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"193.4,95.7 205.7,87.1 205.7,57.1 193.4,65.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,65.7 193.4,65.7 205.7,57.1 175.7,57.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,65.7 193.4,65.7 193.4,35.7 163.4,35.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"193.4,65.7 205.7,57.1 205.7,27.1 193.4,35.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"163.4,35.7 193.4,35.7 205.7,27.1 175.7,27.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,104.3 151.1,104.3 151.1,74.3 121.1,74.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,104.3 163.4,95.7 163.4,65.7 151.1,74.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,74.3 151.1,74.3 163.4,65.7 133.4,65.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,112.9 138.9,112.9 138.9,82.9 108.9,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,112.9 151.1,104.3 151.1,74.3 138.9,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,82.9 138.9,82.9 151.1,74.3 121.1,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,112.9 168.9,112.9 168.9,82.9 138.9,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,112.9 181.1,104.3 181.1,74.3 168.9,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,82.9 168.9,82.9 181.1,74.3 151.1,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,112.9 198.9,112.9 198.9,82.9 168.9,82.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,112.9 211.1,104.3 211.1,74.3 198.9,82.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,82.9 198.9,82.9 211.1,74.3 181.1,74.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"153.9\" y1=\"142.9\" x2=\"153.9\" y2=\"121.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M149.4 127.9 L153.9 119.9 L158.4 127.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"167.9\" y=\"140.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text></svg>"
+  },
+  {
+   "id": "P26B",
+   "set": "B",
+   "pair": "P26",
+   "bloom": "應用",
+   "lc": "S-7-2",
+   "stem": "如圖是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。它的前視圖由幾個正方形組成？",
+   "options": [
+    {
+     "key": "A",
+     "text": "10 個",
+     "mis": "SM13",
+     "feedback": "你把每一塊積木都算一格，數成 10 個。同一條視線上前後重疊的積木只看得到一個，每一行只算最高的那幾層：3＋2＋2＝7 個。"
+    },
+    {
+     "key": "B",
+     "text": "7 個",
+     "mis": null,
+     "feedback": "正確！站在正前方看，每一行只算最高的那幾層：由左到右 3、2、2 層，前視圖共 3＋2＋2＝7 個正方形。"
+    },
+    {
+     "key": "C",
+     "text": "6 個",
+     "mis": "SM14",
+     "feedback": "你數的是右視圖（由左到右 3、1、2 層，共 6 個）。前視圖要站在正前方看：由左到右 3、2、2 層，共 7 個。"
+    },
+    {
+     "key": "D",
+     "text": "5 個",
+     "mis": "SM20",
+     "feedback": "你只數了最前排（由左到右 3、1、1 層，共 5 個），後排比較高的積木從前面也看得到。每一行要算最高的那幾層：3＋2＋2＝7 個。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "value",
+    "expr": "3+2+2"
+   },
+   "hint": "站在正前方看：每一行（前後重疊的積木）最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 158\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"151.1,102.1 181.1,102.1 181.1,72.1 151.1,72.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,102.1 193.4,93.5 193.4,63.5 181.1,72.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,72.1 181.1,72.1 193.4,63.5 163.4,63.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,72.1 181.1,72.1 181.1,42.1 151.1,42.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 193.4,63.5 193.4,33.5 181.1,42.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,42.1 181.1,42.1 193.4,33.5 163.4,33.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,102.1 211.1,102.1 211.1,72.1 181.1,72.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,102.1 223.4,93.5 223.4,63.5 211.1,72.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 223.4,63.5 193.4,63.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 211.1,42.1 181.1,42.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,72.1 223.4,63.5 223.4,33.5 211.1,42.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,42.1 211.1,42.1 223.4,33.5 193.4,33.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,110.7 168.9,110.7 168.9,80.7 138.9,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,110.7 181.1,102.1 181.1,72.1 168.9,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,80.7 168.9,80.7 181.1,72.1 151.1,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,119.3 126.6,119.3 126.6,89.3 96.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 138.9,110.7 138.9,80.7 126.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,89.3 126.6,89.3 138.9,80.7 108.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,89.3 126.6,89.3 126.6,59.3 96.6,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 138.9,80.7 138.9,50.7 126.6,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,59.3 126.6,59.3 138.9,50.7 108.9,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,59.3 126.6,59.3 126.6,29.3 96.6,29.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,59.3 138.9,50.7 138.9,20.7 126.6,29.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,29.3 126.6,29.3 138.9,20.7 108.9,20.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 156.6,119.3 156.6,89.3 126.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 168.9,110.7 168.9,80.7 156.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 156.6,89.3 168.9,80.7 138.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 186.6,119.3 186.6,89.3 156.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"186.6,119.3 198.9,110.7 198.9,80.7 186.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,89.3 186.6,89.3 198.9,80.7 168.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"149.3\" x2=\"141.6\" y2=\"128.3\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 134.3 L141.6 126.3 L146.1 134.3 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"147.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text></svg>"
+  },
+  {
+   "id": "P27A",
+   "set": "A",
+   "pair": "P27",
+   "bloom": "分析",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的右視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM11",
+     "feedback": "甲是左視圖（從左邊看），和右視圖左右相反。站在右邊看時，你的左手邊是立體的前面：由左到右 1、1、3 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": null,
+     "feedback": "正確！站在右邊看：你的左手邊是立體的前面，由左到右（最前排到最後一排）最高 1、1、3 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM20",
+     "feedback": "丙只畫了最靠近你的最右邊那一行（由前往後 1、1、1 層），左邊比較高的積木從右邊也看得到。每一排要畫最高的那幾層：由左到右 1、1、3 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM14",
+     "feedback": "丁是前視圖（從正前方看，由左到右 1、3、1 層）。右視圖要站在立體的右邊看：由左到右 1、1、3 層。"
+    }
+   ],
+   "answer": "B",
+   "check": {
+    "type": "viewPick",
+    "heights": "0,3,1;1,0,1;1,1,1",
+    "view": "right",
+    "cands": "甲:100/100/111,乙:001/001/111,丙:111,丁:010/010/111"
+   },
+   "hint": "站到立體的右邊：你的左手邊是哪一面？每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 245\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"151.1,110.7 181.1,110.7 181.1,80.7 151.1,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,110.7 193.4,102.1 193.4,72.1 181.1,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,80.7 181.1,80.7 193.4,72.1 163.4,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,80.7 181.1,80.7 181.1,50.7 151.1,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,80.7 193.4,72.1 193.4,42.1 181.1,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,50.7 181.1,50.7 193.4,42.1 163.4,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,50.7 181.1,50.7 181.1,20.7 151.1,20.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,50.7 193.4,42.1 193.4,12.1 181.1,20.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,20.7 181.1,20.7 193.4,12.1 163.4,12.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,110.7 211.1,110.7 211.1,80.7 181.1,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,110.7 223.4,102.1 223.4,72.1 211.1,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,80.7 211.1,80.7 223.4,72.1 193.4,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,119.3 138.9,119.3 138.9,89.3 108.9,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,119.3 151.1,110.7 151.1,80.7 138.9,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,89.3 138.9,89.3 151.1,80.7 121.1,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,119.3 198.9,119.3 198.9,89.3 168.9,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,119.3 211.1,110.7 211.1,80.7 198.9,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,89.3 198.9,89.3 211.1,80.7 181.1,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,127.9 126.6,127.9 126.6,97.9 96.6,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,127.9 138.9,119.3 138.9,89.3 126.6,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,97.9 126.6,97.9 138.9,89.3 108.9,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,127.9 156.6,127.9 156.6,97.9 126.6,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,127.9 168.9,119.3 168.9,89.3 156.6,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,97.9 156.6,97.9 168.9,89.3 138.9,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,127.9 186.6,127.9 186.6,97.9 156.6,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"186.6,127.9 198.9,119.3 198.9,89.3 186.6,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,97.9 186.6,97.9 198.9,89.3 168.9,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"157.9\" x2=\"141.6\" y2=\"136.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 142.9 L141.6 134.9 L146.1 142.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"155.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"127.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"272.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P27B",
+   "set": "B",
+   "pair": "P27",
+   "bloom": "分析",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的右視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM20",
+     "feedback": "甲只畫了最靠近你的最右邊那一行（由前往後 1、1、2 層），左邊比較高的積木從右邊也看得到。每一排要畫最高的那幾層：由左到右 3、2、2 層。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM14",
+     "feedback": "乙是前視圖（從正前方看，由左到右 2、3、2 層）。右視圖要站在立體的右邊看：由左到右 3、2、2 層。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": null,
+     "feedback": "正確！站在右邊看：你的左手邊是立體的前面，由左到右（最前排到最後一排）最高 3、2、2 層。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM11",
+     "feedback": "丁是左視圖（從左邊看），和右視圖左右相反。站在右邊看時，你的左手邊是立體的前面：由左到右 3、2、2 層。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "viewPick",
+    "heights": "0,0,2;2,0,1;1,3,1",
+    "view": "right",
+    "cands": "甲:001/111,乙:010/111/111,丙:100/111/111,丁:001/111/111"
+   },
+   "hint": "站到立體的右邊：你的左手邊是哪一面？每一排最高有幾層？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 237\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"181.1,102.1 211.1,102.1 211.1,72.1 181.1,72.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,102.1 223.4,93.5 223.4,63.5 211.1,72.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 223.4,63.5 193.4,63.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,72.1 211.1,72.1 211.1,42.1 181.1,42.1\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"211.1,72.1 223.4,63.5 223.4,33.5 211.1,42.1\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"181.1,42.1 211.1,42.1 223.4,33.5 193.4,33.5\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,110.7 138.9,110.7 138.9,80.7 108.9,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,110.7 151.1,102.1 151.1,72.1 138.9,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,80.7 138.9,80.7 151.1,72.1 121.1,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,80.7 138.9,80.7 138.9,50.7 108.9,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,80.7 151.1,72.1 151.1,42.1 138.9,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,50.7 138.9,50.7 151.1,42.1 121.1,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,110.7 198.9,110.7 198.9,80.7 168.9,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,110.7 211.1,102.1 211.1,72.1 198.9,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,80.7 198.9,80.7 211.1,72.1 181.1,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,119.3 126.6,119.3 126.6,89.3 96.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 138.9,110.7 138.9,80.7 126.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"96.6,89.3 126.6,89.3 138.9,80.7 108.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,119.3 156.6,119.3 156.6,89.3 126.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 168.9,110.7 168.9,80.7 156.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 156.6,89.3 168.9,80.7 138.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,89.3 156.6,89.3 156.6,59.3 126.6,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,89.3 168.9,80.7 168.9,50.7 156.6,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,59.3 156.6,59.3 168.9,50.7 138.9,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,59.3 156.6,59.3 156.6,29.3 126.6,29.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,59.3 168.9,50.7 168.9,20.7 156.6,29.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,29.3 156.6,29.3 168.9,20.7 138.9,20.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,119.3 186.6,119.3 186.6,89.3 156.6,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"186.6,119.3 198.9,110.7 198.9,80.7 186.6,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,89.3 186.6,89.3 198.9,80.7 168.9,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"149.3\" x2=\"141.6\" y2=\"128.3\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 134.3 L141.6 126.3 L146.1 134.3 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"147.3\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"47.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"228.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"165.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"228.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"165.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"228.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"287.5\" y=\"165.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"180.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"195.3\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"228.3\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P28A",
+   "set": "A",
+   "pair": "P28",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的上視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": null,
+     "feedback": "正確！站在正前方抬高往下看：圖的下緣是立體的前面，每一格不管疊幾層，有積木就畫一格。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM11",
+     "feedback": "乙把前後的位置對調了：最前排畫到最上面，左右卻沒變。上視圖的下緣是立體的前面，最前排要畫在最下面。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": "SM14",
+     "feedback": "丙是右視圖（從右邊看，由左到右 2、2、3 層）。上視圖要從上往下看，看的是每一格有沒有積木。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM12",
+     "feedback": "丁是站在右邊往下看畫出的圖，轉了 90°。上視圖要站在正前方抬高往下看，圖的下緣是立體的前面。"
+    }
+   ],
+   "answer": "A",
+   "check": {
+    "type": "viewPick",
+    "heights": "3,2,0;0,2,1;0,2,0",
+    "view": "top",
+    "cands": "甲:110/011/010,乙:010/011/110,丙:001/111/111,丁:001/111/010"
+   },
+   "hint": "從上往下看時先站在正前方：圖的下緣是立體的哪一面？左邊、右邊有沒有對調？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 245\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"115.0,110.7 145.0,110.7 145.0,80.7 115.0,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,110.7 157.3,102.1 157.3,72.1 145.0,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,80.7 145.0,80.7 157.3,72.1 127.3,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,80.7 145.0,80.7 145.0,50.7 115.0,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,80.7 157.3,72.1 157.3,42.1 145.0,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,50.7 145.0,50.7 157.3,42.1 127.3,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,50.7 145.0,50.7 145.0,20.7 115.0,20.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,50.7 157.3,42.1 157.3,12.1 145.0,20.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"115.0,20.7 145.0,20.7 157.3,12.1 127.3,12.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,110.7 175.0,110.7 175.0,80.7 145.0,80.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,110.7 187.3,102.1 187.3,72.1 175.0,80.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,80.7 175.0,80.7 187.3,72.1 157.3,72.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,80.7 175.0,80.7 175.0,50.7 145.0,50.7\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"175.0,80.7 187.3,72.1 187.3,42.1 175.0,50.7\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"145.0,50.7 175.0,50.7 187.3,42.1 157.3,42.1\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,119.3 162.7,119.3 162.7,89.3 132.7,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,119.3 175.0,110.7 175.0,80.7 162.7,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,89.3 162.7,89.3 175.0,80.7 145.0,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,89.3 162.7,89.3 162.7,59.3 132.7,59.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,89.3 175.0,80.7 175.0,50.7 162.7,59.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"132.7,59.3 162.7,59.3 175.0,50.7 145.0,50.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,119.3 192.7,119.3 192.7,89.3 162.7,89.3\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"192.7,119.3 205.0,110.7 205.0,80.7 192.7,89.3\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"162.7,89.3 192.7,89.3 205.0,80.7 175.0,80.7\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,127.9 150.4,127.9 150.4,97.9 120.4,97.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"150.4,127.9 162.7,119.3 162.7,89.3 150.4,97.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,97.9 150.4,97.9 162.7,89.3 132.7,89.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,97.9 150.4,97.9 150.4,67.9 120.4,67.9\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"150.4,97.9 162.7,89.3 162.7,59.3 150.4,67.9\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"120.4,67.9 150.4,67.9 162.7,59.3 132.7,59.3\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"135.4\" y1=\"157.9\" x2=\"135.4\" y2=\"136.9\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M130.9 142.9 L135.4 134.9 L139.9 142.9 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"149.4\" y=\"155.9\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"17.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"207.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"287.5\" y=\"173.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"188.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"203.9\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"236.9\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
+  },
+  {
+   "id": "P28B",
+   "set": "B",
+   "pair": "P28",
+   "bloom": "理解",
+   "lc": "S-7-2",
+   "stem": "如圖，上方是用同樣大小的正方體積木堆成的立體（沒有懸空的積木；除了撐住上層所需的積木，看不到的地方沒有積木），箭頭指的是正前方。下方甲～丁哪一個是它的上視圖？",
+   "options": [
+    {
+     "key": "A",
+     "text": "甲",
+     "mis": "SM14",
+     "feedback": "甲是右視圖（從右邊看，由左到右 1、3、2 層）。上視圖要從上往下看，看的是每一格有沒有積木。"
+    },
+    {
+     "key": "B",
+     "text": "乙",
+     "mis": "SM12",
+     "feedback": "乙是站在右邊往下看畫出的圖，轉了 90°。上視圖要站在正前方抬高往下看，圖的下緣是立體的前面。"
+    },
+    {
+     "key": "C",
+     "text": "丙",
+     "mis": null,
+     "feedback": "正確！站在正前方抬高往下看：圖的下緣是立體的前面，每一格不管疊幾層，有積木就畫一格。"
+    },
+    {
+     "key": "D",
+     "text": "丁",
+     "mis": "SM11",
+     "feedback": "丁把前後的位置對調了：最前排畫到最上面，左右卻沒變。上視圖的下緣是立體的前面，最前排要畫在最下面。"
+    }
+   ],
+   "answer": "C",
+   "check": {
+    "type": "viewPick",
+    "heights": "2,0,0;1,3,1;0,1,0",
+    "view": "top",
+    "cands": "甲:010/011/111,乙:011/110/010,丙:100/111/010,丁:010/111/100"
+   },
+   "hint": "從上往下看時先站在正前方：圖的下緣是立體的哪一面？左邊、右邊有沒有對調？",
+   "seg": "七下6-1-S3",
+   "fig": "<svg viewBox=\"0 0 320 241\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"121.1,106.4 151.1,106.4 151.1,76.4 121.1,76.4\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,106.4 163.4,97.8 163.4,67.8 151.1,76.4\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,76.4 151.1,76.4 163.4,67.8 133.4,67.8\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,76.4 151.1,76.4 151.1,46.4 121.1,46.4\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"151.1,76.4 163.4,67.8 163.4,37.8 151.1,46.4\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"121.1,46.4 151.1,46.4 163.4,37.8 133.4,37.8\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,115.0 138.9,115.0 138.9,85.0 108.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,115.0 151.1,106.4 151.1,76.4 138.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"108.9,85.0 138.9,85.0 151.1,76.4 121.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,115.0 168.9,115.0 168.9,85.0 138.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,115.0 181.1,106.4 181.1,76.4 168.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,85.0 168.9,85.0 181.1,76.4 151.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,85.0 168.9,85.0 168.9,55.0 138.9,55.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,85.0 181.1,76.4 181.1,46.4 168.9,55.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,55.0 168.9,55.0 181.1,46.4 151.1,46.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,55.0 168.9,55.0 168.9,25.0 138.9,25.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,55.0 181.1,46.4 181.1,16.4 168.9,25.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"138.9,25.0 168.9,25.0 181.1,16.4 151.1,16.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,115.0 198.9,115.0 198.9,85.0 168.9,85.0\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"198.9,115.0 211.1,106.4 211.1,76.4 198.9,85.0\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"168.9,85.0 198.9,85.0 211.1,76.4 181.1,76.4\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,123.6 156.6,123.6 156.6,93.6 126.6,93.6\" fill=\"#dce8f4\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"156.6,123.6 168.9,115.0 168.9,85.0 156.6,93.6\" fill=\"#a9c1dc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><polygon points=\"126.6,93.6 156.6,93.6 168.9,85.0 138.9,85.0\" fill=\"#f5f8fc\" stroke=\"#2b3440\" stroke-width=\"1.1\"/><line x1=\"141.6\" y1=\"153.6\" x2=\"141.6\" y2=\"132.6\" stroke=\"#333\" stroke-width=\"1.6\"/><path d=\"M137.1 138.6 L141.6 130.6 L146.1 138.6 Z\" fill=\"#333\" stroke=\"#333\" stroke-width=\"1\"/><text x=\"155.6\" y=\"151.6\" font-size=\"13\" text-anchor=\"middle\" fill=\"#333\">前</text><rect x=\"32.5\" y=\"169.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"17.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"32.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"47.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"40.0\" y=\"232.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">甲</text><rect x=\"112.5\" y=\"169.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"127.5\" y=\"169.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"97.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"112.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"120.0\" y=\"232.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">乙</text><rect x=\"177.5\" y=\"169.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"177.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"207.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"192.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"200.0\" y=\"232.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丙</text><rect x=\"272.5\" y=\"169.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"272.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"287.5\" y=\"184.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><rect x=\"257.5\" y=\"199.6\" width=\"15.0\" height=\"15.0\" fill=\"#e8eef6\" stroke=\"#333\" stroke-width=\"1.2\"/><text x=\"280.0\" y=\"232.6\" font-size=\"14\" text-anchor=\"middle\" fill=\"#333\">丁</text></svg>"
   }
  ],
- "note": "每組平行題（P01～P08）：A 卷第一場、B 卷第二場；同一組的誘答對應相同迷思，只換數字或圖形",
- "updated": "2026-11-04T23:47"
+ "note": "P01～P08 原題；P09～P28 為 2026-11-26 擴充",
+ "updated": "2026-11-26T03:02"
 }
